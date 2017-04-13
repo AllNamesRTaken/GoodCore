@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+	    "rootDir": "./src",
+		"outDir": "./dist",
+	    "sourceMap": true,
+	    "target": "es5",
+	    "module": "commonjs",
+	    "moduleResolution": "node",
+	    "declaration": false,
+	    "noImplicitAny": true,
+	    "noResolve": false,
+	    "removeComments": true,
+	    "noLib": false,
+	    "emitDecoratorMetadata": true,
+	    "experimentalDecorators": true,
+	    "preserveConstEnums": true,
+		"allowJs": false,
+		"listFiles": false,
+		"listEmittedFiles": false,
+		"lib": [
+            "dom",
+            "es5",
+            "es2015.promise",
+			"scripthost"
+        ]
+    },
+	"include": [
+		"./src/test/**/*.ts",
+		"./typings/**/*.d.ts"
+	],
+	"exclude": [
+	]
+}

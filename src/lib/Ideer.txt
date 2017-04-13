@@ -1,0 +1,2 @@
+- RestProxy
+- CallQueue som kan attacha på funktioner som returnerar promise och då konsumerar kön 

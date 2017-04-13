@@ -1,0 +1,5 @@
+{
+    "name": "goodcore",
+    "main": "./dist/lib/index.d.ts",
+    "out": "../goodcore.d.ts"
+}
