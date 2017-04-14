@@ -2,11 +2,17 @@
   "name": "goodcore",
   "version": "0.0.2",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
-  "main": "./dist/lib/umd.js",
+  "main": "./dist/lib/umd.min.js",
   "typings": "./dist/lib/index.d.ts",
   "typescript": {
     "definition": "./goodcore.d.ts"
   },
+  "files": [
+    "./dist/lib/umd.min.js",
+    "goodcore.d.ts",
+    "typings.json",
+    "LICENCE"
+  ],
   "scripts": {
     "install_tools": "yarn install && typings install",
     "clean": "rimraf ./dist",
@@ -48,12 +54,12 @@
   },
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "git://github.com/allnamesrtaken/goodcore.git"
   },
   "keywords": [
     "Typescript",
     "Javascript"
   ],
   "author": "Joel Brage",
-  "license": "ISC"
+  "license": "MIT"
 }
