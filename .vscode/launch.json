@@ -1,0 +1,46 @@
+{
+    // Use IntelliSense to learn about possible Node.js debug attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "node",
+            "request": "launch",
+            "name": "Launch Program",
+            "program": "${workspaceRoot}\\dist\\lib\\umd.js",
+            "outFiles": []
+        },
+        {
+            "type": "node",
+            "request": "attach",
+            "name": "Attach to Process",
+            "address": "localhost",
+            "port": 5858,
+            "outFiles": []
+        },
+        {
+            "name": "Run mocha",
+            "type": "node",
+            /* Globally installed mocha */
+            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "stopOnEntry": false,
+            /* Specify which are the file you want the runner to pick up. */
+            "args": [
+                "dist/test/**/*.js"
+            ],
+            "cwd": "${workspaceRoot}/",
+            "runtimeExecutable": null,
+            "env": {
+                "NODE_ENV": "production"
+            },
+            /* If you are using Typescript and you alread have sourcemaps generated in                
+             * the test folder, simple specifying this flag will give the luxry 
+             * of debugging the typescript test instead of JavaScript.
+             */
+            "sourceMaps": true,
+            /* This is the directory where your tests are located.*/
+            "outDir": "${workspaceRoot}/dist/test"
+        }
+    ]
+}
