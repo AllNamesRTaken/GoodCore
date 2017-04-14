@@ -9,9 +9,7 @@
   },
   "files": [
     "./dist/lib/umd.min.js",
-    "goodcore.d.ts",
-    "typings.json",
-    "LICENCE"
+    "goodcore.d.ts"
   ],
   "scripts": {
     "install_tools": "yarn install && typings install",
