@@ -1,0 +1,32 @@
+export declare class _Array {
+    private _int;
+    _(): _Array;
+    constructor();
+    Flatten(src: Array<any>): Array<any>;
+    private FlattenInner(src, result?);
+    Reverse(array: Array<any>): void;
+    Concat(...arrs: Array<any>): Array<any>;
+    Slice<T>(src: Array<T>, from?: number, count?: number): Array<T>;
+    Append<T>(arr: Array<T>, values: Array<T>): void;
+    RemoveOneAt(arr: Array<any>, index: number): void;
+    IndexOfElement(src: Array<any>, el: any): number;
+    RemoveOneByElement(arr: Array<any>, el: any): void;
+    IndexOf(src: Array<any>, fn: (el: any) => boolean): number;
+    RemoveOneByFn(arr: Array<any>, fn: (el: any) => boolean): void;
+    ShallowCopy<T>(src: Array<T>): Array<T>;
+    ShallowCopyInto<T>(src: Array<T>, target: Array<T>): void;
+    ShallowFill<T>(src: Array<T>, target: Array<T>, at?: number): void;
+    DeepCopy<T>(src: Array<T>): Array<T>;
+    DeepCopyInto<T>(src: Array<T>, target: Array<T>): void;
+    DeepFill<T>(src: Array<T>, target: Array<T>, at?: number): void;
+    Filter<T>(src: Array<T>, fn: (el: T, i?: number) => boolean): Array<T>;
+    FilterInto<T>(src: Array<T>, target: Array<T>, fn: (el: T, i?: number) => boolean): void;
+    Map<T>(src: Array<T>, fn: (el: T, i?: number) => any): Array<any>;
+    MapInto<T>(src: Array<any>, target: Array<T>, fn: (el: T, i?: number) => T): void;
+    Reduce<T>(src: Array<T>, fn: (acc: any | number, cur: T) => any | number, start?: any | number): any | number;
+    ForEach<T>(src: Array<T>, fn: (el: T, i?: number) => any): void;
+    Until<T>(src: Array<T>, fn: (el: T, i?: number) => boolean): void;
+    Some<T>(src: Array<T>, filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void;
+    InsertAt<T>(src: Array<T>, pos: number, v: T): void;
+}
+export declare var Arr: _Array;

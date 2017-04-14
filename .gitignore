@@ -1,4 +1,4 @@
-dist/
+dist/test/
 node_modules/
 temp/
 coverage/

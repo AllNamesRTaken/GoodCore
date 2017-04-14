@@ -1,0 +1,36 @@
+export default class Vec2 {
+    x: number;
+    y: number;
+    static EPSILON: number;
+    static IDENTITY: Vec2;
+    static X_DIM: Vec2;
+    static Y_DIM: Vec2;
+    constructor(x?: number, y?: number);
+    Set(src: Vec2): Vec2;
+    Clone(out?: Vec2): Vec2;
+    ToInt(): Vec2;
+    Ceil(): Vec2;
+    ToDecimal(): Vec2;
+    LengthSq(): number;
+    Length(): number;
+    HorizontalAngle(): number;
+    Rotate(angle: number): Vec2;
+    RotateAround(center: Vec2, angle: number): Vec2;
+    Normalize(): Vec2;
+    Scale(vectorB: Vec2): Vec2;
+    Relate(vectorB: Vec2): Vec2;
+    Multiply(scalar: number): Vec2;
+    Add(vectorB: Vec2): Vec2;
+    Subtract(vectorB: Vec2): Vec2;
+    Invert(): void;
+    Equals(target: Vec2): boolean;
+    AlmostEquals(target: Vec2): boolean;
+    GetNormal(isNormalized?: boolean): Vec2;
+    Dot(vectorB: Vec2): number;
+    Cross(vectorB: Vec2): number;
+    ProjectOnto(vectorB: Vec2): Vec2;
+    VerticalAngle(): number;
+    Angle: () => number;
+    Direction: () => number;
+    RotateBy(rotation: number): Vec2;
+}
