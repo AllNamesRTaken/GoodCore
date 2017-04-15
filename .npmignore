@@ -1,8 +1,0 @@
-dist/test/
-node_modules/
-src/
-temp/
-coverage/
-typings/globals/
-typings/modules/
-typings/index.d.ts
