@@ -1,15 +1,11 @@
 {
   "name": "goodcore",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
-  "main": "./dist/lib/umd.min.js",
-  "typings": "./dist/lib/index.d.ts",
-  "typescript": {
-    "definition": "./goodcore.d.ts"
-  },
+  "main": "./dist/lib/goodcore.umd.min.js",
+  "typings": "./dist/lib/goodcore.d.ts",
   "files": [
-    "./dist/lib/umd.min.js",
-    "goodcore.d.ts"
+    "dist/"
   ],
   "scripts": {
     "install_tools": "yarn install && typings install",
@@ -18,7 +14,7 @@
     "tsc": "tsc",
     "umd": "node browserify-umd.js",
     "minify": "node minify-umd.js",
-    "build": "yarn run clean && yarn run tsc && yarn run umd && yarn run minify",
+    "build": "yarn run clean && yarn run tsc && yarn run umd && yarn run minify && yarn run bundle_d_ts",
     "build_test": "yarn run clean-test && tsc -p tsconfig-test.json",
     "test": "yarn run tsc && mocha ./dist/test/*Test.js",
     "cover": "istanbul cover ./node_modules/mocha/bin/_mocha -- ./dist/test/*.js",
