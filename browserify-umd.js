@@ -9,7 +9,7 @@ var Umd = require("browserify-umdify");
 mkdirp.sync("./temp");
 
 var packageJson = require("./package.json");
-var distOutFileUnversioned = "./dist/lib/umd.js";
+var distOutFileUnversioned = "./dist/lib/"+packageJson.name+".umd.js";
 var distOutUnversioned = fs.createWriteStream(distOutFileUnversioned, { encoding: "utf-8", flags: "w"})
 
 var bundled = browserify({
