@@ -5,7 +5,8 @@
   "main": "./dist/lib/goodcore.umd.min.js",
   "typings": "./dist/lib/goodcore.d.ts",
   "files": [
-    "dist/"
+    "dist/lib/goodcore.umd.min.js",
+    "dist/lib/goodcore.d.ts"
   ],
   "scripts": {
     "install_tools": "yarn install && typings install",
