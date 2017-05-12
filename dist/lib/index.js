@@ -40,4 +40,6 @@ var MocData_1 = require("./MocData");
 exports.MocData = MocData_1.MocData;
 var Cache_1 = require("./standard/Cache");
 exports.Cache = Cache_1.Cache;
+var KeyValuePair_1 = require("./struct/KeyValuePair");
+exports.KeyValuePair = KeyValuePair_1.default;
 //# sourceMappingURL=index.js.map

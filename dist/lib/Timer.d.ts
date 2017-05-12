@@ -10,4 +10,4 @@ export declare class _Timer {
     Start(): number;
     Stop(): number;
 }
-export declare var Timer: _Timer;
+export declare let Timer: _Timer;

@@ -15,4 +15,4 @@ export declare class _MocData {
     NumericArray(length: number, type?: MocDataType): number[];
     StringArray(arrayLength: number, stringLength?: number): string[];
 }
-export declare var MocData: _MocData;
+export declare let MocData: _MocData;

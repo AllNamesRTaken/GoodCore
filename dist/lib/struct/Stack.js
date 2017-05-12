@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var List_1 = require("./List");
 var Arr_1 = require("../Arr");
+var List_1 = require("./List");
 var DEFAULT_SIZE = 100;
 var Stack = (function () {
     function Stack(size) {

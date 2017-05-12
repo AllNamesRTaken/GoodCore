@@ -13,4 +13,4 @@ export declare class _Uri {
     constructor(win: Window);
     Init(win: Window): void;
 }
-export declare var Uri: _Uri;
+export declare let Uri: _Uri;

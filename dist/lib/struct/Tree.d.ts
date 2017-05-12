@@ -1,4 +1,3 @@
-/// <reference path="../../../typings/custom.d.ts" />
 import List from "./List";
 export declare class BaseTree<T> implements ITreeNode<T> {
     Id: string;

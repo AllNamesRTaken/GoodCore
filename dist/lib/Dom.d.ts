@@ -12,7 +12,7 @@ export declare class _Dom {
     private _el;
     constructor(win: Window);
     Init(win: Window): void;
-    ToArray<T>(a: ArrayLike<T>): Array<T>;
+    ToArray<T>(a: ArrayLike<T>): T[];
     Create(html: string, attr?: any): HTMLElement;
     OuterHTML(el: HTMLElement): string;
     SetAttr(_el: HTMLElement | String, attr: any): void;
@@ -25,6 +25,6 @@ export declare class _Dom {
     Children(root: HTMLElement, selector?: string): Element[];
     Position(el: HTMLElement, x: number, y: number): void;
     Is(selector: string, element: HTMLElement): boolean;
-    SetStylesExplicitly(element: HTMLElement, ...styles: Array<string>): void;
+    SetStylesExplicitly(element: HTMLElement, ...styles: string[]): void;
 }
-export declare var Dom: _Dom;
+export declare let Dom: _Dom;

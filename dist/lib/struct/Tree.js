@@ -10,12 +10,12 @@ var __extends = (this && this.__extends) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
-var List_1 = require("./List");
-var Stack_1 = require("./Stack");
 var Arr_1 = require("../Arr");
-var Util_1 = require("../Util");
 var Obj_1 = require("../Obj");
 var Initable_1 = require("../standard/mixins/Initable");
+var Util_1 = require("../Util");
+var List_1 = require("./List");
+var Stack_1 = require("./Stack");
 var BaseTree = (function () {
     function BaseTree() {
         this.Id = null;
@@ -78,8 +78,9 @@ var Tree = (function (_super) {
     Tree.prototype.Reduce = function (fn, start) {
         var stack = new Stack_1.default();
         var acc = start;
-        if (start === undefined)
+        if (start === undefined) {
             acc = 0;
+        }
         var cur;
         var i;
         stack.Push(this);

@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Vec2_1 = require("./Vec2");
-var Range2_1 = require("./Range2");
 var Calc_1 = require("../Calc");
+var Range2_1 = require("./Range2");
+var Vec2_1 = require("./Vec2");
 var Sign = Calc_1.Calc.Sign;
 var Rect = (function () {
     function Rect(x1, y1, x2, y2, endInclusive) {

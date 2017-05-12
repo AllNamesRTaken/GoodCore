@@ -85,7 +85,6 @@ var _Dom = (function () {
     };
     _Dom.prototype.Clear = function (element) {
         var i = element.children.length;
-        ;
         while (i--) {
             element.removeChild(element.children[i]);
         }
@@ -142,7 +141,8 @@ var _Dom = (function () {
             styles[_i - 1] = arguments[_i];
         }
         var comp = this._window.getComputedStyle(element);
-        for (var style in styles) {
+        for (var _a = 0, styles_1 = styles; _a < styles_1.length; _a++) {
+            var style = styles_1[_a];
             element.style[style] = comp[style];
         }
     };

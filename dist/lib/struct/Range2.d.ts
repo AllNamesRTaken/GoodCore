@@ -1,5 +1,5 @@
-import Vec2 from "./Vec2";
 import Rect from "./Rect";
+import Vec2 from "./Vec2";
 export default class Range2 {
     pos: Vec2;
     size: Vec2;

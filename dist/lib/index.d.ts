@@ -18,3 +18,4 @@ export { default as Pool } from "./standard/Pool";
 export { default as Integrate } from "./Integration";
 export { MocData as MocData } from "./MocData";
 export { Cache as Cache } from "./standard/Cache";
+export { default as KeyValuePair } from "./struct/KeyValuePair";

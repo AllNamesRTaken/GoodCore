@@ -13,8 +13,8 @@ export declare class _Obj {
     IsDifferent(a: any, b: any): boolean;
     ShallowCopy(obj: any): any;
     Clone<T>(obj: T): T;
-    CloneInto<T, S>(src: T | Array<S>, target: T | Array<S>): T | Array<S>;
-    Mixin(target: any, exclude: any, ...sources: Array<any>): any;
+    CloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
+    Mixin(target: any, exclude: any, ...sources: any[]): any;
     SetProperties(target: any, values: any): void;
 }
-export declare var Obj: _Obj;
+export declare let Obj: _Obj;

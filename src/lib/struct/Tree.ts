@@ -1,25 +1,23 @@
-/// <reference path="../../../typings/custom.d.ts" />
-
-import List from "./List"
-import Stack from "./Stack"
-import { Arr } from "../Arr"
-import { Util } from "../Util"
-import { Obj } from "../Obj"
-import Initable from "../standard/mixins/Initable"
+import { Arr } from "../Arr";
+import { Obj } from "../Obj";
+import Initable from "../standard/mixins/Initable";
+import { Util } from "../Util";
+import List from "./List";
+import Stack from "./Stack";
 
 export class BaseTree<T> implements ITreeNode<T> {
-	Id: string = null;
-	Parent: Tree<T> = null;
-	Children: List<Tree<T>> = null;
-	Data: T = null;
+	public Id: string = null;
+	public Parent: Tree<T> = null;
+	public Children: List<Tree<T>> = null;
+	public Data: T = null;
 }
 export const _InitableTree = Initable(BaseTree);
 export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>> {
-	static FromObject<T>(obj: any): Tree<T> {
-		let parent = (this instanceof Tree) ? this : null;
-		let root = new Tree<T>().Init({Data: <T>obj.data !== undefined ? obj.data : null, Parent: parent});
+	public static FromObject<T>(obj: any): Tree<T> {
+		const parent = (this instanceof Tree) ? this : null;
+		const root = new Tree<T>().Init({Data: obj.data as T !== undefined ? obj.data : null, Parent: parent});
 		if (obj.children !== undefined && Util.IsArray(obj.children)) {
-			root.Children = new List(Arr.Map<Tree<T>>(<Array<Tree<T>>>obj.children, Tree.FromObject.bind(root)));
+			root.Children = new List(Arr.Map<Tree<T>>(obj.children as Array<Tree<T>>, Tree.FromObject.bind(root)));
 		}
 		return root;
 	}
@@ -53,7 +51,7 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 	public Prune(): Tree<T> {
 		if (this.Children !== null) {
 			this.Children
-				.ForEach(function (el: ITreeNode<T>, i: number) {
+				.ForEach(function(el: ITreeNode<T>, i: number) {
 					el.Parent = null;
 				})
 				.Clear();
@@ -62,9 +60,9 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 		return this;
 	}
 	public Reduce(fn: (acc: any, cur: T) => any, start?: any): any {
-		let stack = new Stack<ITreeNode<T>>();
+		const stack = new Stack<ITreeNode<T>>();
 		let acc: any = start;
-		if (start === undefined) acc = <any>0;
+		if (start === undefined) { acc = 0 as any; }
 		let cur: ITreeNode<T>;
 		let i: number;
 		stack.Push(this);
@@ -78,7 +76,7 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 		return acc;
 	}
 	public Clone(): Tree<T> {
-		let result = new (<ICtor<Tree<T>>>(<any>this).constructor)();
+		const result = new ((this as any).constructor as ICtor<Tree<T>>)();
 		result.Id = this.Id;
 		result.Parent = this.Parent;
 		result.Children = this.Children === null ? null : this.Children.Clone();
@@ -86,7 +84,7 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 		return result;
 	}
 	private DuplicateNode(): Tree<T> {
-		let result = new (<ICtor<Tree<T>>>(<any>this).constructor)();
+		const result = new ((this as any).constructor as ICtor<Tree<T>>)();
 		result.Id = this.Id;
 		result.Parent = this.Parent;
 		result.Children = this.Children;
@@ -94,26 +92,25 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 		return result;
 	}
 	public Filter(condition: (node: ITreeNode<T>) => boolean): Tree<T> {
-		let root = this.DuplicateNode();
-		let children = this.Children;
+		const root = this.DuplicateNode();
+		const children = this.Children;
 		if (children !== null) {
 			root.Children =
 				root.Children
 					.Select(condition)
-					.Map(function (el: Tree<T>, i: number) {
+					.Map(function(el: Tree<T>, i: number) {
 						return el.Filter(condition);
 					});
 		}
 		return root;
 	}
 	public Select(condition?: (node: ITreeNode<T>) => boolean, acc: List<Tree<T>> = new List<Tree<T>>()): List<Tree<T>> {
-		let result = acc;
-		let children = <List<Tree<T>>>this.Children;
+		const result = acc;
+		const children = this.Children as List<Tree<T>>;
 		if (condition === undefined || condition(this)) {
 			result.Add(this);
-		}
-		else {
-			children.Reduce(function (acc: List<Tree<T>>, cur: Tree<T>) {
+		} else {
+			children.Reduce(function(acc: List<Tree<T>>, cur: Tree<T>) {
 				return cur.Select(condition, acc);
 			}, result);
 		}
@@ -121,17 +118,17 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 	}
 	public Find(condition: (data: T) => boolean): ITreeNode<T> {
 		let result: ITreeNode<T> = null;
-		let children = this.Children;
+		const children = this.Children;
 		if (children !== null) {
 			let i = -1;
-			let len = this.Children.Count;
-			let val = this.Children.Values;
+			const len = this.Children.Count;
+			const val = this.Children.Values;
 			while (++i < len) {
 				if (condition(val[i].Data)) {
 					result = val[i];
 					break;
 				} else {
-					result = val[i].Children !== null ? (<Tree<T>>val[i]).Find(condition) : null;
+					result = val[i].Children !== null ? (val[i] as Tree<T>).Find(condition) : null;
 					if (result !== null) {
 						break;
 					}
@@ -144,4 +141,3 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 		return this.Find(condition) !== null;
 	}
 }
-

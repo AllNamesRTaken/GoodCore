@@ -10,7 +10,7 @@ export default class Dictionary<T> {
     Set(key: string, value: T): Dictionary<T>;
     Delete(key: string): Dictionary<T>;
     Clear(): Dictionary<T>;
-    readonly Values: Array<T>;
-    readonly Keys: Array<string>;
+    readonly Values: T[];
+    readonly Keys: string[];
     readonly List: List<T>;
 }

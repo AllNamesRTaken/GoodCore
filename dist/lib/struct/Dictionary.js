@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var List_1 = require("./List");
 var Obj_1 = require("../Obj");
+var List_1 = require("./List");
 var Dictionary = (function () {
     function Dictionary() {
         this._lookup = {};

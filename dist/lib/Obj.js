@@ -1,12 +1,12 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Util_1 = require("./Util");
 var Arr_1 = require("./Arr");
+var Util_1 = require("./Util");
 var _Obj = (function () {
     function _Obj() {
     }
     _Obj.prototype._ = function () {
-        return new _Obj;
+        return new _Obj();
     };
     _Obj.prototype.Destroy = function (obj) {
         if (obj.Destroy !== undefined) {
@@ -206,7 +206,8 @@ var _Obj = (function () {
         for (var _i = 2; _i < arguments.length; _i++) {
             sources[_i - 2] = arguments[_i];
         }
-        var result = target, i = 0, len = sources ? sources.length : 0;
+        var result = target, len = sources ? sources.length : 0;
+        var i = 0;
         sources = Arr_1.Arr.Flatten(sources);
         for (; i < len; i++) {
             var src = sources[i];

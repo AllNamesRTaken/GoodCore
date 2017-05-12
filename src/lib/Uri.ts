@@ -23,9 +23,9 @@ export class _Uri {
 			this._window = win;
 			this._a = this._window.document.createElement("a");
 			this._a.setAttribute("href", this._window.location.href);
-			let args = this.args;
-			this._a.search.substring(1).split("&").forEach(arg => {
-				let p = arg.split("=");
+			const args = this.args;
+			this._a.search.substring(1).split("&").forEach((arg) => {
+				const p = arg.split("=");
 				args[p[0]] = p[1];
 			});
 			this.hash = this._a.hash;
@@ -33,10 +33,10 @@ export class _Uri {
 			this.port = this._a.port;
 			this.hostName = this._a.hostname;
 			this.protocol = this._a.protocol;
-			this.origin = (<any>this._a).origin;
+			this.origin = (this._a as any).origin;
 			this.full = this._a.href;
 		}
 	}
 }
 
-export var Uri = new _Uri(window);
+export let Uri = new _Uri(window);

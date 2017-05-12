@@ -6,7 +6,7 @@ export declare const _InitableCacheObject: typeof BaseCacheObject & ICtor<IInita
 export declare class CacheObject<T> extends _InitableCacheObject<T> {
 }
 export declare class Cache<T> {
-    static DEFAULT_FIFO_SIZE: number;
+    private static DEFAULT_FIFO_SIZE;
     private _size;
     private _order;
     private _data;

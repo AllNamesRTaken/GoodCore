@@ -59,7 +59,8 @@ var _Array = (function () {
         return result;
     };
     _Array.prototype.Append = function (arr, values) {
-        var index = -1, length = values.length, offset = arr.length;
+        var index = -1;
+        var length = values.length, offset = arr.length;
         arr.length = length + offset;
         while (++index < length) {
             arr[offset + index] = values[index];

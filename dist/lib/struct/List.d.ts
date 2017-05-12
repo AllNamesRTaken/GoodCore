@@ -1,7 +1,7 @@
 export default class List<T> implements IList<T> {
     private _array;
-    constructor(arr?: Array<T> | List<T>);
-    readonly Values: Array<T>;
+    constructor(arr?: T[] | List<T>);
+    readonly Values: T[];
     Get(pos: number): T;
     readonly Count: number;
     Clear(): List<T>;
@@ -10,10 +10,10 @@ export default class List<T> implements IList<T> {
     Push(v: T): number;
     Pop(): T;
     Shift(): T;
-    Concat(v: Array<T> | List<T>): List<T>;
-    Append(v: Array<T> | List<T>): List<T>;
-    Copy(src: List<T> | Array<T>): List<T>;
-    ShallowCopy(src: List<T> | Array<T>): List<T>;
+    Concat(v: T[] | List<T>): List<T>;
+    Append(v: T[] | List<T>): List<T>;
+    Copy(src: List<T> | T[]): List<T>;
+    ShallowCopy(src: List<T> | T[]): List<T>;
     Clone(): List<T>;
     Remove(v: T): List<T>;
     RemoveAt(n: number): List<T>;
@@ -24,10 +24,10 @@ export default class List<T> implements IList<T> {
     Contains(v: T): boolean;
     Reverse(): List<T>;
     Select(fn: (el: T, i?: number) => boolean): List<T>;
-    SelectInto(src: List<T> | Array<T>, fn: (el: T, i?: number) => boolean): List<T>;
+    SelectInto(src: List<T> | T[], fn: (el: T, i?: number) => boolean): List<T>;
     OrderBy(fn: (a: T, b: T) => number): List<T>;
     Map<S>(fn: (el: T, i?: number) => S): List<S>;
-    MapInto(src: List<any> | Array<any>, fn: (el: any, i?: number) => any): List<T>;
+    MapInto(src: List<any> | any[], fn: (el: any, i?: number) => any): List<T>;
     Reduce(fn: (acc: any, cur: T) => any, start?: any): any;
     Equals(b: List<T>): boolean;
 }

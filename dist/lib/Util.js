@@ -26,7 +26,7 @@ var _Util = (function () {
                 this._window.postMessage(messageName, "*");
             }
             function handleMessage(event) {
-                if (((event.source) === undefined || (event.source) === this._window) && event.data == messageName) {
+                if (((event.source) === undefined || (event.source) === this._window) && event.data === messageName) {
                     event.stopPropagation();
                     if (timeouts.length > (0 | 0)) {
                         var fn = timeouts.shift();
@@ -88,13 +88,13 @@ var _Util = (function () {
     };
     _Util.prototype.NewUUID = function () {
         var d = new Date().getTime();
-        if (typeof performance !== 'undefined' && typeof performance.now === 'function') {
+        if (typeof performance !== "undefined" && typeof performance.now === "function") {
             d += performance.now();
         }
-        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+        return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
             var r = (d + Math.random() * 16) % 16 | 0;
             d = Math.floor(d / 16);
-            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+            return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
         });
     };
     _Util.prototype.NewInt = function () {
@@ -131,26 +131,26 @@ var _Util = (function () {
             });
         }
         else {
-            console = {
+            var console_1 = {
                 log: log,
                 warn: warn,
                 error: error
             };
             if (!this.HasWindow) {
                 window = {
-                    console: console
+                    console: console_1
                 };
                 this._window = window;
             }
             else {
-                window.console = console;
+                var win = window;
+                win.console = console_1;
             }
         }
     };
     _Util.prototype.Assert = function (assertion, message, isDebug) {
         if (isDebug === void 0) { isDebug = false; }
         var result = true;
-        ;
         if (!assertion) {
             if (this.HasConsole) {
                 result = false;
@@ -191,8 +191,8 @@ var _Util = (function () {
 }());
 exports._Util = _Util;
 if (typeof (window) === "undefined") {
-    var window = null;
-    var console = null;
+    var window_1 = null;
+    var console_2 = null;
 }
 exports.Util = new _Util();
 //# sourceMappingURL=Util.js.map

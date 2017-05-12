@@ -1,8 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Vec2_1 = require("./Vec2");
-var Rect_1 = require("./Rect");
 var Calc_1 = require("../Calc");
+var Rect_1 = require("./Rect");
+var Vec2_1 = require("./Vec2");
 var Range2 = (function () {
     function Range2(x, y, w, h) {
         if (x === void 0) { x = 0; }
