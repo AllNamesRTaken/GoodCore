@@ -21,7 +21,7 @@
     "test": "yarn run tsc && mocha ./dist/test/*Test.js",
     "cover": "istanbul cover ./node_modules/mocha/bin/_mocha -- ./dist/test/*.js",
     "bundle_d_ts": "node dts-bundle.js",
-    "publish_to_yarn": "npm publish",
+    "publish": "npm publish",
     "all": "yarn run build && yarn run test && yarn run cover"
   },
   "dependencies": {
