@@ -16,7 +16,7 @@ var bundled = browserify({
 		extensions: [".js", ".json"],
 		debug: true
 	})
-	.require("./dist/lib/index.js", { expose: "typescript-collections" })
+	.require("./dist/lib/index.js", { expose: "goodcore" })
 	.bundle()
 	.pipe(new Umd());
 

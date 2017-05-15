@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.0.9",
+  "version": "0.0.18",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "./dist/goodcore.umd.min.js",
   "typings": "./dist/goodcore.d.ts",
@@ -21,7 +21,7 @@
     "test": "yarn run tsc && mocha ./dist/test/*Test.js",
     "cover": "istanbul cover ./node_modules/mocha/bin/_mocha -- ./dist/test/*.js",
     "bundle_d_ts": "node dts-bundle.js",
-    "publish": "npm publish",
+    "publish_to_npm": "npm publish",
     "all": "yarn run build && yarn run test && yarn run cover"
   },
   "dependencies": {
