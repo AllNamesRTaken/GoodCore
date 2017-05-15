@@ -1,4 +1,4 @@
-export default class List<T> implements IList<T> {
+export declare class List<T> implements IList<T> {
     private _array;
     constructor(arr?: T[] | List<T>);
     readonly Values: T[];

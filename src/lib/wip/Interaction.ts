@@ -1,5 +1,5 @@
 // import {Dom} from "../Dom";
-// import List from "../struct/List";
+// import { List } from "../struct/List";
 // import {Util} from "../Util";
 
 // const CustomActions = new List<string> (["Store", "Update", "Read"]);

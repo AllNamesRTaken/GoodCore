@@ -1,5 +1,5 @@
-import Poolable from "../lib/standard/mixins/Poolable";
-import Pool from "../lib/standard/Pool";
+import { Poolable } from "../lib/standard/mixins/Poolable";
+import { Pool } from "../lib/standard/Pool";
 import assert = require("assert");
 import { should } from "chai";
 should();

@@ -1,4 +1,4 @@
-import Dictionary from "../lib/struct/Dictionary";
+import { Dictionary } from "../lib/struct/Dictionary";
 import assert = require("assert");
 import {should} from "chai";
 should();

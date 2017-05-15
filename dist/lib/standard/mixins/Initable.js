@@ -24,5 +24,5 @@ function Initable(Base) {
         return class_1;
     }(Base));
 }
-exports.default = Initable;
+exports.Initable = Initable;
 //# sourceMappingURL=Initable.js.map

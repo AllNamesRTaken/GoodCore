@@ -35,10 +35,10 @@ var Stack = (function () {
         return result;
     };
     Stack.prototype.ToList = function () {
-        var result = new List_1.default();
-        return new List_1.default(this.Values);
+        var result = new List_1.List();
+        return new List_1.List(this.Values);
     };
     return Stack;
 }());
-exports.default = Stack;
+exports.Stack = Stack;
 //# sourceMappingURL=Stack.js.map

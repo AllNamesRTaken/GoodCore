@@ -29,5 +29,5 @@ function Poolable(Base) {
         return class_1;
     }(Base));
 }
-exports.default = Poolable;
+exports.Poolable = Poolable;
 //# sourceMappingURL=Poolable.js.map

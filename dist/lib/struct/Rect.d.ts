@@ -1,6 +1,6 @@
-import Range2 from "./Range2";
-import Vec2 from "./Vec2";
-export default class Rect {
+import { Range2 } from "./Range2";
+import { Vec2 } from "./Vec2";
+export declare class Rect {
     start: Vec2;
     stop: Vec2;
     endInclusive: boolean;

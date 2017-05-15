@@ -124,5 +124,5 @@ Vec2.EPSILON = 1e-8;
 Vec2.IDENTITY = new Vec2(1, 1);
 Vec2.X_DIM = new Vec2(1, 0);
 Vec2.Y_DIM = new Vec2(0, 1);
-exports.default = Vec2;
+exports.Vec2 = Vec2;
 //# sourceMappingURL=Vec2.js.map

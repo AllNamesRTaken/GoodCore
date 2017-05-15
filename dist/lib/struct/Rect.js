@@ -11,8 +11,8 @@ var Rect = (function () {
         if (x2 === void 0) { x2 = 0; }
         if (y2 === void 0) { y2 = 0; }
         if (endInclusive === void 0) { endInclusive = false; }
-        this.start = new Vec2_1.default(x1, y1);
-        this.stop = new Vec2_1.default(x2, y2);
+        this.start = new Vec2_1.Vec2(x1, y1);
+        this.stop = new Vec2_1.Vec2(x2, y2);
         this.endInclusive = endInclusive;
     }
     Rect.prototype.Set = function (src) {
@@ -25,7 +25,7 @@ var Rect = (function () {
         return result;
     };
     Rect.prototype.ToRange2 = function () {
-        return new Range2_1.default(this.start.x, this.start.y, this.stop.x + (this.endInclusive ? Calc_1.Calc.Sign(this.stop.x) : 0) - this.start.x, this.stop.y + (this.endInclusive ? Calc_1.Calc.Sign(this.stop.y) : 0) - this.start.y);
+        return new Range2_1.Range2(this.start.x, this.start.y, this.stop.x + (this.endInclusive ? Calc_1.Calc.Sign(this.stop.x) : 0) - this.start.x, this.stop.y + (this.endInclusive ? Calc_1.Calc.Sign(this.stop.y) : 0) - this.start.y);
     };
     Rect.prototype.Scale = function (factor, keepCenter) {
         if (keepCenter === void 0) { keepCenter = true; }
@@ -73,5 +73,5 @@ var Rect = (function () {
     };
     return Rect;
 }());
-exports.default = Rect;
+exports.Rect = Rect;
 //# sourceMappingURL=Rect.js.map

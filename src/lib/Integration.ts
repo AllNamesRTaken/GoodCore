@@ -1,6 +1,6 @@
 import * as Good from "./index";
 
-export default function Integrate(alias?: string, win: Window = window) {
+export function Integrate(alias?: string, win: Window = window) {
 	if (alias !== undefined) {
 		(win as any)[alias] = {};
 	}

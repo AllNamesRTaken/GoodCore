@@ -1,5 +1,5 @@
-import List from "./List";
-export default class Dictionary<T> {
+import { List } from "./List";
+export declare class Dictionary<T> {
     private _lookup;
     private _index;
     private _list;

@@ -1,4 +1,4 @@
-export default class _Calc {
+export class _Calc {
 	public static ROTATION_DEGREE_PRECISION: number = 1;
 	public static RADIAN_FACTOR: number = (1 / 360) * (2 * Math.PI);
 	public static DEGREE_FACTOR: number = (1 / (2 * Math.PI) * 360);

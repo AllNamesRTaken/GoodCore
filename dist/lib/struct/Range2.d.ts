@@ -1,6 +1,6 @@
-import Rect from "./Rect";
-import Vec2 from "./Vec2";
-export default class Range2 {
+import { Rect } from "./Rect";
+import { Vec2 } from "./Vec2";
+export declare class Range2 {
     pos: Vec2;
     size: Vec2;
     constructor(x?: number, y?: number, w?: number, h?: number);

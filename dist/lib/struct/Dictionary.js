@@ -6,7 +6,7 @@ var Dictionary = (function () {
     function Dictionary() {
         this._lookup = {};
         this._index = {};
-        this._list = new List_1.default();
+        this._list = new List_1.List();
     }
     Dictionary.prototype.Has = function (key) {
         return this._lookup.hasOwnProperty(key);
@@ -63,5 +63,5 @@ var Dictionary = (function () {
     });
     return Dictionary;
 }());
-exports.default = Dictionary;
+exports.Dictionary = Dictionary;
 //# sourceMappingURL=Dictionary.js.map

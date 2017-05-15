@@ -46,6 +46,6 @@ _Calc.ROTATION_LOOKUP = (function () {
     }
     return lookup;
 })();
-exports.default = _Calc;
+exports._Calc = _Calc;
 exports.Calc = new _Calc();
 //# sourceMappingURL=Calc.js.map

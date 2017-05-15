@@ -26,7 +26,7 @@ var BaseTree = (function () {
     return BaseTree;
 }());
 exports.BaseTree = BaseTree;
-exports._InitableTree = Initable_1.default(BaseTree);
+exports._InitableTree = Initable_1.Initable(BaseTree);
 var Tree = (function (_super) {
     __extends(Tree, _super);
     function Tree() {
@@ -38,7 +38,7 @@ var Tree = (function (_super) {
         var parent = (this instanceof Tree) ? this : null;
         var root = new Tree().Init({ Data: obj.data !== undefined ? obj.data : null, Parent: parent });
         if (obj.children !== undefined && Util_1.Util.IsArray(obj.children)) {
-            root.Children = new List_1.default(Arr_1.Arr.Map(obj.children, Tree.FromObject.bind(root)));
+            root.Children = new List_1.List(Arr_1.Arr.Map(obj.children, Tree.FromObject.bind(root)));
         }
         return root;
     };
@@ -55,7 +55,7 @@ var Tree = (function (_super) {
     };
     Tree.prototype.Add = function (data) {
         if (this.Children === null) {
-            this.Children = new List_1.default();
+            this.Children = new List_1.List();
         }
         this.Children.Add((new Tree()).Init({ Data: data, Parent: this }));
     };
@@ -76,7 +76,7 @@ var Tree = (function (_super) {
         return this;
     };
     Tree.prototype.Reduce = function (fn, start) {
-        var stack = new Stack_1.default();
+        var stack = new Stack_1.Stack();
         var acc = start;
         if (start === undefined) {
             acc = 0;
@@ -123,7 +123,7 @@ var Tree = (function (_super) {
         return root;
     };
     Tree.prototype.Select = function (condition, acc) {
-        if (acc === void 0) { acc = new List_1.default(); }
+        if (acc === void 0) { acc = new List_1.List(); }
         var result = acc;
         var children = this.Children;
         if (condition === undefined || condition(this)) {

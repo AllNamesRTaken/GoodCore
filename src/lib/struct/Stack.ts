@@ -1,9 +1,9 @@
 import { Arr } from "../Arr";
 import { Obj } from "../Obj";
-import List from "./List";
+import { List } from "./List";
 
 const DEFAULT_SIZE = 100;
-export default class Stack<T> {
+export class Stack<T> {
 	private _array: T[];
 	private _pos: number = 0;
 	public get Values(): T[] {

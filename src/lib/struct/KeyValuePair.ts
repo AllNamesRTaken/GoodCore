@@ -1,4 +1,4 @@
-export default class KeyValuePair<S, T> {
+export class KeyValuePair<S, T> {
 	public Key: S;
 	public Value: T;
 }

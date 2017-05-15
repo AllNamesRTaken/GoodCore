@@ -1,7 +1,7 @@
 import { Obj } from "../Obj";
-import List from "./List";
+import { List } from "./List";
 
-export default class Dictionary<T> {
+export class Dictionary<T> {
 	private _lookup: any;
 	private _index: any;
 	private _list: List<T>;

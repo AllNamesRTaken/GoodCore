@@ -162,5 +162,5 @@ var List = (function () {
     };
     return List;
 }());
-exports.default = List;
+exports.List = List;
 //# sourceMappingURL=List.js.map

@@ -23,7 +23,7 @@ var BaseCacheObject = (function () {
     return BaseCacheObject;
 }());
 exports.BaseCacheObject = BaseCacheObject;
-exports._InitableCacheObject = Initable_1.default(BaseCacheObject);
+exports._InitableCacheObject = Initable_1.Initable(BaseCacheObject);
 var CacheObject = (function (_super) {
     __extends(CacheObject, _super);
     function CacheObject() {
@@ -36,9 +36,9 @@ var Cache = (function () {
     function Cache(size) {
         if (size === void 0) { size = Cache.DEFAULT_FIFO_SIZE; }
         this._size = Cache.DEFAULT_FIFO_SIZE;
-        this._order = new List_1.default();
-        this._data = new Dictionary_1.default();
-        this._stage = new Dictionary_1.default();
+        this._order = new List_1.List();
+        this._data = new Dictionary_1.Dictionary();
+        this._stage = new Dictionary_1.Dictionary();
         this._size = size;
     }
     Object.defineProperty(Cache.prototype, "Size", {

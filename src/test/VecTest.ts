@@ -1,4 +1,4 @@
-import Vec2 from "../lib/struct/Vec2";
+import { Vec2 } from "../lib/struct/Vec2";
 import assert = require("assert");
 import {should} from "chai";
 should();

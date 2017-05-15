@@ -1,9 +1,9 @@
 import { Arr } from "../Arr";
 import { Obj } from "../Obj";
-import Initable from "../standard/mixins/Initable";
+import { Initable } from "../standard/mixins/Initable";
 import { Util } from "../Util";
-import List from "./List";
-import Stack from "./Stack";
+import { List } from "./List";
+import { Stack } from "./Stack";
 
 export class BaseTree<T> implements ITreeNode<T> {
 	public Id: string = null;

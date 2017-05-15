@@ -1,4 +1,4 @@
-export default class Vec2 {
+export declare class Vec2 {
     x: number;
     y: number;
     static EPSILON: number;

@@ -1,10 +1,10 @@
 import { Calc } from "../Calc";
-import Range2 from "./Range2";
-import Vec2 from "./Vec2";
+import { Range2 } from "./Range2";
+import { Vec2 } from "./Vec2";
 
 const Sign = Calc.Sign;
 
-export default class Rect {
+export class Rect {
 	public start: Vec2;
 	public stop: Vec2;
 	public endInclusive: boolean;

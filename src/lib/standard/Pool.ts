@@ -1,4 +1,4 @@
-export default class Pool<T extends IPoolable> implements IPool<IPoolable> {
+export class Pool<T extends IPoolable> implements IPool<IPoolable> {
 	private pool: T[] = [];
 	private growthStep: number;
 	private cls: any;

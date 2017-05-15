@@ -1,5 +1,5 @@
 import { MocData } from "../lib/MocData";
-import List from "../lib/struct/List";
+import { List } from "../lib/struct/List";
 import assert = require("assert");
 import {should} from "chai";
 should();

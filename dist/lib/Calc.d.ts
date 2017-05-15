@@ -1,4 +1,4 @@
-export default class _Calc {
+export declare class _Calc {
     static ROTATION_DEGREE_PRECISION: number;
     static RADIAN_FACTOR: number;
     static DEGREE_FACTOR: number;

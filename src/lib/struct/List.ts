@@ -1,7 +1,7 @@
 import { Arr } from "../Arr";
 import { Obj } from "../Obj";
 
-export default class List<T> implements IList<T> {
+export class List<T> implements IList<T> {
 	private _array: T[];
 
 	constructor(arr?: T[] | List<T>) {

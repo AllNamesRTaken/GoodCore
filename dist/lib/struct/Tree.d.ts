@@ -1,4 +1,4 @@
-import List from "./List";
+import { List } from "./List";
 export declare class BaseTree<T> implements ITreeNode<T> {
     Id: string;
     Parent: Tree<T>;

@@ -1,8 +1,8 @@
 import { Arr } from "../Arr";
-import Dictionary from "../struct/Dictionary";
-import List from "../struct/List";
+import { Dictionary } from "../struct/Dictionary";
+import { List } from "../struct/List";
 import { IObjectWithFunctions, Util } from "../Util";
-import Initable from "./mixins/Initable";
+import { Initable } from "./mixins/Initable";
 
 export class BaseCacheObject<T> {
 	public Key: string = null;

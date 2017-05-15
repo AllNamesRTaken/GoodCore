@@ -48,5 +48,5 @@ var Pool = (function () {
     };
     return Pool;
 }());
-exports.default = Pool;
+exports.Pool = Pool;
 //# sourceMappingURL=Pool.js.map

@@ -25,5 +25,5 @@ function Integrate(alias, win) {
         }
     }
 }
-exports.default = Integrate;
+exports.Integrate = Integrate;
 //# sourceMappingURL=Integration.js.map

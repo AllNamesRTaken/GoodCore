@@ -1,6 +1,6 @@
 import { Calc } from "../Calc";
 
-export default class Vec2 {
+export class Vec2 {
 	public x: number;
 	public y: number;
 

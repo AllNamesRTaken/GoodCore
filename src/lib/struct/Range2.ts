@@ -1,8 +1,8 @@
 import { Calc } from "../Calc";
-import Rect from "./Rect";
-import Vec2 from "./Vec2";
+import { Rect } from "./Rect";
+import { Vec2 } from "./Vec2";
 
-export default class Range2 {
+export class Range2 {
 	public pos: Vec2;
 	public size: Vec2;
 

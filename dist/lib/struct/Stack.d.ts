@@ -1,5 +1,5 @@
-import List from "./List";
-export default class Stack<T> {
+import { List } from "./List";
+export declare class Stack<T> {
     private _array;
     private _pos;
     readonly Values: T[];
