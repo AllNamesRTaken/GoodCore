@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var md5_1 = require("ts-md5/dist/md5");
+var Timer_1 = require("./Timer");
 var _Util = (function () {
     function _Util(win) {
         this._window = null;
@@ -88,9 +89,7 @@ var _Util = (function () {
     };
     _Util.prototype.NewUUID = function () {
         var d = new Date().getTime();
-        if (typeof performance !== "undefined" && typeof performance.now === "function") {
-            d += performance.now();
-        }
+        d += Timer_1.Timer.Now();
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
             var r = (d + Math.random() * 16) % 16 | 0;
             d = Math.floor(d / 16);

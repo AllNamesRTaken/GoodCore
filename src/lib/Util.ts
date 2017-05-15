@@ -1,5 +1,6 @@
 import { Md5 } from "ts-md5/dist/md5";
 import { Obj } from "./Obj";
+import { Timer } from "./Timer";
 
 export interface IZeroEvent extends Event {
 	data: string;
@@ -89,9 +90,7 @@ export class _Util {
 	}
 	public NewUUID(): string { // Public Domain/MIT
 		let d: number = new Date().getTime();
-		if (typeof performance !== "undefined" && typeof performance.now === "function") {
-			d += performance.now(); //use high-precision timer if available
-		}
+		d += Timer.Now();
 		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
 			const r: number = (d + Math.random() * 16) % 16 | 0;
 			d = Math.floor(d / 16);
