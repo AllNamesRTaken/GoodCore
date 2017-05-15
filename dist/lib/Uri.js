@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var _Uri = (function () {
     function _Uri(win) {
-        this._window = window;
-        this._a = document.createElement("a");
+        this._window = null;
+        this._a = null;
         this.hash = "";
         this.pathName = "";
         this.port = "";
