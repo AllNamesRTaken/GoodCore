@@ -2,9 +2,8 @@ export class _Uri {
 	public _(win: Window): _Uri {
 		return new _Uri(win);
 	}
-	private _window: Window = window;
-	private _a: HTMLAnchorElement = document.createElement("a");
-
+	private _window: Window = null;
+	private _a: HTMLAnchorElement = null;
 	public hash = "";
 	public pathName = "";
 	public port = "";
