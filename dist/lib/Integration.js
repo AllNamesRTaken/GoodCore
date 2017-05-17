@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Good = require("./index");
-function Integrate(alias, win) {
+import * as Good from "./index";
+export function Integrate(alias, win) {
     if (win === void 0) { win = window; }
     if (alias !== undefined) {
         win[alias] = {};
@@ -25,5 +23,4 @@ function Integrate(alias, win) {
         }
     }
 }
-exports.Integrate = Integrate;
 //# sourceMappingURL=Integration.js.map

@@ -1,8 +1,7 @@
+import {should} from "chai";
 import { Arr } from "../lib/Arr";
 import { MocData } from "../lib/MocData";
 import { Obj } from "../lib/Obj";
-import assert = require("assert");
-import {should} from "chai";
 should();
 
 describe("Arrays",

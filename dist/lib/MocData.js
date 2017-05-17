@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var MocDataType;
+export var MocDataType;
 (function (MocDataType) {
     MocDataType[MocDataType["LinearInt"] = 0] = "LinearInt";
     MocDataType[MocDataType["RandomInt"] = 1] = "RandomInt";
     MocDataType[MocDataType["LinearFloat"] = 2] = "LinearFloat";
     MocDataType[MocDataType["RandomFloat"] = 3] = "RandomFloat";
-})(MocDataType = exports.MocDataType || (exports.MocDataType = {}));
+})(MocDataType || (MocDataType = {}));
 var _MocData = (function () {
     function _MocData() {
         this.Type = MocDataType;
@@ -65,7 +63,7 @@ var _MocData = (function () {
     };
     return _MocData;
 }());
+export { _MocData };
 _MocData.VALID_CHARS = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-exports._MocData = _MocData;
-exports.MocData = new _MocData();
+export var MocData = new _MocData();
 //# sourceMappingURL=MocData.js.map

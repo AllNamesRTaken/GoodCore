@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,13 +8,12 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Arr_1 = require("../Arr");
-var Obj_1 = require("../Obj");
-var Initable_1 = require("../standard/mixins/Initable");
-var Util_1 = require("../Util");
-var List_1 = require("./List");
-var Stack_1 = require("./Stack");
+import { Arr } from "../Arr";
+import { Obj } from "../Obj";
+import { Initable } from "../standard/mixins/Initable";
+import { Util } from "../Util";
+import { List } from "./List";
+import { Stack } from "./Stack";
 var BaseTree = (function () {
     function BaseTree() {
         this.Id = null;
@@ -25,8 +23,8 @@ var BaseTree = (function () {
     }
     return BaseTree;
 }());
-exports.BaseTree = BaseTree;
-exports._InitableTree = Initable_1.Initable(BaseTree);
+export { BaseTree };
+export var _InitableTree = Initable(BaseTree);
 var Tree = (function (_super) {
     __extends(Tree, _super);
     function Tree() {
@@ -37,13 +35,13 @@ var Tree = (function (_super) {
     Tree.FromObject = function (obj) {
         var parent = (this instanceof Tree) ? this : null;
         var root = new Tree().Init({ Data: obj.data !== undefined ? obj.data : null, Parent: parent });
-        if (obj.children !== undefined && Util_1.Util.IsArray(obj.children)) {
-            root.Children = new List_1.List(Arr_1.Arr.Map(obj.children, Tree.FromObject.bind(root)));
+        if (obj.children !== undefined && Util.IsArray(obj.children)) {
+            root.Children = new List(Arr.Map(obj.children, Tree.FromObject.bind(root)));
         }
         return root;
     };
     Tree.prototype.NewId = function () {
-        return Util_1.Util.NewUUID();
+        return Util.NewUUID();
     };
     Tree.prototype.InsertAt = function (pos, data) {
         if (this.Children === null || this.Children.Count <= pos) {
@@ -55,7 +53,7 @@ var Tree = (function (_super) {
     };
     Tree.prototype.Add = function (data) {
         if (this.Children === null) {
-            this.Children = new List_1.List();
+            this.Children = new List();
         }
         this.Children.Add((new Tree()).Init({ Data: data, Parent: this }));
     };
@@ -76,7 +74,7 @@ var Tree = (function (_super) {
         return this;
     };
     Tree.prototype.Reduce = function (fn, start) {
-        var stack = new Stack_1.Stack();
+        var stack = new Stack();
         var acc = start;
         if (start === undefined) {
             acc = 0;
@@ -98,7 +96,7 @@ var Tree = (function (_super) {
         result.Id = this.Id;
         result.Parent = this.Parent;
         result.Children = this.Children === null ? null : this.Children.Clone();
-        result.Data = this.Data === null || this.Data === undefined ? this.Data : Obj_1.Obj.Clone(this.Data);
+        result.Data = this.Data === null || this.Data === undefined ? this.Data : Obj.Clone(this.Data);
         return result;
     };
     Tree.prototype.DuplicateNode = function () {
@@ -123,7 +121,7 @@ var Tree = (function (_super) {
         return root;
     };
     Tree.prototype.Select = function (condition, acc) {
-        if (acc === void 0) { acc = new List_1.List(); }
+        if (acc === void 0) { acc = new List(); }
         var result = acc;
         var children = this.Children;
         if (condition === undefined || condition(this)) {
@@ -162,6 +160,6 @@ var Tree = (function (_super) {
         return this.Find(condition) !== null;
     };
     return Tree;
-}(exports._InitableTree));
-exports.Tree = Tree;
+}(_InitableTree));
+export { Tree };
 //# sourceMappingURL=Tree.js.map

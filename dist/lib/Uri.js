@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var _Uri = (function () {
     function _Uri(win) {
         this._window = null;
@@ -38,6 +36,6 @@ var _Uri = (function () {
     };
     return _Uri;
 }());
-exports._Uri = _Uri;
-exports.Uri = new _Uri(window);
+export { _Uri };
+export var Uri = new _Uri(window);
 //# sourceMappingURL=Uri.js.map

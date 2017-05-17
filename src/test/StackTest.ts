@@ -1,6 +1,5 @@
-import { Stack } from "../lib/struct/Stack";
-import assert = require("assert");
 import {should} from "chai";
+import { Stack } from "../lib/struct/Stack";
 should();
 
 describe("Stack",

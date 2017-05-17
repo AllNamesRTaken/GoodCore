@@ -1,8 +1,7 @@
+import { should } from "chai";
+import { expect } from "chai";
 import { jsdom } from "jsdom";
 import { _Dom, Dom } from "../lib/Dom";
-import assert = require("assert");
-import {should} from "chai";
-import {expect} from "chai";
 should();
 
 describe("Dom",

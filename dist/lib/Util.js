@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var md5_1 = require("ts-md5/dist/md5");
-var Timer_1 = require("./Timer");
+import { Md5 } from "ts-md5/dist/md5";
+import { Timer } from "./Timer";
 var _Util = (function () {
     function _Util(win) {
         this._window = null;
@@ -89,7 +87,7 @@ var _Util = (function () {
     };
     _Util.prototype.NewUUID = function () {
         var d = new Date().getTime();
-        d += Timer_1.Timer.Now();
+        d += Timer.Now();
         return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
             var r = (d + Math.random() * 16) % 16 | 0;
             d = Math.floor(d / 16);
@@ -184,14 +182,14 @@ var _Util = (function () {
         }
     };
     _Util.prototype.Md5 = function (str) {
-        return md5_1.Md5.hashStr(str);
+        return Md5.hashStr(str);
     };
     return _Util;
 }());
-exports._Util = _Util;
+export { _Util };
 if (typeof (window) === "undefined") {
     var window_1 = null;
     var console_2 = null;
 }
-exports.Util = new _Util();
+export var Util = new _Util();
 //# sourceMappingURL=Util.js.map

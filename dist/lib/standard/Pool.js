@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var Pool = (function () {
     function Pool(cls, growthStep) {
         if (growthStep === void 0) { growthStep = 10; }
@@ -48,5 +46,5 @@ var Pool = (function () {
     };
     return Pool;
 }());
-exports.Pool = Pool;
+export { Pool };
 //# sourceMappingURL=Pool.js.map

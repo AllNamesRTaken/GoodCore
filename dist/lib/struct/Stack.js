@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Arr_1 = require("../Arr");
-var List_1 = require("./List");
+import { Arr } from "../Arr";
+import { List } from "./List";
 var DEFAULT_SIZE = 100;
 var Stack = (function () {
     function Stack(size) {
@@ -11,7 +9,7 @@ var Stack = (function () {
     }
     Object.defineProperty(Stack.prototype, "Values", {
         get: function () {
-            return Arr_1.Arr.Slice(this._array, 0, this._pos);
+            return Arr.Slice(this._array, 0, this._pos);
         },
         enumerable: true,
         configurable: true
@@ -35,10 +33,10 @@ var Stack = (function () {
         return result;
     };
     Stack.prototype.ToList = function () {
-        var result = new List_1.List();
-        return new List_1.List(this.Values);
+        var result = new List();
+        return new List(this.Values);
     };
     return Stack;
 }());
-exports.Stack = Stack;
+export { Stack };
 //# sourceMappingURL=Stack.js.map

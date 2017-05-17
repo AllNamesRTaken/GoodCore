@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,20 +8,18 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Obj_1 = require("../../Obj");
-function Initable(Base) {
+import { Obj } from "../../Obj";
+export function Initable(Base) {
     return (function (_super) {
         __extends(class_1, _super);
         function class_1() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
         class_1.prototype.Init = function (obj) {
-            Obj_1.Obj.SetProperties(this, obj);
+            Obj.SetProperties(this, obj);
             return this;
         };
         return class_1;
     }(Base));
 }
-exports.Initable = Initable;
 //# sourceMappingURL=Initable.js.map

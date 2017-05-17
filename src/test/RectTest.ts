@@ -1,7 +1,6 @@
+import {should} from "chai";
 import { Rect } from "../lib/struct/Rect";
 import { Vec2 } from "../lib/struct/Vec2";
-import assert = require("assert");
-import {should} from "chai";
 should();
 
 describe("Rect",

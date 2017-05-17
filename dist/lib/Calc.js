@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var _Calc = (function () {
     function _Calc() {
     }
@@ -35,6 +33,7 @@ var _Calc = (function () {
     };
     return _Calc;
 }());
+export { _Calc };
 _Calc.ROTATION_DEGREE_PRECISION = 1;
 _Calc.RADIAN_FACTOR = (1 / 360) * (2 * Math.PI);
 _Calc.DEGREE_FACTOR = (1 / (2 * Math.PI) * 360);
@@ -46,6 +45,5 @@ _Calc.ROTATION_LOOKUP = (function () {
     }
     return lookup;
 })();
-exports._Calc = _Calc;
-exports.Calc = new _Calc();
+export var Calc = new _Calc();
 //# sourceMappingURL=Calc.js.map

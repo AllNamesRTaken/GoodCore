@@ -1,5 +1,3 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
 var _Timer = (function () {
     function _Timer() {
         this._hasPerformance = typeof (performance) !== "undefined";
@@ -37,6 +35,6 @@ var _Timer = (function () {
     };
     return _Timer;
 }());
-exports._Timer = _Timer;
-exports.Timer = new _Timer();
+export { _Timer };
+export var Timer = new _Timer();
 //# sourceMappingURL=Timer.js.map

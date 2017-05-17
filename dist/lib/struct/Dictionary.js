@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Obj_1 = require("../Obj");
-var List_1 = require("./List");
+import { Obj } from "../Obj";
+import { List } from "./List";
 var Dictionary = (function () {
     function Dictionary() {
         this._lookup = {};
         this._index = {};
-        this._list = new List_1.List();
+        this._list = new List();
     }
     Dictionary.prototype.Has = function (key) {
         return this._lookup.hasOwnProperty(key);
@@ -35,8 +33,8 @@ var Dictionary = (function () {
         return this;
     };
     Dictionary.prototype.Clear = function () {
-        Obj_1.Obj.Wipe(this._lookup);
-        Obj_1.Obj.Wipe(this._index);
+        Obj.Wipe(this._lookup);
+        Obj.Wipe(this._index);
         this._list.Clear();
         return this;
     };
@@ -63,5 +61,5 @@ var Dictionary = (function () {
     });
     return Dictionary;
 }());
-exports.Dictionary = Dictionary;
+export { Dictionary };
 //# sourceMappingURL=Dictionary.js.map

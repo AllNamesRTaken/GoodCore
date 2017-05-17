@@ -1,6 +1,5 @@
-import { Timer } from "../lib/Timer";
-import assert = require("assert");
 import {should} from "chai";
+import { Timer } from "../lib/Timer";
 should();
 
 describe("Timer",

@@ -1,5 +1,5 @@
 import { Vec2 } from "../lib/struct/Vec2";
-import assert = require("assert");
+// tslint:disable-next-line:ordered-imports
 import {should} from "chai";
 should();
 

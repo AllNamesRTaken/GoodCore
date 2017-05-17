@@ -1,12 +1,10 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Sides;
+export var Sides;
 (function (Sides) {
     Sides[Sides["Top"] = 0] = "Top";
     Sides[Sides["Bottom"] = 1] = "Bottom";
     Sides[Sides["Left"] = 2] = "Left";
     Sides[Sides["Right"] = 3] = "Right";
-})(Sides = exports.Sides || (exports.Sides = {}));
+})(Sides || (Sides = {}));
 var _Dom = (function () {
     function _Dom(win) {
         this.Sides = Sides;
@@ -148,6 +146,6 @@ var _Dom = (function () {
     };
     return _Dom;
 }());
-exports._Dom = _Dom;
-exports.Dom = new _Dom(typeof (window) === "undefined" ? undefined : window);
+export { _Dom };
+export var Dom = new _Dom(typeof (window) === "undefined" ? undefined : window);
 //# sourceMappingURL=Dom.js.map

@@ -1,6 +1,4 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Calc_1 = require("../Calc");
+import { Calc } from "../Calc";
 var Vec2 = (function () {
     function Vec2(x, y) {
         if (x === void 0) { x = 0; }
@@ -38,7 +36,7 @@ var Vec2 = (function () {
     Vec2.prototype.Length = function () { return Math.sqrt(this.LengthSq()); };
     Vec2.prototype.HorizontalAngle = function () { return Math.atan2(this.y, this.x); };
     Vec2.prototype.Rotate = function (angle) {
-        var rot = Calc_1.Calc.RotationRad(angle);
+        var rot = Calc.RotationRad(angle);
         var nx = (this.x * rot[0]) - (this.y * rot[1]);
         var ny = (this.x * rot[1]) + (this.y * rot[0]);
         this.x = nx;
@@ -120,9 +118,9 @@ var Vec2 = (function () {
     };
     return Vec2;
 }());
+export { Vec2 };
 Vec2.EPSILON = 1e-8;
 Vec2.IDENTITY = new Vec2(1, 1);
 Vec2.X_DIM = new Vec2(1, 0);
 Vec2.Y_DIM = new Vec2(0, 1);
-exports.Vec2 = Vec2;
 //# sourceMappingURL=Vec2.js.map

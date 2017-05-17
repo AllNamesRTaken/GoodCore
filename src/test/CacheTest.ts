@@ -1,6 +1,5 @@
-import { Cache } from "../lib/standard/Cache";
-import assert = require("assert");
 import {should} from "chai";
+import { Cache } from "../lib/standard/Cache";
 should();
 
 describe("Cache",

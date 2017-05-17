@@ -1,16 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Calc_1 = require("../Calc");
-var Rect_1 = require("./Rect");
-var Vec2_1 = require("./Vec2");
+import { Calc } from "../Calc";
+import { Rect } from "./Rect";
+import { Vec2 } from "./Vec2";
 var Range2 = (function () {
     function Range2(x, y, w, h) {
         if (x === void 0) { x = 0; }
         if (y === void 0) { y = 0; }
         if (w === void 0) { w = 0; }
         if (h === void 0) { h = 0; }
-        this.pos = new Vec2_1.Vec2(x, y);
-        this.size = new Vec2_1.Vec2(w, h);
+        this.pos = new Vec2(x, y);
+        this.size = new Vec2(w, h);
     }
     Range2.prototype.Set = function (src) {
         this.pos.Set(src.pos);
@@ -23,7 +21,7 @@ var Range2 = (function () {
     };
     Range2.prototype.ToRect = function (endInclusive) {
         if (endInclusive === void 0) { endInclusive = false; }
-        return new Rect_1.Rect(this.pos.x, this.pos.y, this.pos.x - (endInclusive ? Calc_1.Calc.Sign(this.size.x) : 0) + this.size.x, this.pos.y - (endInclusive ? Calc_1.Calc.Sign(this.size.y) : 0) + this.size.y, endInclusive);
+        return new Rect(this.pos.x, this.pos.y, this.pos.x - (endInclusive ? Calc.Sign(this.size.x) : 0) + this.size.x, this.pos.y - (endInclusive ? Calc.Sign(this.size.y) : 0) + this.size.y, endInclusive);
     };
     Range2.prototype.Scale = function (factor, keepCenter) {
         if (keepCenter === void 0) { keepCenter = true; }
@@ -56,7 +54,7 @@ var Range2 = (function () {
             && vec.y >= this.pos.y && vec.y <= this.pos.y + this.size.y - 1;
     };
     Range2.prototype.First = function (fn) {
-        var p = new Vec2_1.Vec2();
+        var p = new Vec2();
         for (var i = this.pos.x; i < this.pos.x + this.size.x; i++) {
             for (var j = this.pos.y; j < this.pos.y + this.size.y; j++) {
                 p.x = i, p.y = j;
@@ -69,7 +67,7 @@ var Range2 = (function () {
     };
     Range2.prototype.ForEach = function (fn, start) {
         if (start === void 0) { start = null; }
-        var pos = new Vec2_1.Vec2();
+        var pos = new Vec2();
         var begin = this.pos.Clone().ToInt();
         if (start === null || !this.Contains(start)) {
             start = begin;
@@ -94,5 +92,5 @@ var Range2 = (function () {
     };
     return Range2;
 }());
-exports.Range2 = Range2;
+export { Range2 };
 //# sourceMappingURL=Range2.js.map

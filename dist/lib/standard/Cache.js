@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,12 +8,11 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-var Arr_1 = require("../Arr");
-var Dictionary_1 = require("../struct/Dictionary");
-var List_1 = require("../struct/List");
-var Util_1 = require("../Util");
-var Initable_1 = require("./mixins/Initable");
+import { Arr } from "../Arr";
+import { Dictionary } from "../struct/Dictionary";
+import { List } from "../struct/List";
+import { Util } from "../Util";
+import { Initable } from "./mixins/Initable";
 var BaseCacheObject = (function () {
     function BaseCacheObject() {
         this.Key = null;
@@ -22,23 +20,23 @@ var BaseCacheObject = (function () {
     }
     return BaseCacheObject;
 }());
-exports.BaseCacheObject = BaseCacheObject;
-exports._InitableCacheObject = Initable_1.Initable(BaseCacheObject);
+export { BaseCacheObject };
+export var _InitableCacheObject = Initable(BaseCacheObject);
 var CacheObject = (function (_super) {
     __extends(CacheObject, _super);
     function CacheObject() {
         return _super !== null && _super.apply(this, arguments) || this;
     }
     return CacheObject;
-}(exports._InitableCacheObject));
-exports.CacheObject = CacheObject;
+}(_InitableCacheObject));
+export { CacheObject };
 var Cache = (function () {
     function Cache(size) {
         if (size === void 0) { size = Cache.DEFAULT_FIFO_SIZE; }
         this._size = Cache.DEFAULT_FIFO_SIZE;
-        this._order = new List_1.List();
-        this._data = new Dictionary_1.Dictionary();
-        this._stage = new Dictionary_1.Dictionary();
+        this._order = new List();
+        this._data = new Dictionary();
+        this._stage = new Dictionary();
         this._size = size;
     }
     Object.defineProperty(Cache.prototype, "Size", {
@@ -108,7 +106,7 @@ var Cache = (function () {
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i] = arguments[_i];
                 }
-                return Util_1.Util.Md5(Arr_1.Arr.Reduce(args, function (acc, cur) { return acc += JSON.stringify(cur); }));
+                return Util.Md5(Arr.Reduce(args, function (acc, cur) { return acc += JSON.stringify(cur); }));
             };
         }
         var proxyFn = function (superFn) {
@@ -126,7 +124,7 @@ var Cache = (function () {
             }
             return result;
         };
-        Util_1.Util.ProxyFn(obj, fnName, proxyFn, false);
+        Util.ProxyFn(obj, fnName, proxyFn, false);
     };
     Cache.prototype.Clear = function () {
         this._data.Clear();
@@ -149,6 +147,6 @@ var Cache = (function () {
     };
     return Cache;
 }());
+export { Cache };
 Cache.DEFAULT_FIFO_SIZE = 100;
-exports.Cache = Cache;
 //# sourceMappingURL=Cache.js.map

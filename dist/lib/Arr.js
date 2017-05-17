@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Obj_1 = require("./Obj");
-var Util_1 = require("./Util");
+import { Obj } from "./Obj";
+import { Util } from "./Util";
 var _Array = (function () {
     function _Array() {
     }
@@ -16,7 +14,7 @@ var _Array = (function () {
         var i = -1;
         var len = src.length;
         while (++i < len) {
-            if (Util_1.Util.IsArray(src[i])) {
+            if (Util.IsArray(src[i])) {
                 this.FlattenInner(src[i], result);
             }
             else {
@@ -137,7 +135,7 @@ var _Array = (function () {
         var len = src.length;
         var result = new Array(len);
         while (++i < len) {
-            result[i] = (Obj_1.Obj.Clone(src[i]));
+            result[i] = (Obj.Clone(src[i]));
         }
         return result;
     };
@@ -146,7 +144,7 @@ var _Array = (function () {
         var len = src.length;
         target.length = len;
         while (++i < len) {
-            target[i] = (Obj_1.Obj.Clone(src[i]));
+            target[i] = (Obj.Clone(src[i]));
         }
     };
     _Array.prototype.DeepFill = function (src, target, at) {
@@ -157,7 +155,7 @@ var _Array = (function () {
             target.length = len + at;
         }
         while (++i < len) {
-            target[at + i] = (Obj_1.Obj.Clone(src[i]));
+            target[at + i] = (Obj.Clone(src[i]));
         }
     };
     _Array.prototype.Filter = function (src, fn) {
@@ -256,6 +254,6 @@ var _Array = (function () {
     };
     return _Array;
 }());
-exports._Array = _Array;
-exports.Arr = new _Array();
+export { _Array };
+export var Arr = new _Array();
 //# sourceMappingURL=Arr.js.map

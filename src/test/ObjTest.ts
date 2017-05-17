@@ -1,9 +1,8 @@
+import {should} from "chai";
+import {expect} from "chai";
 import { MocData } from "../lib/MocData";
 import { Obj } from "../lib/Obj";
 import { Util } from "../lib/Util";
-import assert = require("assert");
-import {should} from "chai";
-import {expect} from "chai";
 should();
 
 describe("Obj",

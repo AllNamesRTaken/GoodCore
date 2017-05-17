@@ -1,7 +1,5 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Arr_1 = require("./Arr");
-var Util_1 = require("./Util");
+import { Arr } from "./Arr";
+import { Util } from "./Util";
 var _Obj = (function () {
     function _Obj() {
     }
@@ -73,7 +71,7 @@ var _Obj = (function () {
     _Obj.prototype.Equals = function (a, b) {
         var result = a === b;
         if (a !== b && (a instanceof Object) && this.IsSameClass(a, b)) {
-            if (Util_1.Util.IsArray(a)) {
+            if (Util.IsArray(a)) {
                 var len = a.length;
                 var i = 0;
                 result = len === b.length;
@@ -99,7 +97,7 @@ var _Obj = (function () {
                     key = keys[i];
                     result = this.Equals(a[key], b[key]);
                     if (!result) {
-                        if (Util_1.Util.IsFunction(a[key])) {
+                        if (Util.IsFunction(a[key])) {
                             result = true;
                         }
                         else {
@@ -133,8 +131,8 @@ var _Obj = (function () {
         else if (obj.constructor.prototype.Clone !== undefined) {
             result = obj.Clone();
         }
-        else if (Util_1.Util.IsArray(obj)) {
-            result = Arr_1.Arr.DeepCopy(obj);
+        else if (Util.IsArray(obj)) {
+            result = Arr.DeepCopy(obj);
         }
         else if (obj instanceof Date) {
             return new Date(obj.getTime());
@@ -156,7 +154,7 @@ var _Obj = (function () {
         return result;
     };
     _Obj.prototype.CloneInto = function (src, target) {
-        if (Util_1.Util.IsArray(target)) {
+        if (Util.IsArray(target)) {
             var arrS = src;
             var arrT = target;
             var len = arrS.length;
@@ -182,7 +180,7 @@ var _Obj = (function () {
                 if (a instanceof Object) {
                     var b = target[key];
                     if (b === undefined || b === null) {
-                        if (Util_1.Util.IsArray(a)) {
+                        if (Util.IsArray(a)) {
                             b = target[key] = [];
                         }
                         else {
@@ -208,10 +206,10 @@ var _Obj = (function () {
         }
         var result = target, len = sources ? sources.length : 0;
         var i = 0;
-        sources = Arr_1.Arr.Flatten(sources);
+        sources = Arr.Flatten(sources);
         for (; i < len; i++) {
             var src = sources[i];
-            if (Util_1.Util.IsFunction(src)) {
+            if (Util.IsFunction(src)) {
                 src = src.prototype;
             }
             if (src === undefined) {
@@ -255,6 +253,6 @@ var _Obj = (function () {
     };
     return _Obj;
 }());
-exports._Obj = _Obj;
-exports.Obj = new _Obj();
+export { _Obj };
+export var Obj = new _Obj();
 //# sourceMappingURL=Obj.js.map

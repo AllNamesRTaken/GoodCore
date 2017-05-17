@@ -1,9 +1,8 @@
+import {should} from "chai";
 import { jsdom } from "jsdom";
 import { MocData } from "../lib/MocData";
 import { Timer } from "../lib/Timer";
 import { _Util, Util } from "../lib/Util";
-import assert = require("assert");
-import {should} from "chai";
 should();
 
 describe("Util",

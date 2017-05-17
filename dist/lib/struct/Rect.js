@@ -1,9 +1,7 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-var Calc_1 = require("../Calc");
-var Range2_1 = require("./Range2");
-var Vec2_1 = require("./Vec2");
-var Sign = Calc_1.Calc.Sign;
+import { Calc } from "../Calc";
+import { Range2 } from "./Range2";
+import { Vec2 } from "./Vec2";
+var Sign = Calc.Sign;
 var Rect = (function () {
     function Rect(x1, y1, x2, y2, endInclusive) {
         if (x1 === void 0) { x1 = 0; }
@@ -11,8 +9,8 @@ var Rect = (function () {
         if (x2 === void 0) { x2 = 0; }
         if (y2 === void 0) { y2 = 0; }
         if (endInclusive === void 0) { endInclusive = false; }
-        this.start = new Vec2_1.Vec2(x1, y1);
-        this.stop = new Vec2_1.Vec2(x2, y2);
+        this.start = new Vec2(x1, y1);
+        this.stop = new Vec2(x2, y2);
         this.endInclusive = endInclusive;
     }
     Rect.prototype.Set = function (src) {
@@ -25,7 +23,7 @@ var Rect = (function () {
         return result;
     };
     Rect.prototype.ToRange2 = function () {
-        return new Range2_1.Range2(this.start.x, this.start.y, this.stop.x + (this.endInclusive ? Calc_1.Calc.Sign(this.stop.x) : 0) - this.start.x, this.stop.y + (this.endInclusive ? Calc_1.Calc.Sign(this.stop.y) : 0) - this.start.y);
+        return new Range2(this.start.x, this.start.y, this.stop.x + (this.endInclusive ? Calc.Sign(this.stop.x) : 0) - this.start.x, this.stop.y + (this.endInclusive ? Calc.Sign(this.stop.y) : 0) - this.start.y);
     };
     Rect.prototype.Scale = function (factor, keepCenter) {
         if (keepCenter === void 0) { keepCenter = true; }
@@ -73,5 +71,5 @@ var Rect = (function () {
     };
     return Rect;
 }());
-exports.Rect = Rect;
+export { Rect };
 //# sourceMappingURL=Rect.js.map

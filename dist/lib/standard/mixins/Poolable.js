@@ -1,4 +1,3 @@
-"use strict";
 var __extends = (this && this.__extends) || (function () {
     var extendStatics = Object.setPrototypeOf ||
         ({ __proto__: [] } instanceof Array && function (d, b) { d.__proto__ = b; }) ||
@@ -9,8 +8,7 @@ var __extends = (this && this.__extends) || (function () {
         d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
     };
 })();
-Object.defineProperty(exports, "__esModule", { value: true });
-function Poolable(Base) {
+export function Poolable(Base) {
     return (function (_super) {
         __extends(class_1, _super);
         function class_1() {
@@ -29,5 +27,4 @@ function Poolable(Base) {
         return class_1;
     }(Base));
 }
-exports.Poolable = Poolable;
 //# sourceMappingURL=Poolable.js.map
