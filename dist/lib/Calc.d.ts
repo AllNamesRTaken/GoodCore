@@ -4,7 +4,6 @@ export declare class _Calc {
     static DEGREE_FACTOR: number;
     static DEG360: number;
     static ROTATION_LOOKUP: number[][];
-    _(): _Calc;
     constructor();
     Sign(x: number): number;
     RotationDeg(rotation: number): number[];

@@ -10,6 +10,7 @@ export { Dom as Dom } from "./Dom";
 export { Arr as Arr } from "./Arr";
 export { Obj as Obj } from "./Obj";
 export { Util as Util } from "./Util";
+export { Test as Test } from "./Test";
 export { Timer as Timer } from "./Timer";
 export { Uri as Uri } from "./Uri";
 export { Poolable as Poolable } from "./standard/mixins/Poolable";

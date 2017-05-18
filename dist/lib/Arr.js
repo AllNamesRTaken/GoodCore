@@ -1,11 +1,8 @@
 import { Obj } from "./Obj";
-import { Util } from "./Util";
+import { Test } from "./Test";
 var _Array = (function () {
     function _Array() {
     }
-    _Array.prototype._ = function () {
-        return new _Array();
-    };
     _Array.prototype.Flatten = function (src) {
         return this.FlattenInner(src);
     };
@@ -14,7 +11,7 @@ var _Array = (function () {
         var i = -1;
         var len = src.length;
         while (++i < len) {
-            if (Util.IsArray(src[i])) {
+            if (Test.IsArray(src[i])) {
                 this.FlattenInner(src[i], result);
             }
             else {

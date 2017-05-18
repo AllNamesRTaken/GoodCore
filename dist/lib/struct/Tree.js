@@ -11,6 +11,7 @@ var __extends = (this && this.__extends) || (function () {
 import { Arr } from "../Arr";
 import { Obj } from "../Obj";
 import { Initable } from "../standard/mixins/Initable";
+import { Test } from "../Test";
 import { Util } from "../Util";
 import { List } from "./List";
 import { Stack } from "./Stack";
@@ -35,7 +36,7 @@ var Tree = (function (_super) {
     Tree.FromObject = function (obj) {
         var parent = (this instanceof Tree) ? this : null;
         var root = new Tree().Init({ Data: obj.data !== undefined ? obj.data : null, Parent: parent });
-        if (obj.children !== undefined && Util.IsArray(obj.children)) {
+        if (obj.children !== undefined && Test.IsArray(obj.children)) {
             root.Children = new List(Arr.Map(obj.children, Tree.FromObject.bind(root)));
         }
         return root;

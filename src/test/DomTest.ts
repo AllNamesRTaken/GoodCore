@@ -1,7 +1,7 @@
 import { should } from "chai";
 import { expect } from "chai";
 import { jsdom } from "jsdom";
-import { _Dom, Dom } from "../lib/Dom";
+import { Dom } from "../lib/Dom";
 should();
 
 describe("Dom",
@@ -11,11 +11,10 @@ describe("Dom",
 			this.document = win.document;
 			this.html1 = "<div id=\"bar\">text</div>";
 			this.html2 = "<div id=\"foo\"><div id=\"sub1\"></div><div id=\"sub2\"></div></div>";
-			this.Dom = Dom._(win);
+			Dom.Init(win);
 		});
 		it("Create creates dom elements and sets attributes",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html1, {
 					id: "id",
 					classes: ["a", "b"],
@@ -28,14 +27,12 @@ describe("Dom",
 			});
 		it("Clear removes all children of an element",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				Dom.Clear(el);
 				el.children.length.should.equal(0);
 			});
 		it("Children filters children by selector",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				const chld = Dom.Children(el, "#sub2");
 				chld.length.should.equal(1);
@@ -43,7 +40,6 @@ describe("Dom",
 			});
 		it("Find finds the right element",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				this.document.body.appendChild(el);
 				const chld = Dom.Find("#sub1");
@@ -52,7 +48,6 @@ describe("Dom",
 			});
 		it("FindAll finds right elements",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				this.document.body.appendChild(el);
 				const chld = Dom.FindAll("div");
@@ -61,7 +56,6 @@ describe("Dom",
 			});
 		it("Get gets elementById",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				this.document.body.appendChild(el);
 				const chld = Dom.Get("sub2");
@@ -70,20 +64,17 @@ describe("Dom",
 			});
 		it("Is matches element with selector",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				Dom.Is("#foo", el).should.be.true;
 				Dom.Is(".bar", el).should.be.false;
 			});
 		it("OuterHTML returns correct html",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				Dom.OuterHTML(el).should.equal(this.html2);
 			});
 		it("Position sets style top and left",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				Dom.Position(el, 10, 20);
 				el.style.left.should.equal("10px");
@@ -91,7 +82,6 @@ describe("Dom",
 			});
 		it("Remove removes the child from the parent",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el = Dom.Create(this.html2);
 				this.document.body.appendChild(el);
 				el.parentNode.should.not.be.null;
@@ -100,7 +90,6 @@ describe("Dom",
 			});
 		it("Replace replaces an element with another",
 			function() {
-				const Dom = this.Dom as _Dom;
 				const el1 = Dom.Create(this.html1);
 				const el2 = Dom.Create(this.html2);
 				this.document.body.appendChild(el1);

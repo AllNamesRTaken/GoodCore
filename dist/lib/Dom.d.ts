@@ -6,11 +6,10 @@ export declare enum Sides {
 }
 export declare class _Dom {
     Sides: typeof Sides;
-    _(win: Window): _Dom;
     private _window;
     private _document;
     private _el;
-    constructor(win: Window);
+    constructor();
     Init(win: Window): void;
     ToArray<T>(a: ArrayLike<T>): T[];
     Create(html: string, attr?: any): HTMLElement;

@@ -1,5 +1,4 @@
 export declare class _Obj {
-    _(): _Obj;
     constructor();
     Destroy(obj: any): void;
     Wipe(obj: any): void;

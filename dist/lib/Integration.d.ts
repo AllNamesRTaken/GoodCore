@@ -1,1 +1,1 @@
-export declare function Integrate(alias?: string, win?: Window): void;
+export declare function Integrate(alias?: string): void;

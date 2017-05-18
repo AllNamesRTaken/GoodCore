@@ -1,6 +1,7 @@
 import {should} from "chai";
 import { jsdom } from "jsdom";
 import { MocData } from "../lib/MocData";
+import { Test } from "../lib/Test";
 import { Timer } from "../lib/Timer";
 import { _Util, Util } from "../lib/Util";
 should();
@@ -11,11 +12,10 @@ describe("Util",
 			function() {
 				this.window = jsdom().defaultView;
 				this.document = this.window.document;
-				this.Util = Util._(this.window);
+				Util.Init(this.window);
 			});
 		it("Assert writes to console.error and PipeOut catches it.",
 			function() {
-				const Util = this.Util as _Util;
 				const log: any[] = [];
 				const warn: any[] = [];
 				const error: any[] = [];
@@ -51,17 +51,17 @@ describe("Util",
 				});
 		it("IsArray detects correctly for array and object",
 				function() {
-					Util.IsArray([1, 2, 3]).should.be.true;
-					Util.IsArray({a: 1}).should.be.false;
+					Test.IsArray([1, 2, 3]).should.be.true;
+					Test.IsArray({a: 1}).should.be.false;
 				});
 		it("IsElement detects falsly for object",
 				function() {
-					Util.IsElement({}).should.be.false;
+					Test.IsElement({}).should.be.false;
 				});
 		it("IsFunction detects correctly",
 				function() {
-					Util.IsFunction(function(){}).should.be.true;
-					Util.IsFunction({}).should.be.false;
+					Test.IsFunction(function(){}).should.be.true;
+					Test.IsFunction({}).should.be.false;
 				});
 		it("NewInt starts at 0 and increases",
 				function() {
@@ -76,11 +76,10 @@ describe("Util",
 				});
 		it("ToArray return array",
 				function() {
-					Util.ToArray([1, 2, 3]).should.be.instanceOf(Array);
+					Test.ToArray([1, 2, 3]).should.be.instanceOf(Array);
 				});
 		it("Async should be close to 0 timeout",
 				function(done) {
-					const Util = this.Util as _Util;
 					Timer.Start();
 					Util.Async(function() {
 						Timer.Stop();

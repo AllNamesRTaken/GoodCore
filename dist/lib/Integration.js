@@ -1,25 +1,15 @@
+import { Global } from "./Global";
 import * as Good from "./index";
-export function Integrate(alias, win) {
-    if (win === void 0) { win = window; }
+export function Integrate(alias) {
     if (alias !== undefined) {
-        win[alias] = {};
+        Global.window[alias] = {};
     }
     for (var stuff in Good) {
-        if (Good[stuff]._) {
-            if (alias !== undefined) {
-                win[alias][stuff] = Good[stuff]._;
-            }
-            else {
-                win[stuff] = Good[stuff]._;
-            }
+        if (alias !== undefined) {
+            Global.window[alias][stuff] = Good[stuff];
         }
         else {
-            if (alias !== undefined) {
-                win[alias][stuff] = Good[stuff];
-            }
-            else {
-                win[stuff] = Good[stuff];
-            }
+            Global.window[stuff] = Good[stuff];
         }
     }
 }

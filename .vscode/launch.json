@@ -8,7 +8,7 @@
             "type": "node",
             "request": "launch",
             "name": "Launch Program",
-            "program": "${workspaceRoot}\\dist\\lib\\umd.js",
+            "program": "${workspaceRoot}\\dist\\lib\\index.js",
             "outFiles": []
         },
         {

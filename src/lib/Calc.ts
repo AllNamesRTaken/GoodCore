@@ -11,10 +11,6 @@ export class _Calc {
 		return lookup;
 	})();
 
-	public _(): _Calc {
-		return new _Calc();
-	}
-
 	public constructor() {
 
 	}

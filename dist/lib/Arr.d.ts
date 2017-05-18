@@ -1,6 +1,5 @@
 export declare class _Array {
     private _int;
-    _(): _Array;
     constructor();
     Flatten(src: any[]): any[];
     private FlattenInner(src, result?);

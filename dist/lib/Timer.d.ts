@@ -1,5 +1,4 @@
 export declare class _Timer {
-    _(): _Timer;
     private _last;
     private _start;
     private _time;

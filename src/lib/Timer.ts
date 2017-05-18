@@ -1,7 +1,4 @@
 export class _Timer {
-	public _(): _Timer {
-		return new _Timer();
-	}
 	private _last: number;
 	private _start: number;
 	private _time: number;

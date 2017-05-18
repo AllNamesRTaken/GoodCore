@@ -3,9 +3,6 @@ var _Timer = (function () {
         this._hasPerformance = typeof (performance) !== "undefined";
         this.Start();
     }
-    _Timer.prototype._ = function () {
-        return new _Timer();
-    };
     Object.defineProperty(_Timer.prototype, "Time", {
         get: function () {
             return this._time;

@@ -1,5 +1,6 @@
 import { Md5 } from "ts-md5/dist/md5";
-import { Obj } from "./Obj";
+import { Global } from "./Global";
+import { Test } from "./Test";
 import { Timer } from "./Timer";
 
 export interface IZeroEvent extends Event {
@@ -10,34 +11,29 @@ export interface IObjectWithFunctions<T extends Object | void> {
 }
 
 export class _Util {
-	private _window: Window = null;
 	private _int: number = 0;
-	public _(win?: Window): _Util {
-		return new _Util(win);
-	}
 
-	public constructor(win?: Window) {
-		this.Init(win);
+	public constructor() {
+		this.Init();
 	}
 	public Init(win?: Window) {
-		// tslint:disable-next-line:typeof-compare
-		if (win === undefined && typeof (window) !== undefined) {
-			win = window;
-		}
 		if (win !== undefined) {
-			this._window = win;
+			Global.window = win;
 		}
+		this._CreateAsync();
+	}
+	private _CreateAsync() {
 		this.Async = (() => {
 			const timeouts: Function[] = [];
 			const messageName = "zero-timeout-message";
 
 			function setZeroTimeout(fn: Function): void {
 				timeouts.push(fn);
-				this._window.postMessage(messageName, "*");
+				Global.window.postMessage(messageName, "*");
 			}
 
 			function handleMessage(event: IZeroEvent) {
-				if ((((event as any).source) === undefined || ((event as any).source) === this._window) && event.data === messageName) {
+				if ((((event as any).source) === undefined || ((event as any).source) === Global.window) && event.data === messageName) {
 					event.stopPropagation();
 					if (timeouts.length > (0 | 0)) {
 						const fn = timeouts.shift();
@@ -45,32 +41,13 @@ export class _Util {
 					}
 				}
 			}
-			if (this.HasWindow) {
-				this._window.addEventListener("message", handleMessage, true);
+			if (Test.HasWindow) {
+				Global.window.addEventListener("message", handleMessage, true);
 				return setZeroTimeout;
 			} else {
 				return setTimeout;
 			}
 		})();
-	}
-
-	public get HasWindow(): boolean {
-		return this._window !== null;
-	}
-	public get HasConsole(): boolean {
-		return this.HasWindow && this._window.console !== undefined;
-	}
-	public ToArray<T>(arr: ArrayLike<T>): T[] {
-		return Array.prototype.slice.call(arr);
-	}
-	public IsArray(it: any): boolean {
-		return it && (it instanceof Array || typeof (it) === "array" as any);
-	}
-	public IsElement(target: any): boolean {
-		return target !== undefined && target.nodeType === 1 ? true : false;
-	}
-	public IsFunction(it: any): boolean {
-		return Object.prototype.toString.call(it) === "[object Function]";
 	}
 	public GetFunctionName(fn: Function): string {
 		let result: string;
@@ -109,19 +86,19 @@ export class _Util {
 		warn: (...args: any[]) => void,
 		error: (...args: any[]) => void
 	) {
-		if (this.HasConsole) {
+		if (Test.HasConsole) {
 			this.ProxyFn(
-				this._window.console as any,
+				Global.window.console as any,
 				"log",
 				function(superfn, ...args: any[]) { superfn(...args); log(...args); }
 			);
 			this.ProxyFn(
-				this._window.console as any,
+				Global.window.console as any,
 				"warn",
 				function(superfn, ...args: any[]) { superfn(...args); warn(...args); }
 			);
 			this.ProxyFn(
-				this._window.console as any,
+				Global.window.console as any,
 				"error",
 				function(superfn, ...args: any[]) { superfn(...args); error(...args); }
 			);
@@ -131,23 +108,21 @@ export class _Util {
 				warn,
 				error
 			};
-			if (!this.HasWindow) {
-				window = {
+			if (!Test.HasWindow) {
+				Global.window = {
 					console
 				} as any;
-				this._window = window as any;
 			} else {
-				const win = window as any;
-				win.console = console;
+				(Global.window as any).console = console;
 			}
 		}
 	}
 	public Assert(assertion: boolean, message: string, isDebug: boolean = false): boolean {
 		let result = true;
 		if (!assertion) {
-			if (this.HasConsole) {
+			if (Test.HasConsole) {
 				result = false;
-				this._window.console.error("Assertion failed: " + message);
+				Global.window.console.error("Assertion failed: " + message);
 			}
 			if (isDebug) {
 				this.Debugger();
@@ -182,8 +157,5 @@ export class _Util {
 	//Like SetTimeout but 0
 	public Async: (fn: Function) => void;
 }
-if (typeof (window) === "undefined") {
-	const window = null as any;
-	const console = null as any;
-}
+
 export let Util = new _Util();

@@ -1,6 +1,4 @@
 export declare class _Uri {
-    _(win: Window): _Uri;
-    private _window;
     private _a;
     hash: string;
     pathName: string;
@@ -10,7 +8,7 @@ export declare class _Uri {
     origin: string;
     full: string;
     args: any;
-    constructor(win: Window);
-    Init(win: Window): void;
+    constructor();
+    Init(): void;
 }
 export declare let Uri: _Uri;

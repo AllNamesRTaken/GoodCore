@@ -5,17 +5,10 @@ export interface IObjectWithFunctions<T extends Object | void> {
     [key: string]: (...args: any[]) => T;
 }
 export declare class _Util {
-    private _window;
     private _int;
-    _(win?: Window): _Util;
-    constructor(win?: Window);
+    constructor();
     Init(win?: Window): void;
-    readonly HasWindow: boolean;
-    readonly HasConsole: boolean;
-    ToArray<T>(arr: ArrayLike<T>): T[];
-    IsArray(it: any): boolean;
-    IsElement(target: any): boolean;
-    IsFunction(it: any): boolean;
+    private _CreateAsync();
     GetFunctionName(fn: Function): string;
     GetFunctionCode(fn: Function): string;
     NewUUID(): string;

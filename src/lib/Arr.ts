@@ -1,12 +1,8 @@
 import { Obj } from "./Obj";
-import { Util } from "./Util";
+import { Test } from "./Test";
 
 export class _Array {
 	private _int: number;
-	public _(): _Array {
-		return new _Array();
-	}
-
 	public constructor() {
 
 	}
@@ -18,7 +14,7 @@ export class _Array {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
-			if (Util.IsArray(src[i])) {
+			if (Test.IsArray(src[i])) {
 				this.FlattenInner(src[i], result);
 			} else {
 				result.push(src[i]);

@@ -9,9 +9,6 @@ var _MocData = (function () {
     function _MocData() {
         this.Type = MocDataType;
     }
-    _MocData.prototype._ = function () {
-        return new _MocData();
-    };
     _MocData.prototype.RandomString = function (length) {
         if (length === void 0) { length = 25; }
         var result = "";

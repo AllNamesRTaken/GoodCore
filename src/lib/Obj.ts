@@ -1,11 +1,7 @@
 import { Arr } from "./Arr";
-import { Util } from "./Util";
+import { Test } from "./Test";
 
 export class _Obj {
-	public _(): _Obj {
-		return new _Obj();
-	}
-
 	public constructor() {
 
 	}
@@ -64,7 +60,7 @@ export class _Obj {
 	public Equals(a: any, b: any): boolean {
 		let result = a === b;
 		if (a !== b && (a instanceof Object) && this.IsSameClass(a, b)) {
-			if (Util.IsArray(a)) {
+			if (Test.IsArray(a)) {
 				// Compare arrays
 				const len = a.length;
 				let i = 0;
@@ -91,7 +87,7 @@ export class _Obj {
 					key = keys[i];
 					result = this.Equals(a[key], b[key]);
 					if (!result) {
-						if (Util.IsFunction(a[key])) {
+						if (Test.IsFunction(a[key])) {
 							result = true;
 						} else {
 							break;
@@ -123,7 +119,7 @@ export class _Obj {
 		} else if (obj.constructor.prototype.Clone !== undefined) {
 			//Cloneable
 			result = ((obj as any) as ICloneable<T>).Clone();
-		} else if (Util.IsArray(obj)) {
+		} else if (Test.IsArray(obj)) {
 			//Array
 			result = Arr.DeepCopy(obj as any);
 		} else if (obj instanceof Date) {
@@ -145,7 +141,7 @@ export class _Obj {
 		return result;
 	}
 	public CloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
-		if (Util.IsArray(target)) {
+		if (Test.IsArray(target)) {
 			//Array
 			const arrS = src as S[];
 			const arrT = target as S[];
@@ -171,7 +167,7 @@ export class _Obj {
 				if (a instanceof Object) {
 					let b = (target as any)[key];
 					if (b === undefined || b === null) {
-						if (Util.IsArray(a)) {
+						if (Test.IsArray(a)) {
 							b = (target as any)[key] = [];
 						} else {
 							b = (target as any)[key] = {};
@@ -195,7 +191,7 @@ export class _Obj {
 		sources = Arr.Flatten(sources);
 		for (; i < len; i++) {
 			let src = sources[i];
-			if (Util.IsFunction(src)) {
+			if (Test.IsFunction(src)) {
 				src = src.prototype;
 			}
 			if (src === undefined) {

@@ -1,3 +1,4 @@
+import { Global } from "./Global";
 export var Sides;
 (function (Sides) {
     Sides[Sides["Top"] = 0] = "Top";
@@ -6,19 +7,19 @@ export var Sides;
     Sides[Sides["Right"] = 3] = "Right";
 })(Sides || (Sides = {}));
 var _Dom = (function () {
-    function _Dom(win) {
+    function _Dom() {
         this.Sides = Sides;
-        this.Init(win);
-    }
-    _Dom.prototype._ = function (win) {
-        return new _Dom(win);
-    };
-    _Dom.prototype.Init = function (win) {
-        if (win !== undefined) {
-            this._window = win;
+        if (Global.window !== null) {
+            this._window = Global.window;
             this._document = this._window.document;
             this._el = this._document.createElement("div");
         }
+    }
+    _Dom.prototype.Init = function (win) {
+        Global.window = win;
+        this._window = Global.window;
+        this._document = this._window.document;
+        this._el = this._document.createElement("div");
     };
     _Dom.prototype.ToArray = function (a) {
         return Array.prototype.slice.call(a);
@@ -147,5 +148,5 @@ var _Dom = (function () {
     return _Dom;
 }());
 export { _Dom };
-export var Dom = new _Dom(typeof (window) === "undefined" ? undefined : window);
+export var Dom = new _Dom();
 //# sourceMappingURL=Dom.js.map

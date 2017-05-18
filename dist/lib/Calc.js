@@ -1,9 +1,6 @@
 var _Calc = (function () {
     function _Calc() {
     }
-    _Calc.prototype._ = function () {
-        return new _Calc();
-    };
     _Calc.prototype.Sign = function (x) {
         return typeof x === "number" ? x ? x < 0 ? -1 : 1 : x === x ? 0 : NaN : NaN;
     };

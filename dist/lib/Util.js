@@ -1,31 +1,28 @@
 import { Md5 } from "ts-md5/dist/md5";
+import { Global } from "./Global";
+import { Test } from "./Test";
 import { Timer } from "./Timer";
 var _Util = (function () {
-    function _Util(win) {
-        this._window = null;
+    function _Util() {
         this._int = 0;
-        this.Init(win);
+        this.Init();
     }
-    _Util.prototype._ = function (win) {
-        return new _Util(win);
-    };
     _Util.prototype.Init = function (win) {
-        var _this = this;
-        if (win === undefined && typeof (window) !== undefined) {
-            win = window;
-        }
         if (win !== undefined) {
-            this._window = win;
+            Global.window = win;
         }
+        this._CreateAsync();
+    };
+    _Util.prototype._CreateAsync = function () {
         this.Async = (function () {
             var timeouts = [];
             var messageName = "zero-timeout-message";
             function setZeroTimeout(fn) {
                 timeouts.push(fn);
-                this._window.postMessage(messageName, "*");
+                Global.window.postMessage(messageName, "*");
             }
             function handleMessage(event) {
-                if (((event.source) === undefined || (event.source) === this._window) && event.data === messageName) {
+                if (((event.source) === undefined || (event.source) === Global.window) && event.data === messageName) {
                     event.stopPropagation();
                     if (timeouts.length > (0 | 0)) {
                         var fn = timeouts.shift();
@@ -33,40 +30,14 @@ var _Util = (function () {
                     }
                 }
             }
-            if (_this.HasWindow) {
-                _this._window.addEventListener("message", handleMessage, true);
+            if (Test.HasWindow) {
+                Global.window.addEventListener("message", handleMessage, true);
                 return setZeroTimeout;
             }
             else {
                 return setTimeout;
             }
         })();
-    };
-    Object.defineProperty(_Util.prototype, "HasWindow", {
-        get: function () {
-            return this._window !== null;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Object.defineProperty(_Util.prototype, "HasConsole", {
-        get: function () {
-            return this.HasWindow && this._window.console !== undefined;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    _Util.prototype.ToArray = function (arr) {
-        return Array.prototype.slice.call(arr);
-    };
-    _Util.prototype.IsArray = function (it) {
-        return it && (it instanceof Array || typeof (it) === "array");
-    };
-    _Util.prototype.IsElement = function (target) {
-        return target !== undefined && target.nodeType === 1 ? true : false;
-    };
-    _Util.prototype.IsFunction = function (it) {
-        return Object.prototype.toString.call(it) === "[object Function]";
     };
     _Util.prototype.GetFunctionName = function (fn) {
         var result;
@@ -101,8 +72,8 @@ var _Util = (function () {
         debugger;
     };
     _Util.prototype.PipeOut = function (log, warn, error) {
-        if (this.HasConsole) {
-            this.ProxyFn(this._window.console, "log", function (superfn) {
+        if (Test.HasConsole) {
+            this.ProxyFn(Global.window.console, "log", function (superfn) {
                 var args = [];
                 for (var _i = 1; _i < arguments.length; _i++) {
                     args[_i - 1] = arguments[_i];
@@ -110,7 +81,7 @@ var _Util = (function () {
                 superfn.apply(void 0, args);
                 log.apply(void 0, args);
             });
-            this.ProxyFn(this._window.console, "warn", function (superfn) {
+            this.ProxyFn(Global.window.console, "warn", function (superfn) {
                 var args = [];
                 for (var _i = 1; _i < arguments.length; _i++) {
                     args[_i - 1] = arguments[_i];
@@ -118,7 +89,7 @@ var _Util = (function () {
                 superfn.apply(void 0, args);
                 warn.apply(void 0, args);
             });
-            this.ProxyFn(this._window.console, "error", function (superfn) {
+            this.ProxyFn(Global.window.console, "error", function (superfn) {
                 var args = [];
                 for (var _i = 1; _i < arguments.length; _i++) {
                     args[_i - 1] = arguments[_i];
@@ -133,15 +104,13 @@ var _Util = (function () {
                 warn: warn,
                 error: error
             };
-            if (!this.HasWindow) {
-                window = {
+            if (!Test.HasWindow) {
+                Global.window = {
                     console: console_1
                 };
-                this._window = window;
             }
             else {
-                var win = window;
-                win.console = console_1;
+                Global.window.console = console_1;
             }
         }
     };
@@ -149,9 +118,9 @@ var _Util = (function () {
         if (isDebug === void 0) { isDebug = false; }
         var result = true;
         if (!assertion) {
-            if (this.HasConsole) {
+            if (Test.HasConsole) {
                 result = false;
-                this._window.console.error("Assertion failed: " + message);
+                Global.window.console.error("Assertion failed: " + message);
             }
             if (isDebug) {
                 this.Debugger();
@@ -187,9 +156,5 @@ var _Util = (function () {
     return _Util;
 }());
 export { _Util };
-if (typeof (window) === "undefined") {
-    var window_1 = null;
-    var console_2 = null;
-}
 export var Util = new _Util();
 //# sourceMappingURL=Util.js.map

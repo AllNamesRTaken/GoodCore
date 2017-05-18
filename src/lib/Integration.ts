@@ -1,22 +1,15 @@
+import { Global } from "./Global";
 import * as Good from "./index";
 
-export function Integrate(alias?: string, win: Window = window) {
+export function Integrate(alias?: string) {
 	if (alias !== undefined) {
-		(win as any)[alias] = {};
+		(Global.window as any)[alias] = {};
 	}
 	for (const stuff in Good) {
-		if ((Good as any)[stuff]._) {
-			if (alias !== undefined) {
-				(win as any)[alias][stuff] = (Good as any)[stuff]._;
-			} else {
-				(win as any)[stuff] = (Good as any)[stuff]._;
-			}
+		if (alias !== undefined) {
+			(Global.window as any)[alias][stuff] = (Good as any)[stuff];
 		} else {
-			if (alias !== undefined) {
-				(win as any)[alias][stuff] = (Good as any)[stuff];
-			} else {
-				(win as any)[stuff] = (Good as any)[stuff];
-			}
+			(Global.window as any)[stuff] = (Good as any)[stuff];
 		}
 	}
 }

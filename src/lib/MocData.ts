@@ -6,9 +6,7 @@ export enum MocDataType {
 }
 export class _MocData {
 	public Type = MocDataType;
-	public _(): _MocData {
-		return new _MocData();
-	}
+
 	constructor() {
 
 	}

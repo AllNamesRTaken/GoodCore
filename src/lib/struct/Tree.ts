@@ -1,6 +1,7 @@
 import { Arr } from "../Arr";
 import { Obj } from "../Obj";
 import { Initable } from "../standard/mixins/Initable";
+import { Test } from "../Test";
 import { Util } from "../Util";
 import { List } from "./List";
 import { Stack } from "./Stack";
@@ -16,7 +17,7 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 	public static FromObject<T>(obj: any): Tree<T> {
 		const parent = (this instanceof Tree) ? this : null;
 		const root = new Tree<T>().Init({Data: obj.data as T !== undefined ? obj.data : null, Parent: parent});
-		if (obj.children !== undefined && Util.IsArray(obj.children)) {
+		if (obj.children !== undefined && Test.IsArray(obj.children)) {
 			root.Children = new List(Arr.Map<Tree<T>>(obj.children as Array<Tree<T>>, Tree.FromObject.bind(root)));
 		}
 		return root;

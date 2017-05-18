@@ -6,7 +6,6 @@ export declare enum MocDataType {
 }
 export declare class _MocData {
     Type: typeof MocDataType;
-    _(): _MocData;
     constructor();
     static VALID_CHARS: string;
     RandomString(length?: number): string;

@@ -1,7 +1,7 @@
 import {should} from "chai";
 import {expect} from "chai";
 import { MocData } from "../lib/MocData";
-import { Util } from "../lib/Util";
+import { Test } from "../lib/Test";
 should();
 
 describe("MocData",
@@ -41,7 +41,7 @@ describe("MocData",
 		it("StringArray returns an array of strings of given length",
 			function() {
 				const val = MocData.StringArray(2, 3);
-				Util.IsArray(val).should.be.true;
+				Test.IsArray(val).should.be.true;
 				val.length.should.equal(2);
 				val[1].length.should.equal(3);
 				(typeof(val[1])).should.equal("string");

@@ -1,3 +1,5 @@
+import { Global } from "./Global";
+
 export enum Sides {
 	Top,
 	Bottom,
@@ -6,23 +8,23 @@ export enum Sides {
 }
 export class _Dom {
 	public Sides = Sides;
-	public _(win: Window): _Dom {
-		return new _Dom(win);
-	}
 
 	private _window: Window;
 	private _document: Document;
 	private _el: Element;
 
-	constructor(win: Window) {
-		this.Init(win);
-	}
-	public Init(win: Window) {
-		if (win !== undefined) {
-			this._window = win;
+	constructor() {
+		if ( Global.window !== null) {
+			this._window = Global.window;
 			this._document = this._window.document;
 			this._el = this._document.createElement("div");
 		}
+	}
+	public Init(win: Window) {
+		Global.window = win;
+		this._window = Global.window;
+		this._document = this._window.document;
+		this._el = this._document.createElement("div");
 	}
 	public ToArray<T>(a: ArrayLike<T>): T[] {
 		return Array.prototype.slice.call(a);
@@ -139,4 +141,4 @@ export class _Dom {
 	}
 }
 
-export let Dom = new _Dom(typeof(window) === "undefined" ? undefined : window);
+export let Dom = new _Dom();

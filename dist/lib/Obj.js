@@ -1,11 +1,8 @@
 import { Arr } from "./Arr";
-import { Util } from "./Util";
+import { Test } from "./Test";
 var _Obj = (function () {
     function _Obj() {
     }
-    _Obj.prototype._ = function () {
-        return new _Obj();
-    };
     _Obj.prototype.Destroy = function (obj) {
         if (obj.Destroy !== undefined) {
             obj.Destroy();
@@ -71,7 +68,7 @@ var _Obj = (function () {
     _Obj.prototype.Equals = function (a, b) {
         var result = a === b;
         if (a !== b && (a instanceof Object) && this.IsSameClass(a, b)) {
-            if (Util.IsArray(a)) {
+            if (Test.IsArray(a)) {
                 var len = a.length;
                 var i = 0;
                 result = len === b.length;
@@ -97,7 +94,7 @@ var _Obj = (function () {
                     key = keys[i];
                     result = this.Equals(a[key], b[key]);
                     if (!result) {
-                        if (Util.IsFunction(a[key])) {
+                        if (Test.IsFunction(a[key])) {
                             result = true;
                         }
                         else {
@@ -131,7 +128,7 @@ var _Obj = (function () {
         else if (obj.constructor.prototype.Clone !== undefined) {
             result = obj.Clone();
         }
-        else if (Util.IsArray(obj)) {
+        else if (Test.IsArray(obj)) {
             result = Arr.DeepCopy(obj);
         }
         else if (obj instanceof Date) {
@@ -154,7 +151,7 @@ var _Obj = (function () {
         return result;
     };
     _Obj.prototype.CloneInto = function (src, target) {
-        if (Util.IsArray(target)) {
+        if (Test.IsArray(target)) {
             var arrS = src;
             var arrT = target;
             var len = arrS.length;
@@ -180,7 +177,7 @@ var _Obj = (function () {
                 if (a instanceof Object) {
                     var b = target[key];
                     if (b === undefined || b === null) {
-                        if (Util.IsArray(a)) {
+                        if (Test.IsArray(a)) {
                             b = target[key] = [];
                         }
                         else {
@@ -209,7 +206,7 @@ var _Obj = (function () {
         sources = Arr.Flatten(sources);
         for (; i < len; i++) {
             var src = sources[i];
-            if (Util.IsFunction(src)) {
+            if (Test.IsFunction(src)) {
                 src = src.prototype;
             }
             if (src === undefined) {
