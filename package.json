@@ -1,11 +1,12 @@
 {
   "name": "goodcore",
-  "version": "0.0.26",
+  "version": "0.0.33",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "./dist/goodcore.umd.min.js",
   "module": "./dist/lib/index.js",
   "typings": "./dist/goodcore.d.ts",
   "files": [
+    "dist/goodcore.iife.js",
     "dist/goodcore.umd.js",
     "dist/goodcore.es.js",
     "dist/goodcore.umd.min.js",
@@ -44,6 +45,8 @@
     "karma-mocha-reporter": "^2.1.0",
     "mocha": "^3.0.2",
     "rimraf": "^2.5.4",
+    "rollup-plugin-commonjs": "^8.0.2",
+    "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "source-map-support": "^0.4.2",
     "typescript": "^2.3.2",
