@@ -8,10 +8,10 @@ export declare class _MocData {
     Type: typeof MocDataType;
     constructor();
     static VALID_CHARS: string;
-    RandomString(length?: number): string;
-    RandomInt(): number;
-    RandomNumber(): number;
-    NumericArray(length: number, type?: MocDataType): number[];
-    StringArray(arrayLength: number, stringLength?: number): string[];
+    randomString(length?: number): string;
+    randomInt(): number;
+    randomNumber(): number;
+    numericArray(length: number, type?: MocDataType): number[];
+    stringArray(arrayLength: number, stringLength?: number): string[];
 }
 export declare let MocData: _MocData;

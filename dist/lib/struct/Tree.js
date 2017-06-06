@@ -30,51 +30,51 @@ var Tree = (function (_super) {
     __extends(Tree, _super);
     function Tree() {
         var _this = _super.call(this) || this;
-        _this.Id = _this.NewId();
+        _this.Id = _this.newId();
         return _this;
     }
-    Tree.FromObject = function (obj) {
+    Tree.fromObject = function (obj) {
         var parent = (this instanceof Tree) ? this : null;
-        var root = new Tree().Init({ Data: obj.data !== undefined ? obj.data : null, Parent: parent });
-        if (obj.children !== undefined && Test.IsArray(obj.children)) {
-            root.Children = new List(Arr.Map(obj.children, Tree.FromObject.bind(root)));
+        var root = new Tree().init({ Data: obj.data !== undefined ? obj.data : null, Parent: parent });
+        if (obj.children !== undefined && Test.isArray(obj.children)) {
+            root.Children = new List(Arr.map(obj.children, Tree.fromObject.bind(root)));
         }
         return root;
     };
-    Tree.prototype.NewId = function () {
-        return Util.NewUUID();
+    Tree.prototype.newId = function () {
+        return Util.newUUID();
     };
-    Tree.prototype.InsertAt = function (pos, data) {
-        if (this.Children === null || this.Children.Count <= pos) {
-            this.Add(data);
+    Tree.prototype.insertAt = function (pos, data) {
+        if (this.Children === null || this.Children.count <= pos) {
+            this.add(data);
         }
         else {
-            this.Children.InsertAt(pos, new Tree().Init({ Data: data, Parent: this }));
+            this.Children.insertAt(pos, new Tree().init({ Data: data, Parent: this }));
         }
     };
-    Tree.prototype.Add = function (data) {
+    Tree.prototype.add = function (data) {
         if (this.Children === null) {
             this.Children = new List();
         }
-        this.Children.Add((new Tree()).Init({ Data: data, Parent: this }));
+        this.Children.add((new Tree()).init({ Data: data, Parent: this }));
     };
-    Tree.prototype.Remove = function () {
+    Tree.prototype.remove = function () {
         if (this.Parent !== null) {
-            this.Parent.Children.Remove(this);
+            this.Parent.Children.remove(this);
         }
     };
-    Tree.prototype.Prune = function () {
+    Tree.prototype.prune = function () {
         if (this.Children !== null) {
             this.Children
-                .ForEach(function (el, i) {
+                .forEach(function (el, i) {
                 el.Parent = null;
             })
-                .Clear();
+                .clear();
         }
         this.Children = null;
         return this;
     };
-    Tree.prototype.Reduce = function (fn, start) {
+    Tree.prototype.reduce = function (fn, start) {
         var stack = new Stack();
         var acc = start;
         if (start === undefined) {
@@ -82,25 +82,25 @@ var Tree = (function (_super) {
         }
         var cur;
         var i;
-        stack.Push(this);
-        while (cur = stack.Pop()) {
+        stack.push(this);
+        while (cur = stack.pop()) {
             acc = fn(acc, cur.Data);
-            i = (cur.Children && cur.Children.Count) || 0;
+            i = (cur.Children && cur.Children.count) || 0;
             while (i--) {
-                stack.Push(cur.Children.Get(i));
+                stack.push(cur.Children.get(i));
             }
         }
         return acc;
     };
-    Tree.prototype.Clone = function () {
+    Tree.prototype.clone = function () {
         var result = new this.constructor();
         result.Id = this.Id;
         result.Parent = this.Parent;
-        result.Children = this.Children === null ? null : this.Children.Clone();
-        result.Data = this.Data === null || this.Data === undefined ? this.Data : Obj.Clone(this.Data);
+        result.Children = this.Children === null ? null : this.Children.clone();
+        result.Data = this.Data === null || this.Data === undefined ? this.Data : Obj.clone(this.Data);
         return result;
     };
-    Tree.prototype.DuplicateNode = function () {
+    Tree.prototype.duplicateNode = function () {
         var result = new this.constructor();
         result.Id = this.Id;
         result.Parent = this.Parent;
@@ -108,47 +108,47 @@ var Tree = (function (_super) {
         result.Data = this.Data;
         return result;
     };
-    Tree.prototype.Filter = function (condition) {
-        var root = this.DuplicateNode();
+    Tree.prototype.filter = function (condition) {
+        var root = this.duplicateNode();
         var children = this.Children;
         if (children !== null) {
             root.Children =
                 root.Children
-                    .Select(condition)
-                    .Map(function (el, i) {
-                    return el.Filter(condition);
+                    .select(condition)
+                    .map(function (el, i) {
+                    return el.filter(condition);
                 });
         }
         return root;
     };
-    Tree.prototype.Select = function (condition, acc) {
+    Tree.prototype.select = function (condition, acc) {
         if (acc === void 0) { acc = new List(); }
         var result = acc;
         var children = this.Children;
         if (condition === undefined || condition(this)) {
-            result.Add(this);
+            result.add(this);
         }
         else {
-            children.Reduce(function (acc, cur) {
-                return cur.Select(condition, acc);
+            children.reduce(function (acc, cur) {
+                return cur.select(condition, acc);
             }, result);
         }
         return result;
     };
-    Tree.prototype.Find = function (condition) {
+    Tree.prototype.find = function (condition) {
         var result = null;
         var children = this.Children;
         if (children !== null) {
             var i = -1;
-            var len = this.Children.Count;
-            var val = this.Children.Values;
+            var len = this.Children.count;
+            var val = this.Children.values;
             while (++i < len) {
                 if (condition(val[i].Data)) {
                     result = val[i];
                     break;
                 }
                 else {
-                    result = val[i].Children !== null ? val[i].Find(condition) : null;
+                    result = val[i].Children !== null ? val[i].find(condition) : null;
                     if (result !== null) {
                         break;
                     }
@@ -157,8 +157,8 @@ var Tree = (function (_super) {
         }
         return result;
     };
-    Tree.prototype.Contains = function (condition) {
-        return this.Find(condition) !== null;
+    Tree.prototype.contains = function (condition) {
+        return this.find(condition) !== null;
     };
     return Tree;
 }(_InitableTree));

@@ -2,10 +2,10 @@ import { List } from "./List";
 export declare class Stack<T> {
     private _array;
     private _pos;
-    readonly Values: T[];
-    readonly Depth: number;
+    readonly values: T[];
+    readonly depth: number;
     constructor(size?: number);
-    Push(obj: T): void;
-    Pop(): T;
-    ToList(): List<T>;
+    push(obj: T): void;
+    pop(): T;
+    toList(): List<T>;
 }

@@ -14,77 +14,77 @@ export class BaseTree<T> implements ITreeNode<T> {
 }
 export const _InitableTree = Initable(BaseTree);
 export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>> {
-	public static FromObject<T>(obj: any): Tree<T> {
+	public static fromObject<T>(obj: any): Tree<T> {
 		const parent = (this instanceof Tree) ? this : null;
-		const root = new Tree<T>().Init({Data: obj.data as T !== undefined ? obj.data : null, Parent: parent});
-		if (obj.children !== undefined && Test.IsArray(obj.children)) {
-			root.Children = new List(Arr.Map<Tree<T>>(obj.children as Array<Tree<T>>, Tree.FromObject.bind(root)));
+		const root = new Tree<T>().init({Data: obj.data as T !== undefined ? obj.data : null, Parent: parent});
+		if (obj.children !== undefined && Test.isArray(obj.children)) {
+			root.Children = new List<Tree<T>>(Arr.map<any, Tree<T>>(obj.children as Array<Tree<T>>, Tree.fromObject.bind(root)));
 		}
 		return root;
 	}
 
 	constructor() {
 		super();
-		this.Id = this.NewId();
+		this.Id = this.newId();
 	}
 
-	private NewId(): any {
-		return Util.NewUUID();
+	private newId(): any {
+		return Util.newUUID();
 	}
-	public InsertAt(pos: number, data: T): void {
-		if (this.Children === null || this.Children.Count <= pos) {
-			this.Add(data);
+	public insertAt(pos: number, data: T): void {
+		if (this.Children === null || this.Children.count <= pos) {
+			this.add(data);
 		} else {
-			this.Children.InsertAt(pos, new Tree<T>().Init({ Data: data, Parent: this }));
+			this.Children.insertAt(pos, new Tree<T>().init({ Data: data, Parent: this }));
 		}
 	}
-	public Add(data: T): void {
+	public add(data: T): void {
 		if (this.Children === null) {
 			this.Children = new List<Tree<T>>();
 		}
-		this.Children.Add((new Tree<T>()).Init({ Data: data, Parent: this }));
+		this.Children.add((new Tree<T>()).init({ Data: data, Parent: this }));
 	}
-	public Remove(): void {
+	public remove(): void {
 		if (this.Parent !== null) {
-			this.Parent.Children.Remove(this);
+			this.Parent.Children.remove(this);
 		}
 	}
-	public Prune(): Tree<T> {
+	public prune(): Tree<T> {
 		if (this.Children !== null) {
 			this.Children
-				.ForEach(function(el: ITreeNode<T>, i: number) {
+				.forEach(function(el: ITreeNode<T>, i: number) {
 					el.Parent = null;
 				})
-				.Clear();
+				.clear();
 		}
 		this.Children = null;
 		return this;
 	}
-	public Reduce(fn: (acc: any, cur: T) => any, start?: any): any {
+	public reduce(fn: (acc: any, cur: T) => any, start?: any): any {
 		const stack = new Stack<ITreeNode<T>>();
 		let acc: any = start;
 		if (start === undefined) { acc = 0 as any; }
 		let cur: ITreeNode<T>;
 		let i: number;
-		stack.Push(this);
-		while (cur = stack.Pop()) {
+		stack.push(this);
+		while (cur = stack.pop()) {
 			acc = fn(acc, cur.Data);
-			i = (cur.Children && cur.Children.Count) || 0;
+			i = (cur.Children && cur.Children.count) || 0;
 			while (i--) {
-				stack.Push(cur.Children.Get(i));
+				stack.push(cur.Children.get(i));
 			}
 		}
 		return acc;
 	}
-	public Clone(): Tree<T> {
+	public clone(): Tree<T> {
 		const result = new ((this as any).constructor as ICtor<Tree<T>>)();
 		result.Id = this.Id;
 		result.Parent = this.Parent;
-		result.Children = this.Children === null ? null : this.Children.Clone();
-		result.Data = this.Data === null || this.Data === undefined ? this.Data : Obj.Clone(this.Data);
+		result.Children = this.Children === null ? null : this.Children.clone();
+		result.Data = this.Data === null || this.Data === undefined ? this.Data : Obj.clone(this.Data);
 		return result;
 	}
-	private DuplicateNode(): Tree<T> {
+	private duplicateNode(): Tree<T> {
 		const result = new ((this as any).constructor as ICtor<Tree<T>>)();
 		result.Id = this.Id;
 		result.Parent = this.Parent;
@@ -92,44 +92,44 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 		result.Data = this.Data;
 		return result;
 	}
-	public Filter(condition: (node: ITreeNode<T>) => boolean): Tree<T> {
-		const root = this.DuplicateNode();
+	public filter(condition: (node: ITreeNode<T>) => boolean): Tree<T> {
+		const root = this.duplicateNode();
 		const children = this.Children;
 		if (children !== null) {
 			root.Children =
 				root.Children
-					.Select(condition)
-					.Map(function(el: Tree<T>, i: number) {
-						return el.Filter(condition);
+					.select(condition)
+					.map(function(el: Tree<T>, i: number) {
+						return el.filter(condition);
 					});
 		}
 		return root;
 	}
-	public Select(condition?: (node: ITreeNode<T>) => boolean, acc: List<Tree<T>> = new List<Tree<T>>()): List<Tree<T>> {
+	public select(condition?: (node: ITreeNode<T>) => boolean, acc: List<Tree<T>> = new List<Tree<T>>()): List<Tree<T>> {
 		const result = acc;
 		const children = this.Children as List<Tree<T>>;
 		if (condition === undefined || condition(this)) {
-			result.Add(this);
+			result.add(this);
 		} else {
-			children.Reduce(function(acc: List<Tree<T>>, cur: Tree<T>) {
-				return cur.Select(condition, acc);
+			children.reduce(function(acc: List<Tree<T>>, cur: Tree<T>) {
+				return cur.select(condition, acc);
 			}, result);
 		}
 		return result;
 	}
-	public Find(condition: (data: T) => boolean): ITreeNode<T> {
+	public find(condition: (data: T) => boolean): ITreeNode<T> {
 		let result: ITreeNode<T> = null;
 		const children = this.Children;
 		if (children !== null) {
 			let i = -1;
-			const len = this.Children.Count;
-			const val = this.Children.Values;
+			const len = this.Children.count;
+			const val = this.Children.values;
 			while (++i < len) {
 				if (condition(val[i].Data)) {
 					result = val[i];
 					break;
 				} else {
-					result = val[i].Children !== null ? (val[i] as Tree<T>).Find(condition) : null;
+					result = val[i].Children !== null ? (val[i] as Tree<T>).find(condition) : null;
 					if (result !== null) {
 						break;
 					}
@@ -138,7 +138,7 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 		}
 		return result;
 	}
-	public Contains(condition: (data: T) => boolean): boolean {
-		return this.Find(condition) !== null;
+	public contains(condition: (data: T) => boolean): boolean {
+		return this.find(condition) !== null;
 	}
 }

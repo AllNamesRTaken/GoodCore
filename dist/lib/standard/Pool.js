@@ -1,48 +1,48 @@
 var Pool = (function () {
     function Pool(cls, growthStep) {
         if (growthStep === void 0) { growthStep = 10; }
-        this.pool = [];
-        this.available = 0;
-        this.size = 0;
-        this.cls = cls;
-        this.growthStep = growthStep;
-        this.Create();
+        this._pool = [];
+        this._available = 0;
+        this._size = 0;
+        this._cls = cls;
+        this._growthStep = growthStep;
+        this.create();
     }
-    Object.defineProperty(Pool.prototype, "Available", {
+    Object.defineProperty(Pool.prototype, "available", {
         get: function () {
-            return this.available;
+            return this._available;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Pool.prototype, "Size", {
+    Object.defineProperty(Pool.prototype, "size", {
         get: function () {
-            return this.size;
+            return this._size;
         },
         enumerable: true,
         configurable: true
     });
-    Pool.prototype.Create = function () {
+    Pool.prototype.create = function () {
         var i = 0;
-        for (; i < this.growthStep; i++) {
-            this.pool.push(new this.cls());
+        for (; i < this._growthStep; i++) {
+            this._pool.push(new this._cls());
         }
-        this.size += this.growthStep;
-        this.available += this.growthStep;
+        this._size += this._growthStep;
+        this._available += this._growthStep;
     };
-    Pool.prototype.Get = function () {
+    Pool.prototype.get = function () {
         var result;
-        if (this.pool.length === 0) {
-            this.Create();
+        if (this._pool.length === 0) {
+            this.create();
         }
-        result = this.pool.pop();
-        --this.available;
-        result.InitPool(this);
+        result = this._pool.pop();
+        --this._available;
+        result.initPool(this);
         return result;
     };
-    Pool.prototype.Release = function (obj) {
-        this.pool.push(obj);
-        ++this.available;
+    Pool.prototype.release = function (obj) {
+        this._pool.push(obj);
+        ++this._available;
     };
     return Pool;
 }());

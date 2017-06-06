@@ -2,22 +2,19 @@ import { Global } from "./Global";
 export class _Test {
 	public constructor() {
 	}
-	public get HasWindow(): boolean {
+	public get hasWindow(): boolean {
 		return Global.window !== null;
 	}
-	public get HasConsole(): boolean {
-		return this.HasWindow && Global.window.console !== undefined;
+	public get hasConsole(): boolean {
+		return this.hasWindow && Global.window.console !== undefined || typeof(console) === "function";
 	}
-	public ToArray<T>(arr: ArrayLike<T>): T[] {
-		return Array.prototype.slice.call(arr);
-	}
-	public IsArray(it: any): boolean {
+	public isArray(it: any): boolean {
 		return it && (it instanceof Array || typeof (it) === "array" as any);
 	}
-	public IsElement(target: any): boolean {
+	public isElement(target: any): boolean {
 		return target !== undefined && target.nodeType === 1 ? true : false;
 	}
-	public IsFunction(it: any): boolean {
+	public isFunction(it: any): boolean {
 		return Object.prototype.toString.call(it) === "[object Function]";
 	}
 }

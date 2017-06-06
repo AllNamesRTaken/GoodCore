@@ -1,13 +1,13 @@
 export declare class Pool<T extends IPoolable> implements IPool<IPoolable> {
-    private pool;
-    private growthStep;
-    private cls;
-    private available;
-    private size;
-    readonly Available: number;
-    readonly Size: number;
+    private _pool;
+    private _growthStep;
+    private _cls;
+    private _available;
+    private _size;
+    readonly available: number;
+    readonly size: number;
     constructor(cls: ICtor<T>, growthStep?: number);
-    private Create();
-    Get(): T;
-    Release(obj: T): void;
+    private create();
+    get(): T;
+    release(obj: T): void;
 }

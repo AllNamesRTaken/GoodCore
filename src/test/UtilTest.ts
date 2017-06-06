@@ -10,16 +10,16 @@ describe("Util",
 	function() {
 		before(
 			function() {
-				this.window = jsdom().defaultView;
-				this.document = this.window.document;
-				Util.Init(this.window);
+				// this.window = jsdom().defaultView;
+				// this.document = this.window.document;
+				// Util.Init(this.window);
 			});
 		it("Assert writes to console.error and PipeOut catches it.",
 			function() {
 				const log: any[] = [];
 				const warn: any[] = [];
 				const error: any[] = [];
-				Util.PipeOut(
+				Util.pipeOut(
 					function(...args: any[]){
 						log.push.apply(log, args);
 					},
@@ -30,62 +30,68 @@ describe("Util",
 						error.push.apply(error, args);
 					}
 				);
-				Util.Assert(true, "true is true");
+				Util.assert(true, "true is true");
 				error.length.should.equal(0);
-				Util.Assert(false, "true is true");
+				Util.assert(false, "true is true");
 				error.length.should.equal(1);
 				error[0].should.contain("true is true");
-				this.window.console.log("logged");
+				console.log("logged");
 				log[0].should.contain("logged");
-				this.window.console.warn("warned");
+				console.warn("warned");
 				warn[0].should.contain("warned");
 				//cannot console.log here since that is overridden by Mocha
 			});
 		it("GetFunctionName returns correct name",
 				function() {
-					Util.GetFunctionName(function foo() {}).should.equal("foo");
+					Util.getFunctionName(function foo() {}).should.equal("foo");
 				});
 		it("GetFunctionCode returns correct code as string",
 				function() {
-					Util.GetFunctionCode(function() {const a = 1; }).should.equal(" var a = 1; ");
+					Util.getFunctionCode(function() {const a = 1; }).should.equal(" var a = 1; ");
 				});
 		it("IsArray detects correctly for array and object",
 				function() {
-					Test.IsArray([1, 2, 3]).should.be.true;
-					Test.IsArray({a: 1}).should.be.false;
+					Test.isArray([1, 2, 3]).should.be.true;
+					Test.isArray({a: 1}).should.be.false;
 				});
 		it("IsElement detects falsly for object",
 				function() {
-					Test.IsElement({}).should.be.false;
+					Test.isElement({}).should.be.false;
 				});
 		it("IsFunction detects correctly",
 				function() {
-					Test.IsFunction(function(){}).should.be.true;
-					Test.IsFunction({}).should.be.false;
+					Test.isFunction(function(){}).should.be.true;
+					Test.isFunction({}).should.be.false;
 				});
 		it("NewInt starts at 0 and increases",
 				function() {
-					const s = Util.NewInt();
+					const s = Util.newInt();
 					(typeof(s)).should.equal("number");
-					Util.NewInt().should.equal(s + 1);
-					Util.NewInt().should.equal(s + 2);
+					Util.newInt().should.equal(s + 1);
+					Util.newInt().should.equal(s + 2);
 				});
 		it("NewUUID is unique even when called fast",
 				function() {
-					Util.NewUUID().should.not.equal(Util.NewUUID());
+					Util.newUUID().should.not.equal(Util.newUUID());
 				});
 		it("ToArray return array",
 				function() {
-					Test.ToArray([1, 2, 3]).should.be.instanceOf(Array);
+					Util.toArray([1, 2, 3]).should.be.instanceOf(Array);
 				});
 		it("Async should be close to 0 timeout",
 				function(done) {
-					Timer.Start();
-					Util.Async(function() {
-						Timer.Stop();
-						Timer.Time.should.be.approximately(0, 5);
+					Timer.start();
+					Util.async(function() {
+						Timer.stop();
+						Timer.time.should.be.approximately(0, 5);
 						done();
 					});
 			});
+		it("Loop should pass correct index",
+				function() {
+					let sum = 0;
+					Util.loop(10, (i) => sum += i);
+					sum.should.equal(45);
+				});
 	}
 );

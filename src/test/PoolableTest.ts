@@ -17,11 +17,11 @@ describe("Poolable",
 				const pool = new Pool(PoolableFoo);
 				const obj = new PoolableFoo();
 				obj.Foo.should.equal("foo");
-				obj.InitPool(pool);
+				obj.initPool(pool);
 				obj.__pool__.should.equal(pool);
-				const available = pool.Available;
-				obj.Release();
-				pool.Available.should.equal(available + 1);
+				const available = pool.available;
+				obj.release();
+				pool.available.should.equal(available + 1);
 			});
 	}
 );

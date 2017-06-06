@@ -9,7 +9,7 @@ var _MocData = (function () {
     function _MocData() {
         this.Type = MocDataType;
     }
-    _MocData.prototype.RandomString = function (length) {
+    _MocData.prototype.randomString = function (length) {
         if (length === void 0) { length = 25; }
         var result = "";
         for (var i = 0; i < length; i += 1) {
@@ -17,13 +17,13 @@ var _MocData = (function () {
         }
         return result;
     };
-    _MocData.prototype.RandomInt = function () {
-        return this.RandomNumber() | 0;
+    _MocData.prototype.randomInt = function () {
+        return this.randomNumber() | 0;
     };
-    _MocData.prototype.RandomNumber = function () {
+    _MocData.prototype.randomNumber = function () {
         return Math.random() * 2147483647;
     };
-    _MocData.prototype.NumericArray = function (length, type) {
+    _MocData.prototype.numericArray = function (length, type) {
         if (type === void 0) { type = MocDataType.LinearInt; }
         var result = new Array(length);
         switch (type) {
@@ -34,7 +34,7 @@ var _MocData = (function () {
                 break;
             case MocDataType.RandomInt:
                 for (var i = 0; i < length; i += 1) {
-                    result[i] = this.RandomInt();
+                    result[i] = this.randomInt();
                 }
                 break;
             case MocDataType.LinearFloat:
@@ -44,17 +44,17 @@ var _MocData = (function () {
                 break;
             case MocDataType.RandomFloat:
                 for (var i = 0; i < length; i += 1) {
-                    result[i] = this.RandomNumber();
+                    result[i] = this.randomNumber();
                 }
                 break;
         }
         return result;
     };
-    _MocData.prototype.StringArray = function (arrayLength, stringLength) {
+    _MocData.prototype.stringArray = function (arrayLength, stringLength) {
         var result = new Array(arrayLength);
         var i = -1;
         while (++i < arrayLength) {
-            result[i] = this.RandomString(stringLength);
+            result[i] = this.randomString(stringLength);
         }
         return result;
     };

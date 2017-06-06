@@ -14,11 +14,11 @@ export class _Calc {
 	public constructor() {
 
 	}
-	public Sign(x: number): number {
+	public sign(x: number): number {
 		return typeof x === "number" ? x ? x < 0 ? -1 : 1 : x === x ? 0 : NaN : NaN;
 	}
 
-	public RotationDeg(rotation: number): number[] {
+	public rotationDeg(rotation: number): number[] {
 		let rot = (rotation * _Calc.ROTATION_DEGREE_PRECISION) | 0;
 		while (rot < 0) {
 			rot += _Calc.DEG360;
@@ -28,11 +28,11 @@ export class _Calc {
 		}
 		return _Calc.ROTATION_LOOKUP[rot];
 	}
-	public RotationRad(rotation: number): number[] {
+	public rotationRad(rotation: number): number[] {
 		const rot = rotation * _Calc.DEGREE_FACTOR * _Calc.ROTATION_DEGREE_PRECISION | 0;
-		return this.RotationDeg(rot / _Calc.ROTATION_DEGREE_PRECISION);
+		return this.rotationDeg(rot / _Calc.ROTATION_DEGREE_PRECISION);
 	}
-	public ClosestRadianRotation(rotation: number): number {
+	public closestRadianRotation(rotation: number): number {
 		let rot = rotation * _Calc.DEGREE_FACTOR * _Calc.ROTATION_DEGREE_PRECISION | 0;
 		while (rot < 0) {
 			rot += _Calc.DEG360;

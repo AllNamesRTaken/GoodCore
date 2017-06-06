@@ -9,141 +9,149 @@ export class List<T> implements IList<T> {
 			this._array = new Array<T>();
 		} else {
 			if (arr instanceof (List)) {
-				this._array = Arr.ShallowCopy(arr._array);
+				this._array = Arr.shallowCopy(arr._array);
 			} else {
-				this._array = Arr.ShallowCopy(arr);
+				this._array = Arr.shallowCopy(arr);
 			}
 		}
 	}
 
-	public get Values(): T[] {
+	public get values(): T[] {
 		return this._array;
 	}
-	public Get(pos: number): T {
+	public get(pos: number): T {
 		return this._array[pos];
 	}
-	public get Count(): number {
+	public get count(): number {
 		return this._array.length;
 	}
-	public Clear(): List<T> {
+	public clear(): List<T> {
 		this._array.length = 0;
 		return this;
 	}
-	public Add(v: T): List<T> {
+	public add(v: T): List<T> {
 		this._array.push(v);
 		return this;
 	}
-	public InsertAt(pos: number, v: T): List<T> {
-		Arr.InsertAt(this._array, pos, v);
+	public insertAt(pos: number, v: T): List<T> {
+		Arr.insertAt(this._array, pos, v);
 		return this;
 	}
-	public Push(v: T): number {
+	public push(v: T): number {
 		return this._array.push(v);
 	}
-	public Pop(): T {
+	public pop(): T {
 		return this._array.pop();
 	}
-	public Shift(): T {
+	public shift(): T {
 		return this._array.shift();
 	}
-	public Concat(v: T[] | List<T>): List<T> {
+	public concat(v: T[] | List<T>): List<T> {
 		let arr: T[];
 		if (v instanceof List) {
-			arr = Arr.Concat(this._array, v._array);
+			arr = Arr.concat(this._array, v._array);
 		} else {
-			arr = Arr.Concat(this._array, v);
+			arr = Arr.concat(this._array, v);
 		}
 		return new List<T>(arr);
 	}
-	public Append(v: T[] | List<T>): List<T> {
+	public append(v: T[] | List<T>): List<T> {
 		if (v instanceof List) {
-			Arr.Append(this._array, v._array);
+			Arr.append(this._array, v._array);
 		} else {
-			Arr.Append(this._array, v);
+			Arr.append(this._array, v);
 		}
 		return this;
 	}
-	public Copy(src: List<T> | T[]): List<T> {
+	public copy(src: List<T> | T[]): List<T> {
 		if (src instanceof List) {
-			Arr.DeepCopyInto(src._array, this._array);
+			Arr.deepCopyInto(src._array, this._array);
 		} else {
-			Arr.DeepCopyInto(src, this._array);
+			Arr.deepCopyInto(src, this._array);
 		}
 		return this;
 	}
-	public ShallowCopy(src: List<T> | T[]): List<T> {
+	public shallowCopy(src: List<T> | T[]): List<T> {
 		if (src instanceof List) {
-			Arr.ShallowCopyInto(src._array, this._array);
+			Arr.shallowCopyInto(src._array, this._array);
 		} else {
-			Arr.ShallowCopyInto(src, this._array);
+			Arr.shallowCopyInto(src, this._array);
 		}
 		return this;
 	}
-	public Clone(): List<T> {
-		const arr = Arr.DeepCopy(this._array);
+	public clone(): List<T> {
+		const arr = Arr.deepCopy(this._array);
 		return new List(arr);
 	}
-	public Remove(v: T): List<T> {
-		Arr.RemoveOneByElement(this._array, v);
+	public remove(v: T): List<T> {
+		Arr.remove(this._array, v);
 		return this;
 	}
-	public RemoveAt(n: number): List<T> {
-		Arr.RemoveOneAt(this._array, n);
+	public removeAt(n: number): List<T> {
+		Arr.removeAt(this._array, n);
 		return this;
 	}
-	public ForEach(fn: (el: T, i?: number) => any): List<T> {
-		Arr.ForEach(this._array, fn);
+	public forEach(fn: (el: T, i?: number) => any): List<T> {
+		Arr.forEach(this._array, fn);
 		return this;
 	}
-	public Until(fn: (el: T, i?: number) => boolean): List<T> {
-		Arr.Until(this._array, fn);
+	public until(test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): List<T> {
+		Arr.until(this._array, test, fn);
 		return this;
 	}
-	public Some(filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): List<T> {
-		Arr.Some(this._array, filter, fn);
+	public reverseForEach(fn: (el: T, i?: number) => any): List<T> {
+		Arr.reverseForEach(this._array, fn);
 		return this;
 	}
-	public IndexOf(v: T): number {
-		return Arr.IndexOfElement(this._array, v);
-	}
-	public Contains(v: T): boolean {
-		return Arr.IndexOfElement(this._array, v) !== -1;
-	}
-	public Reverse(): List<T> {
-		Arr.Reverse(this._array);
+	public reverseUntil(test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): List<T> {
+		Arr.reverseUntil(this._array, test, fn);
 		return this;
 	}
-	public Select(fn: (el: T, i?: number) => boolean): List<T> {
-		return new List<T>(Arr.Filter(this._array, fn));
+	public some(filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): List<T> {
+		Arr.some(this._array, filter, fn);
+		return this;
 	}
-	public SelectInto(src: List<T> | T[], fn: (el: T, i?: number) => boolean): List<T> {
+	public indexOf(v: T): number {
+		return Arr.indexOfElement(this._array, v);
+	}
+	public contains(v: T): boolean {
+		return Arr.indexOfElement(this._array, v) !== -1;
+	}
+	public reverse(): List<T> {
+		Arr.reverse(this._array);
+		return this;
+	}
+	public select(fn: (el: T, i?: number) => boolean): List<T> {
+		return new List<T>(Arr.filter(this._array, fn));
+	}
+	public selectInto(src: List<T> | T[], fn: (el: T, i?: number) => boolean): List<T> {
 		if (src instanceof List) {
-			Arr.FilterInto<T>(src._array, this._array, fn);
+			Arr.filterInto<T>(src._array, this._array, fn);
 		} else {
-			Arr.FilterInto<T>(src, this._array, fn);
+			Arr.filterInto<T>(src, this._array, fn);
 		}
 		return this;
 	}
-	public OrderBy(fn: (a: T, b: T) => number): List<T> {
+	public orderBy(fn: (a: T, b: T) => number): List<T> {
 		this._array.sort(fn);
 		return this;
 	}
-	public Map<S>(fn: (el: T, i?: number) => S): List<S> {
-		return new List<any>(Arr.Map<T>(this._array, fn));
+	public map<S>(fn: (el: T, i?: number) => S): List<S> {
+		return new List<any>(Arr.map<T, S>(this._array, fn));
 	}
-	public MapInto(src: List<any> | any[], fn: (el: any, i?: number) => any): List<T> {
+	public mapInto<S>(src: List<S> | S[], fn: (el: S, i?: number) => T): List<T> {
 		if (src instanceof List) {
-			Arr.MapInto<T>(src._array, this._array, fn);
+			Arr.mapInto<S, T>(src._array, this._array, fn);
 		} else {
-			Arr.MapInto<T>(src, this._array, fn);
+			Arr.mapInto<S, T>(src, this._array, fn);
 		}
 		return this;
 	}
-	public Reduce(fn: (acc: any, cur: T) => any, start?: any): any {
-		return Arr.Reduce(this._array, fn, start);
+	public reduce(fn: (acc: any, cur: T) => any, start?: any): any {
+		return Arr.reduce(this._array, fn, start);
 	}
-	public Equals(b: List<T>): boolean {
-		const result = Obj.Equals(this._array, b.Values);
+	public equals(b: List<T>): boolean {
+		const result = Obj.equals(this._array, b.values);
 		return result;
 	}
 	// public GetEnumerator = function*(): T {

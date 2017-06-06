@@ -14,16 +14,16 @@ export class _Util {
 	private _int: number = 0;
 
 	public constructor() {
-		this.Init();
+		this.init();
 	}
-	public Init(win?: Window) {
+	public init(win?: Window) {
 		if (win !== undefined) {
 			Global.window = win;
 		}
-		this._CreateAsync();
+		this._createAsync();
 	}
-	private _CreateAsync() {
-		this.Async = (() => {
+	private _createAsync() {
+		this.async = (() => {
 			const timeouts: Function[] = [];
 			const messageName = "zero-timeout-message";
 
@@ -41,7 +41,7 @@ export class _Util {
 					}
 				}
 			}
-			if (Test.HasWindow) {
+			if (Test.hasWindow) {
 				Global.window.addEventListener("message", handleMessage, true);
 				return setZeroTimeout;
 			} else {
@@ -49,7 +49,7 @@ export class _Util {
 			}
 		})();
 	}
-	public GetFunctionName(fn: Function): string {
+	public getFunctionName(fn: Function): string {
 		let result: string;
 		if (fn.hasOwnProperty("name") !== undefined) {
 			result = (fn as any).name;
@@ -59,46 +59,46 @@ export class _Util {
 		}
 		return result;
 	}
-	public GetFunctionCode(fn: Function): string {
+	public getFunctionCode(fn: Function): string {
 		let result: string;
 		const fnString = fn.toString();
 		result = fnString.substring(fnString.indexOf("{") + 1, fnString.lastIndexOf("}"));
 		return result;
 	}
-	public NewUUID(): string { // Public Domain/MIT
+	public newUUID(): string { // Public Domain/MIT
 		let d: number = new Date().getTime();
-		d += Timer.Now();
+		d += Timer.now();
 		return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function(c) {
 			const r: number = (d + Math.random() * 16) % 16 | 0;
 			d = Math.floor(d / 16);
 			return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
 		});
 	}
-	public NewInt(): number {
+	public newInt(): number {
 		return this._int++;
 	}
-	public Debugger(): void {
+	public debugger(): void {
 		// tslint:disable-next-line:no-debugger
 		debugger;
 	}
-	public PipeOut(
+	public pipeOut(
 		log: (...args: any[]) => void,
 		warn: (...args: any[]) => void,
 		error: (...args: any[]) => void
 	) {
-		if (Test.HasConsole) {
-			this.ProxyFn(
-				Global.window.console as any,
+		if (Test.hasConsole) {
+			this.proxyFn(
+				console as any,
 				"log",
 				function(superfn, ...args: any[]) { superfn(...args); log(...args); }
 			);
-			this.ProxyFn(
-				Global.window.console as any,
+			this.proxyFn(
+				console as any,
 				"warn",
 				function(superfn, ...args: any[]) { superfn(...args); warn(...args); }
 			);
-			this.ProxyFn(
-				Global.window.console as any,
+			this.proxyFn(
+				console as any,
 				"error",
 				function(superfn, ...args: any[]) { superfn(...args); error(...args); }
 			);
@@ -108,7 +108,7 @@ export class _Util {
 				warn,
 				error
 			};
-			if (!Test.HasWindow) {
+			if (!Test.hasWindow) {
 				Global.window = {
 					console
 				} as any;
@@ -117,21 +117,21 @@ export class _Util {
 			}
 		}
 	}
-	public Assert(assertion: boolean, message: string, isDebug: boolean = false): boolean {
+	public assert(assertion: boolean, message: string, isDebug: boolean = true): boolean {
 		let result = true;
 		if (!assertion) {
-			if (Test.HasConsole) {
+			if (Test.hasConsole) {
 				result = false;
-				Global.window.console.error("Assertion failed: " + message);
+				console.error("Assertion failed: " + message);
 			}
 			if (isDebug) {
-				this.Debugger();
+				this.debugger();
 				//throw errorMessage;
 			}
 		}
 		return result;
 	}
-	public ProxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends IObjectWithFunctions<S>>(
+	public proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends IObjectWithFunctions<S>>(
 		that: U,
 		fnName: string,
 		proxyFn: (fn: (...args: any[]) => S | V, ...args: any[]) => void,
@@ -151,11 +151,20 @@ export class _Util {
 			that[fnName] = proxyFn.bind(that, _superFn);
 		}
 	}
-	public Md5(str: string): string {
+	public md5(str: string): string {
 		return Md5.hashStr(str) as string;
 	}
 	//Like SetTimeout but 0
-	public Async: (fn: Function) => void;
+	public async: (fn: Function) => void;
+	public loop(count: number, fn: (i: number, ...args: any[]) => any | void): void {
+		let i = -1;
+		while (++i < count) {
+			fn(i);
+		}
+	}
+	public toArray<T>(arr: ArrayLike<T>): T[] {
+		return Array.prototype.slice.call(arr);
+	}
 }
 
 export let Util = new _Util();

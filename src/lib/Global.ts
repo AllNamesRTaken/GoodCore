@@ -1,13 +1,16 @@
 let nativeWindow = true;
+// tslint:disable-next-line:no-var-keyword
+var win: Window;
 if (typeof (window) === "undefined") {
 	// tslint:disable-next-line:no-var-keyword
-	var window = null as any;
+	win = null as any;
 	nativeWindow = false;
+} else {
+	win = window;
 }
-(global as any).window = window;
 
 export class _Global {
-	private _window: Window = window;
+	private _window: Window = win;
 	private _nativeWindow: boolean = nativeWindow;
 
 	public get window(): Window {
@@ -15,11 +18,11 @@ export class _Global {
 	}
 	public set window(v: Window) {
 		this._window = v;
-		if (this.NativeWindow) {
-			window = v;
+		if (this.hasNativeWindow) {
+			win = v;
 		}
 	}
-	public get NativeWindow(): boolean {
+	public get hasNativeWindow(): boolean {
 		return this._nativeWindow;
 	}
 }

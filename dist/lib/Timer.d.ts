@@ -3,10 +3,10 @@ export declare class _Timer {
     private _start;
     private _time;
     private _hasPerformance;
-    readonly Time: number;
+    readonly time: number;
     constructor();
-    Now(): number;
-    Start(): number;
-    Stop(): number;
+    now(): number;
+    start(): number;
+    stop(): number;
 }
 export declare let Timer: _Timer;

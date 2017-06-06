@@ -1,1 +1,1 @@
-export declare function Integrate(alias?: string): void;
+export declare function integrate(alias?: string | object): void;

@@ -39,7 +39,7 @@ var Cache = (function () {
         this._stage = new Dictionary();
         this._size = size;
     }
-    Object.defineProperty(Cache.prototype, "Size", {
+    Object.defineProperty(Cache.prototype, "size", {
         get: function () {
             return this._size;
         },
@@ -47,58 +47,58 @@ var Cache = (function () {
             if ((value !== this._size)
                 && (value >= 0)) {
                 this._size = value;
-                this.Trim();
+                this.trim();
             }
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Cache.prototype, "Count", {
+    Object.defineProperty(Cache.prototype, "count", {
         get: function () {
-            return this._order.Count;
+            return this._order.count;
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Cache.prototype, "StageCount", {
+    Object.defineProperty(Cache.prototype, "stageCount", {
         get: function () {
-            return this._stage.List.Count;
+            return this._stage.list.count;
         },
         enumerable: true,
         configurable: true
     });
-    Cache.prototype.Hit = function (key) {
-        return this._data.Has(key);
+    Cache.prototype.hit = function (key) {
+        return this._data.has(key);
     };
-    Cache.prototype.Get = function (key) {
+    Cache.prototype.get = function (key) {
         var result;
-        result = this.Hit(key) ? this._data.Get(key).Data : null;
+        result = this.hit(key) ? this._data.get(key).Data : null;
         return result;
     };
-    Cache.prototype.Push = function (key, data) {
-        this.Add(key, data);
+    Cache.prototype.push = function (key, data) {
+        this.add(key, data);
     };
-    Cache.prototype.GetStaged = function (key) {
+    Cache.prototype.getStaged = function (key) {
         var result;
-        result = this._stage.Has(key) ? this._stage.Get(key).Data : null;
+        result = this._stage.has(key) ? this._stage.get(key).Data : null;
         return result;
     };
-    Cache.prototype.Stage = function (key, data) {
-        this._stage.Set(key, new CacheObject().Init({ Key: key, Data: data }));
+    Cache.prototype.stage = function (key, data) {
+        this._stage.set(key, new CacheObject().init({ Key: key, Data: data }));
     };
-    Cache.prototype.Publish = function (key) {
-        if (this._stage.Has(key)) {
-            this.Add(key, this._stage.Get(key).Data);
-            this._stage.Delete(key);
+    Cache.prototype.publish = function (key) {
+        if (this._stage.has(key)) {
+            this.add(key, this._stage.get(key).Data);
+            this._stage.delete(key);
         }
     };
-    Cache.prototype.Remove = function (key) {
-        if (this.Hit(key)) {
-            this._data.Delete(key);
-            this._order.Remove(key);
+    Cache.prototype.remove = function (key) {
+        if (this.hit(key)) {
+            this._data.delete(key);
+            this._order.remove(key);
         }
     };
-    Cache.prototype.Cache = function (obj, fnName, keyFn) {
+    Cache.prototype.cache = function (obj, fnName, keyFn) {
         var _this = this;
         if (keyFn === undefined) {
             keyFn = function () {
@@ -106,7 +106,7 @@ var Cache = (function () {
                 for (var _i = 0; _i < arguments.length; _i++) {
                     args[_i] = arguments[_i];
                 }
-                return Util.Md5(Arr.Reduce(args, function (acc, cur) { return acc += JSON.stringify(cur); }));
+                return Util.md5(Arr.reduce(args, function (acc, cur) { return acc += JSON.stringify(cur); }));
             };
         }
         var proxyFn = function (superFn) {
@@ -115,34 +115,34 @@ var Cache = (function () {
                 args[_i - 1] = arguments[_i];
             }
             var key = keyFn.apply(void 0, args);
-            if (key !== null && _this.Hit(key)) {
-                return _this.Get(key);
+            if (key !== null && _this.hit(key)) {
+                return _this.get(key);
             }
             var result = superFn.apply(void 0, args);
             if (key !== null) {
-                _this.Add(key, result);
+                _this.add(key, result);
             }
             return result;
         };
-        Util.ProxyFn(obj, fnName, proxyFn, false);
+        Util.proxyFn(obj, fnName, proxyFn, false);
     };
-    Cache.prototype.Clear = function () {
-        this._data.Clear();
-        this._order.Clear();
-        this._stage.Clear();
+    Cache.prototype.clear = function () {
+        this._data.clear();
+        this._order.clear();
+        this._stage.clear();
     };
-    Cache.prototype.Add = function (key, data) {
-        if (this.Hit(key)) {
-            this._order.Remove(key);
+    Cache.prototype.add = function (key, data) {
+        if (this.hit(key)) {
+            this._order.remove(key);
         }
-        this._data.Set(key, new CacheObject().Init({ Key: key, Data: data }));
-        this._order.Add(key);
-        this.Trim();
+        this._data.set(key, new CacheObject().init({ Key: key, Data: data }));
+        this._order.add(key);
+        this.trim();
     };
-    Cache.prototype.Trim = function () {
-        while ((this._order.Count > this._size)) {
-            this._data.Delete(this._order.Get(0));
-            this._order.Shift();
+    Cache.prototype.trim = function () {
+        while ((this._order.count > this._size)) {
+            this._data.delete(this._order.get(0));
+            this._order.shift();
         }
     };
     return Cache;

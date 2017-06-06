@@ -4,13 +4,13 @@ export class _Timer {
 	private _time: number;
 
 	private _hasPerformance = typeof(performance) !== "undefined";
-	public get Time(): number {
+	public get time(): number {
 		return this._time;
 	}
 	constructor() {
-		this.Start();
+		this.start();
 	}
-	public Now(): number {
+	public now(): number {
 		if (this._hasPerformance) {
 			return performance.now();
 		} else {
@@ -18,14 +18,14 @@ export class _Timer {
 			return hrTime[0] * 1000 + (hrTime[1] / 1e6);
 		}
 	}
-	public Start(): number {
-		const now = this.Now();
+	public start(): number {
+		const now = this.now();
 		this._start = this._last = now;
 		return this._time = 0;
 	}
-	public Stop(): number {
+	public stop(): number {
 		const start = this._start;
-		const now = this.Now();
+		const now = this.now();
 		this._last = now;
 		return this._time = now - start;
 	}

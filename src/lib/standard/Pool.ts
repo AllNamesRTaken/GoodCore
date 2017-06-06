@@ -1,42 +1,42 @@
 export class Pool<T extends IPoolable> implements IPool<IPoolable> {
-	private pool: T[] = [];
-	private growthStep: number;
-	private cls: any;
-	private available: number = 0;
-	private size: number = 0;
+	private _pool: T[] = [];
+	private _growthStep: number;
+	private _cls: any;
+	private _available: number = 0;
+	private _size: number = 0;
 
-	public get Available(): number {
-		return this.available;
+	public get available(): number {
+		return this._available;
 	}
-	public get Size(): number {
-		return this.size;
+	public get size(): number {
+		return this._size;
 	}
 
 	constructor(cls: ICtor<T>, growthStep: number = 10) {
-		this.cls = cls;
-		this.growthStep = growthStep;
-		this.Create();
+		this._cls = cls;
+		this._growthStep = growthStep;
+		this.create();
 	}
-	private Create() {
+	private create() {
 		let i = 0;
-		for (; i < this.growthStep; i++) {
-			this.pool.push(new this.cls() as T);
+		for (; i < this._growthStep; i++) {
+			this._pool.push(new this._cls() as T);
 		}
-		this.size += this.growthStep;
-		this.available += this.growthStep;
+		this._size += this._growthStep;
+		this._available += this._growthStep;
 	}
-	public Get(): T {
+	public get(): T {
 		let result: T;
-		if (this.pool.length === 0) {
-			this.Create();
+		if (this._pool.length === 0) {
+			this.create();
 		}
-		result = this.pool.pop();
-		--this.available;
-		result.InitPool(this);
+		result = this._pool.pop();
+		--this._available;
+		result.initPool(this);
 		return result;
 	}
-	public Release(obj: T): void {
-		this.pool.push(obj);
-		++this.available;
+	public release(obj: T): void {
+		this._pool.push(obj);
+		++this._available;
 	}
 }

@@ -1,7 +1,7 @@
 import { Calc } from "../Calc";
 import { Range2 } from "./Range2";
 import { Vec2 } from "./Vec2";
-var Sign = Calc.Sign;
+var Sign = Calc.sign;
 var Rect = (function () {
     function Rect(x1, y1, x2, y2, endInclusive) {
         if (x1 === void 0) { x1 = 0; }
@@ -13,19 +13,33 @@ var Rect = (function () {
         this.stop = new Vec2(x2, y2);
         this.endInclusive = endInclusive;
     }
-    Rect.prototype.Set = function (src) {
-        this.start.Set(src.start);
-        this.stop.Set(src.stop);
+    Object.defineProperty(Rect.prototype, "isZero", {
+        get: function () {
+            return this.start.isZero && this.stop.isZero;
+        },
+        enumerable: true,
+        configurable: true
+    });
+    Rect.prototype.set = function (src) {
+        this.start.set(src.start);
+        this.stop.set(src.stop);
         return this;
     };
-    Rect.prototype.Clone = function (out) {
-        var result = out ? out.Set(this) : new Rect(this.start.x, this.start.y, this.stop.x, this.stop.y);
+    Rect.prototype.clone = function (out) {
+        var result = out ? out.set(this) : new Rect(this.start.x, this.start.y, this.stop.x, this.stop.y);
         return result;
     };
-    Rect.prototype.ToRange2 = function () {
-        return new Range2(this.start.x, this.start.y, this.stop.x + (this.endInclusive ? Calc.Sign(this.stop.x) : 0) - this.start.x, this.stop.y + (this.endInclusive ? Calc.Sign(this.stop.y) : 0) - this.start.y);
+    Rect.prototype.toRange2 = function (out) {
+        var result = out || new Range2();
+        var start = this.start;
+        var stop = this.stop;
+        result.pos.x = start.x;
+        result.pos.y = start.y;
+        result.size.x = stop.x + (this.endInclusive ? (stop.x < start.x ? -1 : 1) : 0) - start.x;
+        result.size.y = stop.y + (this.endInclusive ? (stop.y < start.y ? -1 : 1) : 0) - start.y;
+        return result;
     };
-    Rect.prototype.Scale = function (factor, keepCenter) {
+    Rect.prototype.scale = function (factor, keepCenter) {
         if (keepCenter === void 0) { keepCenter = true; }
         var ow = this.stop.x - this.start.x;
         var oh = this.stop.y - this.start.y;
@@ -41,32 +55,53 @@ var Rect = (function () {
         this.stop.y = this.start.y + h;
         return this;
     };
-    Rect.prototype.Translate = function (system) {
-        this.start.Scale(system);
-        this.stop.Scale(system);
+    Rect.prototype.translate = function (system) {
+        this.start.scale(system);
+        this.stop.scale(system);
         return this;
     };
-    Rect.prototype.Equals = function (rect) {
-        return this.start.Equals(rect.start) && this.stop.Equals(rect.stop);
+    Rect.prototype.equals = function (rect) {
+        return this.start.equals(rect.start) && this.stop.equals(rect.stop);
     };
-    Rect.prototype.ToInt = function () {
-        this.start.ToInt();
-        this.stop.ToInt();
+    Rect.prototype.toInt = function () {
+        this.start.toInt();
+        this.stop.toInt();
         return this;
     };
-    Rect.prototype.ToDecimal = function () {
-        this.start.ToDecimal();
-        this.stop.ToDecimal();
+    Rect.prototype.toDecimal = function () {
+        this.start.toDecimal();
+        this.stop.toDecimal();
         return this;
     };
-    Rect.prototype.Area = function () {
+    Rect.prototype.area = function () {
         var x = this.stop.x - this.start.x;
         var y = this.stop.y - this.start.y;
         return x * y;
     };
-    Rect.prototype.Move = function (vec) {
-        this.start.Add(vec);
-        this.stop.Add(vec);
+    Rect.prototype.move = function (vec) {
+        this.start.add(vec);
+        this.stop.add(vec);
+        return this;
+    };
+    Rect.prototype.contains = function (target) {
+        return this.start.x <= target.start.x &&
+            this.start.y <= target.start.y &&
+            this.stop.x >= target.stop.x &&
+            this.stop.y >= target.stop.y;
+    };
+    Rect.prototype.intersect = function (target) {
+        return this.containsPoint(target.start.x, target.start.y) ||
+            this.containsPoint(target.stop.x, target.stop.y) ||
+            this.containsPoint(target.start.x, target.stop.y) ||
+            this.containsPoint(target.stop.x, target.start.y);
+    };
+    Rect.prototype.containsPoint = function (x, y) {
+        return this.start.x <= x && this.stop.x >= x &&
+            this.start.y <= y && this.stop.y >= y;
+    };
+    Rect.prototype.zero = function () {
+        this.start.zero();
+        this.stop.zero();
         return this;
     };
     return Rect;

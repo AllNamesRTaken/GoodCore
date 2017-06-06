@@ -15,8 +15,8 @@ export function Initable(Base) {
         function class_1() {
             return _super !== null && _super.apply(this, arguments) || this;
         }
-        class_1.prototype.Init = function (obj) {
-            Obj.SetProperties(this, obj);
+        class_1.prototype.init = function (obj) {
+            Obj.setProperties(this, obj);
             return this;
         };
         return class_1;

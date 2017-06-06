@@ -5,7 +5,7 @@ should();
 describe("Tree",
 	function() {
 		before(function() {
-			this.tree = Tree.FromObject({
+			this.tree = Tree.fromObject({
 				data: "root",
 				children: [
 					{data: "c1"},
@@ -20,70 +20,70 @@ describe("Tree",
 		it("Tree.FromObject returns correct tree",
 			function(){
 				const tree = this.tree as Tree<string>;
-				tree.Children.Get(1).Children.Get(1).Data.should.equal("c2-2");
+				tree.Children.get(1).Children.get(1).Data.should.equal("c2-2");
 			});
 		it("Find finds the correct node",
 			function(){
 				const tree = this.tree as Tree<string>;
-				tree.Find((data) => data === "c2-2").Data.should.equal("c2-2");
+				tree.find((data) => data === "c2-2").Data.should.equal("c2-2");
 			});
 		it("Filter returns filtered tree",
 			function(){
 				const tree = this.tree as Tree<string>;
-				const filtered = tree.Filter((node) => node.Children !== null);
-				filtered.Children.Get(0).Data.should.equal("c2");
-				filtered.Children.Get(0).Children.Count.should.equal(0);
+				const filtered = tree.filter((node) => node.Children !== null);
+				filtered.Children.get(0).Data.should.equal("c2");
+				filtered.Children.get(0).Children.count.should.equal(0);
 			});
 		it("Contains is true if node exists otherwise false",
 			function(){
 				const tree = this.tree as Tree<string>;
-				tree.Contains((data) => data === "c2-2").should.be.true;
-				tree.Contains((data) => data === "c2-3").should.be.false;
+				tree.contains((data) => data === "c2-2").should.be.true;
+				tree.contains((data) => data === "c2-3").should.be.false;
 			});
 		it("Select returns a list of matching nodes",
 			function(){
 				const tree = this.tree as Tree<string>;
-				tree.Select((node) => node.Children === null).Count.should.equal(4);
+				tree.select((node) => node.Children === null).count.should.equal(4);
 			});
 		it("Add and Remove does add and remove",
 			function(){
 				const tree = this.tree as Tree<string>;
-				tree.Add("c4");
-				const c4 = tree.Find((data) => data === "c4");
+				tree.add("c4");
+				const c4 = tree.find((data) => data === "c4");
 				c4.Data.should.equal("c4");
-				(c4 as Tree<string>).Remove();
-				tree.Contains((data) => data === "c4").should.be.false;
+				(c4 as Tree<string>).remove();
+				tree.contains((data) => data === "c4").should.be.false;
 
 			});
 		it("Clone clones deep",
 			function(){
 				const tree = this.tree as Tree<string>;
-				const orgc2_2 = tree.Find((data) => data === "c2-2");
-				const c2_2 = tree.Clone().Find((data) => data === "c2-2");
+				const orgc2_2 = tree.find((data) => data === "c2-2");
+				const c2_2 = tree.clone().find((data) => data === "c2-2");
 				c2_2.Data.should.equal("c2-2");
 				orgc2_2.should.not.equal(c2_2);
 			});
 		it("Reduce performs depth first reduction",
 			function(){
 				const tree = this.tree as Tree<string>;
-				tree.Reduce((acc, cur) => acc += "," + cur, "").should.equal(",root,c1,c2,c2-1,c2-2,c3");
+				tree.reduce((acc, cur) => acc += "," + cur, "").should.equal(",root,c1,c2,c2-1,c2-2,c3");
 			});
 		it("InsertAt inserts at the correct position",
 			function(){
 				const tree = this.tree as Tree<string>;
-				tree.InsertAt(1, "c1.5");
-				tree.Children.Get(1).Data.should.equal("c1.5");
-				tree.Children.Get(2).Data.should.equal("c2");
-				tree.Children.Get(1).Remove();
-				tree.InsertAt(100000, "c4");
-				tree.Children.Get(3).Data.should.equal("c4");
-				tree.Children.Get(3).Remove();
+				tree.insertAt(1, "c1.5");
+				tree.Children.get(1).Data.should.equal("c1.5");
+				tree.Children.get(2).Data.should.equal("c2");
+				tree.Children.get(1).remove();
+				tree.insertAt(100000, "c4");
+				tree.Children.get(3).Data.should.equal("c4");
+				tree.Children.get(3).remove();
 			});
 		it("Prune removes all children from a node",
 			function(){
-				const tree = (this.tree as Tree<string>).Clone();
-				tree.Children.Get(1).Prune();
-				(tree.Children.Get(1).Children === null).should.be.true;
+				const tree = (this.tree as Tree<string>).clone();
+				tree.Children.get(1).prune();
+				(tree.Children.get(1).Children === null).should.be.true;
 			});
 	}
 );

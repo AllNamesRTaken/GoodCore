@@ -3,16 +3,16 @@ import { Test } from "./Test";
 var _Array = (function () {
     function _Array() {
     }
-    _Array.prototype.Flatten = function (src) {
-        return this.FlattenInner(src);
+    _Array.prototype.flatten = function (src) {
+        return this.flattenInner(src);
     };
-    _Array.prototype.FlattenInner = function (src, result) {
+    _Array.prototype.flattenInner = function (src, result) {
         if (result === void 0) { result = []; }
         var i = -1;
         var len = src.length;
         while (++i < len) {
-            if (Test.IsArray(src[i])) {
-                this.FlattenInner(src[i], result);
+            if (Test.isArray(src[i])) {
+                this.flattenInner(src[i], result);
             }
             else {
                 result.push(src[i]);
@@ -20,7 +20,7 @@ var _Array = (function () {
         }
         return result;
     };
-    _Array.prototype.Reverse = function (array) {
+    _Array.prototype.reverse = function (array) {
         var left = null;
         var right = null;
         var length = array.length;
@@ -30,8 +30,9 @@ var _Array = (function () {
             array[left] = array[right];
             array[right] = temporary;
         }
+        return array;
     };
-    _Array.prototype.Concat = function () {
+    _Array.prototype.concat = function () {
         var arrs = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             arrs[_i] = arguments[_i];
@@ -39,7 +40,7 @@ var _Array = (function () {
         var result = Array.prototype.concat.apply([], arrs);
         return result;
     };
-    _Array.prototype.Slice = function (src, from, count) {
+    _Array.prototype.slice = function (src, from, count) {
         if (from === void 0) { from = 0; }
         if (count === void 0) { count = Infinity; }
         var len = Math.min(src.length - from, count);
@@ -53,7 +54,7 @@ var _Array = (function () {
         }
         return result;
     };
-    _Array.prototype.Append = function (arr, values) {
+    _Array.prototype.append = function (arr, values) {
         var index = -1;
         var length = values.length, offset = arr.length;
         arr.length = length + offset;
@@ -61,7 +62,7 @@ var _Array = (function () {
             arr[offset + index] = values[index];
         }
     };
-    _Array.prototype.RemoveOneAt = function (arr, index) {
+    _Array.prototype.removeAt = function (arr, index) {
         if (index !== -1 && index < arr.length) {
             var len = arr.length;
             var i = index;
@@ -71,7 +72,7 @@ var _Array = (function () {
             arr.length -= 1;
         }
     };
-    _Array.prototype.IndexOfElement = function (src, el) {
+    _Array.prototype.indexOfElement = function (src, el) {
         var i = -1;
         var len = src.length;
         while (++i < len) {
@@ -81,11 +82,11 @@ var _Array = (function () {
         }
         return -1;
     };
-    _Array.prototype.RemoveOneByElement = function (arr, el) {
-        var start = this.IndexOfElement(arr, el);
-        this.RemoveOneAt(arr, start);
+    _Array.prototype.remove = function (arr, el) {
+        var start = this.indexOfElement(arr, el);
+        this.removeAt(arr, start);
     };
-    _Array.prototype.IndexOf = function (src, fn) {
+    _Array.prototype.indexOf = function (src, fn) {
         var i = -1;
         var len = src.length;
         while (++i < len) {
@@ -95,11 +96,11 @@ var _Array = (function () {
         }
         return -1;
     };
-    _Array.prototype.RemoveOneByFn = function (arr, fn) {
-        var start = this.IndexOf(arr, fn);
-        this.RemoveOneAt(arr, start);
+    _Array.prototype.removeOneByFn = function (arr, fn) {
+        var start = this.indexOf(arr, fn);
+        this.removeAt(arr, start);
     };
-    _Array.prototype.ShallowCopy = function (src) {
+    _Array.prototype.shallowCopy = function (src) {
         var i = -1;
         var len = src.length;
         var result = new Array(len);
@@ -108,7 +109,7 @@ var _Array = (function () {
         }
         return result;
     };
-    _Array.prototype.ShallowCopyInto = function (src, target) {
+    _Array.prototype.shallowCopyInto = function (src, target) {
         var i = -1;
         var len = src.length;
         target.length = len;
@@ -116,7 +117,7 @@ var _Array = (function () {
             target[i] = src[i];
         }
     };
-    _Array.prototype.ShallowFill = function (src, target, at) {
+    _Array.prototype.shallowFill = function (src, target, at) {
         if (at === void 0) { at = 0; }
         var i = -1;
         var len = src.length;
@@ -127,24 +128,24 @@ var _Array = (function () {
             target[at + i] = src[i];
         }
     };
-    _Array.prototype.DeepCopy = function (src) {
+    _Array.prototype.deepCopy = function (src) {
         var i = -1;
         var len = src.length;
         var result = new Array(len);
         while (++i < len) {
-            result[i] = (Obj.Clone(src[i]));
+            result[i] = (Obj.clone(src[i]));
         }
         return result;
     };
-    _Array.prototype.DeepCopyInto = function (src, target) {
+    _Array.prototype.deepCopyInto = function (src, target) {
         var i = -1;
         var len = src.length;
         target.length = len;
         while (++i < len) {
-            target[i] = (Obj.Clone(src[i]));
+            target[i] = (Obj.clone(src[i]));
         }
     };
-    _Array.prototype.DeepFill = function (src, target, at) {
+    _Array.prototype.deepFill = function (src, target, at) {
         if (at === void 0) { at = 0; }
         var i = -1;
         var len = src.length;
@@ -152,10 +153,10 @@ var _Array = (function () {
             target.length = len + at;
         }
         while (++i < len) {
-            target[at + i] = (Obj.Clone(src[i]));
+            target[at + i] = (Obj.clone(src[i]));
         }
     };
-    _Array.prototype.Filter = function (src, fn) {
+    _Array.prototype.filter = function (src, fn) {
         var result = [];
         var i = -1;
         var len = src.length;
@@ -167,7 +168,7 @@ var _Array = (function () {
         }
         return result;
     };
-    _Array.prototype.FilterInto = function (src, target, fn) {
+    _Array.prototype.filterInto = function (src, target, fn) {
         var i = -1;
         var j = 0;
         var len = src.length;
@@ -186,7 +187,7 @@ var _Array = (function () {
         }
         target.length = j;
     };
-    _Array.prototype.Map = function (src, fn) {
+    _Array.prototype.map = function (src, fn) {
         var i = -1;
         var len = src.length;
         var result = new Array(len);
@@ -195,7 +196,7 @@ var _Array = (function () {
         }
         return result;
     };
-    _Array.prototype.MapInto = function (src, target, fn) {
+    _Array.prototype.mapInto = function (src, target, fn) {
         var i = -1;
         var len = src.length;
         target.length = len;
@@ -203,7 +204,7 @@ var _Array = (function () {
             target[i] = fn(src[i], i);
         }
     };
-    _Array.prototype.Reduce = function (src, fn, start) {
+    _Array.prototype.reduce = function (src, fn, start) {
         if (start === void 0) { start = 0; }
         var i = -1;
         var len = src.length;
@@ -213,24 +214,39 @@ var _Array = (function () {
         }
         return acc;
     };
-    _Array.prototype.ForEach = function (src, fn) {
+    _Array.prototype.forEach = function (src, fn) {
         var i = -1;
         var len = src.length;
         while (++i < len) {
             fn(src[i], i);
         }
     };
-    _Array.prototype.Until = function (src, fn) {
+    _Array.prototype.until = function (src, test, fn) {
         var i = -1;
         var len = src.length;
         while (++i < len) {
-            var brk = fn(src[i], i);
-            if (brk) {
+            if (test(src[i], i)) {
                 return;
             }
+            fn(src[i], i);
         }
     };
-    _Array.prototype.Some = function (src, filter, fn) {
+    _Array.prototype.reverseForEach = function (src, fn) {
+        var i = src.length;
+        while (--i >= 0) {
+            fn(src[i], i);
+        }
+    };
+    _Array.prototype.reverseUntil = function (src, test, fn) {
+        var i = src.length;
+        while (--i >= 0) {
+            if (test(src[i], i)) {
+                return;
+            }
+            fn(src[i], i);
+        }
+    };
+    _Array.prototype.some = function (src, filter, fn) {
         var i = -1;
         var len = src.length;
         while (++i < len) {
@@ -240,7 +256,7 @@ var _Array = (function () {
             }
         }
     };
-    _Array.prototype.InsertAt = function (src, pos, v) {
+    _Array.prototype.insertAt = function (src, pos, v) {
         if (pos > 0) {
             var i = src.length;
             while (--i >= pos) {
@@ -248,6 +264,24 @@ var _Array = (function () {
             }
             src[i + 1] = v;
         }
+    };
+    _Array.prototype.binarySearch = function (src, cmp) {
+        var lo = 0, hi = src.length - 1, mid, element;
+        while (lo <= hi) {
+            mid = ((lo + hi) >> 1);
+            element = src[mid];
+            var val = cmp(element);
+            if (val < 0) {
+                lo = mid + 1;
+            }
+            else if (val > 0) {
+                hi = mid - 1;
+            }
+            else {
+                return mid;
+            }
+        }
+        return -1;
     };
     return _Array;
 }());

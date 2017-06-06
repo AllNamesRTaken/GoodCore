@@ -15,33 +15,33 @@ var _Dom = (function () {
             this._el = this._document.createElement("div");
         }
     }
-    _Dom.prototype.Init = function (win) {
+    _Dom.prototype.init = function (win) {
         Global.window = win;
         this._window = Global.window;
         this._document = this._window.document;
         this._el = this._document.createElement("div");
     };
-    _Dom.prototype.ToArray = function (a) {
+    _Dom.prototype.toArray = function (a) {
         return Array.prototype.slice.call(a);
     };
-    _Dom.prototype.Create = function (html, attr) {
+    _Dom.prototype.create = function (html, attr) {
         var result, keys, i, k, styles, styleKeys;
         this._el.innerHTML = html;
         result = this._el.children[0];
-        this.SetAttr(result, attr);
-        this.Clear(this._el);
+        this.setAttr(result, attr);
+        this.clear(this._el);
         return result;
     };
-    _Dom.prototype.OuterHTML = function (el) {
+    _Dom.prototype.outerHTML = function (el) {
         this._el.appendChild(el);
         var result = this._el.innerHTML;
-        this.Clear(this._el);
+        this.clear(this._el);
         return result;
     };
-    _Dom.prototype.SetAttr = function (_el, attr) {
+    _Dom.prototype.setAttr = function (_el, attr) {
         var el;
         if (typeof (_el) === "string") {
-            el = this.Get(_el);
+            el = this.get(_el);
         }
         else {
             el = _el;
@@ -72,23 +72,23 @@ var _Dom = (function () {
             }
         }
     };
-    _Dom.prototype.Remove = function (element) {
+    _Dom.prototype.remove = function (element) {
         return element.parentNode === undefined ? null : element.parentNode.removeChild(element);
     };
-    _Dom.prototype.Replace = function (src, target) {
+    _Dom.prototype.replace = function (src, target) {
         var result;
         if (src.parentNode) {
             src.parentNode.replaceChild(target, src);
         }
         return result;
     };
-    _Dom.prototype.Clear = function (element) {
+    _Dom.prototype.clear = function (element) {
         var i = element.children.length;
         while (i--) {
             element.removeChild(element.children[i]);
         }
     };
-    _Dom.prototype.Get = function (id) {
+    _Dom.prototype.get = function (id) {
         var result = this._document.getElementById(id);
         if (result === null) {
             switch (id) {
@@ -99,21 +99,21 @@ var _Dom = (function () {
         }
         return result;
     };
-    _Dom.prototype.Find = function (selector) {
+    _Dom.prototype.find = function (selector) {
         return this._document.querySelector(selector);
     };
-    _Dom.prototype.FindAll = function (selector, root) {
-        return this.ToArray((root || this._document).querySelectorAll(selector));
+    _Dom.prototype.findAll = function (selector, root) {
+        return this.toArray((root || this._document).querySelectorAll(selector));
     };
-    _Dom.prototype.Children = function (root, selector) {
-        var children = this.ToArray((root || this._document).children);
-        return selector === undefined ? children : children.filter(this.Is.bind(this, selector));
+    _Dom.prototype.children = function (root, selector) {
+        var children = this.toArray((root || this._document).children);
+        return selector === undefined ? children : children.filter(this.is.bind(this, selector));
     };
-    _Dom.prototype.Position = function (el, x, y) {
+    _Dom.prototype.position = function (el, x, y) {
         el.style.top = y + "px";
         el.style.left = x + "px";
     };
-    _Dom.prototype.Is = function (selector, element) {
+    _Dom.prototype.is = function (selector, element) {
         var result = false;
         if (element.matches) {
             result = element.matches(selector);
@@ -129,12 +129,12 @@ var _Dom = (function () {
                 result = element.parentElement.querySelector("#" + element.id) !== null;
             }
             else {
-                result = this.ToArray(element.parentElement.querySelectorAll(selector)).indexOf(element) !== -1;
+                result = this.toArray(element.parentElement.querySelectorAll(selector)).indexOf(element) !== -1;
             }
         }
         return result;
     };
-    _Dom.prototype.SetStylesExplicitly = function (element) {
+    _Dom.prototype.setStylesExplicitly = function (element) {
         var styles = [];
         for (var _i = 1; _i < arguments.length; _i++) {
             styles[_i - 1] = arguments[_i];

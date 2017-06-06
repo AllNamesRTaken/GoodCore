@@ -1,6 +1,9 @@
 export { Vec2 as Vec2} from "./struct/Vec2";
 export { Range2 as Range2} from "./struct/Range2";
 export { Rect as Rect} from "./struct/Rect";
+import { IRange2 } from "./struct/IRange2";
+import { IRect } from "./struct/IRect";
+import { IVec2 } from "./struct/IVec2";
 export { List as List} from "./struct/List";
 export { Dictionary as Dictionary} from "./struct/Dictionary";
 export { Stack as Stack} from "./struct/Stack";
@@ -16,7 +19,7 @@ export { Uri as Uri } from "./Uri";
 export { Poolable as Poolable} from "./standard/mixins/Poolable";
 export { Initable as Initable} from "./standard/mixins/Initable";
 export { Pool as Pool} from "./standard/Pool";
-export { Integrate as Integrate} from "./Integration";
+export { integrate as integrate} from "./Integration";
 export { MocData as MocData } from "./MocData";
 export { Cache as Cache } from "./standard/Cache";
 export { KeyValuePair as KeyValuePair} from "./struct/KeyValuePair";

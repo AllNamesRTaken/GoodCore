@@ -1,4 +1,4 @@
 export class KeyValuePair<S, T> {
-	public Key: S;
-	public Value: T;
+	public key: S;
+	public value: T;
 }

@@ -6,10 +6,10 @@ describe("Timer",
 	function() {
 		it("Test Start Stop Time over 500ms",
 			function(done){
-				Timer.Start();
+				Timer.start();
 				setTimeout(function() {
-					Timer.Stop();
-					Timer.Time.should.be.approximately(500, 50);
+					Timer.stop();
+					Timer.time.should.be.approximately(500, 50);
 					done();
 				}, 500);
 			});

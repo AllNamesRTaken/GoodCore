@@ -3,15 +3,15 @@ import { Test } from "./Test";
 var _Obj = (function () {
     function _Obj() {
     }
-    _Obj.prototype.Destroy = function (obj) {
+    _Obj.prototype.destroy = function (obj) {
         if (obj.Destroy !== undefined) {
             obj.Destroy();
         }
         else {
-            this.Null(obj);
+            this.null(obj);
         }
     };
-    _Obj.prototype.Wipe = function (obj) {
+    _Obj.prototype.wipe = function (obj) {
         var keys = Object.keys(obj);
         var i = -1;
         var len = keys.length;
@@ -19,7 +19,7 @@ var _Obj = (function () {
             delete obj[keys[i]];
         }
     };
-    _Obj.prototype.Null = function (obj) {
+    _Obj.prototype.null = function (obj) {
         if (obj.constructor.prototype.Clear !== undefined) {
             obj.Clear();
         }
@@ -34,7 +34,7 @@ var _Obj = (function () {
             }
         }
     };
-    _Obj.prototype.IsNullOrUndefined = function () {
+    _Obj.prototype.isNullOrUndefined = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
@@ -49,32 +49,32 @@ var _Obj = (function () {
         }
         return result;
     };
-    _Obj.prototype.IsNotNullOrUndefined = function () {
+    _Obj.prototype.isNotNullOrUndefined = function () {
         var args = [];
         for (var _i = 0; _i < arguments.length; _i++) {
             args[_i] = arguments[_i];
         }
-        return !this.IsNullOrUndefined.apply(this, args);
+        return !this.isNullOrUndefined.apply(this, args);
     };
-    _Obj.prototype.IsClassOf = function (a, b) {
-        return this.IsNotNullOrUndefined(a, b) && a instanceof b.constructor;
+    _Obj.prototype.isClassOf = function (a, b) {
+        return this.isNotNullOrUndefined(a, b) && a instanceof b.constructor;
     };
-    _Obj.prototype.IsSameClass = function (a, b) {
-        return this.IsNotNullOrUndefined(a, b) && a.constructor === b.constructor;
+    _Obj.prototype.isSameClass = function (a, b) {
+        return this.isNotNullOrUndefined(a, b) && a.constructor === b.constructor;
     };
-    _Obj.prototype.Inherits = function (a, b) {
-        return this.IsClassOf(a, b) && !this.IsSameClass(a, b);
+    _Obj.prototype.inherits = function (a, b) {
+        return this.isClassOf(a, b) && !this.isSameClass(a, b);
     };
-    _Obj.prototype.Equals = function (a, b) {
+    _Obj.prototype.equals = function (a, b) {
         var result = a === b;
-        if (a !== b && (a instanceof Object) && this.IsSameClass(a, b)) {
-            if (Test.IsArray(a)) {
+        if (a !== b && (a instanceof Object) && this.isSameClass(a, b)) {
+            if (Test.isArray(a)) {
                 var len = a.length;
                 var i = 0;
                 result = len === b.length;
                 if (result) {
                     for (; i < len; i += 1) {
-                        result = this.Equals(a[i], b[i]);
+                        result = this.equals(a[i], b[i]);
                         if (result === false) {
                             break;
                         }
@@ -92,9 +92,9 @@ var _Obj = (function () {
                 var len = keys.length;
                 while (++i < len) {
                     key = keys[i];
-                    result = this.Equals(a[key], b[key]);
+                    result = this.equals(a[key], b[key]);
                     if (!result) {
-                        if (Test.IsFunction(a[key])) {
+                        if (Test.isFunction(a[key])) {
                             result = true;
                         }
                         else {
@@ -106,10 +106,10 @@ var _Obj = (function () {
         }
         return result;
     };
-    _Obj.prototype.IsDifferent = function (a, b) {
-        return !this.Equals(a, b);
+    _Obj.prototype.isDifferent = function (a, b) {
+        return !this.equals(a, b);
     };
-    _Obj.prototype.ShallowCopy = function (obj) {
+    _Obj.prototype.shallowCopy = function (obj) {
         var keys = Object.keys(obj);
         var result = {};
         var i = -1;
@@ -120,16 +120,16 @@ var _Obj = (function () {
         }
         return result;
     };
-    _Obj.prototype.Clone = function (obj) {
+    _Obj.prototype.clone = function (obj) {
         var result;
         if (!(obj instanceof Object)) {
             result = obj;
         }
-        else if (obj.constructor.prototype.Clone !== undefined) {
-            result = obj.Clone();
+        else if (obj.constructor.prototype.clone !== undefined) {
+            result = obj.clone();
         }
-        else if (Test.IsArray(obj)) {
-            result = Arr.DeepCopy(obj);
+        else if (Test.isArray(obj)) {
+            result = Arr.deepCopy(obj);
         }
         else if (obj instanceof Date) {
             return new Date(obj.getTime());
@@ -145,13 +145,13 @@ var _Obj = (function () {
             var len = keys.length;
             while (++i < len) {
                 key = keys[i];
-                result[key] = this.Clone(obj[key]);
+                result[key] = this.clone(obj[key]);
             }
         }
         return result;
     };
-    _Obj.prototype.CloneInto = function (src, target) {
-        if (Test.IsArray(target)) {
+    _Obj.prototype.cloneInto = function (src, target) {
+        if (Test.isArray(target)) {
             var arrS = src;
             var arrT = target;
             var len = arrS.length;
@@ -159,7 +159,7 @@ var _Obj = (function () {
             var i = -1;
             while (++i < len) {
                 if (arrS[i] instanceof Object) {
-                    this.CloneInto(arrS[i], arrT[i]);
+                    this.cloneInto(arrS[i], arrT[i]);
                 }
                 else {
                     arrT[i] = arrS[i];
@@ -177,15 +177,15 @@ var _Obj = (function () {
                 if (a instanceof Object) {
                     var b = target[key];
                     if (b === undefined || b === null) {
-                        if (Test.IsArray(a)) {
+                        if (Test.isArray(a)) {
                             b = target[key] = [];
                         }
                         else {
                             b = target[key] = {};
                         }
                     }
-                    if (this.IsDifferent(a, b)) {
-                        this.CloneInto(a, b);
+                    if (this.isDifferent(a, b)) {
+                        this.cloneInto(a, b);
                     }
                 }
                 else {
@@ -195,7 +195,7 @@ var _Obj = (function () {
         }
         return target;
     };
-    _Obj.prototype.Mixin = function (target, exclude) {
+    _Obj.prototype.mixin = function (target, exclude) {
         if (target === void 0) { target = {}; }
         var sources = [];
         for (var _i = 2; _i < arguments.length; _i++) {
@@ -203,10 +203,10 @@ var _Obj = (function () {
         }
         var result = target, len = sources ? sources.length : 0;
         var i = 0;
-        sources = Arr.Flatten(sources);
+        sources = Arr.flatten(sources);
         for (; i < len; i++) {
             var src = sources[i];
-            if (Test.IsFunction(src)) {
+            if (Test.isFunction(src)) {
                 src = src.prototype;
             }
             if (src === undefined) {
@@ -236,14 +236,14 @@ var _Obj = (function () {
         }
         return result;
     };
-    _Obj.prototype.SetProperties = function (target, values) {
+    _Obj.prototype.setProperties = function (target, values) {
         var keys = Object.keys(values);
         var key;
         var i = -1;
         var len = keys.length;
         while (++i < len) {
             key = keys[i];
-            if (target.hasOwnProperty(key)) {
+            if (key in target) {
                 target[key] = values[key];
             }
         }

@@ -7,22 +7,22 @@ export class _Array {
 
 	}
 
-	public Flatten(src: any[]): any[] {
-		return this.FlattenInner(src);
+	public flatten<T>(src: any[]): T[] {
+		return this.flattenInner<T>(src);
 	}
-	private FlattenInner(src: any[], result: any[] = []): any[] {
+	private flattenInner<T>(src: any[], result: T[] = []): T[] {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
-			if (Test.IsArray(src[i])) {
-				this.FlattenInner(src[i], result);
+			if (Test.isArray(src[i])) {
+				this.flattenInner<T>(src[i], result);
 			} else {
 				result.push(src[i]);
 			}
 		}
 		return result;
 	}
-	public Reverse(array: any[]) {
+	public reverse<T>(array: T[]): T[] {
 		let left = null;
 		let right = null;
 		const length = array.length;
@@ -32,12 +32,13 @@ export class _Array {
 			array[left] = array[right];
 			array[right] = temporary;
 		}
+		return array;
 	}
-	public Concat(...arrs: any[]): any[] {
+	public concat(...arrs: any[]): any[] {
 		const result = Array.prototype.concat.apply([], arrs);
 		return result;
 	}
-	public Slice<T>(src: T[], from: number = 0, count: number = Infinity): T[] {
+	public slice<T>(src: T[], from: number = 0, count: number = Infinity): T[] {
 		let len = Math.min(src.length - from, count);
 		if (len < 0) {
 			len = 0;
@@ -49,9 +50,9 @@ export class _Array {
 		}
 		return result;
 	}
-	public Append<T>(arr: T[], values: T[]): void {
+	public append<T>(arr: T[], values: T[]): void {
 		let index = -1;
-		const 
+		const
 			length = values.length,
 			offset = arr.length;
 		arr.length = length + offset;
@@ -60,7 +61,7 @@ export class _Array {
 			arr[offset + index] = values[index];
 		}
 	}
-	public RemoveOneAt(arr: any[], index: number): void {
+	public removeAt(arr: any[], index: number): void {
 		if (index !== -1 && index < arr.length) {
 			const len = arr.length;
 			let i = index;
@@ -70,7 +71,7 @@ export class _Array {
 			arr.length -= 1;
 		}
 	}
-	public IndexOfElement(src: any[], el: any): number {
+	public indexOfElement(src: any[], el: any): number {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
@@ -80,11 +81,11 @@ export class _Array {
 		}
 		return -1;
 	}
-	public RemoveOneByElement(arr: any[], el: any): void {
-		const start = this.IndexOfElement(arr, el);
-		this.RemoveOneAt(arr, start);
+	public remove(arr: any[], el: any): void {
+		const start = this.indexOfElement(arr, el);
+		this.removeAt(arr, start);
 	}
-	public IndexOf(src: any[], fn: (el: any) => boolean): number {
+	public indexOf(src: any[], fn: (el: any) => boolean): number {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
@@ -94,11 +95,11 @@ export class _Array {
 		}
 		return -1;
 	}
-	public RemoveOneByFn(arr: any[], fn: (el: any) => boolean): void {
-		const start = this.IndexOf(arr, fn);
-		this.RemoveOneAt(arr, start);
+	public removeOneByFn(arr: any[], fn: (el: any) => boolean): void {
+		const start = this.indexOf(arr, fn);
+		this.removeAt(arr, start);
 	}
-	public ShallowCopy<T>(src: T[]): T[] {
+	public shallowCopy<T>(src: T[]): T[] {
 		let i = -1;
 		const len = src.length;
 		const result = new Array(len);
@@ -107,7 +108,7 @@ export class _Array {
 		}
 		return result;
 	}
-	public ShallowCopyInto<T>(src: T[], target: T[]): void {
+	public shallowCopyInto<T>(src: T[], target: T[]): void {
 		let i = -1;
 		const len = src.length;
 		target.length = len;
@@ -115,7 +116,7 @@ export class _Array {
 			target[i] = src[i];
 		}
 	}
-	public ShallowFill<T>(src: T[], target: T[], at: number = 0): void {
+	public shallowFill<T>(src: T[], target: T[], at: number = 0): void {
 		let i = -1;
 		const len = src.length;
 		if (target.length < len + at) {
@@ -125,34 +126,34 @@ export class _Array {
 			target[at + i] = src[i];
 		}
 	}
-	public DeepCopy<T>(src: T[]): T[] {
+	public deepCopy<T>(src: T[]): T[] {
 		let i = -1;
 		const len = src.length;
 		const result = new Array(len);
 		while (++i < len) {
-			result[i] = (Obj.Clone(src[i]));
+			result[i] = (Obj.clone(src[i]));
 		}
 		return result;
 	}
-	public DeepCopyInto<T>(src: T[], target: T[]): void {
+	public deepCopyInto<T>(src: T[], target: T[]): void {
 		let i = -1;
 		const len = src.length;
 		target.length = len;
 		while (++i < len) {
-			target[i] = (Obj.Clone(src[i]));
+			target[i] = (Obj.clone(src[i]));
 		}
 	}
-	public DeepFill<T>(src: T[], target: T[], at: number = 0): void {
+	public deepFill<T>(src: T[], target: T[], at: number = 0): void {
 		let i = -1;
 		const len = src.length;
 		if (target.length < len + at) {
 			target.length = len + at;
 		}
 		while (++i < len) {
-			target[at + i] = (Obj.Clone(src[i]));
+			target[at + i] = (Obj.clone(src[i]));
 		}
 	}
-	public Filter<T>(src: T[], fn: (el: T, i?: number) => boolean): T[] {
+	public filter<T>(src: T[], fn: (el: T, i?: number) => boolean): T[] {
 		const result: T[] = [];
 		let i = -1;
 		const len = src.length;
@@ -164,7 +165,7 @@ export class _Array {
 		}
 		return result;
 	}
-	public FilterInto<T>(src: T[], target: T[], fn: (el: T, i?: number) => boolean): void {
+	public filterInto<T>(src: T[], target: T[], fn: (el: T, i?: number) => boolean): void {
 		let i = -1;
 		let j = 0;
 		const len = src.length;
@@ -182,16 +183,16 @@ export class _Array {
 		}
 		target.length = j;
 	}
-	public Map<T>(src: T[], fn: (el: T, i?: number) => any): any[] {
+	public map<S, T>(src: S[], fn: (el: S, i?: number) => T): T[] {
 		let i = -1;
 		const len = src.length;
-		const result = new Array(len);
+		const result = new Array<T>(len);
 		while (++i < len) {
 			result[i] = fn(src[i], i);
 		}
 		return result;
 	}
-	public MapInto<T>(src: any[], target: T[], fn: (el: T, i?: number) => T): void {
+	public mapInto<S, T>(src: S[], target: T[], fn: (el: S, i?: number) => T): void {
 		let i = -1;
 		const len = src.length;
 		target.length = len;
@@ -199,7 +200,7 @@ export class _Array {
 			target[i] = fn(src[i], i);
 		}
 	}
-	public Reduce<T>(src: T[], fn: (acc: any | number, cur: T) => any | number, start: any | number = 0): any | number {
+	public reduce<T>(src: T[], fn: (acc: any | number, cur: T) => any | number, start: any | number = 0): any | number {
 		let i = -1;
 		const len = src.length;
 		let acc: any | number = start;
@@ -208,24 +209,39 @@ export class _Array {
 		}
 		return acc;
 	}
-	public ForEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
+	public forEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
 			fn(src[i], i);
 		}
 	}
-	public Until<T>(src: T[], fn: (el: T, i?: number) => boolean): void {
+	public until<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
-			const brk = fn(src[i], i);
-			if (brk) {
+			if (test(src[i], i)) {
 				return;
 			}
+			fn(src[i], i);
 		}
 	}
-	public Some<T>(src: T[], filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
+	public reverseForEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
+		let i = src.length;
+		while (--i >= 0) {
+			fn(src[i], i);
+		}
+	}
+	public reverseUntil<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
+		let i = src.length;
+		while (--i >= 0) {
+			if (test(src[i], i)) {
+				return;
+			}
+			fn(src[i], i);
+		}
+	}
+	public some<T>(src: T[], filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
@@ -235,7 +251,7 @@ export class _Array {
 			}
 		}
 	}
-	public InsertAt<T>(src: T[], pos: number, v: T): void {
+	public insertAt<T>(src: T[], pos: number, v: T): void {
 		if (pos > 0) {
 			let i = src.length;
 			while (--i >= pos) {
@@ -243,6 +259,25 @@ export class _Array {
 			}
 			src[i + 1] = v;
 		}
+	}
+	public binarySearch<T>(src: T[], cmp: (el: T) => number): number {
+		let lo = 0,
+			hi = src.length - 1,
+			mid,
+			element;
+		while (lo <= hi) {
+			mid = ((lo + hi) >> 1);
+			element = src[mid];
+			let val = cmp(element);
+			if (val < 0) {
+				lo = mid + 1;
+			} else if (val > 0) {
+				hi = mid - 1;
+			} else {
+				return mid;
+			}
+		}
+		return -1;
 	}
 }
 

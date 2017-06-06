@@ -1,16 +1,16 @@
 var _Timer = (function () {
     function _Timer() {
         this._hasPerformance = typeof (performance) !== "undefined";
-        this.Start();
+        this.start();
     }
-    Object.defineProperty(_Timer.prototype, "Time", {
+    Object.defineProperty(_Timer.prototype, "time", {
         get: function () {
             return this._time;
         },
         enumerable: true,
         configurable: true
     });
-    _Timer.prototype.Now = function () {
+    _Timer.prototype.now = function () {
         if (this._hasPerformance) {
             return performance.now();
         }
@@ -19,14 +19,14 @@ var _Timer = (function () {
             return hrTime[0] * 1000 + (hrTime[1] / 1e6);
         }
     };
-    _Timer.prototype.Start = function () {
-        var now = this.Now();
+    _Timer.prototype.start = function () {
+        var now = this.now();
         this._start = this._last = now;
         return this._time = 0;
     };
-    _Timer.prototype.Stop = function () {
+    _Timer.prototype.stop = function () {
         var start = this._start;
-        var now = this.Now();
+        var now = this.now();
         this._last = now;
         return this._time = now - start;
     };

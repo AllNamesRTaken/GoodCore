@@ -1,10 +1,10 @@
 var _Calc = (function () {
     function _Calc() {
     }
-    _Calc.prototype.Sign = function (x) {
+    _Calc.prototype.sign = function (x) {
         return typeof x === "number" ? x ? x < 0 ? -1 : 1 : x === x ? 0 : NaN : NaN;
     };
-    _Calc.prototype.RotationDeg = function (rotation) {
+    _Calc.prototype.rotationDeg = function (rotation) {
         var rot = (rotation * _Calc.ROTATION_DEGREE_PRECISION) | 0;
         while (rot < 0) {
             rot += _Calc.DEG360;
@@ -14,11 +14,11 @@ var _Calc = (function () {
         }
         return _Calc.ROTATION_LOOKUP[rot];
     };
-    _Calc.prototype.RotationRad = function (rotation) {
+    _Calc.prototype.rotationRad = function (rotation) {
         var rot = rotation * _Calc.DEGREE_FACTOR * _Calc.ROTATION_DEGREE_PRECISION | 0;
-        return this.RotationDeg(rot / _Calc.ROTATION_DEGREE_PRECISION);
+        return this.rotationDeg(rot / _Calc.ROTATION_DEGREE_PRECISION);
     };
-    _Calc.prototype.ClosestRadianRotation = function (rotation) {
+    _Calc.prototype.closestRadianRotation = function (rotation) {
         var rot = rotation * _Calc.DEGREE_FACTOR * _Calc.ROTATION_DEGREE_PRECISION | 0;
         while (rot < 0) {
             rot += _Calc.DEG360;

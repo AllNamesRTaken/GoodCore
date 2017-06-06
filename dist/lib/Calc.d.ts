@@ -5,9 +5,9 @@ export declare class _Calc {
     static DEG360: number;
     static ROTATION_LOOKUP: number[][];
     constructor();
-    Sign(x: number): number;
-    RotationDeg(rotation: number): number[];
-    RotationRad(rotation: number): number[];
-    ClosestRadianRotation(rotation: number): number;
+    sign(x: number): number;
+    rotationDeg(rotation: number): number[];
+    rotationRad(rotation: number): number[];
+    closestRadianRotation(rotation: number): number;
 }
 export declare let Calc: _Calc;

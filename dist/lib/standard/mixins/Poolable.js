@@ -18,10 +18,10 @@ export function Poolable(Base) {
             }
             return _super.apply(this, args) || this;
         }
-        class_1.prototype.Release = function () {
-            this.__pool__.Release(this);
+        class_1.prototype.release = function () {
+            this.__pool__.release(this);
         };
-        class_1.prototype.InitPool = function (pool) {
+        class_1.prototype.initPool = function (pool) {
             this.__pool__ = pool;
         };
         return class_1;

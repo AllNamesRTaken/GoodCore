@@ -9,6 +9,6 @@ export declare class _Uri {
     full: string;
     args: any;
     constructor();
-    Init(): void;
+    init(): void;
 }
 export declare let Uri: _Uri;

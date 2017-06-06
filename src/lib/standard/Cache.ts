@@ -18,96 +18,96 @@ export class Cache<T> {
 	private _data: Dictionary<CacheObject<T>> = new Dictionary<CacheObject<T>>();
 	private _stage: Dictionary<CacheObject<T>> = new Dictionary<CacheObject<T>>();
 
-	public get Size(): number {
+	public get size(): number {
 		return this._size;
 	}
-	public set Size(value: number) {
+	public set size(value: number) {
 		if ((value !== this._size)
 			&& (value >= 0)) {
 			this._size = value;
-			this.Trim();
+			this.trim();
 		}
 	}
-	public get Count(): number {
-		return this._order.Count;
+	public get count(): number {
+		return this._order.count;
 	}
-	public get StageCount(): number {
-		return this._stage.List.Count;
+	public get stageCount(): number {
+		return this._stage.list.count;
 	}
 	public constructor(size: number = Cache.DEFAULT_FIFO_SIZE) {
 		this._size = size;
 	}
-	public Hit(key: string): boolean {
-		return this._data.Has(key);
+	public hit(key: string): boolean {
+		return this._data.has(key);
 	}
-	public Get(key: string): T {
+	public get(key: string): T {
 		let result: T;
-		result = this.Hit(key) ? this._data.Get(key).Data : null;
+		result = this.hit(key) ? this._data.get(key).Data : null;
 		return result;
 	}
-	public Push(key: string, data: T) {
-		this.Add(key, data);
+	public push(key: string, data: T) {
+		this.add(key, data);
 	}
-	public GetStaged(key: string): T {
+	public getStaged(key: string): T {
 		let result: T;
-		result = this._stage.Has(key) ? this._stage.Get(key).Data : null;
+		result = this._stage.has(key) ? this._stage.get(key).Data : null;
 		return result;
 	}
-	public Stage(key: string, data: T) {
-		this._stage.Set(key, new CacheObject<T>().Init({Key: key, Data: data}));
+	public stage(key: string, data: T) {
+		this._stage.set(key, new CacheObject<T>().init({Key: key, Data: data}));
 	}
-	public Publish(key: string) {
-		if (this._stage.Has(key)) {
-			this.Add(key, this._stage.Get(key).Data);
-			this._stage.Delete(key);
+	public publish(key: string) {
+		if (this._stage.has(key)) {
+			this.add(key, this._stage.get(key).Data);
+			this._stage.delete(key);
 		}
 
 	}
-	public Remove(key: string) {
-		if (this.Hit(key)) {
-			this._data.Delete(key);
-			this._order.Remove(key);
+	public remove(key: string) {
+		if (this.hit(key)) {
+			this._data.delete(key);
+			this._order.remove(key);
 		}
 
 	}
-	public Cache(obj: Object, fnName: string, keyFn?: (...args: any[]) => string): void {
+	public cache(obj: Object, fnName: string, keyFn?: (...args: any[]) => string): void {
 		if (keyFn === undefined) {
 			keyFn = function(...args: any[]): string {
-				return Util.Md5(Arr.Reduce(args, (acc: string, cur: any) => acc += JSON.stringify(cur))) as string;
+				return Util.md5(Arr.reduce(args, (acc: string, cur: any) => acc += JSON.stringify(cur))) as string;
 			};
 		}
 		const proxyFn = (superFn: Function, ...args: any[]) => {
 			const key = keyFn(...args);
-			if (key !== null && this.Hit(key)) {
-				return this.Get(key);
+			if (key !== null && this.hit(key)) {
+				return this.get(key);
 			}
 			const result = superFn(...args);
 			if (key !== null) {
-				this.Add(key, result);
+				this.add(key, result);
 			}
 			return result;
 		};
 
-		Util.ProxyFn(obj as any, fnName, proxyFn, false);
+		Util.proxyFn(obj as any, fnName, proxyFn, false);
 	}
-	public Clear() {
-		this._data.Clear();
-		this._order.Clear();
-		this._stage.Clear();
+	public clear() {
+		this._data.clear();
+		this._order.clear();
+		this._stage.clear();
 	}
-	private Add(key: string, data: T) {
-		if (this.Hit(key)) {
-			this._order.Remove(key);
+	private add(key: string, data: T) {
+		if (this.hit(key)) {
+			this._order.remove(key);
 		}
-		this._data.Set(key, new CacheObject<T>().Init({Key: key, Data: data}));
-		this._order.Add(key);
-		this.Trim();
+		this._data.set(key, new CacheObject<T>().init({Key: key, Data: data}));
+		this._order.add(key);
+		this.trim();
 	}
 
-	private Trim() {
-		while ((this._order.Count > this._size)) {
-			this._data.Delete(this._order.Get(0));
-			this._order.Shift();
+	private trim() {
+		while ((this._order.count > this._size)) {
+			this._data.delete(this._order.get(0));
+			this._order.shift();
 		}
 	}
 }

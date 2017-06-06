@@ -7,34 +7,34 @@ var Stack = (function () {
         this._pos = 0;
         this._array = new Array(size);
     }
-    Object.defineProperty(Stack.prototype, "Values", {
+    Object.defineProperty(Stack.prototype, "values", {
         get: function () {
-            return Arr.Slice(this._array, 0, this._pos);
+            return Arr.slice(this._array, 0, this._pos);
         },
         enumerable: true,
         configurable: true
     });
-    Object.defineProperty(Stack.prototype, "Depth", {
+    Object.defineProperty(Stack.prototype, "depth", {
         get: function () {
             return this._pos;
         },
         enumerable: true,
         configurable: true
     });
-    Stack.prototype.Push = function (obj) {
+    Stack.prototype.push = function (obj) {
         this._array[this._pos] = obj;
         this._pos++;
     };
-    Stack.prototype.Pop = function () {
+    Stack.prototype.pop = function () {
         var result = null;
         if (this._pos !== 0) {
             result = this._array[--this._pos];
         }
         return result;
     };
-    Stack.prototype.ToList = function () {
+    Stack.prototype.toList = function () {
         var result = new List();
-        return new List(this.Values);
+        return new List(this.values);
     };
     return Stack;
 }());

@@ -7,18 +7,18 @@ export declare class BaseTree<T> implements ITreeNode<T> {
 }
 export declare const _InitableTree: typeof BaseTree & ICtor<IInitable<typeof BaseTree>>;
 export declare class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>> {
-    static FromObject<T>(obj: any): Tree<T>;
+    static fromObject<T>(obj: any): Tree<T>;
     constructor();
-    private NewId();
-    InsertAt(pos: number, data: T): void;
-    Add(data: T): void;
-    Remove(): void;
-    Prune(): Tree<T>;
-    Reduce(fn: (acc: any, cur: T) => any, start?: any): any;
-    Clone(): Tree<T>;
-    private DuplicateNode();
-    Filter(condition: (node: ITreeNode<T>) => boolean): Tree<T>;
-    Select(condition?: (node: ITreeNode<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
-    Find(condition: (data: T) => boolean): ITreeNode<T>;
-    Contains(condition: (data: T) => boolean): boolean;
+    private newId();
+    insertAt(pos: number, data: T): void;
+    add(data: T): void;
+    remove(): void;
+    prune(): Tree<T>;
+    reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+    clone(): Tree<T>;
+    private duplicateNode();
+    filter(condition: (node: ITreeNode<T>) => boolean): Tree<T>;
+    select(condition?: (node: ITreeNode<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
+    find(condition: (data: T) => boolean): ITreeNode<T>;
+    contains(condition: (data: T) => boolean): boolean;
 }

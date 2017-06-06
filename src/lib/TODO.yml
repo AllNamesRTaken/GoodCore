@@ -1,0 +1,4 @@
+TODO
+- Implement NotEquals in Structs
+- Write tests for Zero and IsZero
+- Write tests for Arr.BinarySearch

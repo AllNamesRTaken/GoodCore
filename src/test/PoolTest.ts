@@ -11,13 +11,13 @@ describe("Pool",
 				const PObj = Poolable(Base);
 				class Obj extends PObj {}
 				const pool = new Pool(Obj);
-				const first = pool.Get();
+				const first = pool.get();
 				first.should.be.instanceOf(Obj);
-				const second = pool.Get();
+				const second = pool.get();
 				second.should.be.instanceOf(Obj);
 				first.should.not.equal(second);
-				first.Release();
-				const third = pool.Get();
+				first.release();
+				const third = pool.get();
 				third.should.equal(first);
 			});
 		it("Getting more than growthStep increases the pool by growthStep",
@@ -26,16 +26,16 @@ describe("Pool",
 				const PObj = Poolable(Base);
 				class Obj extends PObj {}
 				const pool = new Pool(Obj, 2);
-				pool.Size.should.equal(2);
-				pool.Available.should.equal(2);
-				const first = pool.Get();
-				const second = pool.Get();
-				const third = pool.Get();
-				pool.Size.should.equal(4);
-				pool.Available.should.equal(1);
-				third.Release();
-				first.Release();
-				pool.Available.should.equal(3);
+				pool.size.should.equal(2);
+				pool.available.should.equal(2);
+				const first = pool.get();
+				const second = pool.get();
+				const third = pool.get();
+				pool.size.should.equal(4);
+				pool.available.should.equal(1);
+				third.release();
+				first.release();
+				pool.available.should.equal(3);
 			});
 	}
 );
