@@ -1,4 +1,4 @@
-export { Vec2 as Vec2 } from "./struct/Vec2";
+export { Vec2 as Vec2, Vec2Const as Vec2Const } from "./struct/Vec2";
 export { Range2 as Range2 } from "./struct/Range2";
 export { Rect as Rect } from "./struct/Rect";
 export { List as List } from "./struct/List";
@@ -17,6 +17,6 @@ export { Poolable as Poolable } from "./standard/mixins/Poolable";
 export { Initable as Initable } from "./standard/mixins/Initable";
 export { Pool as Pool } from "./standard/Pool";
 export { integrate as integrate } from "./Integration";
-export { MocData as MocData } from "./MocData";
+export { MocData as MocData, MocDataType as MocDataType } from "./MocData";
 export { KeyValuePair as KeyValuePair } from "./struct/KeyValuePair";
 //# sourceMappingURL=index.js.map
