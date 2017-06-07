@@ -1,4 +1,4 @@
-import { Vec2 } from "../lib/struct/Vec2";
+import { Vec2, Vec2Const } from "../lib/struct/Vec2";
 // tslint:disable-next-line:ordered-imports
 import {should} from "chai";
 should();
@@ -71,8 +71,8 @@ describe("Vec2",
 		it("Equal compares 2 vectors with Epislon fault tolerance",
 			function(){
 				const v1 = new Vec2(2, 3);
-				const v2 = new Vec2(2, 3 + Vec2.EPSILON);
-				const v3 = new Vec2(2, 3 + 2 * Vec2.EPSILON);
+				const v2 = new Vec2(2, 3 + Vec2Const.EPSILON);
+				const v3 = new Vec2(2, 3 + 2 * Vec2Const.EPSILON);
 				v1.almostEquals(v2).should.be.true;
 				v1.almostEquals(v3).should.be.false;
 			});

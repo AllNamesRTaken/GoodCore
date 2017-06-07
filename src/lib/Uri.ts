@@ -1,5 +1,5 @@
 import { Global } from "./Global";
-export class _Uri {
+export class Uri {
 	private _a: HTMLAnchorElement = null;
 	public hash = "";
 	public pathName = "";
@@ -33,5 +33,3 @@ export class _Uri {
 		}
 	}
 }
-
-export let Uri = new _Uri();

@@ -1,19 +1,18 @@
-export declare class _Obj {
+export declare class Obj {
     constructor();
-    destroy(obj: any): void;
-    wipe(obj: any): void;
-    null(obj: any): void;
-    isNullOrUndefined(...args: any[]): boolean;
-    isNotNullOrUndefined(...args: any[]): boolean;
-    isClassOf(a: any, b: any): boolean;
-    isSameClass(a: any, b: any): boolean;
-    inherits(a: any, b: any): boolean;
-    equals(a: any, b: any): boolean;
-    isDifferent(a: any, b: any): boolean;
-    shallowCopy(obj: any): any;
-    clone<T>(obj: T): T;
-    cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
-    mixin(target: any, exclude: any, ...sources: any[]): any;
-    setProperties(target: any, values: any): void;
+    static destroy(obj: any): void;
+    static wipe(obj: any): void;
+    static null(obj: any): void;
+    static isNullOrUndefined(...args: any[]): boolean;
+    static isNotNullOrUndefined(...args: any[]): boolean;
+    static isClassOf(a: any, b: any): boolean;
+    static isSameClass(a: any, b: any): boolean;
+    static inherits(a: any, b: any): boolean;
+    static equals(a: any, b: any): boolean;
+    static isDifferent(a: any, b: any): boolean;
+    static shallowCopy(obj: any): any;
+    static clone<T>(obj: T): T;
+    static cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
+    static mixin(target: any, exclude: any, ...sources: any[]): any;
+    static setProperties(target: any, values: any): void;
 }
-export declare let Obj: _Obj;

@@ -1,28 +1,30 @@
 import { Obj } from "./Obj";
 import { Test } from "./Test";
 
-export class _Array {
-	private _int: number;
+class ArrayState {
+	public static _int: number;
+}
+export class Arr {
 	public constructor() {
 
 	}
 
-	public flatten<T>(src: any[]): T[] {
-		return this.flattenInner<T>(src);
+	public static flatten<T>(src: any[]): T[] {
+		return Arr.flattenInner<T>(src);
 	}
-	private flattenInner<T>(src: any[], result: T[] = []): T[] {
+	private static flattenInner<T>(src: any[], result: T[] = []): T[] {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
 			if (Test.isArray(src[i])) {
-				this.flattenInner<T>(src[i], result);
+				Arr.flattenInner<T>(src[i], result);
 			} else {
 				result.push(src[i]);
 			}
 		}
 		return result;
 	}
-	public reverse<T>(array: T[]): T[] {
+	public static reverse<T>(array: T[]): T[] {
 		let left = null;
 		let right = null;
 		const length = array.length;
@@ -34,11 +36,11 @@ export class _Array {
 		}
 		return array;
 	}
-	public concat(...arrs: any[]): any[] {
+	public static concat(...arrs: any[]): any[] {
 		const result = Array.prototype.concat.apply([], arrs);
 		return result;
 	}
-	public slice<T>(src: T[], from: number = 0, count: number = Infinity): T[] {
+	public static slice<T>(src: T[], from: number = 0, count: number = Infinity): T[] {
 		let len = Math.min(src.length - from, count);
 		if (len < 0) {
 			len = 0;
@@ -50,7 +52,7 @@ export class _Array {
 		}
 		return result;
 	}
-	public append<T>(arr: T[], values: T[]): void {
+	public static append<T>(arr: T[], values: T[]): void {
 		let index = -1;
 		const
 			length = values.length,
@@ -61,7 +63,7 @@ export class _Array {
 			arr[offset + index] = values[index];
 		}
 	}
-	public removeAt(arr: any[], index: number): void {
+	public static removeAt(arr: any[], index: number): void {
 		if (index !== -1 && index < arr.length) {
 			const len = arr.length;
 			let i = index;
@@ -71,7 +73,7 @@ export class _Array {
 			arr.length -= 1;
 		}
 	}
-	public indexOfElement(src: any[], el: any): number {
+	public static indexOfElement(src: any[], el: any): number {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
@@ -81,11 +83,11 @@ export class _Array {
 		}
 		return -1;
 	}
-	public remove(arr: any[], el: any): void {
-		const start = this.indexOfElement(arr, el);
-		this.removeAt(arr, start);
+	public static remove(arr: any[], el: any): void {
+		const start = Arr.indexOfElement(arr, el);
+		Arr.removeAt(arr, start);
 	}
-	public indexOf(src: any[], fn: (el: any) => boolean): number {
+	public static indexOf(src: any[], fn: (el: any) => boolean): number {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
@@ -95,11 +97,11 @@ export class _Array {
 		}
 		return -1;
 	}
-	public removeOneByFn(arr: any[], fn: (el: any) => boolean): void {
-		const start = this.indexOf(arr, fn);
-		this.removeAt(arr, start);
+	public static removeOneByFn(arr: any[], fn: (el: any) => boolean): void {
+		const start = Arr.indexOf(arr, fn);
+		Arr.removeAt(arr, start);
 	}
-	public shallowCopy<T>(src: T[]): T[] {
+	public static shallowCopy<T>(src: T[]): T[] {
 		let i = -1;
 		const len = src.length;
 		const result = new Array(len);
@@ -108,7 +110,7 @@ export class _Array {
 		}
 		return result;
 	}
-	public shallowCopyInto<T>(src: T[], target: T[]): void {
+	public static shallowCopyInto<T>(src: T[], target: T[]): void {
 		let i = -1;
 		const len = src.length;
 		target.length = len;
@@ -116,7 +118,7 @@ export class _Array {
 			target[i] = src[i];
 		}
 	}
-	public shallowFill<T>(src: T[], target: T[], at: number = 0): void {
+	public static shallowFill<T>(src: T[], target: T[], at: number = 0): void {
 		let i = -1;
 		const len = src.length;
 		if (target.length < len + at) {
@@ -126,7 +128,7 @@ export class _Array {
 			target[at + i] = src[i];
 		}
 	}
-	public deepCopy<T>(src: T[]): T[] {
+	public static deepCopy<T>(src: T[]): T[] {
 		let i = -1;
 		const len = src.length;
 		const result = new Array(len);
@@ -135,7 +137,7 @@ export class _Array {
 		}
 		return result;
 	}
-	public deepCopyInto<T>(src: T[], target: T[]): void {
+	public static deepCopyInto<T>(src: T[], target: T[]): void {
 		let i = -1;
 		const len = src.length;
 		target.length = len;
@@ -143,7 +145,7 @@ export class _Array {
 			target[i] = (Obj.clone(src[i]));
 		}
 	}
-	public deepFill<T>(src: T[], target: T[], at: number = 0): void {
+	public static deepFill<T>(src: T[], target: T[], at: number = 0): void {
 		let i = -1;
 		const len = src.length;
 		if (target.length < len + at) {
@@ -153,7 +155,7 @@ export class _Array {
 			target[at + i] = (Obj.clone(src[i]));
 		}
 	}
-	public filter<T>(src: T[], fn: (el: T, i?: number) => boolean): T[] {
+	public static filter<T>(src: T[], fn: (el: T, i?: number) => boolean): T[] {
 		const result: T[] = [];
 		let i = -1;
 		const len = src.length;
@@ -165,7 +167,7 @@ export class _Array {
 		}
 		return result;
 	}
-	public filterInto<T>(src: T[], target: T[], fn: (el: T, i?: number) => boolean): void {
+	public static filterInto<T>(src: T[], target: T[], fn: (el: T, i?: number) => boolean): void {
 		let i = -1;
 		let j = 0;
 		const len = src.length;
@@ -183,7 +185,7 @@ export class _Array {
 		}
 		target.length = j;
 	}
-	public map<S, T>(src: S[], fn: (el: S, i?: number) => T): T[] {
+	public static map<S, T>(src: S[], fn: (el: S, i?: number) => T): T[] {
 		let i = -1;
 		const len = src.length;
 		const result = new Array<T>(len);
@@ -192,7 +194,7 @@ export class _Array {
 		}
 		return result;
 	}
-	public mapInto<S, T>(src: S[], target: T[], fn: (el: S, i?: number) => T): void {
+	public static mapInto<S, T>(src: S[], target: T[], fn: (el: S, i?: number) => T): void {
 		let i = -1;
 		const len = src.length;
 		target.length = len;
@@ -200,7 +202,7 @@ export class _Array {
 			target[i] = fn(src[i], i);
 		}
 	}
-	public reduce<T>(src: T[], fn: (acc: any | number, cur: T) => any | number, start: any | number = 0): any | number {
+	public static reduce<T>(src: T[], fn: (acc: any | number, cur: T) => any | number, start: any | number = 0): any | number {
 		let i = -1;
 		const len = src.length;
 		let acc: any | number = start;
@@ -209,14 +211,14 @@ export class _Array {
 		}
 		return acc;
 	}
-	public forEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
+	public static forEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
 			fn(src[i], i);
 		}
 	}
-	public until<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
+	public static until<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
@@ -226,13 +228,13 @@ export class _Array {
 			fn(src[i], i);
 		}
 	}
-	public reverseForEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
+	public static reverseForEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
 		let i = src.length;
 		while (--i >= 0) {
 			fn(src[i], i);
 		}
 	}
-	public reverseUntil<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
+	public static reverseUntil<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
 		let i = src.length;
 		while (--i >= 0) {
 			if (test(src[i], i)) {
@@ -241,7 +243,7 @@ export class _Array {
 			fn(src[i], i);
 		}
 	}
-	public some<T>(src: T[], filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
+	public static some<T>(src: T[], filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
 		let i = -1;
 		const len = src.length;
 		while (++i < len) {
@@ -251,7 +253,7 @@ export class _Array {
 			}
 		}
 	}
-	public insertAt<T>(src: T[], pos: number, v: T): void {
+	public static insertAt<T>(src: T[], pos: number, v: T): void {
 		if (pos > 0) {
 			let i = src.length;
 			while (--i >= pos) {
@@ -260,7 +262,7 @@ export class _Array {
 			src[i + 1] = v;
 		}
 	}
-	public binarySearch<T>(src: T[], cmp: (el: T) => number): number {
+	public static binarySearch<T>(src: T[], cmp: (el: T) => number): number {
 		let lo = 0,
 			hi = src.length - 1,
 			mid,
@@ -280,5 +282,3 @@ export class _Array {
 		return -1;
 	}
 }
-
-export let Arr = new _Array();

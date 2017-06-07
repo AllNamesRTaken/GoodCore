@@ -6,46 +6,47 @@ export enum Sides {
 	Left,
 	Right
 }
-export class _Dom {
-	public Sides = Sides;
-
-	private _window: Window;
-	private _document: Document;
-	private _el: Element;
+class DomState {
+	public static Sides = Sides;
+	public static _window: Window;
+	public static _document: Document;
+	public static _el: Element;
+}
+export class Dom {
 
 	constructor() {
 		if ( Global.window !== null) {
-			this._window = Global.window;
-			this._document = this._window.document;
-			this._el = this._document.createElement("div");
+			DomState._window = Global.window;
+			DomState._document = DomState._window.document;
+			DomState._el = DomState._document.createElement("div");
 		}
 	}
-	public init(win: Window) {
+	public static init(win: Window) {
 		Global.window = win;
-		this._window = Global.window;
-		this._document = this._window.document;
-		this._el = this._document.createElement("div");
+		DomState._window = Global.window;
+		DomState._document = DomState._window.document;
+		DomState._el = DomState._document.createElement("div");
 	}
-	public toArray<T>(a: ArrayLike<T>): T[] {
+	public static toArray<T>(a: ArrayLike<T>): T[] {
 		return Array.prototype.slice.call(a);
 	}
-	public create(html: string, attr?: any): HTMLElement {
+	public static create(html: string, attr?: any): HTMLElement {
 		// tslint:disable-next-line:prefer-const
 		let result: HTMLElement, keys: string[], i: number, k: number, styles: any, styleKeys: string[];
-		this._el.innerHTML = html;
-		result = this._el.children[0] as HTMLElement;
+		DomState._el.innerHTML = html;
+		result = DomState._el.children[0] as HTMLElement;
 		this.setAttr(result, attr);
-		this.clear(this._el);
+		this.clear(DomState._el);
 		//unsafe cast
 		return result;
 	}
-	public outerHTML(el: HTMLElement): string {
-		this._el.appendChild(el);
-		const result = this._el.innerHTML;
-		this.clear(this._el);
+	public static outerHTML(el: HTMLElement): string {
+		DomState._el.appendChild(el);
+		const result = DomState._el.innerHTML;
+		this.clear(DomState._el);
 		return result;
 	}
-	public setAttr(_el: HTMLElement | String, attr: any) {
+	public static setAttr(_el: HTMLElement | String, attr: any) {
 		let el: HTMLElement;
 		if (typeof (_el) === "string") {
 			el = this.get(_el);
@@ -75,48 +76,48 @@ export class _Dom {
 			}
 		}
 	}
-	public remove(element: Element): HTMLElement {
+	public static remove(element: Element): HTMLElement {
 		return element.parentNode === undefined ? null : element.parentNode.removeChild(element) as HTMLElement;
 	}
-	public replace(src: HTMLElement, target: HTMLElement): HTMLElement {
+	public static replace(src: HTMLElement, target: HTMLElement): HTMLElement {
 		let result: HTMLElement;
 		if (src.parentNode) {
 			src.parentNode.replaceChild(target, src) as HTMLElement;
 		}
 		return result;
 	}
-	public clear(element: Element) {
+	public static clear(element: Element) {
 		let i = element.children.length;
 		while (i--) {
 			element.removeChild(element.children[i]);
 		}
 	}
-	public get(id: string): HTMLElement {
-		let result = this._document.getElementById(id) as HTMLElement;
+	public static get(id: string): HTMLElement {
+		let result = DomState._document.getElementById(id) as HTMLElement;
 		if (result === null) {
 			switch (id) {
 				case "body":
-					result = this._document.body;
+					result = DomState._document.body;
 					break;
 			}
 		}
 		return result;
 	}
-	public find(selector: string): HTMLElement {
-		return this._document.querySelector(selector) as HTMLElement;
+	public static find(selector: string): HTMLElement {
+		return DomState._document.querySelector(selector) as HTMLElement;
 	}
-	public findAll(selector: string, root?: HTMLElement) {
-		return this.toArray((root || this._document).querySelectorAll(selector));
+	public static findAll(selector: string, root?: HTMLElement) {
+		return this.toArray((root || DomState._document).querySelectorAll(selector));
 	}
-	public children(root: HTMLElement, selector?: string) {
-		const children = this.toArray((root || this._document).children);
+	public static children(root: HTMLElement, selector?: string) {
+		const children = this.toArray((root || DomState._document).children);
 		return selector === undefined ? children : children.filter(this.is.bind(this, selector));
 	}
-	public position(el: HTMLElement, x: number, y: number): void {
+	public static position(el: HTMLElement, x: number, y: number): void {
 		el.style.top = y + "px";
 		el.style.left = x + "px";
 	}
-	public is(selector: string, element: HTMLElement): boolean {
+	public static is(selector: string, element: HTMLElement): boolean {
 		let result = false;
 		if (element.matches) {
 			result = element.matches(selector);
@@ -133,12 +134,10 @@ export class _Dom {
 		}
 		return result;
 	}
-	public setStylesExplicitly(element: HTMLElement, ...styles: string[]) {
-		const comp = this._window.getComputedStyle(element);
+	public static setStylesExplicitly(element: HTMLElement, ...styles: string[]) {
+		const comp = DomState._window.getComputedStyle(element);
 		for (const style of styles) {
 			(element.style as any)[style] = (comp as any)[style];
 		}
 	}
 }
-
-export let Dom = new _Dom();

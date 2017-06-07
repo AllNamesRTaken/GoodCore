@@ -1,18 +1,18 @@
 import { Arr } from "./Arr";
 import { Test } from "./Test";
 
-export class _Obj {
+export class Obj {
 	public constructor() {
 
 	}
-	public destroy(obj: any): void {
+	public static destroy(obj: any): void {
 		if (obj.Destroy !== undefined) {
 			obj.Destroy();
 		} else {
 			this.null(obj);
 		}
 	}
-	public wipe(obj: any): void {
+	public static wipe(obj: any): void {
 		const keys = Object.keys(obj);
 		let i = -1;
 		const len = keys.length;
@@ -20,7 +20,7 @@ export class _Obj {
 			delete obj[keys[i]];
 		}
 	}
-	public null(obj: any): void {
+	public static null(obj: any): void {
 		if (obj.constructor.prototype.Clear !== undefined) {
 			obj.Clear();
 		} else {
@@ -34,7 +34,7 @@ export class _Obj {
 			}
 		}
 	}
-	public isNullOrUndefined(...args: any[]): boolean {
+	public static isNullOrUndefined(...args: any[]): boolean {
 		const len = args.length;
 		let i = -1;
 		let a: any;
@@ -45,19 +45,19 @@ export class _Obj {
 		}
 		return result;
 	}
-	public isNotNullOrUndefined(...args: any[]): boolean {
+	public static isNotNullOrUndefined(...args: any[]): boolean {
 		return !this.isNullOrUndefined(...args);
 	}
-	public isClassOf(a: any, b: any): boolean {
+	public static isClassOf(a: any, b: any): boolean {
 		return this.isNotNullOrUndefined(a, b) && a instanceof b.constructor;
 	}
-	public isSameClass(a: any, b: any): boolean {
+	public static isSameClass(a: any, b: any): boolean {
 		return this.isNotNullOrUndefined(a, b) && a.constructor === b.constructor;
 	}
-	public inherits(a: any, b: any): boolean {
+	public static inherits(a: any, b: any): boolean {
 		return this.isClassOf(a, b) && !this.isSameClass(a, b);
 	}
-	public equals(a: any, b: any): boolean {
+	public static equals(a: any, b: any): boolean {
 		let result = a === b;
 		if (a !== b && (a instanceof Object) && this.isSameClass(a, b)) {
 			if (Test.isArray(a)) {
@@ -98,10 +98,10 @@ export class _Obj {
 		}
 		return result;
 	}
-	public isDifferent(a: any, b: any): boolean {
+	public static isDifferent(a: any, b: any): boolean {
 		return !this.equals(a, b);
 	}
-	public shallowCopy(obj: any): any {
+	public static shallowCopy(obj: any): any {
 		const keys = Object.keys(obj);
 		const result: any = {};
 		let i = -1;
@@ -112,7 +112,7 @@ export class _Obj {
 		}
 		return result;
 	}
-	public clone<T>(obj: T): T {
+	public static clone<T>(obj: T): T {
 		let result: any;
 		if (!(obj instanceof Object)) {
 			result = obj;
@@ -140,7 +140,7 @@ export class _Obj {
 		}
 		return result;
 	}
-	public cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
+	public static cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
 		if (Test.isArray(target)) {
 			//Array
 			const arrS = src as S[];
@@ -183,7 +183,7 @@ export class _Obj {
 		}
 		return target;
 	}
-	public mixin(target: any = {}, exclude: any, ...sources: any[]): any {
+	public static mixin(target: any = {}, exclude: any, ...sources: any[]): any {
 		const 
 			result = target,
 			len = sources ? sources.length : 0;
@@ -220,7 +220,7 @@ export class _Obj {
 		}
 		return result;
 	}
-	public setProperties(target: any, values: any): void {
+	public static setProperties(target: any, values: any): void {
 		const keys = Object.keys(values);
 		let key: string;
 		let i = -1;
@@ -233,5 +233,3 @@ export class _Obj {
 		}
 	}
 }
-
-export let Obj = new _Obj();

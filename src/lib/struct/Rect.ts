@@ -4,8 +4,6 @@ import { IVec2 } from "./IVec2";
 import { Range2 } from "./Range2";
 import { Vec2 } from "./Vec2";
 
-const Sign = Calc.sign;
-
 export class Rect implements IRect {
 	public start: Vec2;
 	public stop: Vec2;

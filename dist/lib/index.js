@@ -18,6 +18,5 @@ export { Initable as Initable } from "./standard/mixins/Initable";
 export { Pool as Pool } from "./standard/Pool";
 export { integrate as integrate } from "./Integration";
 export { MocData as MocData } from "./MocData";
-export { Cache as Cache } from "./standard/Cache";
 export { KeyValuePair as KeyValuePair } from "./struct/KeyValuePair";
 //# sourceMappingURL=index.js.map

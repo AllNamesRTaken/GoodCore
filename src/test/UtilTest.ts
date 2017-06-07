@@ -3,7 +3,7 @@ import { jsdom } from "jsdom";
 import { MocData } from "../lib/MocData";
 import { Test } from "../lib/Test";
 import { Timer } from "../lib/Timer";
-import { _Util, Util } from "../lib/Util";
+import { Util } from "../lib/Util";
 should();
 
 describe("Util",
@@ -12,7 +12,7 @@ describe("Util",
 			function() {
 				// this.window = jsdom().defaultView;
 				// this.document = this.window.document;
-				// Util.Init(this.window);
+				Util.init();
 			});
 		it("Assert writes to console.error and PipeOut catches it.",
 			function() {

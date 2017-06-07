@@ -1,6 +1,6 @@
 import {should} from "chai";
 import { Arr } from "../lib/Arr";
-import { MocData } from "../lib/MocData";
+import { MocData, MocDataType } from "../lib/MocData";
 import { Obj } from "../lib/Obj";
 import { Util } from "../lib/Util";
 should();
@@ -9,7 +9,7 @@ describe("Arrays",
 	function() {
 		before(
 			function() {
-				this.longArr = MocData.numericArray(100, MocData.Type.RandomInt);
+				this.longArr = MocData.numericArray(100, MocDataType.RandomInt);
 				this.arr1 = [1, 4, 7, 2] as number[];
 				this.arr2 = [4, 8, 1, 9] as number[];
 				this.arr3 = [{a: 1}, {a: 2}] as any[];

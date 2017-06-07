@@ -1,14 +1,12 @@
 import { List } from "./List";
-export declare class BaseTree<T> implements ITreeNode<T> {
+export declare class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>> {
     Id: string;
     Parent: Tree<T>;
     Children: List<Tree<T>>;
     Data: T;
-}
-export declare const _InitableTree: typeof BaseTree & ICtor<IInitable<typeof BaseTree>>;
-export declare class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>> {
     static fromObject<T>(obj: any): Tree<T>;
     constructor();
+    init(obj: Object): any;
     private newId();
     insertAt(pos: number, data: T): void;
     add(data: T): void;

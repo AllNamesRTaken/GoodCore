@@ -1,12 +1,7 @@
-export declare class _Timer {
-    private _last;
-    private _start;
-    private _time;
-    private _hasPerformance;
-    readonly time: number;
+export declare class Timer {
+    static readonly time: number;
     constructor();
-    now(): number;
-    start(): number;
-    stop(): number;
+    static now(): number;
+    static start(): number;
+    static stop(): number;
 }
-export declare let Timer: _Timer;

@@ -1,76 +1,68 @@
 import { Arr } from "./Arr";
 import { Test } from "./Test";
-var _Obj = (function () {
-    function _Obj() {
+export class Obj {
+    constructor() {
     }
-    _Obj.prototype.destroy = function (obj) {
+    static destroy(obj) {
         if (obj.Destroy !== undefined) {
             obj.Destroy();
         }
         else {
             this.null(obj);
         }
-    };
-    _Obj.prototype.wipe = function (obj) {
-        var keys = Object.keys(obj);
-        var i = -1;
-        var len = keys.length;
+    }
+    static wipe(obj) {
+        const keys = Object.keys(obj);
+        let i = -1;
+        const len = keys.length;
         while (++i < len) {
             delete obj[keys[i]];
         }
-    };
-    _Obj.prototype.null = function (obj) {
+    }
+    static null(obj) {
         if (obj.constructor.prototype.Clear !== undefined) {
             obj.Clear();
         }
         else {
-            var keys = Object.keys(obj);
-            var key = null;
-            var i = -1;
-            var len = keys.length;
+            const keys = Object.keys(obj);
+            let key = null;
+            let i = -1;
+            const len = keys.length;
             while (++i < len) {
                 key = keys[i];
                 obj[key] = null;
             }
         }
-    };
-    _Obj.prototype.isNullOrUndefined = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        var len = args.length;
-        var i = -1;
-        var a;
-        var result = false;
+    }
+    static isNullOrUndefined(...args) {
+        const len = args.length;
+        let i = -1;
+        let a;
+        let result = false;
         while (!result && ++i < len) {
             a = args[i];
             result = a === undefined || a === null;
         }
         return result;
-    };
-    _Obj.prototype.isNotNullOrUndefined = function () {
-        var args = [];
-        for (var _i = 0; _i < arguments.length; _i++) {
-            args[_i] = arguments[_i];
-        }
-        return !this.isNullOrUndefined.apply(this, args);
-    };
-    _Obj.prototype.isClassOf = function (a, b) {
+    }
+    static isNotNullOrUndefined(...args) {
+        return !this.isNullOrUndefined(...args);
+    }
+    static isClassOf(a, b) {
         return this.isNotNullOrUndefined(a, b) && a instanceof b.constructor;
-    };
-    _Obj.prototype.isSameClass = function (a, b) {
+    }
+    static isSameClass(a, b) {
         return this.isNotNullOrUndefined(a, b) && a.constructor === b.constructor;
-    };
-    _Obj.prototype.inherits = function (a, b) {
+    }
+    static inherits(a, b) {
         return this.isClassOf(a, b) && !this.isSameClass(a, b);
-    };
-    _Obj.prototype.equals = function (a, b) {
-        var result = a === b;
+    }
+    static equals(a, b) {
+        let result = a === b;
         if (a !== b && (a instanceof Object) && this.isSameClass(a, b)) {
             if (Test.isArray(a)) {
-                var len = a.length;
-                var i = 0;
+                const len = a.length;
+                let i = 0;
                 result = len === b.length;
                 if (result) {
                     for (; i < len; i += 1) {
@@ -85,11 +77,11 @@ var _Obj = (function () {
                 result = a.Equals(b);
             }
             else {
-                var keys = Object.keys(a);
-                var key = null;
+                const keys = Object.keys(a);
+                let key = null;
                 result = true;
-                var i = -1;
-                var len = keys.length;
+                let i = -1;
+                const len = keys.length;
                 while (++i < len) {
                     key = keys[i];
                     result = this.equals(a[key], b[key]);
@@ -105,23 +97,23 @@ var _Obj = (function () {
             }
         }
         return result;
-    };
-    _Obj.prototype.isDifferent = function (a, b) {
+    }
+    static isDifferent(a, b) {
         return !this.equals(a, b);
-    };
-    _Obj.prototype.shallowCopy = function (obj) {
-        var keys = Object.keys(obj);
-        var result = {};
-        var i = -1;
-        var len = keys.length;
+    }
+    static shallowCopy(obj) {
+        const keys = Object.keys(obj);
+        const result = {};
+        let i = -1;
+        const len = keys.length;
         while (++i < len) {
-            var key = keys[i];
+            const key = keys[i];
             result[key] = obj[key];
         }
         return result;
-    };
-    _Obj.prototype.clone = function (obj) {
-        var result;
+    }
+    static clone(obj) {
+        let result;
         if (!(obj instanceof Object)) {
             result = obj;
         }
@@ -139,24 +131,24 @@ var _Obj = (function () {
         }
         else {
             result = new obj.constructor();
-            var keys = Object.keys(obj);
-            var key = null;
-            var i = -1;
-            var len = keys.length;
+            const keys = Object.keys(obj);
+            let key = null;
+            let i = -1;
+            const len = keys.length;
             while (++i < len) {
                 key = keys[i];
                 result[key] = this.clone(obj[key]);
             }
         }
         return result;
-    };
-    _Obj.prototype.cloneInto = function (src, target) {
+    }
+    static cloneInto(src, target) {
         if (Test.isArray(target)) {
-            var arrS = src;
-            var arrT = target;
-            var len = arrS.length;
+            const arrS = src;
+            const arrT = target;
+            const len = arrS.length;
             arrT.length = len;
-            var i = -1;
+            let i = -1;
             while (++i < len) {
                 if (arrS[i] instanceof Object) {
                     this.cloneInto(arrS[i], arrT[i]);
@@ -167,15 +159,15 @@ var _Obj = (function () {
             }
         }
         else {
-            var keys = Object.keys(src);
-            var key = null;
-            var i = -1;
-            var len = keys.length;
+            const keys = Object.keys(src);
+            let key = null;
+            let i = -1;
+            const len = keys.length;
             while (++i < len) {
                 key = keys[i];
-                var a = src[key];
+                const a = src[key];
                 if (a instanceof Object) {
-                    var b = target[key];
+                    let b = target[key];
                     if (b === undefined || b === null) {
                         if (Test.isArray(a)) {
                             b = target[key] = [];
@@ -194,31 +186,26 @@ var _Obj = (function () {
             }
         }
         return target;
-    };
-    _Obj.prototype.mixin = function (target, exclude) {
-        if (target === void 0) { target = {}; }
-        var sources = [];
-        for (var _i = 2; _i < arguments.length; _i++) {
-            sources[_i - 2] = arguments[_i];
-        }
-        var result = target, len = sources ? sources.length : 0;
-        var i = 0;
+    }
+    static mixin(target = {}, exclude, ...sources) {
+        const result = target, len = sources ? sources.length : 0;
+        let i = 0;
         sources = Arr.flatten(sources);
         for (; i < len; i++) {
-            var src = sources[i];
+            let src = sources[i];
             if (Test.isFunction(src)) {
                 src = src.prototype;
             }
             if (src === undefined) {
                 continue;
             }
-            var keys = Object.keys(src);
-            var key = null;
+            const keys = Object.keys(src);
+            let key = null;
             if (exclude) {
-                var i_1 = -1;
-                var len_1 = keys.length;
-                while (++i_1 < len_1) {
-                    key = keys[i_1];
+                let i = -1;
+                const len = keys.length;
+                while (++i < len) {
+                    key = keys[i];
                     if (exclude.hasOwnProperty(key)) {
                         continue;
                     }
@@ -226,30 +213,27 @@ var _Obj = (function () {
                 }
             }
             else {
-                var i_2 = -1;
-                var len_2 = keys.length;
-                while (++i_2 < len_2) {
-                    key = keys[i_2];
+                let i = -1;
+                const len = keys.length;
+                while (++i < len) {
+                    key = keys[i];
                     target[key] = src[key];
                 }
             }
         }
         return result;
-    };
-    _Obj.prototype.setProperties = function (target, values) {
-        var keys = Object.keys(values);
-        var key;
-        var i = -1;
-        var len = keys.length;
+    }
+    static setProperties(target, values) {
+        const keys = Object.keys(values);
+        let key;
+        let i = -1;
+        const len = keys.length;
         while (++i < len) {
             key = keys[i];
             if (key in target) {
                 target[key] = values[key];
             }
         }
-    };
-    return _Obj;
-}());
-export { _Obj };
-export var Obj = new _Obj();
+    }
+}
 //# sourceMappingURL=Obj.js.map

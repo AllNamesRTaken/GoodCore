@@ -3,7 +3,7 @@
 	    "rootDir": "./src",
 		"outDir": "./dist",
 	    "sourceMap": true,
-	    "target": "es5",
+	    "target": "es6",
 	    "module": "es2015",
 	    "moduleResolution": "node",
 	    "declaration": true,
@@ -19,7 +19,7 @@
 		"listEmittedFiles": false,
 		"lib": [
             "dom",
-            "es5",
+            "es6",
             "es2015.promise",
 			"scripthost"
         ]

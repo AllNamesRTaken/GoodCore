@@ -2,8 +2,8 @@ import { Arr } from "../Arr";
 import { Obj } from "../Obj";
 import { List } from "./List";
 
-const DEFAULT_SIZE = 100;
 export class Stack<T> {
+	public DEFAULT_SIZE = 100;
 	private _array: T[];
 	private _pos: number = 0;
 	public get values(): T[] {
@@ -13,7 +13,10 @@ export class Stack<T> {
 		return this._pos;
 	}
 
-	constructor(size: number = DEFAULT_SIZE) {
+	constructor(size?: number) {
+		if (!size) {
+			size = this.DEFAULT_SIZE;
+		}
 		this._array = new Array<T>(size);
 	}
 	public push(obj: T): void {

@@ -6,14 +6,11 @@ import { Util } from "../Util";
 import { List } from "./List";
 import { Stack } from "./Stack";
 
-export class BaseTree<T> implements ITreeNode<T> {
+export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>> {
 	public Id: string = null;
 	public Parent: Tree<T> = null;
 	public Children: List<Tree<T>> = null;
 	public Data: T = null;
-}
-export const _InitableTree = Initable(BaseTree);
-export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>> {
 	public static fromObject<T>(obj: any): Tree<T> {
 		const parent = (this instanceof Tree) ? this : null;
 		const root = new Tree<T>().init({Data: obj.data as T !== undefined ? obj.data : null, Parent: parent});
@@ -24,10 +21,13 @@ export class Tree<T> extends _InitableTree<T> implements ICloneable<ITreeNode<T>
 	}
 
 	constructor() {
-		super();
 		this.Id = this.newId();
 	}
 
+	public init(obj: Object): any {
+		Obj.setProperties(this, obj);
+		return this as any;
+	}
 	private newId(): any {
 		return Util.newUUID();
 	}

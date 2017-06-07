@@ -154,9 +154,4 @@ export class List<T> implements IList<T> {
 		const result = Obj.equals(this._array, b.values);
 		return result;
 	}
-	// public GetEnumerator = function*(): T {
-	//	 for(let i = 0; i < this.Count; i += 1){
-	//		 yield this._array[i];
-	//	 }
-	// }
 }

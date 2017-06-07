@@ -1,4 +1,4 @@
-export declare class _Uri {
+export declare class Uri {
     private _a;
     hash: string;
     pathName: string;
@@ -11,4 +11,3 @@ export declare class _Uri {
     constructor();
     init(): void;
 }
-export declare let Uri: _Uri;

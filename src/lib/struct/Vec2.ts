@@ -1,14 +1,15 @@
 import { Calc } from "../Calc";
 import { IVec2 } from "./IVec2";
 
+export class Vec2Const {
+	public static EPSILON: number = 1e-8;
+	public static IDENTITY: IVec2 = {x: 1, y: 1};
+	public static X_DIM: IVec2 = {x: 1, y: 0};
+	public static Y_DIM: IVec2 = {x: 0, y: 1};
+}
 export class Vec2 implements IVec2 {
 	public x: number;
 	public y: number;
-
-	public static EPSILON: number = 1e-8;
-	public static IDENTITY: Vec2 = new Vec2(1, 1);
-	public static X_DIM: Vec2 = new Vec2(1, 0);
-	public static Y_DIM: Vec2 = new Vec2(0, 1);
 
 	public get isZero(): boolean {
 		return this.x === 0 && this.y === 0;
@@ -37,8 +38,8 @@ export class Vec2 implements IVec2 {
 		return this;
 	}
 	public toDecimal(): Vec2 {
-		this.x += Vec2.EPSILON;
-		this.y += Vec2.EPSILON;
+		this.x += Vec2Const.EPSILON;
+		this.y += Vec2Const.EPSILON;
 		return this;
 	}
 	public lengthSq(): number { return (this.x * this.x + this.y * this.y); }
@@ -114,7 +115,7 @@ export class Vec2 implements IVec2 {
 		return this.x === target.x && this.y === target.y;
 	}
 	public almostEquals(target: IVec2): boolean {
-		return Math.abs(this.x - target.x) < Vec2.EPSILON && Math.abs(this.y - target.y) < Vec2.EPSILON;
+		return Math.abs(this.x - target.x) < Vec2Const.EPSILON && Math.abs(this.y - target.y) < Vec2Const.EPSILON;
 	}
 
 	public getNormal(isNormalized?: boolean): Vec2 {

@@ -1,11 +1,13 @@
 import { IVec2 } from "./IVec2";
+export declare class Vec2Const {
+    static EPSILON: number;
+    static IDENTITY: IVec2;
+    static X_DIM: IVec2;
+    static Y_DIM: IVec2;
+}
 export declare class Vec2 implements IVec2 {
     x: number;
     y: number;
-    static EPSILON: number;
-    static IDENTITY: Vec2;
-    static X_DIM: Vec2;
-    static Y_DIM: Vec2;
     readonly isZero: boolean;
     constructor(x?: number, y?: number);
     set(src: IVec2): Vec2;

@@ -1,47 +1,44 @@
-export class _Calc {
+export class CalcConst {
 	public static ROTATION_DEGREE_PRECISION: number = 1;
 	public static RADIAN_FACTOR: number = (1 / 360) * (2 * Math.PI);
 	public static DEGREE_FACTOR: number = (1 / (2 * Math.PI) * 360);
-	public static DEG360 = 360 * _Calc.ROTATION_DEGREE_PRECISION;
-	public static ROTATION_LOOKUP: number[][] = (function(): number[][] {
+	public static DEG360 = 360 * CalcConst.ROTATION_DEGREE_PRECISION;
+	public static ROTATION_LOOKUP: number[][] = (function (): number[][] {
 		const lookup: number[][] = [];
-		for (let i = 0; i < 360 * _Calc.ROTATION_DEGREE_PRECISION; i++) {
-			lookup.push([Math.cos(i * _Calc.RADIAN_FACTOR), Math.sin(i * _Calc.RADIAN_FACTOR)]);
+		for (let i = 0; i < 360 * CalcConst.ROTATION_DEGREE_PRECISION; i++) {
+			lookup.push([Math.cos(i * CalcConst.RADIAN_FACTOR), Math.sin(i * CalcConst.RADIAN_FACTOR)]);
 		}
 		return lookup;
 	})();
 
-	public constructor() {
-
-	}
-	public sign(x: number): number {
+}
+export class Calc {
+	public static sign(x: number): number {
 		return typeof x === "number" ? x ? x < 0 ? -1 : 1 : x === x ? 0 : NaN : NaN;
 	}
 
-	public rotationDeg(rotation: number): number[] {
-		let rot = (rotation * _Calc.ROTATION_DEGREE_PRECISION) | 0;
+	public static rotationDeg(rotation: number): number[] {
+		let rot = (rotation * CalcConst.ROTATION_DEGREE_PRECISION) | 0;
 		while (rot < 0) {
-			rot += _Calc.DEG360;
+			rot += CalcConst.DEG360;
 		}
-		while (rot >= _Calc.DEG360) {
-			rot -= _Calc.DEG360;
+		while (rot >= CalcConst.DEG360) {
+			rot -= CalcConst.DEG360;
 		}
-		return _Calc.ROTATION_LOOKUP[rot];
+		return CalcConst.ROTATION_LOOKUP[rot];
 	}
-	public rotationRad(rotation: number): number[] {
-		const rot = rotation * _Calc.DEGREE_FACTOR * _Calc.ROTATION_DEGREE_PRECISION | 0;
-		return this.rotationDeg(rot / _Calc.ROTATION_DEGREE_PRECISION);
+	public static rotationRad(rotation: number): number[] {
+		const rot = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
+		return this.rotationDeg(rot / CalcConst.ROTATION_DEGREE_PRECISION);
 	}
-	public closestRadianRotation(rotation: number): number {
-		let rot = rotation * _Calc.DEGREE_FACTOR * _Calc.ROTATION_DEGREE_PRECISION | 0;
+	public static closestRadianRotation(rotation: number): number {
+		let rot = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
 		while (rot < 0) {
-			rot += _Calc.DEG360;
+			rot += CalcConst.DEG360;
 		}
-		while (rot >= _Calc.DEG360) {
-			rot -= _Calc.DEG360;
+		while (rot >= CalcConst.DEG360) {
+			rot -= CalcConst.DEG360;
 		}
-		return rot * _Calc.RADIAN_FACTOR / _Calc.ROTATION_DEGREE_PRECISION;
+		return rot * CalcConst.RADIAN_FACTOR / CalcConst.ROTATION_DEGREE_PRECISION;
 	}
 }
-
-export let Calc = new _Calc();

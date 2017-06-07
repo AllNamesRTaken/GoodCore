@@ -4,26 +4,21 @@ export declare enum Sides {
     Left = 2,
     Right = 3,
 }
-export declare class _Dom {
-    Sides: typeof Sides;
-    private _window;
-    private _document;
-    private _el;
+export declare class Dom {
     constructor();
-    init(win: Window): void;
-    toArray<T>(a: ArrayLike<T>): T[];
-    create(html: string, attr?: any): HTMLElement;
-    outerHTML(el: HTMLElement): string;
-    setAttr(_el: HTMLElement | String, attr: any): void;
-    remove(element: Element): HTMLElement;
-    replace(src: HTMLElement, target: HTMLElement): HTMLElement;
-    clear(element: Element): void;
-    get(id: string): HTMLElement;
-    find(selector: string): HTMLElement;
-    findAll(selector: string, root?: HTMLElement): Element[];
-    children(root: HTMLElement, selector?: string): Element[];
-    position(el: HTMLElement, x: number, y: number): void;
-    is(selector: string, element: HTMLElement): boolean;
-    setStylesExplicitly(element: HTMLElement, ...styles: string[]): void;
+    static init(win: Window): void;
+    static toArray<T>(a: ArrayLike<T>): T[];
+    static create(html: string, attr?: any): HTMLElement;
+    static outerHTML(el: HTMLElement): string;
+    static setAttr(_el: HTMLElement | String, attr: any): void;
+    static remove(element: Element): HTMLElement;
+    static replace(src: HTMLElement, target: HTMLElement): HTMLElement;
+    static clear(element: Element): void;
+    static get(id: string): HTMLElement;
+    static find(selector: string): HTMLElement;
+    static findAll(selector: string, root?: HTMLElement): Element[];
+    static children(root: HTMLElement, selector?: string): Element[];
+    static position(el: HTMLElement, x: number, y: number): void;
+    static is(selector: string, element: HTMLElement): boolean;
+    static setStylesExplicitly(element: HTMLElement, ...styles: string[]): void;
 }
-export declare let Dom: _Dom;

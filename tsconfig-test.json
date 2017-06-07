@@ -25,6 +25,7 @@
         ]
     },
 	"include": [
+		"./src/**/*.ts",
 		"./src/test/**/*.ts",
 		"./typings/**/*.d.ts"
 	],

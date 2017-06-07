@@ -75,9 +75,11 @@ export class Range2 implements IRange2 {
 	}
 	public first(fn: (p: Vec2) => boolean): Vec2 {
 		const p: Vec2 = new Vec2();
-		for (let i = this.pos.x; i < this.pos.x + this.size.x; i++) {
-			for (let j = this.pos.y; j < this.pos.y + this.size.y; j++) {
-				p.x = i, p.y = j;
+		const x = this.pos.x;
+		const y = this.pos.y;
+		for (let i = 0; i < this.size.x; i++) {
+			for (let j = 0; j < this.size.y; j++) {
+				p.x = i + x, p.y = j + y;
 				if (fn(p)) {
 					return p;
 				}

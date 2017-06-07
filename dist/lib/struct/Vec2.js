@@ -1,60 +1,60 @@
 import { Calc } from "../Calc";
-var Vec2 = (function () {
-    function Vec2(x, y) {
-        if (x === void 0) { x = 0; }
-        if (y === void 0) { y = 0; }
+export class Vec2Const {
+}
+Vec2Const.EPSILON = 1e-8;
+Vec2Const.IDENTITY = { x: 1, y: 1 };
+Vec2Const.X_DIM = { x: 1, y: 0 };
+Vec2Const.Y_DIM = { x: 0, y: 1 };
+export class Vec2 {
+    constructor(x = 0, y = 0) {
         this.angle = this.horizontalAngle;
         this.direction = this.horizontalAngle;
         this.x = x;
         this.y = y;
     }
-    Object.defineProperty(Vec2.prototype, "isZero", {
-        get: function () {
-            return this.x === 0 && this.y === 0;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    Vec2.prototype.set = function (src) {
+    get isZero() {
+        return this.x === 0 && this.y === 0;
+    }
+    set(src) {
         this.x = src.x;
         this.y = src.y;
         return this;
-    };
-    Vec2.prototype.clone = function (out) {
-        var result = out ? out.set(this) : new Vec2(this.x, this.y);
+    }
+    clone(out) {
+        const result = out ? out.set(this) : new Vec2(this.x, this.y);
         return result;
-    };
-    Vec2.prototype.toInt = function () {
+    }
+    toInt() {
         this.x |= 0;
         this.y |= 0;
         return this;
-    };
-    Vec2.prototype.ceil = function () {
+    }
+    ceil() {
         this.x = Math.ceil(this.x);
         this.y = Math.ceil(this.y);
         return this;
-    };
-    Vec2.prototype.toDecimal = function () {
-        this.x += Vec2.EPSILON;
-        this.y += Vec2.EPSILON;
+    }
+    toDecimal() {
+        this.x += Vec2Const.EPSILON;
+        this.y += Vec2Const.EPSILON;
         return this;
-    };
-    Vec2.prototype.lengthSq = function () { return (this.x * this.x + this.y * this.y); };
-    Vec2.prototype.length = function () { return Math.sqrt(this.lengthSq()); };
-    Vec2.prototype.horizontalAngle = function () { return Math.atan2(this.y, this.x); };
-    Vec2.prototype.rotate = function (angle) {
-        var rot = Calc.rotationRad(angle);
-        var nx = (this.x * rot[0]) - (this.y * rot[1]);
-        var ny = (this.x * rot[1]) + (this.y * rot[0]);
+    }
+    lengthSq() { return (this.x * this.x + this.y * this.y); }
+    length() { return Math.sqrt(this.lengthSq()); }
+    horizontalAngle() { return Math.atan2(this.y, this.x); }
+    rotate(angle) {
+        const rot = Calc.rotationRad(angle);
+        const nx = (this.x * rot[0]) - (this.y * rot[1]);
+        const ny = (this.x * rot[1]) + (this.y * rot[0]);
         this.x = nx;
         this.y = ny;
         return this;
-    };
-    Vec2.prototype.rotateAround = function (center, angle) {
+    }
+    rotateAround(center, angle) {
         return this.subtract(center).rotate(angle).add(center);
-    };
-    Vec2.prototype.normalize = function () {
-        var len = this.length();
+    }
+    normalize() {
+        const len = this.length();
         if (len === 0) {
             this.x = 1;
             this.y = 0;
@@ -64,86 +64,80 @@ var Vec2 = (function () {
             this.y = this.y / len;
         }
         return this;
-    };
-    Vec2.prototype.scale = function (vectorB) {
+    }
+    scale(vectorB) {
         this.x = this.x * vectorB.x;
         this.y = this.y * vectorB.y;
         return this;
-    };
-    Vec2.prototype.relate = function (vectorB) {
+    }
+    relate(vectorB) {
         this.x = this.x / vectorB.x;
         this.y = this.y / vectorB.y;
         return this;
-    };
-    Vec2.prototype.multiply = function (scalar) {
+    }
+    multiply(scalar) {
         this.x = this.x * scalar;
         this.y = this.y * scalar;
         return this;
-    };
-    Vec2.prototype.add = function (vectorB) {
+    }
+    add(vectorB) {
         this.x = this.x + vectorB.x;
         this.y = this.y + vectorB.y;
         return this;
-    };
-    Vec2.prototype.subtract = function (vectorB) {
+    }
+    subtract(vectorB) {
         this.x = this.x - vectorB.x;
         this.y = this.y - vectorB.y;
         return this;
-    };
-    Vec2.prototype.invert = function () {
+    }
+    invert() {
         this.x = -this.x;
         this.y = -this.y;
         return this;
-    };
-    Vec2.prototype.equals = function (target) {
+    }
+    equals(target) {
         return this.x === target.x && this.y === target.y;
-    };
-    Vec2.prototype.almostEquals = function (target) {
-        return Math.abs(this.x - target.x) < Vec2.EPSILON && Math.abs(this.y - target.y) < Vec2.EPSILON;
-    };
-    Vec2.prototype.getNormal = function (isNormalized) {
-        var result = this.clone();
+    }
+    almostEquals(target) {
+        return Math.abs(this.x - target.x) < Vec2Const.EPSILON && Math.abs(this.y - target.y) < Vec2Const.EPSILON;
+    }
+    getNormal(isNormalized) {
+        const result = this.clone();
         if (!isNormalized) {
             result.set(this).normalize();
         }
-        var temp = result.x;
+        const temp = result.x;
         result.x = result.y;
         result.y = -temp;
         return result;
-    };
-    Vec2.prototype.dot = function (vectorB) { return (this.x * vectorB.x + this.y * vectorB.y); };
-    Vec2.prototype.cross = function (vectorB) { return ((this.x * vectorB.y) - (this.y * vectorB.x)); };
-    Vec2.prototype.projectOnto = function (vectorB) {
-        var coeff = ((this.x * vectorB.x) + (this.y * vectorB.y)) / ((vectorB.x * vectorB.x) + (vectorB.y * vectorB.y));
+    }
+    dot(vectorB) { return (this.x * vectorB.x + this.y * vectorB.y); }
+    cross(vectorB) { return ((this.x * vectorB.y) - (this.y * vectorB.x)); }
+    projectOnto(vectorB) {
+        const coeff = ((this.x * vectorB.x) + (this.y * vectorB.y)) / ((vectorB.x * vectorB.x) + (vectorB.y * vectorB.y));
         this.x = coeff * vectorB.x;
         this.y = coeff * vectorB.y;
         return this;
-    };
-    Vec2.prototype.verticalAngle = function () { return Math.atan2(this.x, this.y); };
-    Vec2.prototype.rotateBy = function (rotation) {
-        var angle = -this.horizontalAngle() + rotation;
+    }
+    verticalAngle() { return Math.atan2(this.x, this.y); }
+    rotateBy(rotation) {
+        const angle = -this.horizontalAngle() + rotation;
         return this.rotate(angle);
-    };
-    Vec2.prototype.max = function (v) {
+    }
+    max(v) {
         this.x = Math.max(this.x, v.x);
         this.y = Math.max(this.y, v.y);
         return this;
-    };
-    Vec2.prototype.min = function (v) {
+    }
+    min(v) {
         this.x = Math.min(this.x, v.x);
         this.y = Math.min(this.y, v.y);
         return this;
-    };
-    Vec2.prototype.zero = function () {
+    }
+    zero() {
         this.x = 0;
         this.y = 0;
         return this;
-    };
-    return Vec2;
-}());
-export { Vec2 };
-Vec2.EPSILON = 1e-8;
-Vec2.IDENTITY = new Vec2(1, 1);
-Vec2.X_DIM = new Vec2(1, 0);
-Vec2.Y_DIM = new Vec2(0, 1);
+    }
+}
 //# sourceMappingURL=Vec2.js.map

@@ -1,7 +1,7 @@
 import { Arr } from "../Arr";
 import { Obj } from "../Obj";
-var List = (function () {
-    function List(arr) {
+export class List {
+    constructor(arr) {
         if (arr === undefined) {
             this._array = new Array();
         }
@@ -14,46 +14,38 @@ var List = (function () {
             }
         }
     }
-    Object.defineProperty(List.prototype, "values", {
-        get: function () {
-            return this._array;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    List.prototype.get = function (pos) {
+    get values() {
+        return this._array;
+    }
+    get(pos) {
         return this._array[pos];
-    };
-    Object.defineProperty(List.prototype, "count", {
-        get: function () {
-            return this._array.length;
-        },
-        enumerable: true,
-        configurable: true
-    });
-    List.prototype.clear = function () {
+    }
+    get count() {
+        return this._array.length;
+    }
+    clear() {
         this._array.length = 0;
         return this;
-    };
-    List.prototype.add = function (v) {
+    }
+    add(v) {
         this._array.push(v);
         return this;
-    };
-    List.prototype.insertAt = function (pos, v) {
+    }
+    insertAt(pos, v) {
         Arr.insertAt(this._array, pos, v);
         return this;
-    };
-    List.prototype.push = function (v) {
+    }
+    push(v) {
         return this._array.push(v);
-    };
-    List.prototype.pop = function () {
+    }
+    pop() {
         return this._array.pop();
-    };
-    List.prototype.shift = function () {
+    }
+    shift() {
         return this._array.shift();
-    };
-    List.prototype.concat = function (v) {
-        var arr;
+    }
+    concat(v) {
+        let arr;
         if (v instanceof List) {
             arr = Arr.concat(this._array, v._array);
         }
@@ -61,8 +53,8 @@ var List = (function () {
             arr = Arr.concat(this._array, v);
         }
         return new List(arr);
-    };
-    List.prototype.append = function (v) {
+    }
+    append(v) {
         if (v instanceof List) {
             Arr.append(this._array, v._array);
         }
@@ -70,8 +62,8 @@ var List = (function () {
             Arr.append(this._array, v);
         }
         return this;
-    };
-    List.prototype.copy = function (src) {
+    }
+    copy(src) {
         if (src instanceof List) {
             Arr.deepCopyInto(src._array, this._array);
         }
@@ -79,8 +71,8 @@ var List = (function () {
             Arr.deepCopyInto(src, this._array);
         }
         return this;
-    };
-    List.prototype.shallowCopy = function (src) {
+    }
+    shallowCopy(src) {
         if (src instanceof List) {
             Arr.shallowCopyInto(src._array, this._array);
         }
@@ -88,53 +80,53 @@ var List = (function () {
             Arr.shallowCopyInto(src, this._array);
         }
         return this;
-    };
-    List.prototype.clone = function () {
-        var arr = Arr.deepCopy(this._array);
+    }
+    clone() {
+        const arr = Arr.deepCopy(this._array);
         return new List(arr);
-    };
-    List.prototype.remove = function (v) {
+    }
+    remove(v) {
         Arr.remove(this._array, v);
         return this;
-    };
-    List.prototype.removeAt = function (n) {
+    }
+    removeAt(n) {
         Arr.removeAt(this._array, n);
         return this;
-    };
-    List.prototype.forEach = function (fn) {
+    }
+    forEach(fn) {
         Arr.forEach(this._array, fn);
         return this;
-    };
-    List.prototype.until = function (test, fn) {
+    }
+    until(test, fn) {
         Arr.until(this._array, test, fn);
         return this;
-    };
-    List.prototype.reverseForEach = function (fn) {
+    }
+    reverseForEach(fn) {
         Arr.reverseForEach(this._array, fn);
         return this;
-    };
-    List.prototype.reverseUntil = function (test, fn) {
+    }
+    reverseUntil(test, fn) {
         Arr.reverseUntil(this._array, test, fn);
         return this;
-    };
-    List.prototype.some = function (filter, fn) {
+    }
+    some(filter, fn) {
         Arr.some(this._array, filter, fn);
         return this;
-    };
-    List.prototype.indexOf = function (v) {
+    }
+    indexOf(v) {
         return Arr.indexOfElement(this._array, v);
-    };
-    List.prototype.contains = function (v) {
+    }
+    contains(v) {
         return Arr.indexOfElement(this._array, v) !== -1;
-    };
-    List.prototype.reverse = function () {
+    }
+    reverse() {
         Arr.reverse(this._array);
         return this;
-    };
-    List.prototype.select = function (fn) {
+    }
+    select(fn) {
         return new List(Arr.filter(this._array, fn));
-    };
-    List.prototype.selectInto = function (src, fn) {
+    }
+    selectInto(src, fn) {
         if (src instanceof List) {
             Arr.filterInto(src._array, this._array, fn);
         }
@@ -142,15 +134,15 @@ var List = (function () {
             Arr.filterInto(src, this._array, fn);
         }
         return this;
-    };
-    List.prototype.orderBy = function (fn) {
+    }
+    orderBy(fn) {
         this._array.sort(fn);
         return this;
-    };
-    List.prototype.map = function (fn) {
+    }
+    map(fn) {
         return new List(Arr.map(this._array, fn));
-    };
-    List.prototype.mapInto = function (src, fn) {
+    }
+    mapInto(src, fn) {
         if (src instanceof List) {
             Arr.mapInto(src._array, this._array, fn);
         }
@@ -158,15 +150,13 @@ var List = (function () {
             Arr.mapInto(src, this._array, fn);
         }
         return this;
-    };
-    List.prototype.reduce = function (fn, start) {
+    }
+    reduce(fn, start) {
         return Arr.reduce(this._array, fn, start);
-    };
-    List.prototype.equals = function (b) {
-        var result = Obj.equals(this._array, b.values);
+    }
+    equals(b) {
+        const result = Obj.equals(this._array, b.values);
         return result;
-    };
-    return List;
-}());
-export { List };
+    }
+}
 //# sourceMappingURL=List.js.map

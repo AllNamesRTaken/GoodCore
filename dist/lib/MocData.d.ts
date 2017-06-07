@@ -4,14 +4,12 @@ export declare enum MocDataType {
     LinearFloat = 2,
     RandomFloat = 3,
 }
-export declare class _MocData {
-    Type: typeof MocDataType;
+export declare const VALID_CHARS = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+export declare class MocData {
     constructor();
-    static VALID_CHARS: string;
-    randomString(length?: number): string;
-    randomInt(): number;
-    randomNumber(): number;
-    numericArray(length: number, type?: MocDataType): number[];
-    stringArray(arrayLength: number, stringLength?: number): string[];
+    static randomString(length?: number): string;
+    static randomInt(): number;
+    static randomNumber(): number;
+    static numericArray(length: number, type?: MocDataType): number[];
+    static stringArray(arrayLength: number, stringLength?: number): string[];
 }
-export declare let MocData: _MocData;

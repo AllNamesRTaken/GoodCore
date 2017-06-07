@@ -1,5 +1,6 @@
 import { List } from "./List";
 export declare class Stack<T> {
+    DEFAULT_SIZE: number;
     private _array;
     private _pos;
     readonly values: T[];

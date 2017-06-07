@@ -6,47 +6,49 @@ export var Sides;
     Sides[Sides["Left"] = 2] = "Left";
     Sides[Sides["Right"] = 3] = "Right";
 })(Sides || (Sides = {}));
-var _Dom = (function () {
-    function _Dom() {
-        this.Sides = Sides;
+class DomState {
+}
+DomState.Sides = Sides;
+export class Dom {
+    constructor() {
         if (Global.window !== null) {
-            this._window = Global.window;
-            this._document = this._window.document;
-            this._el = this._document.createElement("div");
+            DomState._window = Global.window;
+            DomState._document = DomState._window.document;
+            DomState._el = DomState._document.createElement("div");
         }
     }
-    _Dom.prototype.init = function (win) {
+    static init(win) {
         Global.window = win;
-        this._window = Global.window;
-        this._document = this._window.document;
-        this._el = this._document.createElement("div");
-    };
-    _Dom.prototype.toArray = function (a) {
+        DomState._window = Global.window;
+        DomState._document = DomState._window.document;
+        DomState._el = DomState._document.createElement("div");
+    }
+    static toArray(a) {
         return Array.prototype.slice.call(a);
-    };
-    _Dom.prototype.create = function (html, attr) {
-        var result, keys, i, k, styles, styleKeys;
-        this._el.innerHTML = html;
-        result = this._el.children[0];
+    }
+    static create(html, attr) {
+        let result, keys, i, k, styles, styleKeys;
+        DomState._el.innerHTML = html;
+        result = DomState._el.children[0];
         this.setAttr(result, attr);
-        this.clear(this._el);
+        this.clear(DomState._el);
         return result;
-    };
-    _Dom.prototype.outerHTML = function (el) {
-        this._el.appendChild(el);
-        var result = this._el.innerHTML;
-        this.clear(this._el);
+    }
+    static outerHTML(el) {
+        DomState._el.appendChild(el);
+        const result = DomState._el.innerHTML;
+        this.clear(DomState._el);
         return result;
-    };
-    _Dom.prototype.setAttr = function (_el, attr) {
-        var el;
+    }
+    static setAttr(_el, attr) {
+        let el;
         if (typeof (_el) === "string") {
             el = this.get(_el);
         }
         else {
             el = _el;
         }
-        var keys, i, k, styles, styleKeys, style;
+        let keys, i, k, styles, styleKeys, style;
         if (attr !== undefined && typeof (attr) === "object") {
             keys = Object.keys(attr);
             for (i = 0; i < keys.length; i++) {
@@ -71,50 +73,50 @@ var _Dom = (function () {
                 }
             }
         }
-    };
-    _Dom.prototype.remove = function (element) {
+    }
+    static remove(element) {
         return element.parentNode === undefined ? null : element.parentNode.removeChild(element);
-    };
-    _Dom.prototype.replace = function (src, target) {
-        var result;
+    }
+    static replace(src, target) {
+        let result;
         if (src.parentNode) {
             src.parentNode.replaceChild(target, src);
         }
         return result;
-    };
-    _Dom.prototype.clear = function (element) {
-        var i = element.children.length;
+    }
+    static clear(element) {
+        let i = element.children.length;
         while (i--) {
             element.removeChild(element.children[i]);
         }
-    };
-    _Dom.prototype.get = function (id) {
-        var result = this._document.getElementById(id);
+    }
+    static get(id) {
+        let result = DomState._document.getElementById(id);
         if (result === null) {
             switch (id) {
                 case "body":
-                    result = this._document.body;
+                    result = DomState._document.body;
                     break;
             }
         }
         return result;
-    };
-    _Dom.prototype.find = function (selector) {
-        return this._document.querySelector(selector);
-    };
-    _Dom.prototype.findAll = function (selector, root) {
-        return this.toArray((root || this._document).querySelectorAll(selector));
-    };
-    _Dom.prototype.children = function (root, selector) {
-        var children = this.toArray((root || this._document).children);
+    }
+    static find(selector) {
+        return DomState._document.querySelector(selector);
+    }
+    static findAll(selector, root) {
+        return this.toArray((root || DomState._document).querySelectorAll(selector));
+    }
+    static children(root, selector) {
+        const children = this.toArray((root || DomState._document).children);
         return selector === undefined ? children : children.filter(this.is.bind(this, selector));
-    };
-    _Dom.prototype.position = function (el, x, y) {
+    }
+    static position(el, x, y) {
         el.style.top = y + "px";
         el.style.left = x + "px";
-    };
-    _Dom.prototype.is = function (selector, element) {
-        var result = false;
+    }
+    static is(selector, element) {
+        let result = false;
         if (element.matches) {
             result = element.matches(selector);
         }
@@ -133,20 +135,12 @@ var _Dom = (function () {
             }
         }
         return result;
-    };
-    _Dom.prototype.setStylesExplicitly = function (element) {
-        var styles = [];
-        for (var _i = 1; _i < arguments.length; _i++) {
-            styles[_i - 1] = arguments[_i];
-        }
-        var comp = this._window.getComputedStyle(element);
-        for (var _a = 0, styles_1 = styles; _a < styles_1.length; _a++) {
-            var style = styles_1[_a];
+    }
+    static setStylesExplicitly(element, ...styles) {
+        const comp = DomState._window.getComputedStyle(element);
+        for (const style of styles) {
             element.style[style] = comp[style];
         }
-    };
-    return _Dom;
-}());
-export { _Dom };
-export var Dom = new _Dom();
+    }
+}
 //# sourceMappingURL=Dom.js.map
