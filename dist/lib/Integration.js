@@ -1,9 +1,9 @@
-import { Arr } from "./Arr";
-import { Calc } from "./Calc";
+import * as Arr from "./Arr";
+import * as Calc from "./Calc";
 import { Dom } from "./Dom";
 import { Global } from "./Global";
-import { MocData } from "./MocData";
-import { Obj } from "./Obj";
+import * as MocData from "./MocData";
+import * as Obj from "./Obj";
 import { Initable } from "./standard/mixins/Initable";
 import { Poolable } from "./standard/mixins/Poolable";
 import { Pool } from "./standard/Pool";
@@ -15,10 +15,10 @@ import { Rect } from "./struct/Rect";
 import { Stack } from "./struct/Stack";
 import { Tree } from "./struct/Tree";
 import { Vec2 } from "./struct/Vec2";
-import { Test } from "./Test";
+import * as Test from "./Test";
 import { Timer } from "./Timer";
 import { Uri } from "./Uri";
-import { Util } from "./Util";
+import * as Util from "./Util";
 export function integrate(alias) {
     let stringAlias = false;
     let objectAlias = false;

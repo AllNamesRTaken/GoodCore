@@ -12,33 +12,31 @@ export class CalcConst {
 	})();
 
 }
-export class Calc {
-	public static sign(x: number): number {
-		return typeof x === "number" ? x ? x < 0 ? -1 : 1 : x === x ? 0 : NaN : NaN;
-	}
+export function sign(x: number): number {
+	return typeof x === "number" ? x ? x < 0 ? -1 : 1 : x === x ? 0 : NaN : NaN;
+}
 
-	public static rotationDeg(rotation: number): number[] {
-		let rot = (rotation * CalcConst.ROTATION_DEGREE_PRECISION) | 0;
-		while (rot < 0) {
-			rot += CalcConst.DEG360;
-		}
-		while (rot >= CalcConst.DEG360) {
-			rot -= CalcConst.DEG360;
-		}
-		return CalcConst.ROTATION_LOOKUP[rot];
+export function rotationDeg(rotation: number): number[] {
+	let rot = (rotation * CalcConst.ROTATION_DEGREE_PRECISION) | 0;
+	while (rot < 0) {
+		rot += CalcConst.DEG360;
 	}
-	public static rotationRad(rotation: number): number[] {
-		const rot = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
-		return this.rotationDeg(rot / CalcConst.ROTATION_DEGREE_PRECISION);
+	while (rot >= CalcConst.DEG360) {
+		rot -= CalcConst.DEG360;
 	}
-	public static closestRadianRotation(rotation: number): number {
-		let rot = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
-		while (rot < 0) {
-			rot += CalcConst.DEG360;
-		}
-		while (rot >= CalcConst.DEG360) {
-			rot -= CalcConst.DEG360;
-		}
-		return rot * CalcConst.RADIAN_FACTOR / CalcConst.ROTATION_DEGREE_PRECISION;
+	return CalcConst.ROTATION_LOOKUP[rot];
+}
+export function rotationRad(rotation: number): number[] {
+	const rot = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
+	return this.rotationDeg(rot / CalcConst.ROTATION_DEGREE_PRECISION);
+}
+export function closestRadianRotation(rotation: number): number {
+	let rot = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
+	while (rot < 0) {
+		rot += CalcConst.DEG360;
 	}
+	while (rot >= CalcConst.DEG360) {
+		rot -= CalcConst.DEG360;
+	}
+	return rot * CalcConst.RADIAN_FACTOR / CalcConst.ROTATION_DEGREE_PRECISION;
 }

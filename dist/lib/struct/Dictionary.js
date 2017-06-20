@@ -1,4 +1,4 @@
-import { Obj } from "../Obj";
+import { wipe } from "../Obj";
 import { List } from "./List";
 export class Dictionary {
     constructor() {
@@ -33,7 +33,7 @@ export class Dictionary {
         return this;
     }
     clear() {
-        Obj.wipe(this._lookup);
+        wipe(this._lookup);
         this._list.clear();
         return this;
     }

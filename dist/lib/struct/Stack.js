@@ -1,4 +1,4 @@
-import { Arr } from "../Arr";
+import { slice } from "../Arr";
 import { List } from "./List";
 export class Stack {
     constructor(size) {
@@ -10,7 +10,7 @@ export class Stack {
         this._array = new Array(size);
     }
     get values() {
-        return Arr.slice(this._array, 0, this._pos);
+        return slice(this._array, 0, this._pos);
     }
     get depth() {
         return this._pos;

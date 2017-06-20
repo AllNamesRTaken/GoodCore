@@ -1,8 +1,8 @@
 import {should} from "chai";
 import {expect} from "chai";
-import { MocData } from "../lib/MocData";
-import { Obj } from "../lib/Obj";
-import { Util } from "../lib/Util";
+import * as MocData from "../lib/MocData";
+import * as Obj from "../lib/Obj";
+import { proxyFn } from "../lib/Util";
 should();
 
 describe("Obj",
@@ -31,7 +31,7 @@ describe("Obj",
 				clone1.b.should.not.equal(this.obj1.b);
 				let usedClone = false;
 				const cloneable = new Cloneable();
-				Util.proxyFn((cloneable as any), "clone", function(superfn) {
+				proxyFn((cloneable as any), "clone", function(superfn) {
 					usedClone = true;
 					return superfn();
 				});
@@ -106,10 +106,10 @@ describe("Obj",
 				Obj.mixin({foo: "bar", a: 10}, null, this.obj1).should.deep.equal({foo: "bar", a: 1, b: {c: 2}, d: [3, 4, 5]});
 				Obj.mixin({foo: "bar", a: 10}, {a: true}, this.obj1).should.deep.equal({foo: "bar", a: 10, b: {c: 2}, d: [3, 4, 5]});
 			});
-		it("Null nulls object properties",
+		it("setNull nulls object properties",
 			function() {
 				const obj = {a: 1, b: "foo"};
-				Obj.null(obj);
+				Obj.setNull(obj);
 				expect(obj.a).to.be.null;
 				expect(obj.b).to.be.null;
 			});

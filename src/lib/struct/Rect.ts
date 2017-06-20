@@ -1,4 +1,4 @@
-import { Calc } from "../Calc";
+import * as Calc from "../Calc";
 import { IRect } from "./IRect";
 import { IVec2 } from "./IVec2";
 import { Range2 } from "./Range2";

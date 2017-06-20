@@ -1,4 +1,4 @@
-import { Calc } from "../Calc";
+import { rotationRad } from "../Calc";
 export class Vec2Const {
 }
 Vec2Const.EPSILON = 1e-8;
@@ -43,7 +43,7 @@ export class Vec2 {
     length() { return Math.sqrt(this.lengthSq()); }
     horizontalAngle() { return Math.atan2(this.y, this.x); }
     rotate(angle) {
-        const rot = Calc.rotationRad(angle);
+        const rot = rotationRad(angle);
         const nx = (this.x * rot[0]) - (this.y * rot[1]);
         const ny = (this.x * rot[1]) + (this.y * rot[0]);
         this.x = nx;

@@ -9,6 +9,7 @@ if (typeof (window) === "undefined") {
 	win = window;
 }
 
+// tslint:disable-next-line:class-name
 export class _Global {
 	private _window: Window = win;
 	private _nativeWindow: boolean = nativeWindow;
@@ -26,4 +27,5 @@ export class _Global {
 		return this._nativeWindow;
 	}
 }
+// tslint:disable-next-line:variable-name
 export let Global = new _Global();

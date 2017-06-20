@@ -52,8 +52,8 @@ interface IList<T> {
   equals(b: IList<T>): boolean;
 }
 interface ITreeNode<T> {
-  Id: string;
-  Parent: ITreeNode<T>;
-  Children: IList<ITreeNode<T>>;
-  Data: T;
+  id?: string;
+  parent?: ITreeNode<T>;
+  children?: IList<ITreeNode<T>>;
+  data?: T;
 }

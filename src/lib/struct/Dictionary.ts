@@ -1,4 +1,4 @@
-import { Obj } from "../Obj";
+import { wipe } from "../Obj";
 import { List } from "./List";
 
 export class Dictionary<T> {
@@ -39,7 +39,7 @@ export class Dictionary<T> {
 		return this;
 	}
 	public clear(): Dictionary<T> {
-		Obj.wipe(this._lookup);
+		wipe(this._lookup);
 		this._list.clear();
 		return this;
 	}

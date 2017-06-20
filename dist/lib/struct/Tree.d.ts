@@ -1,12 +1,12 @@
 import { List } from "./List";
 export declare class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>> {
-    Id: string;
-    Parent: Tree<T>;
-    Children: List<Tree<T>>;
-    Data: T;
+    id: string;
+    parent: Tree<T>;
+    children: List<Tree<T>>;
+    data: T;
     static fromObject<T>(obj: any): Tree<T>;
     constructor();
-    init(obj: Object): any;
+    init(obj: ITreeNode<T>): Tree<T>;
     private newId();
     insertAt(pos: number, data: T): void;
     add(data: T): void;

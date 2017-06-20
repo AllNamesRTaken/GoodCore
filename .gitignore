@@ -6,3 +6,4 @@ typings/globals/
 typings/modules/
 typings/index.d.ts
 npm-debug.log
+yarn.lock

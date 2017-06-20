@@ -1,9 +1,9 @@
 import {should} from "chai";
 import { jsdom } from "jsdom";
-import { MocData } from "../lib/MocData";
-import { Test } from "../lib/Test";
+import * as MocData from "../lib/MocData";
+import * as Test from "../lib/Test";
 import { Timer } from "../lib/Timer";
-import { Util } from "../lib/Util";
+import * as Util from "../lib/Util";
 should();
 
 describe("Util",
@@ -78,15 +78,6 @@ describe("Util",
 				function() {
 					Util.toArray([1, 2, 3]).should.be.instanceOf(Array);
 				});
-		it("Async should be close to 0 timeout",
-				function(done) {
-					Timer.start();
-					Util.async(function() {
-						Timer.stop();
-						Timer.time.should.be.approximately(0, 5);
-						done();
-					});
-			});
 		it("Loop should pass correct index",
 				function() {
 					let sum = 0;

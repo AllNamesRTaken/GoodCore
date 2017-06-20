@@ -5,11 +5,8 @@ export declare enum MocDataType {
     RandomFloat = 3,
 }
 export declare const VALID_CHARS = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-export declare class MocData {
-    constructor();
-    static randomString(length?: number): string;
-    static randomInt(): number;
-    static randomNumber(): number;
-    static numericArray(length: number, type?: MocDataType): number[];
-    static stringArray(arrayLength: number, stringLength?: number): string[];
-}
+export declare function randomString(length?: number): string;
+export declare function randomInt(): number;
+export declare function randomNumber(): number;
+export declare function numericArray(length: number, type?: MocDataType): number[];
+export declare function stringArray(arrayLength: number, stringLength?: number): string[];

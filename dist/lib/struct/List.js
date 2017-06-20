@@ -1,5 +1,5 @@
-import { Arr } from "../Arr";
-import { Obj } from "../Obj";
+import * as Arr from "../Arr";
+import { equals } from "../Obj";
 export class List {
     constructor(arr) {
         if (arr === undefined) {
@@ -155,7 +155,7 @@ export class List {
         return Arr.reduce(this._array, fn, start);
     }
     equals(b) {
-        const result = Obj.equals(this._array, b.values);
+        const result = equals(this._array, b.values);
         return result;
     }
 }

@@ -1,5 +1,4 @@
-import { Arr } from "../Arr";
-import { Obj } from "../Obj";
+import { slice } from "../Arr";
 import { List } from "./List";
 
 export class Stack<T> {
@@ -7,7 +6,7 @@ export class Stack<T> {
 	private _array: T[];
 	private _pos: number = 0;
 	public get values(): T[] {
-		return Arr.slice(this._array, 0, this._pos);
+		return slice(this._array, 0, this._pos);
 	}
 	public get depth(): number {
 		return this._pos;

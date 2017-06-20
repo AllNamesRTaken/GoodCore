@@ -1,5 +1,5 @@
 import {should} from "chai";
-import { MocData, MocDataType } from "../lib/MocData";
+import * as MocData from "../lib/MocData";
 import { List } from "../lib/struct/List";
 should();
 
@@ -7,7 +7,7 @@ describe("List",
 	function() {
 		before(
 			function() {
-				this.longArr = MocData.numericArray(100, MocDataType.RandomInt);
+				this.longArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
 				this.list1 = new List([1, 4, 7, 2] as number[]);
 				this.list2 = new List([4, 8, 1, 9] as number[]);
 				this.list3 = new List([{a: 1}, {a: 2}] as any[]);

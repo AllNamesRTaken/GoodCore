@@ -1,5 +1,5 @@
-import { Arr } from "../Arr";
-import { Obj } from "../Obj";
+import * as Arr from "../Arr";
+import { equals } from "../Obj";
 
 export class List<T> implements IList<T> {
 	private _array: T[];
@@ -151,7 +151,7 @@ export class List<T> implements IList<T> {
 		return Arr.reduce(this._array, fn, start);
 	}
 	public equals(b: List<T>): boolean {
-		const result = Obj.equals(this._array, b.values);
+		const result = equals(this._array, b.values);
 		return result;
 	}
 }

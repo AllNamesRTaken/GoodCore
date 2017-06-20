@@ -1,7 +1,7 @@
 import {should} from "chai";
 import {expect} from "chai";
-import { MocData, MocDataType } from "../lib/MocData";
-import { Test } from "../lib/Test";
+import * as MocData from "../lib/MocData";
+import * as Test from "../lib/Test";
 should();
 
 describe("MocData",
@@ -12,12 +12,12 @@ describe("MocData",
 				base.length.should.equal(1);
 				(typeof(base[0])).should.equal("number");
 				base[0].should.equal(base[0] | 0);
-				MocData.numericArray(3, MocDataType.LinearInt).should.deep.equal([0, 1, 2]);
-				MocData.numericArray(3, MocDataType.LinearFloat).should.deep.equal([0.5, 1.5, 2.5]);
-				const rndInt = MocData.numericArray(3, MocDataType.RandomInt);
+				MocData.numericArray(3, MocData.MocDataType.LinearInt).should.deep.equal([0, 1, 2]);
+				MocData.numericArray(3, MocData.MocDataType.LinearFloat).should.deep.equal([0.5, 1.5, 2.5]);
+				const rndInt = MocData.numericArray(3, MocData.MocDataType.RandomInt);
 				rndInt.length.should.equal(3);
 				rndInt[1].should.equal(rndInt[1] | 0);
-				const rndFloat = MocData.numericArray(3, MocDataType.RandomFloat);
+				const rndFloat = MocData.numericArray(3, MocData.MocDataType.RandomFloat);
 				rndFloat.length.should.equal(3);
 				rndFloat[1].should.not.equal(rndFloat[1] | 0);
 			});

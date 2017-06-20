@@ -1,22 +1,21 @@
 import {should} from "chai";
-import { Arr } from "../lib/Arr";
-import { MocData, MocDataType } from "../lib/MocData";
-import { Obj } from "../lib/Obj";
-import { Util } from "../lib/Util";
+import * as Arr from "../lib/Arr";
+import * as MocData from "../lib/MocData";
+import { assert } from "../lib/Util";
 should();
 
 describe("Arrays",
 	function() {
 		before(
 			function() {
-				this.longArr = MocData.numericArray(100, MocDataType.RandomInt);
+				this.longArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
 				this.arr1 = [1, 4, 7, 2] as number[];
 				this.arr2 = [4, 8, 1, 9] as number[];
 				this.arr3 = [{a: 1}, {a: 2}] as any[];
 			});
 		it("DeepCopy copies values correctly",
 			function() {
-				Util.assert(false, "this works");
+				assert(false, "this works");
 				const arr = this.arr1;
 				const copy = Arr.deepCopy(arr);
 				copy.should.deep.equal(arr);
@@ -122,13 +121,13 @@ describe("Arrays",
 			function() {
 				Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc).should.equal(14);
 			});
-		it("RemoveOneAt removes correct item",
+		it("RemoveAt removes correct item",
 			function() {
 				const arr = [1, 2, 3, 4];
 				Arr.removeAt(arr, 2);
 				arr.should.deep.equal([1, 2, 4]);
 			});
-		it("RemoveOneByElement removes correct element",
+		it("Remove removes correct element",
 			function() {
 				const arr = [1, 2, 3, 4];
 				Arr.remove(arr, 2);

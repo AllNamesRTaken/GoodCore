@@ -1,16 +1,15 @@
 {
   "name": "goodcore",
-  "version": "0.1.10",
+  "version": "0.2.1",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
-  "main": "./dist/goodcore.umd.js",
-  "module": "./dist/goodcore.es2015.js",
+  "main": "./dist/goodcore.umd.min.js",
+  "module": "./dist/lib/index.js",
   "typings": "./dist/goodcore.d.ts",
   "files": [
     "dist/goodcore.iife.min.js",
-    "dist/goodcore.iife.es2015.js",
     "dist/goodcore.umd.min.js",
     "dist/goodcore.es.min.js",
-    "dist/goodcore.es.es2015.js",
+    "dist/goodcore.es2015.min.js",
     "dist/goodcore.d.ts",
     "dist/lib/"
   ],
@@ -20,7 +19,6 @@
     "clean-test": "rimraf ./dist/test",
     "tsc": "tsc",
     "rollup": "node rollup.js",
-    "rollup_test": "rollup -c rollup_test.config.js",
     "build": "yarn run clean && tsc && yarn run rollup && yarn run bundle_d_ts",
     "test": "yarn run clean && tsc -p tsconfig-test.json && yarn run_test",
     "run_test": "mocha ./dist/test/*Test.js",
@@ -32,6 +30,7 @@
   "dependencies": {},
   "devDependencies": {
     "babel-plugin-external-helpers": "^6.22.0",
+    "babel-plugin-transform-es2015-classes": "^6.24.1",
     "babel-preset-es2015": "^6.24.1",
     "chai": "^3.5.0",
     "dts-bundle": "^0.7.2",

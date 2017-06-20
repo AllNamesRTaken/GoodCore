@@ -1,4 +1,4 @@
-import { Calc } from "../Calc";
+import { rotationRad } from "../Calc";
 import { IVec2 } from "./IVec2";
 
 export class Vec2Const {
@@ -49,7 +49,7 @@ export class Vec2 implements IVec2 {
 	public horizontalAngle(): number { return Math.atan2(this.y, this.x); }
 
 	public rotate(angle: number): Vec2 {
-		const rot = Calc.rotationRad(angle);
+		const rot = rotationRad(angle);
 		const nx = (this.x * rot[0]) - (this.y * rot[1]);
 		const ny = (this.x * rot[1]) + (this.y * rot[0]);
 

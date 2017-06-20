@@ -5,9 +5,7 @@ export declare class CalcConst {
     static DEG360: number;
     static ROTATION_LOOKUP: number[][];
 }
-export declare class Calc {
-    static sign(x: number): number;
-    static rotationDeg(rotation: number): number[];
-    static rotationRad(rotation: number): number[];
-    static closestRadianRotation(rotation: number): number;
-}
+export declare function sign(x: number): number;
+export declare function rotationDeg(rotation: number): number[];
+export declare function rotationRad(rotation: number): number[];
+export declare function closestRadianRotation(rotation: number): number;

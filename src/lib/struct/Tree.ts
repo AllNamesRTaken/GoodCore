@@ -1,63 +1,63 @@
-import { Arr } from "../Arr";
-import { Obj } from "../Obj";
+import { map } from "../Arr";
+import { clone, setProperties } from "../Obj";
 import { Initable } from "../standard/mixins/Initable";
-import { Test } from "../Test";
-import { Util } from "../Util";
+import { isArray } from "../Test";
+import { newUUID } from "../Util";
 import { List } from "./List";
 import { Stack } from "./Stack";
 
 export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>> {
-	public Id: string = null;
-	public Parent: Tree<T> = null;
-	public Children: List<Tree<T>> = null;
-	public Data: T = null;
+	public id: string = null;
+	public parent: Tree<T> = null;
+	public children: List<Tree<T>> = null;
+	public data: T = null;
 	public static fromObject<T>(obj: any): Tree<T> {
 		const parent = (this instanceof Tree) ? this : null;
-		const root = new Tree<T>().init({Data: obj.data as T !== undefined ? obj.data : null, Parent: parent});
-		if (obj.children !== undefined && Test.isArray(obj.children)) {
-			root.Children = new List<Tree<T>>(Arr.map<any, Tree<T>>(obj.children as Array<Tree<T>>, Tree.fromObject.bind(root)));
+		const root = new Tree<T>().init({ data: obj.data as T !== undefined ? obj.data : null, parent });
+		if (obj.children !== undefined && isArray(obj.children)) {
+			root.children = new List<Tree<T>>(map<any, Tree<T>>(obj.children as Array<Tree<T>>, Tree.fromObject.bind(root)));
 		}
 		return root;
 	}
 
 	constructor() {
-		this.Id = this.newId();
+		this.id = this.newId();
 	}
 
-	public init(obj: Object): any {
-		Obj.setProperties(this, obj);
-		return this as any;
+	public init(obj: ITreeNode<T>): Tree<T> {
+		setProperties(this, obj);
+		return this;
 	}
 	private newId(): any {
-		return Util.newUUID();
+		return newUUID();
 	}
 	public insertAt(pos: number, data: T): void {
-		if (this.Children === null || this.Children.count <= pos) {
+		if (this.children === null || this.children.count <= pos) {
 			this.add(data);
 		} else {
-			this.Children.insertAt(pos, new Tree<T>().init({ Data: data, Parent: this }));
+			this.children.insertAt(pos, new Tree<T>().init({ data, parent: this }));
 		}
 	}
 	public add(data: T): void {
-		if (this.Children === null) {
-			this.Children = new List<Tree<T>>();
+		if (this.children === null) {
+			this.children = new List<Tree<T>>();
 		}
-		this.Children.add((new Tree<T>()).init({ Data: data, Parent: this }));
+		this.children.add((new Tree<T>()).init({ data, parent: this }));
 	}
 	public remove(): void {
-		if (this.Parent !== null) {
-			this.Parent.Children.remove(this);
+		if (this.parent !== null) {
+			this.parent.children.remove(this);
 		}
 	}
 	public prune(): Tree<T> {
-		if (this.Children !== null) {
-			this.Children
+		if (this.children !== null) {
+			this.children
 				.forEach(function(el: ITreeNode<T>, i: number) {
-					el.Parent = null;
+					el.parent = null;
 				})
 				.clear();
 		}
-		this.Children = null;
+		this.children = null;
 		return this;
 	}
 	public reduce(fn: (acc: any, cur: T) => any, start?: any): any {
@@ -68,36 +68,36 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 		let i: number;
 		stack.push(this);
 		while (cur = stack.pop()) {
-			acc = fn(acc, cur.Data);
-			i = (cur.Children && cur.Children.count) || 0;
+			acc = fn(acc, cur.data);
+			i = (cur.children && cur.children.count) || 0;
 			while (i--) {
-				stack.push(cur.Children.get(i));
+				stack.push(cur.children.get(i));
 			}
 		}
 		return acc;
 	}
 	public clone(): Tree<T> {
 		const result = new ((this as any).constructor as ICtor<Tree<T>>)();
-		result.Id = this.Id;
-		result.Parent = this.Parent;
-		result.Children = this.Children === null ? null : this.Children.clone();
-		result.Data = this.Data === null || this.Data === undefined ? this.Data : Obj.clone(this.Data);
+		result.id = this.id;
+		result.parent = this.parent;
+		result.children = this.children === null ? null : this.children.clone();
+		result.data = this.data === null || this.data === undefined ? this.data : clone(this.data);
 		return result;
 	}
 	private duplicateNode(): Tree<T> {
 		const result = new ((this as any).constructor as ICtor<Tree<T>>)();
-		result.Id = this.Id;
-		result.Parent = this.Parent;
-		result.Children = this.Children;
-		result.Data = this.Data;
+		result.id = this.id;
+		result.parent = this.parent;
+		result.children = this.children;
+		result.data = this.data;
 		return result;
 	}
 	public filter(condition: (node: ITreeNode<T>) => boolean): Tree<T> {
 		const root = this.duplicateNode();
-		const children = this.Children;
+		const children = this.children;
 		if (children !== null) {
-			root.Children =
-				root.Children
+			root.children =
+				root.children
 					.select(condition)
 					.map(function(el: Tree<T>, i: number) {
 						return el.filter(condition);
@@ -107,7 +107,7 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 	}
 	public select(condition?: (node: ITreeNode<T>) => boolean, acc: List<Tree<T>> = new List<Tree<T>>()): List<Tree<T>> {
 		const result = acc;
-		const children = this.Children as List<Tree<T>>;
+		const children = this.children as List<Tree<T>>;
 		if (condition === undefined || condition(this)) {
 			result.add(this);
 		} else {
@@ -119,17 +119,17 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 	}
 	public find(condition: (data: T) => boolean): ITreeNode<T> {
 		let result: ITreeNode<T> = null;
-		const children = this.Children;
+		const children = this.children;
 		if (children !== null) {
 			let i = -1;
-			const len = this.Children.count;
-			const val = this.Children.values;
+			const len = this.children.count;
+			const val = this.children.values;
 			while (++i < len) {
-				if (condition(val[i].Data)) {
+				if (condition(val[i].data)) {
 					result = val[i];
 					break;
 				} else {
-					result = val[i].Children !== null ? (val[i] as Tree<T>).find(condition) : null;
+					result = val[i].children !== null ? (val[i] as Tree<T>).find(condition) : null;
 					if (result !== null) {
 						break;
 					}
