@@ -22,6 +22,7 @@
         {
             "name": "Run mocha",
             "type": "node",
+            "request": "launch",
             /* Globally installed mocha */
             "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
             "stopOnEntry": false,

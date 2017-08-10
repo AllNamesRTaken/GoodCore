@@ -27,5 +27,25 @@ describe("Stack",
 				stack.push(2);
 				stack.toList().values.should.deep.equal([1, 2]);
 			});
+		it("Setting a limit limits the list by shifting",
+			function(){
+				const stack = new Stack();
+				stack.push(1);
+				stack.push(2);
+				stack.push(3);
+				stack.limit = 2;
+				//setting limit evicts the oldest
+				stack.toList().values.should.deep.equal([2, 3]);
+				stack.push(4);
+				//pushing on a limited stack evicts the oldest
+				stack.toList().values.should.deep.equal([3, 4]);
+				stack.limit = 0;
+				stack.push(5);
+				//setting the limit to 0 removes the limit
+				stack.toList().values.should.deep.equal([3, 4, 5]);
+				stack.limit = -1;
+				//limit is >= 0
+				stack.limit.should.equal(0);
+			});
 	}
 );

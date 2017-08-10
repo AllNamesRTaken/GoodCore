@@ -204,4 +204,9 @@ describe("Arrays",
 				let i2 = Arr.binarySearch(arr, (el) => el.a - 5);
 				i2.should.equal(-1);
 			});
+		it("Create creates an array of a given length and populates it using a function",
+			function() {
+				let arr = Arr.create<number>(10, (i, arr) => i < 2 ? 1 : arr[i - 2] + arr[i - 1]);
+				arr.should.deep.equal([1, 1, 2, 3, 5, 8, 13, 21, 34, 55]);
+			});
 });

@@ -275,3 +275,14 @@ export function binarySearch<T>(src: T[], cmp: (el: T) => number): number {
 	}
 	return -1;
 }
+export function create<T>(length: number, populator: (i?: number, arr?: T[]) => T): T[] {
+	let arr = new Array<T>(length);
+	let i = -1;	
+	if (length < 0) {
+		length = 0;
+	}
+	while (++i < length) {
+		arr[i] = populator(i, arr);		
+	}
+	return arr;
+}

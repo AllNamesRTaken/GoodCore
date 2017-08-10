@@ -1,2 +1,4 @@
+- Add limit to stack at which it drops the oldest. Default is 0 meaning no drop.
+- Write Queue as a List with less functions and a limit at which it drops the oldest. Default is 0 meaning no drop. 
 - RestProxy
 - CallQueue som kan attacha på funktioner som returnerar promise och då konsumerar kön 
