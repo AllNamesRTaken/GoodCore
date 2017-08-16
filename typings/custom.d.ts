@@ -57,3 +57,15 @@ interface ITreeNode<T> {
   children: IList<ITreeNode<T>> | null;
   data: T | null;
 }
+interface IVec2 {
+	x: number;
+	y: number;
+}
+interface IRange2 {
+	pos: IVec2;
+	size: IVec2;
+}
+interface IRect {
+	start: IVec2;
+	stop: IVec2;
+}

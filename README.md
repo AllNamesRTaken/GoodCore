@@ -58,7 +58,6 @@ Here is a small example that makes no sense other than show what the lib looks l
 
 ```typescript
 import { Initable, List, provided, Range2, Util, Vec2 } from "goodcore";
-import { IVec2 } from "goodcore/struct/IVec2";
 
 let world = new Range2(2, 2, 8, 8); //x,y,h,w
 function inWorld(point: IVec2): boolean {
@@ -92,11 +91,11 @@ logger.log({x: 9, y: 3});
 
 console.log(logger.id);
 logger.list
-    .orderBy((a, b) => a.subtract(b).length())
-    .forEach((p) => console.log(p));
+    .orderBy((a, b) => a.length() - b.length())
+    .forEach((p) => console.log(p.x, p.y));
 
 let contains = logger.search({x: 4, y: 4});
-console.log(`does the log contain point 4,4? ${contains}`);
+console.log(`does the log contain point 4,4? ${contains.count > 0}`);
 ```
 # Contribute
 Found a bug? GREAT! Raise an issue!
