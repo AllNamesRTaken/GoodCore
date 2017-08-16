@@ -45,8 +45,9 @@ export class Stack<T> {
 		++this._pos;
 		this.limitObjects();
 	}
-	public pop(): T {
-		let result: T = null;
+	public pop(): T | undefined {
+		// tslint:disable-next-line:no-unnecessary-initializer
+		let result: T | undefined = undefined;
 		if (this._pos !== 0) {
 			result = this._array[--this._pos];
 		}

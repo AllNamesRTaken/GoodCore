@@ -76,11 +76,11 @@ export class Dom {
 			}
 		}
 	}
-	public static remove(element: Element): HTMLElement {
-		return element.parentNode === undefined ? null : element.parentNode.removeChild(element) as HTMLElement;
+	public static remove(element: Element): HTMLElement | null {
+		return element.parentNode === undefined ? null : element.parentNode!.removeChild(element) as HTMLElement;
 	}
 	public static replace(src: HTMLElement, target: HTMLElement): HTMLElement {
-		let result: HTMLElement;
+		let result: HTMLElement = target;
 		if (src.parentNode) {
 			src.parentNode.replaceChild(target, src) as HTMLElement;
 		}
@@ -126,10 +126,13 @@ export class Dom {
 		} else if (element.webkitMatchesSelector) {
 			result = element.webkitMatchesSelector(selector);
 		} else {
+			if (element.parentElement === null) {
+				throw new Error("Element has no parent");
+			}
 			if (element.id !== "") {
-				result = element.parentElement.querySelector("#" + element.id) !== null;
+				result = element.parentElement!.querySelector("#" + element.id) !== null;
 			} else {
-				result = this.toArray(element.parentElement.querySelectorAll(selector)).indexOf(element) !== -1;
+				result = this.toArray(element.parentElement!.querySelectorAll(selector)).indexOf(element) !== -1;
 			}
 		}
 		return result;

@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "./dist/goodcore.umd.min.js",
   "module": "./dist/lib/index.js",
@@ -50,7 +50,7 @@
     "rollup-plugin-node-resolve": "^3.0.0",
     "rollup-plugin-typescript": "^0.8.1",
     "source-map-support": "^0.4.2",
-    "typescript": "^2.3.2",
+    "typescript": "^2.4.2",
     "typings": "^2.1.0",
     "uglify-js": "^2.7.3"
   },

@@ -1,4 +1,5 @@
 import {should} from "chai";
+import { Initable } from "../lib/standard/mixins/Initable";
 import { Poolable } from "../lib/standard/mixins/Poolable";
 import { Pool } from "../lib/standard/Pool";
 should();
@@ -7,9 +8,8 @@ describe("Pool",
 	function() {
 		it("Get gets first free instance",
 			function(){
-				class Base {}
-				const PObj = Poolable(Base);
-				class Obj extends PObj {}
+				class Base { public bar: number; }
+				class Obj extends Poolable(Base) {}
 				const pool = new Pool(Obj);
 				const first = pool.get();
 				first.should.be.instanceOf(Obj);

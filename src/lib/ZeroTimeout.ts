@@ -19,7 +19,7 @@ export function createZeroTimeout(): (fn: Function) => void {
 			event.stopPropagation();
 			if (timeouts.length > (0 | 0)) {
 				const fn = timeouts.shift();
-				fn();
+				fn!();
 			}
 		}
 	}

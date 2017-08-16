@@ -23,6 +23,8 @@ export { Timer as Timer } from "./Timer";
 export { Uri as Uri } from "./Uri";
 export { Poolable as Poolable} from "./standard/mixins/Poolable";
 export { Initable as Initable} from "./standard/mixins/Initable";
+export { before, after, around, provided } from "./standard/Combinators";
+export { async } from "./standard/AsyncCombinators";
 export { Pool as Pool} from "./standard/Pool";
 export { integrate as integrate} from "./Integration";
 import * as MocData from "./MocData";

@@ -34,13 +34,13 @@ export class Range2 implements IRange2 {
 		return result;
 	}
 	public scale(factor: IVec2, keepCenter: boolean = true): Range2 {
-		let org: Vec2;
+		let org: Vec2 | null = null;
 		if (keepCenter) {
 			org = this.size.clone();
 		}
 		this.size.scale(factor);
 		if (keepCenter) {
-			this.pos.add(org.subtract(this.size).multiply(0.5));
+			this.pos.add(org!.subtract(this.size).multiply(0.5));
 		}
 		return this;
 	}
@@ -73,7 +73,7 @@ export class Range2 implements IRange2 {
 		return vec.x >= this.pos.x && vec.x <= this.pos.x + this.size.x - 1
 			&& vec.y >= this.pos.y && vec.y <= this.pos.y + this.size.y - 1;
 	}
-	public first(fn: (p: Vec2) => boolean): Vec2 {
+	public first(fn: (p: Vec2) => boolean): Vec2 | null {
 		const p: Vec2 = new Vec2();
 		const x = this.pos.x;
 		const y = this.pos.y;
@@ -87,7 +87,7 @@ export class Range2 implements IRange2 {
 		}
 		return null;
 	}
-	public forEach(fn: (p: Vec2) => boolean, start: Vec2 = null): void {
+	public forEach(fn: (p: Vec2) => boolean, start: Vec2 | null = null): void {
 		const pos: Vec2 = new Vec2();
 		const begin = this.pos.clone().toInt();
 		if (start === null || !this.containsPoint(start)) {

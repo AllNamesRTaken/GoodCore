@@ -11,9 +11,8 @@
 		"whitespace": [true, "check-branch", "check-decl", "check-separator", "check-operator"], 
 		"space-before-function-paren": [false, {"named": "always", "method": "always", "constructor": "never", "anonymous": "always", "asyncArrow": "never"}], 
         "variable-name": [
-			true, 
+            true,
 			"ban-keywords", 
-			"check-format",
             "allow-leading-underscore",
 			"allow-trailing-underscore"
         ],

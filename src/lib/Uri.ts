@@ -1,6 +1,6 @@
 import { Global } from "./Global";
 export class Uri {
-	private _a: HTMLAnchorElement = null;
+	private _a: HTMLAnchorElement | null = null;
 	public hash = "";
 	public pathName = "";
 	public port = "";

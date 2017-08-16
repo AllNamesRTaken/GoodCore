@@ -1,4 +1,4 @@
-type Constructor = new (...args: any[]) => object;
+type Constructor<T> = new (...args: any[]) => T;
 interface ICtor<T> { new (...args: any[]): T }
 
 type AnyObject<T> = {
@@ -19,7 +19,7 @@ interface ICloneable<T> {
   clone(): T;
 }
 interface IInitable<T> {
-  init(obj: Object): any;
+  init(obj: Partial<T>): T;
 }
 interface IList<T> {
   values: Array<T>;
@@ -28,8 +28,8 @@ interface IList<T> {
   clear(): IList<T>;
   add(v: T): IList<T>;
   push(v: T): number;
-  pop(): T;
-  shift(): T;
+  pop(): T | undefined;
+  shift(): T | undefined;
   concat(v: Array<T> | IList<T>): IList<T>;
   append(v: Array<T> | IList<T>): void;
   copy(src: IList<T> | Array<T>): IList<T>;
@@ -52,8 +52,8 @@ interface IList<T> {
   equals(b: IList<T>): boolean;
 }
 interface ITreeNode<T> {
-  id?: string;
-  parent?: ITreeNode<T>;
-  children?: IList<ITreeNode<T>>;
-  data?: T;
+  id: string;
+  parent: ITreeNode<T> | null;
+  children: IList<ITreeNode<T>> | null;
+  data: T | null;
 }

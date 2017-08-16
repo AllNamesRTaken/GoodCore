@@ -6,14 +6,14 @@ import { newUUID } from "../Util";
 import { List } from "./List";
 import { Stack } from "./Stack";
 
-export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>> {
-	public id: string = null;
-	public parent: Tree<T> = null;
-	public children: List<Tree<T>> = null;
-	public data: T = null;
+export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
+	public id: string = "";
+	public parent: Tree<T> | null = null;
+	public children: List<Tree<T>> | null = null;
+	public data: T | null = null;
 	public static fromObject<T>(obj: any): Tree<T> {
-		const parent = (this instanceof Tree) ? this : null;
-		const root = new Tree<T>().init({ data: obj.data as T !== undefined ? obj.data : null, parent });
+		const parent: Tree<T> | null = (this instanceof Tree) ? this : null;
+		const root = new Tree<T>().init({ data: obj.data, parent });
 		if (obj.children !== undefined && isArray(obj.children)) {
 			root.children = new List<Tree<T>>(map<any, Tree<T>>(obj.children as Array<Tree<T>>, Tree.fromObject.bind(root)));
 		}
@@ -24,7 +24,7 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 		this.id = this.newId();
 	}
 
-	public init(obj: ITreeNode<T>): Tree<T> {
+	public init(obj: Partial<Tree<T>>): Tree<T> {
 		setProperties(this, obj);
 		return this;
 	}
@@ -46,13 +46,13 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 	}
 	public remove(): void {
 		if (this.parent !== null) {
-			this.parent.children.remove(this);
+			this.parent.children!.remove(this);
 		}
 	}
 	public prune(): Tree<T> {
 		if (this.children !== null) {
 			this.children
-				.forEach(function(el: ITreeNode<T>, i: number) {
+				.forEach(function(el: Tree<T>, i: number) {
 					el.parent = null;
 				})
 				.clear();
@@ -60,18 +60,18 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 		this.children = null;
 		return this;
 	}
-	public reduce(fn: (acc: any, cur: T) => any, start?: any): any {
-		const stack = new Stack<ITreeNode<T>>();
+	public reduce(fn: (acc: any, cur: T | null) => any, start?: any): any {
+		const stack = new Stack<Tree<T>>();
 		let acc: any = start;
 		if (start === undefined) { acc = 0 as any; }
-		let cur: ITreeNode<T>;
+		let cur: Tree<T> | undefined;
 		let i: number;
 		stack.push(this);
 		while (cur = stack.pop()) {
 			acc = fn(acc, cur.data);
 			i = (cur.children && cur.children.count) || 0;
 			while (i--) {
-				stack.push(cur.children.get(i));
+				stack.push(cur.children!.get(i));
 			}
 		}
 		return acc;
@@ -92,12 +92,12 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 		result.data = this.data;
 		return result;
 	}
-	public filter(condition: (node: ITreeNode<T>) => boolean): Tree<T> {
+	public filter(condition: (node: Tree<T>) => boolean): Tree<T> {
 		const root = this.duplicateNode();
 		const children = this.children;
 		if (children !== null) {
 			root.children =
-				root.children
+				root.children!
 					.select(condition)
 					.map(function(el: Tree<T>, i: number) {
 						return el.filter(condition);
@@ -105,7 +105,7 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 		}
 		return root;
 	}
-	public select(condition?: (node: ITreeNode<T>) => boolean, acc: List<Tree<T>> = new List<Tree<T>>()): List<Tree<T>> {
+	public select(condition?: (node: Tree<T>) => boolean, acc: List<Tree<T>> = new List<Tree<T>>()): List<Tree<T>> {
 		const result = acc;
 		const children = this.children as List<Tree<T>>;
 		if (condition === undefined || condition(this)) {
@@ -117,13 +117,13 @@ export class Tree<T> implements ICloneable<ITreeNode<T>>, IInitable<ITreeNode<T>
 		}
 		return result;
 	}
-	public find(condition: (data: T) => boolean): ITreeNode<T> {
-		let result: ITreeNode<T> = null;
+	public find(condition: (data: T | null) => boolean): Tree<T> | null {
+		let result: Tree<T> | null = null;
 		const children = this.children;
 		if (children !== null) {
 			let i = -1;
-			const len = this.children.count;
-			const val = this.children.values;
+			const len = this.children!.count;
+			const val = this.children!.values;
 			while (++i < len) {
 				if (condition(val[i].data)) {
 					result = val[i];

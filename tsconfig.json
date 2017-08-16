@@ -16,7 +16,7 @@
 	    "preserveConstEnums": true,
 		"allowJs": false,
 		"listFiles": false,
-		"listEmittedFiles": false,
+		"strictNullChecks": true,
 		"lib": [
             "dom",
             "es6",

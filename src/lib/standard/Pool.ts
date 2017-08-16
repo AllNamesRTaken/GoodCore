@@ -30,7 +30,7 @@ export class Pool<T extends IPoolable> implements IPool<IPoolable> {
 		if (this._pool.length === 0) {
 			this.create();
 		}
-		result = this._pool.pop();
+		result = this._pool.pop()!;
 		--this._available;
 		result.initPool(this);
 		return result;

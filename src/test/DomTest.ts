@@ -44,7 +44,7 @@ describe("Dom",
 				this.document.body.appendChild(el);
 				const chld = Dom.find("#sub1");
 				chld.id.should.equal("sub1");
-				el.parentNode.removeChild(el);
+				el.parentNode!.removeChild(el);
 			});
 		it("FindAll finds right elements",
 			function() {
@@ -52,7 +52,7 @@ describe("Dom",
 				this.document.body.appendChild(el);
 				const chld = Dom.findAll("div");
 				chld.length.should.equal(3);
-				el.parentNode.removeChild(el);
+				el.parentNode!.removeChild(el);
 			});
 		it("Get gets elementById",
 			function() {
@@ -60,7 +60,7 @@ describe("Dom",
 				this.document.body.appendChild(el);
 				const chld = Dom.get("sub2");
 				chld.id.should.equal("sub2");
-				el.parentNode.removeChild(el);
+				el.parentNode!.removeChild(el);
 			});
 		it("Is matches element with selector",
 			function() {
@@ -77,14 +77,14 @@ describe("Dom",
 			function() {
 				const el = Dom.create(this.html2);
 				Dom.position(el, 10, 20);
-				el.style.left.should.equal("10px");
-				el.style.top.should.equal("20px");
+				el.style.left!.should.equal("10px");
+				el.style.top!.should.equal("20px");
 			});
 		it("Remove removes the child from the parent",
 			function() {
 				const el = Dom.create(this.html2);
 				this.document.body.appendChild(el);
-				el.parentNode.should.not.be.null;
+				el.parentNode!.should.not.be.null;
 				Dom.remove(el);
 				(el.parentNode === null).should.be.true;
 			});

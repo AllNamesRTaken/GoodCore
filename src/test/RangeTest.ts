@@ -38,7 +38,7 @@ describe("Range2",
 				r1
 					.first(function(p){
 						return p.equals(new Vec2(2, 2));
-					})
+					})!
 					.equals(new Vec2(2, 2)).should.be.true;
 			});
 		it("ForEach loops over all points",

@@ -2,7 +2,7 @@ import * as Arr from "../Arr";
 import { equals } from "../Obj";
 
 export class List<T> implements IList<T> {
-	private _array: T[];
+	private _array: T[] = [];
 
 	constructor(arr?: T[] | List<T>) {
 		if (arr === undefined) {
@@ -40,10 +40,10 @@ export class List<T> implements IList<T> {
 	public push(v: T): number {
 		return this._array.push(v);
 	}
-	public pop(): T {
+	public pop(): T | undefined {
 		return this._array.pop();
 	}
-	public shift(): T {
+	public shift(): T| undefined {
 		return this._array.shift();
 	}
 	public concat(v: T[] | List<T>): List<T> {
@@ -91,23 +91,23 @@ export class List<T> implements IList<T> {
 		Arr.removeAt(this._array, n);
 		return this;
 	}
-	public forEach(fn: (el: T, i?: number) => any): List<T> {
+	public forEach(fn: (el: T, i: number) => any): List<T> {
 		Arr.forEach(this._array, fn);
 		return this;
 	}
-	public until(test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): List<T> {
+	public until(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T> {
 		Arr.until(this._array, test, fn);
 		return this;
 	}
-	public reverseForEach(fn: (el: T, i?: number) => any): List<T> {
+	public reverseForEach(fn: (el: T, i: number) => any): List<T> {
 		Arr.reverseForEach(this._array, fn);
 		return this;
 	}
-	public reverseUntil(test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): List<T> {
+	public reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T> {
 		Arr.reverseUntil(this._array, test, fn);
 		return this;
 	}
-	public some(filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): List<T> {
+	public some(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T> {
 		Arr.some(this._array, filter, fn);
 		return this;
 	}
@@ -121,10 +121,10 @@ export class List<T> implements IList<T> {
 		Arr.reverse(this._array);
 		return this;
 	}
-	public select(fn: (el: T, i?: number) => boolean): List<T> {
+	public select(fn: (el: T, i: number) => boolean): List<T> {
 		return new List<T>(Arr.filter(this._array, fn));
 	}
-	public selectInto(src: List<T> | T[], fn: (el: T, i?: number) => boolean): List<T> {
+	public selectInto(src: List<T> | T[], fn: (el: T, i: number) => boolean): List<T> {
 		if (src instanceof List) {
 			Arr.filterInto<T>(src._array, this._array, fn);
 		} else {
@@ -136,10 +136,10 @@ export class List<T> implements IList<T> {
 		this._array.sort(fn);
 		return this;
 	}
-	public map<S>(fn: (el: T, i?: number) => S): List<S> {
+	public map<S>(fn: (el: T, i: number) => S): List<S> {
 		return new List<any>(Arr.map<T, S>(this._array, fn));
 	}
-	public mapInto<S>(src: List<S> | S[], fn: (el: S, i?: number) => T): List<T> {
+	public mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): List<T> {
 		if (src instanceof List) {
 			Arr.mapInto<S, T>(src._array, this._array, fn);
 		} else {

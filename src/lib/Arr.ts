@@ -149,7 +149,7 @@ export function deepFill<T>(src: T[], target: T[], at: number = 0): void {
 		target[at + i] = (clone(src[i]));
 	}
 }
-export function filter<T>(src: T[], fn: (el: T, i?: number) => boolean): T[] {
+export function filter<T>(src: T[], fn: (el: T, i: number) => boolean): T[] {
 	const result: T[] = [];
 	let i = -1;
 	const len = src.length;
@@ -161,14 +161,14 @@ export function filter<T>(src: T[], fn: (el: T, i?: number) => boolean): T[] {
 	}
 	return result;
 }
-export function filterInto<T>(src: T[], target: T[], fn: (el: T, i?: number) => boolean): void {
+export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void {
 	let i = -1;
 	let j = 0;
 	const len = src.length;
 	const space = target.length;
 	while (++i < len) {
 		const el = src[i];
-		if (fn(el, i) === true) {
+		if (fn(el, i!) === true) {
 			if (j < space) {
 				target[j++] = el;
 			} else {
@@ -179,7 +179,7 @@ export function filterInto<T>(src: T[], target: T[], fn: (el: T, i?: number) => 
 	}
 	target.length = j;
 }
-export function map<S, T>(src: S[], fn: (el: S, i?: number) => T): T[] {
+export function map<S, T>(src: S[], fn: (el: S, i: number) => T): T[] {
 	let i = -1;
 	const len = src.length;
 	const result = new Array<T>(len);
@@ -188,7 +188,7 @@ export function map<S, T>(src: S[], fn: (el: S, i?: number) => T): T[] {
 	}
 	return result;
 }
-export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i?: number) => T): void {
+export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T): void {
 	let i = -1;
 	const len = src.length;
 	target.length = len;
@@ -205,14 +205,14 @@ export function reduce<T>(src: T[], fn: (acc: any | number, cur: T) => any | num
 	}
 	return acc;
 }
-export function forEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
+export function forEach<T>(src: T[], fn: (el: T, i: number) => any): void {
 	let i = -1;
 	const len = src.length;
 	while (++i < len) {
 		fn(src[i], i);
 	}
 }
-export function until<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
+export function until<T>(src: T[], test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
 	let i = -1;
 	const len = src.length;
 	while (++i < len) {
@@ -222,13 +222,13 @@ export function until<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el
 		fn(src[i], i);
 	}
 }
-export function reverseForEach<T>(src: T[], fn: (el: T, i?: number) => any): void {
+export function reverseForEach<T>(src: T[], fn: (el: T, i: number) => any): void {
 	let i = src.length;
 	while (--i >= 0) {
 		fn(src[i], i);
 	}
 }
-export function reverseUntil<T>(src: T[], test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
+export function reverseUntil<T>(src: T[], test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
 	let i = src.length;
 	while (--i >= 0) {
 		if (test(src[i], i)) {
@@ -237,7 +237,7 @@ export function reverseUntil<T>(src: T[], test: (el: T, i?: number) => boolean, 
 		fn(src[i], i);
 	}
 }
-export function some<T>(src: T[], filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): void {
+export function some<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
 	let i = -1;
 	const len = src.length;
 	while (++i < len) {
@@ -275,7 +275,7 @@ export function binarySearch<T>(src: T[], cmp: (el: T) => number): number {
 	}
 	return -1;
 }
-export function create<T>(length: number, populator: (i?: number, arr?: T[]) => T): T[] {
+export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[] {
 	let arr = new Array<T>(length);
 	let i = -1;	
 	if (length < 0) {
