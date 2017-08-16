@@ -1,5 +1,13 @@
 # GoodCore
-Good Core typescript library with utility functions and effective data structures for use with in Node and browser.
+Good Core typescript library with utility functions and effective data structures for use with both Node and browser.
+
+It brings:
+- type definitions
+- fluent api where applicable
+- high performance
+- fully tested
+- fully tree shakeable with rollup
+- no external dependencies
 
 It contains ...
 
@@ -11,16 +19,89 @@ the following data structures:
 - Vec2
 - Range2
 - Rect
+- KeyValuePair<S, T>
 
-as well as:
+general utility objects:
 - Pool<T>
-- Cache<T>
+
+method combinator decorators:
+- @before
+- @after
+- @around
+- @provided
+- @async
+- @async.before 
+- @async.after 
+- @async.provided 
+
+mixins:
+- Initable
+- Pooable
 
 and lots of utility functions for:
-- Array manipulation
+- Array manipulation, optimized for speed
 - Dom manipulation
 - Moc data generation
 - Object manipulation
 - Timer
 - Uri location handling
-- Helper functions for Asserts, Function proxies, Log pipe, Guid generation and MD5 hash (using ts-md5)
+- Fast rotation calculation using pre calculationand and closest value
+- Utility functions for
+  - Asserts
+  - Function proxies
+  - Log pipe
+  - Guid generation
+  - looping
+
+# Examples
+Here is a small example that makes no sense other than show what the lib looks like in use.
+
+```typescript
+import { Initable, List, provided, Range2, Util, Vec2 } from "goodcore";
+import { IVec2 } from "goodcore/struct/IVec2";
+
+let world = new Range2(2, 2, 8, 8); //x,y,h,w
+function inWorld(point: IVec2): boolean {
+    return world.containsPoint(point);
+}
+
+class BaseLogger {
+    private _list: List<Vec2> = new List<Vec2>();
+    public id: string = "";
+
+    @provided(inWorld)
+    public log(point: IVec2) {
+        this._list.add(new Vec2().set(point));
+    }
+    public search(point: IVec2): List<Vec2> {
+        return this._list.select((p, i) => p.equals(point)).clone();
+    }
+    public get list(): List<Vec2> {
+        return this._list.clone();
+    }
+}
+class Logger extends Initable(BaseLogger) {}
+
+// log in the order of distance from 0,0 
+let logger: Logger = new Logger().init({id: Util.newUUID()}) as Logger;
+logger.log({x: 1, y: 3});
+logger.log({x: 4, y: 4});
+logger.log({x: 5, y: 5});
+logger.log({x: 7, y: 8});
+logger.log({x: 9, y: 3});
+
+console.log(logger.id);
+logger.list
+    .orderBy((a, b) => a.subtract(b).length())
+    .forEach((p) => console.log(p));
+
+let contains = logger.search({x: 4, y: 4});
+console.log(`does the log contain point 4,4? ${contains}`);
+```
+# Contribute
+Found a bug? GREAT! Raise an issue!
+
+When developing, please:
+
+- Write unit tests.
+- Make sure your unit tests pass
