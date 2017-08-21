@@ -14,18 +14,15 @@
     "dist/lib/"
   ],
   "scripts": {
-    "install_tools": "yarn install && typings install",
+    "install_tools": "npm install && typings install",
     "clean": "rimraf ./dist",
-    "clean-test": "rimraf ./dist/test",
     "tsc": "tsc",
     "rollup": "node rollup.js",
-    "build": "yarn run clean && tsc && yarn run rollup && yarn run bundle_d_ts",
-    "test": "yarn run clean && tsc -p tsconfig-test.json && yarn run_test",
+    "build": "npm run clean && tsc && npm run rollup && npm run bundle_d_ts",
+    "test": "npm run clean && tsc -p tsconfig-test.json && npm run run_test",
     "run_test": "mocha ./dist/test/*Test.js",
     "cover": "istanbul cover ./node_modules/mocha/bin/_mocha -- ./dist/test/*.js",
-    "bundle_d_ts": "node dts-bundle.js",
-    "publish_to_npm": "npm publish",
-    "all": "yarn run build && yarn run test && yarn run cover"
+    "bundle_d_ts": "node dts-bundle.js"
   },
   "dependencies": {},
   "devDependencies": {
