@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/AllNamesRTaken/GoodCore.svg?branch=master)](https://travis-ci.org/AllNamesRTaken/GoodCore)
+
 # GoodCore
 Good Core typescript library with utility functions and effective data structures for use with both Node and browser.
 
