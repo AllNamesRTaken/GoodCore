@@ -54,6 +54,17 @@ describe("Dom",
 				chld.length.should.equal(3);
 				el.parentNode!.removeChild(el);
 			});
+		it("findParent finds parent matching selector or null",
+			function() {
+				const el = Dom.create(this.html2);
+				this.document.body.appendChild(el);
+				const chld = Dom.find("#sub1");
+				const parent = Dom.findParent(chld, "body");
+				parent!.should.equal(this.document.body);
+				const non = Dom.findParent(chld, "#non");
+				expect(non).to.equal(null);
+				el.parentNode!.removeChild(el);
+			});
 		it("Get gets elementById",
 			function() {
 				const el = Dom.create(this.html2);

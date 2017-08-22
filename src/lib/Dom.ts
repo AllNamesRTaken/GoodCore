@@ -113,6 +113,16 @@ export class Dom {
 		const children = this.toArray((root || DomState._document).children);
 		return selector === undefined ? children : children.filter(this.is.bind(this, selector));
 	}
+	public static findParent(root: HTMLElement, selector: string): HTMLElement | null {
+		let result = root.parentElement;
+		while (result) {
+			if ( this.is(selector, result) ) {
+				break;
+			}
+			result = result.parentElement;
+		}
+		return result;
+	}
 	public static position(el: HTMLElement, x: number, y: number): void {
 		el.style.top = y + "px";
 		el.style.left = x + "px";
