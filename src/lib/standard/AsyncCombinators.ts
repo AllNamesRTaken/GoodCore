@@ -63,7 +63,7 @@ async.after = function<S>(decoration: (value: any, reason: any, ...argv: any[]) 
 						resolve(value);
 					})
 					.catch((reason: any) => {
-						resolve(reason);
+						reject(reason);
 					});
 				};
 				orgFn.apply(this, args)

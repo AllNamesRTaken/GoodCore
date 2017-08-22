@@ -11,13 +11,13 @@ describe("Combinators",
 					@before(function() { 
 						this.anxiety++;
 					})
-					public fret() {
+					public fret(...args: any[]) {
 						this.anxiety.should.equal(1);
 						this.anxiety++;
 					}
 				}
 				let sam = new Person();
-				sam.fret();
+				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(2);
 			});
 
@@ -28,13 +28,13 @@ describe("Combinators",
 					@after(function() { 
 						this.anxiety++;
 					})
-					public fret() {
+					public fret(...args: any[]) {
 						this.anxiety.should.equal(0);
 						this.anxiety++;
 					}
 				}
 				let sam = new Person();
-				sam.fret();
+				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(2);
 			});
 		it("around acts around",
@@ -46,13 +46,13 @@ describe("Combinators",
 						callback();
 						this.anxiety++;
 					})
-					public fret() {
+					public fret(...args: any[]) {
 						this.anxiety.should.equal(1);
 						this.anxiety++;
 					}
 				}
 				let sam = new Person();
-				sam.fret();
+				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(3);
 			});
 		it("provided acts if provided",
@@ -62,14 +62,14 @@ describe("Combinators",
 					@provided(function() { 
 						return this.anxiety === 0;
 					})
-					public fret() {
+					public fret(...args: any[]) {
 						this.anxiety++;
 					}
 				}
 				let sam = new Person();
-				sam.fret();
+				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(1);
-				sam.fret();
+				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(1);
 			});
 		it("combination acts from outer to inner",
@@ -82,14 +82,14 @@ describe("Combinators",
 					@before(function() {
 						this.anxiety++;
 					})
-					public fret() {
+					public fret(...args: any[]) {
 						this.anxiety++;
 					}
 				}
 				let sam = new Person();
-				sam.fret();
+				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(2);
-				sam.fret();
+				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(2);
 			});
 	}

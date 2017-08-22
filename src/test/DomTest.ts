@@ -60,6 +60,7 @@ describe("Dom",
 				this.document.body.appendChild(el);
 				const chld = Dom.get("sub2");
 				chld.id.should.equal("sub2");
+				Dom.get("body").tagName.should.equal("BODY");
 				el.parentNode!.removeChild(el);
 			});
 		it("Is matches element with selector",
@@ -67,6 +68,15 @@ describe("Dom",
 				const el = Dom.create(this.html2);
 				Dom.is("#foo", el).should.be.true;
 				Dom.is(".bar", el).should.be.false;
+			});
+		it("setStylesExplicitly reads styles (from classes) and sets them as explicit styles",
+			function() {
+				const el = Dom.create(this.html2);
+				this.document.body.appendChild(el);
+				el.style.display!.should.equal("");
+				Dom.setStylesExplicitly(el, "display");
+				el.style.display!.should.equal("block");
+				el.parentNode!.removeChild(el);
 			});
 		it("OuterHTML returns correct html",
 			function() {

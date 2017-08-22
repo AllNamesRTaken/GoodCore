@@ -17,14 +17,28 @@ describe("AsyncCombinators",
 						});
 					})
 					@async
-					public fret() {
+					public fret(...args: any[]) {
 						this.anxiety.should.equal(1);
 						this.anxiety++;
 					}
+					@async.before!( function(): Promise<any> { 
+						return new Promise<any>( (resolve, reject) => {
+							resolve();
+						});
+					})
+					@async
+					public error(...args: any[]) {
+						throw new Error("reason");
+					}
 				}
 				let sam = new Person();
-				(sam.fret() as any).then(() => {
+				(sam.fret(1) as any).then(() => {
 					sam.anxiety.should.equal(2);
+				});
+				(sam.error(1) as any)
+				.then(() => {
+				})
+				.catch((reason: Error) => {
 					done();
 				});
 				sam.anxiety.should.equal(0);				
@@ -42,14 +56,27 @@ describe("AsyncCombinators",
 						});
 					})
 					@async
-					public fret() {
+					public fret(...args: any[]) {
 						this.anxiety++;
 						this.anxiety.should.equal(1);
 					}
+					@async.after!( function(_: any, reason: Error ): Promise<any> { 
+						return new Promise<any>( (resolve, reject) => {
+							reject(reason);
+						});
+					})
+					@async
+					public error(...args: any[]) {
+						throw new Error("reason");
+					}
 				}
 				let sam = new Person();
-				(sam.fret() as any).then(() => {
+				(sam.fret(1) as any).then(() => {
 					sam.anxiety.should.equal(2);
+				});
+				(sam.error(1) as any).then(() => {
+				})
+				.catch( (reason: Error) => {
 					done();
 				});
 			});
@@ -65,16 +92,37 @@ describe("AsyncCombinators",
 						});
 					})
 					@async
-					public fret() {
+					public fret(...args: any[]) {
 						this.anxiety++;
+					}
+					@async.provided!(function(ok: boolean): Promise<any> { 
+						return new Promise<any>( (resolve, reject) => {
+							setTimeout( () => {
+								if (ok) {
+									resolve(true);
+								} else {
+									reject("reject");
+								}
+							});
+						});
+					})
+					@async
+					public error(ok: boolean) {
+						throw new Error("reason");
 					}
 				}
 				let sam = new Person();
-				(sam.fret() as any).then(() => {
+				(sam.fret(1) as any).then(() => {
 					sam.anxiety.should.equal(1);
-					(sam.fret() as any).then(() => {
+					(sam.fret(1) as any).then(() => {
 					}).catch( (reason: any) => {
 						sam.anxiety.should.equal(1);
+					});
+				});
+				(sam.error(true) as any).catch((reason: Error) => {
+					reason.message.should.equal("reason");
+					(sam.error(false) as any).catch((reason: string) => {
+						reason.should.equal("reject");
 						done();
 					});
 				});

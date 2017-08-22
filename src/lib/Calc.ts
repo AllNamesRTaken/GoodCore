@@ -17,26 +17,26 @@ export function sign(x: number): number {
 }
 
 export function rotationDeg(rotation: number): number[] {
-	let rot = (rotation * CalcConst.ROTATION_DEGREE_PRECISION) | 0;
-	while (rot < 0) {
-		rot += CalcConst.DEG360;
+	let deg = (rotation * CalcConst.ROTATION_DEGREE_PRECISION) | 0;
+	while (deg < 0) {
+		deg += CalcConst.DEG360;
 	}
-	while (rot >= CalcConst.DEG360) {
-		rot -= CalcConst.DEG360;
+	while (deg >= CalcConst.DEG360) {
+		deg -= CalcConst.DEG360;
 	}
-	return CalcConst.ROTATION_LOOKUP[rot];
+	return CalcConst.ROTATION_LOOKUP[deg];
 }
 export function rotationRad(rotation: number): number[] {
-	const rot = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
-	return this.rotationDeg(rot / CalcConst.ROTATION_DEGREE_PRECISION);
+	const deg = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
+	return this.rotationDeg(deg / CalcConst.ROTATION_DEGREE_PRECISION);
 }
-export function closestRadianRotation(rotation: number): number {
-	let rot = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
-	while (rot < 0) {
-		rot += CalcConst.DEG360;
+export function closestRadianRotation(radian: number): number {
+	let deg = radian * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
+	while (deg < 0) {
+		deg += CalcConst.DEG360;
 	}
-	while (rot >= CalcConst.DEG360) {
-		rot -= CalcConst.DEG360;
+	while (deg >= CalcConst.DEG360) {
+		deg -= CalcConst.DEG360;
 	}
-	return rot * CalcConst.RADIAN_FACTOR / CalcConst.ROTATION_DEGREE_PRECISION;
+	return deg * CalcConst.RADIAN_FACTOR / CalcConst.ROTATION_DEGREE_PRECISION;
 }

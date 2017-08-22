@@ -13,9 +13,9 @@ describe("Poolable",
 					public Foo = "foo";
 				}
 				const _foo = Poolable(BaseObj);
-				class PoolableFoo extends _foo { }
+				class PoolableFoo extends _foo { }	
 				const pool = new Pool(PoolableFoo);
-				const obj = new PoolableFoo();
+				const obj = new PoolableFoo(1, 2, 3);
 				obj.Foo.should.equal("foo");
 				obj.initPool(pool);
 				obj.__pool__.should.equal(pool);
