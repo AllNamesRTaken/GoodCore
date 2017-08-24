@@ -1,8 +1,8 @@
 {
   "name": "goodcore",
-  "version": "0.3.1",
+  "version": "0.5.2",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
-  "main": "./dist/goodcore.umd.min.js",
+  "main": "./dist/goodcore.es6.umd.min.js",
   "module": "./dist/lib/index.js",
   "typings": "./dist/goodcore.d.ts",
   "files": [
@@ -10,6 +10,7 @@
     "dist/goodcore.umd.min.js",
     "dist/goodcore.es.min.js",
     "dist/goodcore.es2015.min.js",
+    "dist/goodcore.es6.umd.min.js",
     "dist/goodcore.d.ts",
     "dist/lib/"
   ],

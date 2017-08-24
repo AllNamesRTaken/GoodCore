@@ -65,4 +65,9 @@ rollup.rollup({
         format: 'es',
         dest: 'dist/' + packageJson.name + '.es2015.min.js'
     });
+    bundle.write({
+        format: 'umd',
+        moduleName: packageJson.name,
+        dest: 'dist/' + packageJson.name + '.es6.umd.min.js'
+    });
 });

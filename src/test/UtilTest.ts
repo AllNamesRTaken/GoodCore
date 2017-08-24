@@ -47,7 +47,8 @@ describe("Util",
 				});
 		it("GetFunctionCode returns correct code as string",
 				function() {
-					Util.getFunctionCode(function() {const a = 1; }).should.equal(" var a = 1; ");
+					// tslint:disable-next-line:no-var-keyword
+					Util.getFunctionCode(function() {var a = 1; }).should.equal(" var a = 1; ");
 				});
 		it("IsArray detects correctly for array and object",
 				function() {
