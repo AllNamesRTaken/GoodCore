@@ -57,6 +57,11 @@ describe("Tree",
 				const tree = this.tree as Tree<string>;
 				tree.select((node) => node.children === null).count.should.equal(4);
 			});
+		it("Empty select returns all nodes",
+			function(){
+				const tree = this.tree as Tree<string>;
+				tree.select().count.should.equal(6);
+			});
 		it("Add and Remove does add and remove",
 			function(){
 				const tree = this.tree as Tree<string>;

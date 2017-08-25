@@ -153,7 +153,8 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 		const children = this.children as List<Tree<T>>;
 		if (condition === undefined || condition(this)) {
 			result.add(this);
-		} else {
+		}
+		if (children) {
 			children.reduce(function(acc: List<Tree<T>>, cur: Tree<T>) {
 				return cur.select(condition, acc);
 			}, result);
