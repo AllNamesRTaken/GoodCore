@@ -1,6 +1,6 @@
 import * as Arr from "./Arr";
 import * as Calc from "./Calc";
-import { Dom } from "./Dom";
+import * as Dom from "./Dom";
 import { Global } from "./Global";
 import * as MocData from "./MocData";
 import * as Obj from "./Obj";

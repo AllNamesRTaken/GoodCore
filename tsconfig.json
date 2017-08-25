@@ -29,5 +29,6 @@
 		"./typings/**/*.d.ts"
 	],
 	"exclude": [
+		"./src/test/**/*.ts"
 	]
 }

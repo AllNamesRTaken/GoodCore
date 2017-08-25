@@ -5,7 +5,7 @@ export function destroy(obj: any): void {
 	if (obj.Destroy !== undefined) {
 		obj.Destroy();
 	} else {
-		this.null(obj);
+		setNull(obj);
 	}
 }
 export function wipe(obj: any): void {
@@ -42,20 +42,20 @@ export function isNullOrUndefined(...args: any[]): boolean {
 	return result;
 }
 export function isNotNullOrUndefined(...args: any[]): boolean {
-	return !this.isNullOrUndefined(...args);
+	return !isNullOrUndefined(...args);
 }
 export function isClassOf(a: any, b: any): boolean {
-	return this.isNotNullOrUndefined(a, b) && a instanceof b.constructor;
+	return isNotNullOrUndefined(a, b) && a instanceof b.constructor;
 }
 export function isSameClass(a: any, b: any): boolean {
-	return this.isNotNullOrUndefined(a, b) && a.constructor === b.constructor;
+	return isNotNullOrUndefined(a, b) && a.constructor === b.constructor;
 }
 export function inherits(a: any, b: any): boolean {
-	return this.isClassOf(a, b) && !this.isSameClass(a, b);
+	return isClassOf(a, b) && !isSameClass(a, b);
 }
 export function equals(a: any, b: any): boolean {
 	let result = a === b;
-	if (a !== b && (a instanceof Object) && this.isSameClass(a, b)) {
+	if (a !== b && (a instanceof Object) && isSameClass(a, b)) {
 		if (isArray(a)) {
 			// Compare arrays
 			const len = a.length;
@@ -63,7 +63,7 @@ export function equals(a: any, b: any): boolean {
 			result = len === b.length;
 			if (result) {
 				for (; i < len; i += 1) {
-					result = this.equals(a[i], b[i]);
+					result = equals(a[i], b[i]);
 					if (result === false) {
 						break;
 					}
@@ -81,7 +81,7 @@ export function equals(a: any, b: any): boolean {
 			const len = keys.length;
 			while (++i < len) {
 				key = keys[i];
-				result = this.equals(a[key], b[key]);
+				result = equals(a[key], b[key]);
 				if (!result) {
 					if (isFunction(a[key])) {
 						result = true;
@@ -95,7 +95,7 @@ export function equals(a: any, b: any): boolean {
 	return result;
 }
 export function isDifferent(a: any, b: any): boolean {
-	return !this.equals(a, b);
+	return !equals(a, b);
 }
 export function shallowCopy(obj: any): any {
 	const keys = Object.keys(obj);
@@ -131,7 +131,7 @@ export function clone<T>(obj: T): T {
 		const len = keys.length;
 		while (++i < len) {
 			key = keys[i];
-			result[key] = this.clone((obj as any)[key]);
+			result[key] = clone((obj as any)[key]);
 		}
 	}
 	return result;
@@ -146,7 +146,7 @@ export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
 		let i = -1;
 		while (++i < len) {
 			if (arrS[i] instanceof Object) {
-				this.cloneInto(arrS[i], arrT[i]);
+				cloneInto(arrS[i], arrT[i]);
 			} else {
 				arrT[i] = arrS[i];
 			}
@@ -169,8 +169,8 @@ export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
 						b = (target as any)[key] = {};
 					}
 				}
-				if (this.isDifferent(a, b)) {
-					this.cloneInto(a, b);
+				if (isDifferent(a, b)) {
+					cloneInto(a, b);
 				}
 			} else {
 				(target as any)[key] = a;

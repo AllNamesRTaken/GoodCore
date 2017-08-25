@@ -1,7 +1,7 @@
 import { should } from "chai";
 import { expect } from "chai";
 import { jsdom } from "jsdom";
-import { Dom } from "../lib/Dom";
+import * as Dom from "../lib/Dom";
 should();
 
 describe("Dom",
