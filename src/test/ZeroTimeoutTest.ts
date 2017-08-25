@@ -1,5 +1,5 @@
 import { should } from "chai";
-import { jsdom } from "jsdom";
+import { JSDOM } from "jsdom";
 import { Timer } from "../lib/Timer";
 import { init } from "../lib/Util";
 import { createZeroTimeout, zeroTimeout } from "../lib/ZeroTimeout";
@@ -9,7 +9,7 @@ describe("Util",
 	function () {
 		before(
 			function () {
-				const win = jsdom().defaultView;
+				const win = new JSDOM().window;
 				init(win);
 				this.zero = createZeroTimeout();
 			});

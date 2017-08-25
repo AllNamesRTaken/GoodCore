@@ -185,4 +185,12 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 	public contains(condition: (data: T) => boolean): boolean {
 		return this.find(condition) !== null;
 	}
+	public depth() {
+		let result = 0;
+		let node = this as Tree<T>;
+		while (node.parent) {
+			node = node.parent;
+			++result;
+		}
+	}
 }

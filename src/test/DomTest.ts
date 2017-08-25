@@ -1,13 +1,13 @@
 import { should } from "chai";
 import { expect } from "chai";
-import { jsdom } from "jsdom";
+import { JSDOM } from "jsdom";
 import * as Dom from "../lib/Dom";
 should();
 
 describe("Dom",
 	function() {
 		before(function() {
-			const win = jsdom().defaultView;
+			const win = new JSDOM().window;
 			this.document = win.document;
 			this.html1 = "<div id=\"bar\">text</div>";
 			this.html2 = "<div id=\"foo\"><div id=\"sub1\"></div><div id=\"sub2\"></div></div>";

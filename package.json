@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "./dist/goodcore.es6.umd.min.js",
   "module": "./dist/lib/index.js",
@@ -28,11 +28,14 @@
     "cover": "npm run test && istanbul cover ./node_modules/mocha/bin/_mocha -- ./dist/test/*.js",
     "bundle_d_ts": "node dts-bundle.js"
   },
-  "dependencies": {
-    "babel-core": "^6.26.0"
-  },
+  "dependencies": {},
   "devDependencies": {
+    "@types/chai": "^4.0.4",
+    "@types/jquery": "^3.2.12",
+    "@types/jsdom": "^11.0.1",
+    "@types/mocha": "^2.2.42",
     "@types/node": "^8.0.24",
+    "babel-core": "^6.26.0",
     "babel-plugin-check-es2015-constants": "^6.22.0",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-plugin-transform-es2015-arrow-functions": "^6.22.0",
@@ -70,7 +73,7 @@
     "gulp-typescript": "^3.2.2",
     "gulp-uglify-es": "^0.1.3",
     "istanbul": "^0.4.5",
-    "jsdom": "^9.12.0",
+    "jsdom": "^11.2.0",
     "karma": "^1.3.0",
     "karma-chrome-launcher": "^2.0.0",
     "karma-firefox-launcher": "^1.0.0",

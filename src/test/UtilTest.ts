@@ -1,5 +1,5 @@
 import {should} from "chai";
-import { jsdom } from "jsdom";
+import { JSDOM } from "jsdom";
 import * as MocData from "../lib/MocData";
 import * as Test from "../lib/Test";
 import { Timer } from "../lib/Timer";
