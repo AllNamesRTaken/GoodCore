@@ -17,10 +17,22 @@ describe("Tree",
 				]
 			});
 		});
-		it("Tree.FromObject returns correct tree",
+		it("Tree.fromObject returns correct tree",
 			function(){
 				const tree = this.tree as Tree<string>;
 				tree.children!.get(1).children!.get(1).data!.should.equal("c2-2");
+			});
+		it("Tree.fromNodeList returns correct tree",
+			function(){
+				let nodeList: any[] = [
+					{uid: "-", parent: null, category: "stuff", children: [ "0", "1"]},
+					{uid: "0", parent: "-", category: "books", children: [ "0-0", "0-1"]},
+					{uid: "1", parent: "-", category: "toys", children: [ "1-0", "1-1"]},
+					{uid: "0-0", parent: "0", category: "adventure", children: [ "0-0-0", "0-0-1"]},
+					{uid: "0-1", parent: "0", category: "drama", children: [ "0-1-0", "0-1-1"]}
+				];
+				const tree = Tree.fromNodeList(nodeList, {id: "uid", data: (el) => ({category: el.category})});
+				tree.children!.get(0).children!.get(1).data!.should.deep.equal( {category: "drama"} );
 			});
 		it("Find finds the correct node",
 			function(){
@@ -53,7 +65,11 @@ describe("Tree",
 				c4!.data!.should.equal("c4");
 				(c4 as Tree<string>).remove();
 				tree.contains((data) => data === "c4").should.be.false;
-
+				let node = new Tree<string>().init({data: "treenode"});
+				tree.add(node);
+				const treenode = tree.find((data) => data === "treenode");
+				treenode!.data!.should.equal("treenode");
+				(treenode as Tree<string>).remove();
 			});
 		it("Clone clones deep",
 			function(){
@@ -66,7 +82,13 @@ describe("Tree",
 		it("Reduce performs depth first reduction",
 			function(){
 				const tree = this.tree as Tree<string>;
-				tree.reduce((acc, cur) => acc += "," + cur, "").should.equal(",root,c1,c2,c2-1,c2-2,c3");
+				tree.reduce((acc, cur) => acc += "," + cur!.data, "").should.equal(",root,c1,c2,c2-1,c2-2,c3");
+			});
+		it("as nodelist",
+			function(){
+				const tree = this.tree as Tree<string>;
+				let list = tree.reduce();
+				console.log(JSON.stringify(list));
 			});
 		it("InsertAt inserts at the correct position",
 			function(){

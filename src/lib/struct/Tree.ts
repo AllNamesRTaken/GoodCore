@@ -1,8 +1,9 @@
 import { map } from "../Arr";
-import { clone, setProperties } from "../Obj";
+import { clone, isSameClass, setProperties } from "../Obj";
 import { Initable } from "../standard/mixins/Initable";
 import { isArray } from "../Test";
 import { newUUID } from "../Util";
+import { Dictionary } from "./Dictionary";
 import { List } from "./List";
 import { Stack } from "./Stack";
 
@@ -13,23 +14,59 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 	public data: T | null = null;
 	public static fromObject<T>(obj: any): Tree<T> {
 		const parent: Tree<T> | null = (this instanceof Tree) ? this : null;
-		const root = new Tree<T>().init({ data: obj.data, parent });
+		const root = new Tree<T>().init({ id: obj.id || newUUID(), data: obj.data, parent });
 		if (obj.children !== undefined && isArray(obj.children)) {
 			root.children = new List<Tree<T>>(map<any, Tree<T>>(obj.children as Array<Tree<T>>, Tree.fromObject.bind(root)));
 		}
 		return root;
 	}
+	public static fromNodeList<S, T>(nodes: S[], mapcfg?: {
+		id?: ((node: S) => string)|string, 
+		parent?: ((node: S) => string)|string, 
+		data?: ((node: S) => any)|string
+	}): Tree<T> {
+		let result = new Tree<T>();
+		// create map
+		let mapResolver = (key: string) => {
+			return !mapcfg || typeof((mapcfg as any)[key]) === "undefined" ? (el: S) => (el as any)[key] :
+				typeof((mapcfg as any)[key]) === "string" ? (el: S) => (el as any)[(mapcfg as any)[key]] : 
+				(mapcfg as any)[key];
+			};
+		let map = {
+			id: mapResolver("id"),
+			parent: mapResolver("parent"),
+			data: mapResolver("data")
+		};
+		// create node lookup
+		let list = new List<S>(nodes);
+		let lookup: Dictionary<Tree<T>> = new Dictionary();
+		list.forEach((el, i) => {
+			let node = new Tree<T>().init({id: map.id(el), data: map.data(el)});
+			// map
+			lookup.set(node.id, node);
+		});
+		// hook nodes together
+		list.forEach((el, i) => {
+			let parent = map.parent(el);
+			if (lookup.contains(parent)) {
+				lookup.get(parent).add(lookup.get(map.id(el)));
+			}
+		});
+		// find root
+		result = lookup.get(map.id(list.get(0)));
+		while (result.parent) {
+			result = result.parent;
+		}
+		return result;
+	}
 
 	constructor() {
-		this.id = this.newId();
+		this.id = newUUID();
 	}
 
 	public init(obj: Partial<Tree<T>>): Tree<T> {
 		setProperties(this, obj);
 		return this;
-	}
-	private newId(): any {
-		return newUUID();
 	}
 	public insertAt(pos: number, data: T): void {
 		if (this.children === null || this.children.count <= pos) {
@@ -38,11 +75,16 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 			this.children.insertAt(pos, new Tree<T>().init({ data, parent: this }));
 		}
 	}
-	public add(data: T): void {
+	public add(data: T|Tree<T>): void {
 		if (this.children === null) {
 			this.children = new List<Tree<T>>();
 		}
-		this.children.add((new Tree<T>()).init({ data, parent: this }));
+		if (isSameClass(data, this)) {
+			(data as Tree<T>).parent = this;
+			this.children.add(data as Tree<T>);
+		} else {
+			this.children.add((new Tree<T>()).init({ data: data as T, parent: this }));
+		}
 	}
 	public remove(): void {
 		if (this.parent !== null) {
@@ -60,15 +102,16 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 		this.children = null;
 		return this;
 	}
-	public reduce(fn: (acc: any, cur: T | null) => any, start?: any): any {
+	public reduce(fn?: (acc: any, cur: Tree<T> | null) => any, start?: any): any {
 		const stack = new Stack<Tree<T>>();
 		let acc: any = start;
-		if (start === undefined) { acc = 0 as any; }
+		if (!fn) { fn = (acc, cur) => (acc += {id: cur!.id, parent: cur!.parent ? cur!.parent!.id : null, data: cur!.data }); }
+		if (start === undefined) { acc = [] as any; }
 		let cur: Tree<T> | undefined;
 		let i: number;
 		stack.push(this);
 		while (cur = stack.pop()) {
-			acc = fn(acc, cur.data);
+			acc = fn(acc, cur);
 			i = (cur.children && cur.children.count) || 0;
 			while (i--) {
 				stack.push(cur.children!.get(i));
