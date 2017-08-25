@@ -89,11 +89,13 @@ describe("Tree",
 				const tree = this.tree as Tree<string>;
 				tree.reduce((acc, cur) => acc += "," + cur!.data, "").should.equal(",root,c1,c2,c2-1,c2-2,c3");
 			});
-		it("as nodelist",
+		it("Reduce without parameters returns node list",
 			function(){
 				const tree = this.tree as Tree<string>;
-				let list = tree.reduce();
-				console.log(JSON.stringify(list));
+				let list: Array<Tree<string>> = tree.reduce();
+				list.length.should.equal(6);
+				list[0].data.should.equal("root");
+				list[5].data.should.equal("c3");
 			});
 		it("InsertAt inserts at the correct position",
 			function(){

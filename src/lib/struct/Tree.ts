@@ -105,7 +105,7 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 	public reduce(fn?: (acc: any, cur: Tree<T> | null) => any, start?: any): any {
 		const stack = new Stack<Tree<T>>();
 		let acc: any = start;
-		if (!fn) { fn = (acc, cur) => (acc += {id: cur!.id, parent: cur!.parent ? cur!.parent!.id : null, data: cur!.data }); }
+		if (!fn) { fn = (acc, cur) => (acc.push({id: cur!.id, parent: cur!.parent ? cur!.parent!.id : null, data: cur!.data }), acc); }
 		if (start === undefined) { acc = [] as any; }
 		let cur: Tree<T> | undefined;
 		let i: number;
