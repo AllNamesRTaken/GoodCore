@@ -114,5 +114,12 @@ describe("Tree",
 				tree.children!.get(1).prune();
 				(tree.children!.get(1).children === null).should.be.true;
 			});
+		it("Depth returns correct depth",
+			function(){
+				const tree = (this.tree as Tree<string>).clone();
+				tree.depth().should.equal(0);
+				tree.children.get(1).depth().should.equal(1);
+				tree.children.get(1).children.get(0).depth().should.equal(2);				
+			});
 	}
 );
