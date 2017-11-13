@@ -13,7 +13,7 @@ export class Dictionary<T> {
 		this._isDirty = false;
 	}
 	public has(key: number|string): boolean {
-		return this._lookup.hasOwnProperty(key);
+		return Object.hasOwnProperty.call(this._lookup, key);
 	}
 	public contains(key: number|string): boolean {
 		return this.has(key);

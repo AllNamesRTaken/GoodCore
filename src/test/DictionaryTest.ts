@@ -68,6 +68,11 @@ describe("Dictionary",
 				d.set("key2", "value2");
 				d.count.should.be.equal(2);
 		});
-	}
+		it("Should return undefined for object prototype functions ",
+		function(){
+			const d = new Dictionary<string>();
+			(d.get("toString") === undefined).should.be.true;
+	});
+}
 
 );
