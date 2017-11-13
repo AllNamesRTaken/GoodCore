@@ -1,9 +1,9 @@
 
 export let async: {
 	<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
-	before?: <S>(decoration: (...argv: any[]) => Promise<any>) => (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-	after?: <S>(decoration: (...argv: any[]) => Promise<any>) => (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-	provided?: <S>(async_predicate: (...argv: any[]) => Promise<boolean>) => (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+	before?<S>(decoration: (name: string, ...args: any[]) => Promise<any>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+	after?<S>(decoration: (name: string, ...args: any[]) => Promise<any>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+	provided?<S>(async_predicate: (...args: any[]) => Promise<boolean>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
 } =
 function async<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
 	const orgFn = descriptor.value;
@@ -22,7 +22,7 @@ function async<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor
 	return descriptor;
 };
 
-async.before = function<S>(decoration: (...argv: any[]) => Promise<any>) {
+async.before = function<S>(decoration: (name: string, ...args: any[]) => Promise<any>) {
 	return function(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
 		const orgFn = descriptor.value;
 
@@ -37,7 +37,7 @@ async.before = function<S>(decoration: (...argv: any[]) => Promise<any>) {
 						reject(reason);
 					});	
 				};
-				(decoration.apply(this, args) as Promise<any>)
+				(decoration.apply(this, [orgFn.name].concat(args)) as Promise<any>)
 				.then((value: any) => {
 					callback();
 				})
@@ -51,14 +51,14 @@ async.before = function<S>(decoration: (...argv: any[]) => Promise<any>) {
 	};
 };
 
-async.after = function<S>(decoration: (value: any, reason: any, ...argv: any[]) => Promise<any>) {
+async.after = function<S>(decoration: (value: any, reason: any, name: string, ...args: any[]) => Promise<any>) {
 	return function(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
 		const orgFn = descriptor.value;
 
 		descriptor.value = function(...args: any[]) {
 			let result = new Promise<any>( (resolve, reject) => {
 				const callback = (value: any, reason: any) => {
-					(decoration.apply(this, [value, reason].concat( args )) as Promise<any>)
+					(decoration.apply(this, [value, reason, orgFn.name].concat( args )) as Promise<any>)
 					.then((value: any) => {
 						resolve(value);
 					})
@@ -81,7 +81,7 @@ async.after = function<S>(decoration: (value: any, reason: any, ...argv: any[]) 
 	};
 };
 
-async.provided = function<S>(async_predicate: (...argv: any[]) => Promise<boolean>) {
+async.provided = function<S>(async_predicate: (name: string, ...args: any[]) => Promise<boolean>) {
 	return function(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
 		const orgFn = descriptor.value;
 
@@ -96,7 +96,7 @@ async.provided = function<S>(async_predicate: (...argv: any[]) => Promise<boolea
 						reject(reason);
 					});	
 				};
-				(async_predicate.apply(this, args) as Promise<boolean>)
+				(async_predicate.apply(this, [orgFn.name].concat(args)) as Promise<boolean>)
 				.then((value: boolean) => {
 					if (value) {
 						callback();

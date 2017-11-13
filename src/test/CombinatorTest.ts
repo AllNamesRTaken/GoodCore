@@ -59,7 +59,7 @@ describe("Combinators",
 			function(){
 				class Person {
 					public anxiety: number = 0;
-					@provided(function() { 
+					@provided(function(name: string) { 
 						return this.anxiety === 0;
 					})
 					public fret(...args: any[]) {

@@ -121,6 +121,9 @@ export class List<T> implements IList<T> {
 		Arr.reverse(this._array);
 		return this;
 	}
+	public filter(fn: (el: T, i: number) => boolean): List<T> {
+		return new List<T>(Arr.filter(this._array, fn));
+	}
 	public select(fn: (el: T, i: number) => boolean): List<T> {
 		return new List<T>(Arr.filter(this._array, fn));
 	}

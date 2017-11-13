@@ -95,7 +95,7 @@ describe("AsyncCombinators",
 					public fret(...args: any[]) {
 						this.anxiety++;
 					}
-					@async.provided!(function(ok: boolean): Promise<any> { 
+					@async.provided!(function(name: string, ok: boolean): Promise<any> { 
 						return new Promise<any>( (resolve, reject) => {
 							setTimeout( () => {
 								if (ok) {

@@ -8,32 +8,30 @@ export class Dictionary<T> {
 	private _isDirty: boolean;
 
 	constructor() {
-		this._lookup = {};
+		this._lookup = Object.create(null);
 		this._list = new List<T>();
 		this._isDirty = false;
 	}
 	public has(key: number|string): boolean {
-		return this._lookup.hasOwnProperty("" + key);
+		return this._lookup.hasOwnProperty(key);
 	}
 	public contains(key: number|string): boolean {
 		return this.has(key);
 	}
 	public get(key: number|string): T {
-		return this._lookup["" + key];
+		return this._lookup[key];
 	}
 	public set(key: number|string, value: T): Dictionary<T> {
-		const k = "" + key;
 		this._isDirty = this._isDirty || this.has(key);
-		this._lookup[k] = value;
+		this._lookup[key] = value;
 		if (!this._isDirty) {
 			this._list.push(value);
 		}
 		return this;
 	}
 	public delete(key: number|string): Dictionary<T> {
-		const k = "" + key;
-		if (this.has(k)) {
-			delete this._lookup[k];
+		if (this.has(key)) {
+			delete this._lookup[key];
 			this._isDirty = true;
 		}
 		return this;

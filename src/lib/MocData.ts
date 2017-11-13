@@ -42,6 +42,8 @@ export function numericArray(length: number, type: MocDataType = MocDataType.Lin
 				result[i] = this.randomNumber();
 			}
 			break;
+		default:
+			break;
 	}
 	return result;
 }

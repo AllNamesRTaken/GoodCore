@@ -91,6 +91,8 @@ export function get(id: string): HTMLElement {
 			case "body":
 				result = DomState._document!.body;
 				break;
+			default:
+				break;
 		}
 	}
 	return result;

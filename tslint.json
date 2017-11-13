@@ -48,7 +48,34 @@
         "max-line-length": [
             140
         ],
-        "prefer-const": false
+        "prefer-const": false,
+		"no-var-keyword": true,
+		"no-sparse-arrays": true,
+		"no-switch-case-fall-through": true,
+		"no-unused-new": true,
+		"no-unsafe-any": true,
+		"restrict-plus-operands": true,
+		"switch-default": true,
+		"triple-equals": true,
+		"linebreak-style": [true, "CRLF"],
+		"arrow-parens": true,
+		"arrow-return-shorthand": true,
+		"interface-over-type-literal": true,
+		"no-angle-bracket-type-assertion": true,
+		"prefer-method-signature": true,
+        "prefer-template": [true, "allow-single-concat"],
+        "ordered-imports": [
+            true
+        ],
+		"quotemark": [
+			true,
+			"double",
+			"avoid-escape"
+		],
+		"semicolon": [
+			true,
+			"always"
+		]
     },
     "rulesDirectory": []
 }
