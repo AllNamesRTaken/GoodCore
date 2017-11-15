@@ -14,20 +14,22 @@ var config = require("./build/buildConfig.js");
 // var builtins = require("rollup-plugin-node-builtins");
 // var globals = require("rollup-plugin-node-globals");
 
-var tsProject5 = ts.createProject("./tsconfig.json");
-var tsProject6 = ts.createProject("./tsconfig.es6.json");
+// var tsProject5 = ts.createProject("./tsconfig.json");
+// var tsProject6 = ts.createProject("./tsconfig.es6.json");
 
 // var babelWithEs2015Modules = config.babelPlugins.slice();
 // var babelWithCommonJsModules = config.babelPlugins.slice();
 // babelWithCommonJsModules.push("transform-es2015-modules-commonjs");
 
 gulp.task("build-es6", () => {
-    return tsProject6.src()
+    // return tsProject6.src()
+    //     .pipe(sourcemaps.init())
+    //     .pipe(tsProject6())
+    //     .pipe(gulp.dest("dist"))
+    //     .pipe(filter("**/index.js"))
+    //     .pipe(debug())
+    return gulp.src("./dist/lib/index.js")
         .pipe(sourcemaps.init())
-        .pipe(tsProject6())
-        .pipe(gulp.dest("dist"))
-        .pipe(filter("**/index.js"))
-        .pipe(debug())
         .pipe(rollup({
             treeshake: true,
             plugins: [
@@ -48,12 +50,14 @@ gulp.task("build-es6", () => {
         .pipe(gulp.dest("dist"));
 });
 gulp.task("build-es5", () => {
-    return tsProject5.src()
+    // return tsProject5.src()
+    //     .pipe(sourcemaps.init())
+    //     .pipe(tsProject5())
+    //     .pipe(gulp.dest("dist"))
+    //     .pipe(filter("**/index.js"))
+    //     .pipe(debug())
+    return gulp.src("./dist/lib/index.js")
         .pipe(sourcemaps.init())
-        .pipe(tsProject5())
-        .pipe(gulp.dest("dist"))
-        .pipe(filter("**/index.js"))
-        .pipe(debug())
         .pipe(rollup({
             treeshake: true,
             plugins: [
@@ -77,4 +81,5 @@ gulp.task("build-es5", () => {
         .pipe(sourcemaps.write("."))
         .pipe(gulp.dest("dist"));
 });
-gulp.task("build", (cb) => sequence("build-es6", "build-es5")(cb));
+//This should build both but when I sequence them then they leek code into each other.
+gulp.task("default", (cb) => sequence("build-es5")(cb));

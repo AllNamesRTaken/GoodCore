@@ -5,3 +5,6 @@ conf.name = packageJson.name;
 conf.out = "../" + packageJson.name + ".d.ts";
 
 dts.bundle(conf);
+conf.out = "../" + packageJson.name + ".flat.d.ts";
+conf.outputAsModuleFolder = true;
+dts.bundle(conf);

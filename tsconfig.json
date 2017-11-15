@@ -18,8 +18,8 @@
 		"listFiles": false,
 		"strictNullChecks": true,
 		"lib": [
-            "dom",
-            "es2015",
+			"dom",
+			"es5",
             "es2015.promise",
 			"scripthost"
         ]

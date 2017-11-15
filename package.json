@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.10.0",
+  "version": "0.10.1",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "./dist/goodcore.es5.umd.min.js",
   "module": "./dist/lib/index.js",
@@ -19,8 +19,7 @@
     "clean": "rimraf ./dist",
     "tsc": "tsc",
     "rollup": "node rollup.js",
-    "gulp": "gulp build",
-    "build": "npm run clean && tsc && npm run gulp && npm run bundle_d_ts",
+    "build": "npm run clean && tsc && gulp build-es5 && tsc -p tsconfig.es6.json && gulp build-es6 && npm run bundle_d_ts",
     "test": "npm run clean && tsc -p tsconfig-test.json && npm run run_test",
     "testcoverage": "npm run clean && tsc -p tsconfig-test.json && npm run coveralls",
     "run_test": "mocha ./dist/test/*Test.js",
@@ -85,7 +84,7 @@
     "mocha-lcov-reporter": "^1.3.0",
     "rimraf": "^2.6.1",
     "source-map-support": "^0.4.16",
-    "typescript": "^2.5.1"
+    "typescript": "^2.6.1"
   },
   "repository": {
     "type": "git",
