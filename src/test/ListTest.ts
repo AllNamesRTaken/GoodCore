@@ -103,11 +103,19 @@ describe("List",
 				list1.get(1).should.equal(4);
 				list1.remove(4).contains(4).should.be.false;
 			});
+		it("RemoveFirst removes the first element from the list matching a function",
+		function() {
+			const list1 = this.list1.clone() as List<any>;
+			list1.get(1).should.equal(4);
+			list1.removeFirst((el: number) => el === 4).should.equal(4);
+			list1.contains(4).should.be.false;
+		});
 		it("RemoveAt removes the element at a given position",
 			function() {
 				const list1 = this.list1.clone() as List<any>;
 				list1.get(2).should.equal(7);
-				list1.removeAt(2).contains(7).should.be.false;
+				list1.removeAt(2).should.equal(7);
+				list1.contains(7).should.be.false;
 			});
 		it("Select returns filtered new list",
 			function() {
@@ -140,6 +148,7 @@ describe("List",
 			function() {
 				const list1 = this.list1 as List<any>;
 				list1.indexOf(2).should.equal(3);
+				list1.indexOf((el: number) => el === 2).should.equal(3);
 				list1.indexOf(42).should.equal(-1);
 			});
 		it("Map el and i are correct",
@@ -169,13 +178,20 @@ describe("List",
 				const list1 = this.list1.clone() as List<any>;
 				list1.reverse().values.should.deep.equal([2, 7, 4, 1]);
 			});
-		it("Some works like Filtered ForEach",
+		it("First returns first element or first matching element",
+		function() {
+			const list1 = this.list1.clone() as List<any>;
+			list1.first().should.equal(1);
+			list1.first((el) => el > 3).should.equal(4);
+			(list1.first((el) => el > 8) === undefined).should.be.true;
+		});
+		it("ForSome works like Filtered ForEach",
 			function() {
 				const list1 = this.list1 as List<any>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
-				list1.some((el, i) => i > 1, (el, i) => listEl.push(el));
-				list1.some((el, i) => i > 1, (el, i) => listi.push(i));
+				list1.forSome((el, i) => i > 1, (el, i) => listEl.push(el));
+				list1.forSome((el, i) => i > 1, (el, i) => listi.push(i));
 				listEl.should.deep.equal([7, 2]);
 				listi.should.deep.equal([2, 3]);
 			});
@@ -203,5 +219,39 @@ describe("List",
 				list1.insertAt(2, 42);
 				list1.values.should.deep.equal([1, 2, 42, 3, 4]);
 			});
+		it("Some is true if any element is true",
+		function() {
+			const list1 = new List([1, 2, 3, 4]);
+			list1.some((el) => el === 3).should.be.true;
+			list1.some((el) => el === 5).should.be.false;
+		});
+		it("All is true if all elements are true",
+		function() {
+			const list1 = new List([1, 2, 3, 4]);
+			list1.all((el) => el > 0).should.be.true;
+			list1.all((el) => el < 4).should.be.false;
+		});
+		it("Zip zips two Lists",
+		function() {
+			const list1 = new List([1, 2, 3, 4]);
+			const list2 = new List([5, 6, 7, 8]);
+			const list3 = new List([5, 6, 7, 8, 9]);
+			const list4 = new List([5, 6, 7]);
+			list1.zip(list2).values.should.deep.equal([[1, 5], [2, 6], [3, 7], [4, 8]]);
+			list1.zip(list2, (t, u) => t - u).values.should.deep.equal([-4, -4, -4, -4]);
+			list1.zip(list3, (t, u) => t - u).values.should.deep.equal([-4, -4, -4, -4]);
+			list1.zip(list4, (t, u) => t - u).values.should.deep.equal([-4, -4, -4]);
+		});		
+		it("Unzip splits a list into 2 lists",
+		function() {
+			const list1 = new List([[1, 5], [2, 6], [3, 7], [4, 8]]);
+			list1.unzip().should.deep.equal([new List([1, 2, 3, 4]), new List([5, 6, 7, 8])]);
+			list1.unzip((el) => [el[1], el[0]]).should.deep.equal([new List([5, 6, 7, 8]), new List([1, 2, 3, 4])]);
+		});
+		it("Flatten flattens any array or lists inside list",
+		function() {
+			const list1 = new List([[1, 2], 3, new List([4, [5, 6]])]);
+			list1.flatten().values.should.deep.equal([1, 2, 3, 4, 5, 6]);
+		});
 	}
 );

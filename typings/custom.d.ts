@@ -36,13 +36,19 @@ interface IList<T> {
   shallowCopy(src: IList<T> | Array<T>): IList<T>;
   clone(): IList<T>;
   remove(v: T): IList<T>;
-  removeAt(n: number): IList<T>;
+  removeFirst(fn: (el: T) => boolean): T;
+  removeAt(n: number): T;
   forEach(fn: (el: T, i?: number) => any): IList<T>;
+  forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IList<T>
   until(test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): IList<T>;
-  some(filter: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): IList<T>;
-  indexOf(v: T): number;
+  reverseForEach(fn: (el: T, i: number) => any): IList<T> 
+  reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IList<T>
+  first(fn?: (el: T) => boolean): T | undefined;
+  indexOf(v: T | ((el: T) => boolean)): number;
   contains(v: T): boolean;
   reverse(): IList<T>;
+  some(fn: (el: T) => boolean): boolean
+  all(fn: (el: T) => boolean): boolean
   select(fn: (el: T) => boolean): IList<T>;
   selectInto(src: IList<T> | Array<T>, fn: (el: T) => boolean): IList<T>;
   orderBy(fn: (a: T, b: T) => number): IList<T>;
@@ -50,6 +56,9 @@ interface IList<T> {
   mapInto(src: IList<any> | Array<any>, fn: (el: any, i?: number) => any): IList<T>;
   reduce(fn: (acc: any, cur: T) => any, start?: any): any;
   equals(b: IList<T>): boolean;
+  zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
+  unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
+  flatten<U>(): IList<U>;
 }
 interface ITreeNode<T> {
   id: string;

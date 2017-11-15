@@ -57,15 +57,18 @@ export function append<T>(arr: T[], values: T[]): void {
 		arr[offset + index] = values[index];
 	}
 }
-export function removeAt(arr: any[], index: number): void {
+export function removeAt(arr: any[], index: number): any {
+	let result;
 	if (index !== -1 && index < arr.length) {
 		const len = arr.length;
 		let i = index;
+		result = arr[index];
 		while (++i < len) {
 			arr[i - 1] = arr[i];
 		}
 		arr.length -= 1;
 	}
+	return result;
 }
 export function indexOfElement(src: any[], el: any): number {
 	let i = -1;
@@ -212,6 +215,16 @@ export function forEach<T>(src: T[], fn: (el: T, i: number) => any): void {
 		fn(src[i], i);
 	}
 }
+export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
+	let i = -1;
+	const len = src.length;
+	while (++i < len) {
+		const el = src[i];
+		if (filter(el, i)) {
+			fn(el, i);
+		}
+	}
+}
 export function until<T>(src: T[], test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
 	let i = -1;
 	const len = src.length;
@@ -237,15 +250,21 @@ export function reverseUntil<T>(src: T[], test: (el: T, i: number) => boolean, f
 		fn(src[i], i);
 	}
 }
-export function some<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
+export function some<T>(src: T[], fn: (el: T) => boolean): boolean {
+	let result = false;
 	let i = -1;
 	const len = src.length;
-	while (++i < len) {
-		const el = src[i];
-		if (filter(el, i)) {
-			fn(el, i);
-		}
+	while (++i < len && !(result = fn(src[i]))) {
 	}
+	return result;
+}
+export function all<T>(src: T[], fn: (el: T) => boolean): boolean {
+	let result = true;
+	let i = -1;
+	const len = src.length;
+	while (++i < len && (result = fn(src[i]))) {
+	}
+	return result;
 }
 export function insertAt<T>(src: T[], pos: number, v: T): void {
 	if (pos > 0) {

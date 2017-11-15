@@ -124,7 +124,7 @@ describe("Arrays",
 		it("RemoveAt removes correct item",
 			function() {
 				const arr = [1, 2, 3, 4];
-				Arr.removeAt(arr, 2);
+				Arr.removeAt(arr, 2).should.equal(3);
 				arr.should.deep.equal([1, 2, 4]);
 			});
 		it("Remove removes correct element",
@@ -163,12 +163,12 @@ describe("Arrays",
 			function() {
 				Arr.slice(this.arr1, 1, 2).should.deep.equal([4, 7]);
 			});
-		it("Some works like Filtered ForEach",
+		it("ForSome works like Filtered ForEach",
 			function() {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
-				Arr.some(this.arr1 as number[], (el, i) => i > 1, (el, i) => arrEl.push(el));
-				Arr.some(this.arr1 as number[], (el, i) => i > 1, (el, i) => arri.push(i));
+				Arr.forSome(this.arr1 as number[], (el, i) => i > 1, (el, i) => arrEl.push(el));
+				Arr.forSome(this.arr1 as number[], (el, i) => i > 1, (el, i) => arri.push(i));
 				arrEl.should.deep.equal([7, 2]);
 				arri.should.deep.equal([2, 3]);
 			});
@@ -209,4 +209,16 @@ describe("Arrays",
 				let arr = Arr.create<number>(10, (i, arr) => i < 2 ? 1 : arr[i - 2] + arr[i - 1]);
 				arr.should.deep.equal([1, 1, 2, 3, 5, 8, 13, 21, 34, 55]);
 			});
+		it("Some is true if any element is true",
+		function() {
+			const arr = [1, 2, 3, 4];
+			Arr.some(arr, (el) => el === 3).should.be.true;
+			Arr.some(arr, (el) => el === 5).should.be.false;
+		});
+		it("All is true if all elements are true",
+		function() {
+			const arr = [1, 2, 3, 4];
+			Arr.all(arr, (el) => el > 0).should.be.true;
+			Arr.all(arr, (el) => el < 4).should.be.false;
+		});
 });
