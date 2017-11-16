@@ -1,6 +1,7 @@
 import * as Arr from "../Arr";
 import { equals } from "../Obj";
 import { isArray } from "../Test";
+import { stringify } from "querystring";
 
 export class List<T> implements IList<T> {
 	private _array: T[] = [];
@@ -47,7 +48,7 @@ export class List<T> implements IList<T> {
 	public pop(): T | undefined {
 		return this._array.pop();
 	}
-	public shift(): T| undefined {
+	public shift(): T | undefined {
 		return this._array.shift();
 	}
 	public concat(v: T[] | List<T>): List<T> {
@@ -188,40 +189,44 @@ export class List<T> implements IList<T> {
 	public zip<U, V>(list: List<U>, fn: (t: T, u: U) => V = (t: T, u: U) => [t, u] as any): List<V> {
 		let result = new List<V>();
 		let length = list.length;
-		this.until(function(el: T, i: number) { 
-				return i >= length; 
-			}, function (el: T, i: number) {
-				result.push(fn(el, list.get(i)));
-			});
+		this.until(function (el: T, i: number) {
+			return i >= length;
+		}, function (el: T, i: number) {
+			result.push(fn(el, list.get(i)));
+		});
 		return result;
 	}
 	public unzip<U, V>(fn: (el: T) => [U, V] = (el: any) => [el[0], el[1]]): [List<U>, List<V>] {
 		let result: [List<U>, List<V>] = [new List<U>(), new List<V>()];
-		this.forEach(function(el) {
+		this.forEach(function (el) {
 			let tuple = fn(el);
 			result[0].push(tuple[0]);
 			result[1].push(tuple[1]);
 		});
 		return result;
 	}
-	public flatten<U>(): List<U> {
-		return new List(this._flattenInner(this.values));
+	public flatten<U>(maxDepth: number = Infinity): List<U> {
+		return new List(maxDepth < 1 ? this.values as any : this._flattenInner(this.values, maxDepth));
 	}
-	private _flattenInner<T>(src: any[], result: T[] = []): T[] {
+	private _flattenInner<U>(src: any[], maxDepth: number, depth: number = -1, result: U[] = []): U[] {
 		let i = -1;
 		const len = src.length;
-		while (++i < len) {
-			if (isArray(src[i])) {
-				this._flattenInner<T>(src[i], result);
-			} else if (src[i] instanceof List) {
-				this._flattenInner<T>(src[i].values, result);
-			} else {
-				result.push(src[i]);
+		if (++depth > maxDepth) {
+			result.push(src as any);
+		} else {
+			while (++i < len) {
+				if (isArray(src[i])) {
+					this._flattenInner(src[i], maxDepth, depth, result);
+				} else if (src[i] instanceof List) {
+					this._flattenInner(src[i].values, maxDepth, depth, result);
+				} else {
+					result.push(src[i]);
+				}
 			}
 		}
 		return result;
 	}
-	public toJSON(): string {
-		return JSON.stringify(this.values);
+	public toJSON(): any {
+		return this.values;
 	}
 }

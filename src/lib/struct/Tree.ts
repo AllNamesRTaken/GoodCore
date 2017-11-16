@@ -194,4 +194,12 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 		}
 		return result;
 	}
+	public toJSON(): any {
+		let result = new List<any>();
+		result.push({id: this.id, data: this.data, parent: this.parent === null ? null : this.parent.id, children: this.children === null ? null : this.children.map((el) => el.id)});
+		if (this.children !== null) {
+			this.children.forEach((node) => result.append(node.toJSON()));
+		}
+		return result.toJSON();
+	}
 }

@@ -1,5 +1,6 @@
 import { slice } from "../Arr";
 import { List } from "./List";
+import { position } from "../Dom";
 
 export class Stack<T> {
 	public DEFAULT_SIZE = 100;
@@ -64,5 +65,8 @@ export class Stack<T> {
 				--this._pos;
 			}
 		}
+	}
+	public toJSON(): any {
+		return this.values;
 	}
 }

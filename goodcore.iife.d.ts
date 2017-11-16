@@ -58,7 +58,8 @@ interface IList<T> {
 	equals(b: IList<T>): boolean;
 	zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
 	unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
-	flatten<U>(): IList<U>;
+	flatten<U>(maxDepth?: number): IList<U>
+	toJSON(): any;
 }
 interface ITreeNode<T> {
 	id: string;
@@ -209,7 +210,8 @@ declare namespace goodcore {
 		equals(b: List<T>): boolean;
 		zip<U, V>(list: List<U>, fn?: (t: T, u: U) => V): List<V>;
 		unzip<U, V>(fn?: (el: T) => [U, V]): [List<U>, List<V>];
-		flatten<U>(): List<U>;
+		flatten<U>(maxDepth?: number): List<U>
+		toJSON(): any;
 	}
 
 	export class Dictionary<T> {
@@ -224,6 +226,7 @@ declare namespace goodcore {
 		readonly keys: string[];
 		readonly list: List<T>;
 		readonly count: number;
+		toJSON(): any;
 	}
 
 	export class Stack<T> {
@@ -237,6 +240,7 @@ declare namespace goodcore {
 		limitedPush(obj: T): void;
 		pop(): T | undefined;
 		toList(): List<T>;
+		toJSON(): any;
 	}
 
 	export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
@@ -263,6 +267,7 @@ declare namespace goodcore {
 		find(condition: (data: T | null) => boolean): Tree<T> | null;
 		contains(condition: (data: T) => boolean): boolean;
 		depth(): number;
+		toJSON(): any;
 	}
 
 	export class CalcConst {

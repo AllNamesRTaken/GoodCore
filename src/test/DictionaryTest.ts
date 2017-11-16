@@ -72,7 +72,14 @@ describe("Dictionary",
 		function(){
 			const d = new Dictionary<string>();
 			(d.get("toString") === undefined).should.be.true;
-	});
+		});
+		it("ToJson formats Dict correct",
+		function() {
+			const d = new Dictionary<string>();
+			d.set("key1", "value1");
+			d.set("key2", "value2");
+			JSON.stringify(d).should.equal('{"key1":"value1","key2":"value2"}');
+		});
 }
 
 );

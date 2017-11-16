@@ -1,11 +1,11 @@
-import {should} from "chai";
+import { should } from "chai";
 import { Stack } from "../lib/struct/Stack";
 should();
 
 describe("Stack",
-	function() {
+	function () {
 		it("Push and Pop should change Depth to show correct number of pushed items",
-			function(){
+			function () {
 				const stack = new Stack();
 				stack.depth.should.equal(0);
 				stack.push(1);
@@ -14,21 +14,21 @@ describe("Stack",
 				stack.depth.should.equal(0);
 			});
 		it("Values returns an array of the pushed elements in order",
-			function(){
+			function () {
 				const stack = new Stack();
 				stack.push(1);
 				stack.push(2);
 				stack.values.should.deep.equal([1, 2]);
 			});
 		it("ToList returns values as list",
-			function(){
+			function () {
 				const stack = new Stack();
 				stack.push(1);
 				stack.push(2);
 				stack.toList().values.should.deep.equal([1, 2]);
 			});
 		it("Setting a limit limits the list by shifting",
-			function(){
+			function () {
 				const stack = new Stack();
 				stack.push(1);
 				stack.push(2);
@@ -46,6 +46,15 @@ describe("Stack",
 				stack.limit = -1;
 				//limit is >= 0
 				stack.limit.should.equal(0);
+			});
+		it("ToJson formats Stack correct",
+			function () {
+				const stack = new Stack();
+				stack.push(1);
+				stack.push(2);
+				stack.push(3);
+				stack.pop();
+				JSON.stringify(stack).should.equal("[1,2]");
 			});
 	}
 );

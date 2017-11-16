@@ -58,7 +58,8 @@ interface IList<T> {
   equals(b: IList<T>): boolean;
   zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
   unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
-  flatten<U>(): IList<U>;
+  flatten<U>(maxDepth?: number): IList<U>
+  toJSON(): any;
 }
 interface ITreeNode<T> {
   id: string;

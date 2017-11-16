@@ -250,8 +250,18 @@ describe("List",
 		});
 		it("Flatten flattens any array or lists inside list",
 		function() {
-			const list1 = new List([[1, 2], 3, new List([4, [5, 6]])]);
+			const list1 = new List([[1, 2], 3, new List([4, [5, [6]]])]);
 			list1.flatten().values.should.deep.equal([1, 2, 3, 4, 5, 6]);
+		});
+		it("Flatten flattens any array or lists inside list with max depth",
+		function() {
+			const list1 = new List([[1, 2], 3, new List([4, [5, [6]]])]);
+			list1.flatten(1).values.should.deep.equal([1, 2, 3, 4, [5, [6]]]);
+		});
+		it("ToJson formats List correct",
+		function() {
+			const list1 = new List([1, 2, 3, 4]);
+			JSON.stringify(list1).should.equal("[1,2,3,4]");
 		});
 	}
 );
