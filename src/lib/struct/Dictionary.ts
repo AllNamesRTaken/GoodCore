@@ -76,4 +76,7 @@ export class Dictionary<T> {
 			list.add(lookup[keys[i]]);
 		}
 	}
+	public toJSON(): string {
+		return JSON.stringify(this._lookup);
+	}
 }

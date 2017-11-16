@@ -221,4 +221,7 @@ export class List<T> implements IList<T> {
 		}
 		return result;
 	}
+	public toJSON(): string {
+		return JSON.stringify(this.values);
+	}
 }
