@@ -275,7 +275,7 @@ export function insertAt<T>(src: T[], pos: number, v: T): void {
 		src[i + 1] = v;
 	}
 }
-export function binarySearch<T>(src: T[], cmp: (el: T) => number): number {
+export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest: boolean = false): number {
 	let lo = 0,
 		hi = src.length - 1,
 		mid,
@@ -292,7 +292,7 @@ export function binarySearch<T>(src: T[], cmp: (el: T) => number): number {
 			return mid;
 		}
 	}
-	return -1;
+	return closest ? lo : -1;
 }
 export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[] {
 	let arr = new Array<T>(length);

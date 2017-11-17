@@ -1,7 +1,6 @@
 import * as Arr from "../Arr";
 import { equals } from "../Obj";
 import { isArray } from "../Test";
-import { stringify } from "querystring";
 
 export class List<T> implements IList<T> {
 	private _array: T[] = [];

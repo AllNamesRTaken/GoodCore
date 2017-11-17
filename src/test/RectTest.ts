@@ -106,5 +106,18 @@ describe("Rect",
 				r1.intersect(partially).should.be.true;
 				r1.intersect(outside).should.be.false;
 			});
+		it("isZero checks if both vectors are zero",
+		function(){
+			const r1 = new Rect(0, 0, 3, 4);
+			r1.isZero.should.be.false;
+			const r2 = new Rect(0, 0, 0, 0);
+			r2.isZero.should.be.true;
+		});
+		it("Zero zeroes both vectors",
+		function(){
+			const r1 = new Rect(1, 1, 3, 4);
+			r1.zero();
+			r1.isZero.should.be.true;
+		});
 	}
 );

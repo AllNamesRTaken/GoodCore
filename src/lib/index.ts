@@ -5,6 +5,7 @@ import { IRange2 } from "./struct/IRange2";
 import { IRect } from "./struct/IRect";
 import { IVec2 } from "./struct/IVec2";
 export { List as List} from "./struct/List";
+export { SortedList as SortedList} from "./struct/SortedList";
 export { Dictionary as Dictionary} from "./struct/Dictionary";
 export { Stack as Stack} from "./struct/Stack";
 export { Tree as Tree } from "./struct/Tree";
