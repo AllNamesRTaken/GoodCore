@@ -18,7 +18,9 @@ let i: number;
 for (i = 0; i < 100; i++) {
 	tmp = list.clone();
 	Timer.start();
-	newStrings.forEach((el) => { tmp.add(el), tmp.contains(el); });
+	// tmp.append(newStrings);
+	newStrings.forEach((el) => { tmp.add(el); });
+	tmp.orderBy(Comparer.StringAsc);
 	Timer.stop();
 	time += Timer.time;
 }
@@ -27,7 +29,8 @@ console.log("list: ", time / i);
 for (i = 0; i < 100; i++) {
 	tmpsort = sorted.clone();
 	Timer.start();
-	newStrings.forEach((el) => { tmpsort.add(el), tmpsort.contains(el); });
+	// tmpsort.bulkAdd(newStrings);
+	newStrings.forEach((el) => { tmpsort.add(el); });
 	Timer.stop();
 	time2 += Timer.time;
 }

@@ -69,7 +69,6 @@ export class SortedList<T> {
 		} else {
 			this._list.append(v);
 		}
-		this._list.orderBy(this._cmp);
 		this.sort();
 		return this;
 	}
