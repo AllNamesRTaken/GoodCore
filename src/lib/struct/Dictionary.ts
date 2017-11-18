@@ -1,10 +1,9 @@
-import { wipe } from "../Obj";
+import { clone, wipe } from "../Obj";
 import { List } from "./List";
 
 export class Dictionary<T> {
 	private _lookup: any;
 	private _list: List<T>;
-	private _reverseIndex: any;
 	private _isDirty: boolean;
 
 	constructor() {
@@ -75,6 +74,13 @@ export class Dictionary<T> {
 		while (++i < keys.length) {
 			list.add(lookup[keys[i]]);
 		}
+	}
+	public clone(): Dictionary<T> {
+		let result = new Dictionary<T>();
+		result._isDirty = this._isDirty;
+		result._list = this._list.clone();
+		result._lookup = clone(this._lookup);
+		return result;
 	}
 	public toJSON(): any {
 		return this._lookup;

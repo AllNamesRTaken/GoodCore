@@ -1,85 +1,94 @@
-import {should} from "chai";
+import { should } from "chai";
 import { Dictionary } from "../lib/struct/Dictionary";
 should();
 
 describe("Dictionary",
-	function() {
+	function () {
 		it("Get returns Set value or undefined",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.get("key1").should.equal("value1");
 				(d.get("key2") === undefined).should.be.true;
-		});
+			});
 		it("Values return array of values",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.set("key2", "value2");
 				d.values.should.deep.equal(["value1", "value2"]);
-		});
+			});
 		it("Keys return array of Keys",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.set("key2", "value2");
 				d.keys.should.deep.equal(["key1", "key2"]);
-		});
+			});
 		it("List return List of values",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.set("key2", "value2");
 				d.list.values.should.deep.equal(["value1", "value2"]);
-		});
+			});
 		it("Clear empties the dictionary",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.set("key2", "value2");
 				d.clear().values.length.should.equal(0);
-		});
+			});
 		it("Has returns true if dictionary has key otherwise false",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.has("key1").should.be.true;
 				d.has("key2").should.be.false;
-		});
+			});
 		it("Contains returns true if dictionary has key otherwise false",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.contains("key1").should.be.true;
 				d.contains("key2").should.be.false;
-		});
+			});
 		it("Delete removes a value from the dictionary",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.delete("key1");
 				d.has("key1").should.be.false;
 				d.values.should.deep.equal([]);
-		});
+			});
 		it("Count returns the corrent number of values",
-			function(){
+			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
 				d.set("key2", "value2");
 				d.count.should.be.equal(2);
-		});
+			});
 		it("Should return undefined for object prototype functions ",
-		function(){
-			const d = new Dictionary<string>();
-			(d.get("toString") === undefined).should.be.true;
-		});
+			function () {
+				const d = new Dictionary<string>();
+				(d.get("toString") === undefined).should.be.true;
+			});
+		it("clone returns clone",
+			function () {
+				const d = new Dictionary<string>();
+				d.set("key1", "value1");
+				d.set("key2", "value2");
+				let d2 = d.clone();
+				d2.has("key1").should.be.true;
+				d2.has("key2").should.be.true;
+			});
 		it("ToJson formats Dict correct",
-		function() {
-			const d = new Dictionary<string>();
-			d.set("key1", "value1");
-			d.set("key2", "value2");
-			JSON.stringify(d).should.equal('{"key1":"value1","key2":"value2"}');
-		});
-}
+			function () {
+				const d = new Dictionary<string>();
+				d.set("key1", "value1");
+				d.set("key2", "value2");
+				JSON.stringify(d).should.equal('{"key1":"value1","key2":"value2"}');
+			});
+	}
 
 );

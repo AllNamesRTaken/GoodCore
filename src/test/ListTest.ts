@@ -1,5 +1,6 @@
 import { should } from "chai";
 import * as MocData from "../lib/MocData";
+import { Dictionary } from "../lib/struct/Dictionary";
 import { List } from "../lib/struct/List";
 should();
 
@@ -11,6 +12,8 @@ describe("List",
 				this.list1 = new List([1, 4, 7, 2] as number[]);
 				this.list2 = new List([4, 8, 1, 9] as number[]);
 				this.list3 = new List(new List([{ a: 1 }, { a: 2 }] as any[]));
+				this.indexed = new List();
+				this.indexed.indexer = (el: number) => el;
 			});
 		it("Copy copies values correctly into target",
 			function () {
@@ -23,6 +26,12 @@ describe("List",
 				copy2.copy(list.values);
 				copy2.values.should.deep.equal(list.values);
 				copy2.values.should.not.equal(list.values);
+
+				const indexed = (this.indexed as List<number>).clone();
+				indexed.copy(list.values);
+				((indexed as any)._index as Dictionary<number>).keys.should.deep.equal(["1", "2", "4", "7"]);
+				((indexed as any)._index as Dictionary<number>).values.should.deep.equal([1, 4, 7, 2]);
+				((indexed as any)._index as Dictionary<number>).get(7).should.equal(7);
 			});
 		it("clone copies values correctly into a new List",
 			function () {
@@ -30,6 +39,11 @@ describe("List",
 				const copy = list.clone();
 				copy.values.should.deep.equal(list.values);
 				copy.values.should.not.equal(list.values);
+
+				const org = (new List([1, 2, 3]));
+				org.indexer = (el) => el - 1;
+				const indexed = org.clone();
+				indexed.indexer.should.deep.equal(org.indexer);
 			});
 		it("ShallowCopy references same inner objects",
 			function () {
@@ -37,6 +51,12 @@ describe("List",
 				const copy = new List<number>();
 				copy.shallowCopy(list);
 				copy.values[1].should.equal(list.values[1]);
+
+				const indexed = new List<any>();
+				indexed.indexer = (el: { a: number }) => 2 - el.a;
+				indexed.shallowCopy(list.values);
+				((indexed as any)._index as Dictionary<number>).keys.should.deep.equal(["0", "1"]);
+				((indexed as any)._index as Dictionary<number>).values.should.deep.equal(list.values);
 			});
 		it("ShallowCopy can take array as input",
 			function () {
@@ -52,6 +72,11 @@ describe("List",
 				list1.append(list2).values.should.deep.equal([1, 4, 7, 2, 4, 8, 1, 9]);
 				list1 = this.list1.clone() as List<any>;
 				list1.append([4, 8, 1, 9]).values.should.deep.equal([1, 4, 7, 2, 4, 8, 1, 9]);
+
+				const indexed = (this.indexed as List<number>).clone();
+				indexed.append(this.list1.values);
+				((indexed as any)._index as Dictionary<number>).keys.should.deep.equal(["1", "2", "4", "7"]);
+				((indexed as any)._index as Dictionary<number>).values.should.deep.equal([1, 2, 4, 7]);
 			});
 		it("Concat concatinates two lists values or arrays and returns as a new list",
 			function () {
@@ -73,53 +98,79 @@ describe("List",
 		it("Clear sets the size to 0",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
+				list1.indexer = (el) => el;
 				list1.clear().count.should.equal(0);
+				(list1 as any)._index.keys.should.deep.equal([]);
+				(list1 as any)._index.values.should.deep.equal([]);
 			});
 		it("Add pushes a value onto the List and returns the list",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
+				list1.indexer = (el) => el;
 				list1.add(42).get(4).should.equal(42);
+				list1.values.should.deep.equal([1, 4, 7, 2, 42]);
+				(list1 as any)._index.get(42).should.equal(42);
 			});
 		it("Push pushes a value onto the List and returns the index of the new element",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
+				list1.indexer = (el) => el;
 				list1.push(42).should.equal(5);
+				(list1 as any)._index.get(42).should.equal(42);
 			});
 		it("Pop removes the last element in the list and returns it",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
+				list1.indexer = (el) => el;
+				(list1 as any)._index.get(2).should.equal(2);
 				list1.pop().should.equal(2);
+				((list1 as any)._index.get(2) === undefined).should.be.true;
 			});
 		it("Shift removes the first element in the list and returns it",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
+				list1.indexer = (el) => el;
+				(list1 as any)._index.get(1).should.equal(1);
 				list1.shift().should.equal(1);
+				((list1 as any)._index.get(1) === undefined).should.be.true;
 			});
 		it("Contains checks if a list contains a certain element",
 			function () {
 				const list1 = this.list1 as List<any>;
 				list1.contains(4).should.be.true;
 				list1.contains(42).should.be.false;
+
+				const indexed = (this.indexed as List<number>).clone();
+				indexed.add(4);
+				indexed.contains(4).should.be.true;
+				indexed.contains(42).should.be.false;
+				(indexed as any)._index.get(4).should.equal(4);
 			});
 		it("Remove removes an element from the list",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
+				list1.indexer = (el) => el;
 				list1.get(1).should.equal(4);
 				list1.remove(4).contains(4).should.be.false;
+				((list1 as any)._index.get(4) === undefined).should.be.true;
 			});
 		it("RemoveFirst removes the first element from the list matching a function",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
+				list1.indexer = (el) => el;
 				list1.get(1).should.equal(4);
 				list1.removeFirst((el: number) => el === 4).should.equal(4);
 				list1.contains(4).should.be.false;
+				((list1 as any)._index.get(4) === undefined).should.be.true;
 			});
 		it("RemoveAt removes the element at a given position",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
+				list1.indexer = (el) => el;
 				list1.get(2).should.equal(7);
 				list1.removeAt(2).should.equal(7);
 				list1.contains(7).should.be.false;
+				((list1 as any)._index.get(7) === undefined).should.be.true;
 			});
 		it("Filter returns filtered new list",
 			function () {
@@ -138,6 +189,9 @@ describe("List",
 				const list1 = this.list1 as List<any>;
 				const list2 = new List<number>();
 				list2.selectInto(list1, (el, i) => i > 1);
+				list2.indexer = (el) => el;
+				((list2 as any)._index.get(1) === undefined).should.be.true;
+				((list2 as any)._index.get(7)).should.equal(7);
 				list2.values.should.deep.equal([7, 2]);
 				const list3 = new List<number>();
 				list3.selectInto(list1.values, (el, i) => i > 1);
@@ -174,8 +228,11 @@ describe("List",
 			function () {
 				const list1 = this.list1 as List<any>;
 				let list2 = new List<number>([1, 2]);
+				list2.indexer = (el) => el;
 				list2.mapInto(list1, (el, i) => el);
 				list2.values.should.deep.equal([1, 4, 7, 2]);
+				((list2 as any)._index.values).should.deep.equal([1, 4, 7, 2]);
+
 				list2 = new List<number>([1, 2, 3, 4, 5]);
 				list2.mapInto(list1, (el, i) => i);
 				list2.values.should.deep.equal([0, 1, 2, 3]);
@@ -250,11 +307,57 @@ describe("List",
 				list1.equals(list2).should.be.true;
 				list1.equals(list3).should.be.false;
 			});
+		it("Same checks if the same elements are in both lists",
+			function () {
+				const list1 = new List<number>([1, 4, 7, 2]);
+				list1.indexer = (el) => el;
+				const list2 = new List<number>([2, 4, 1, 7]);
+				const list3 = new List<number>([1, 4, 7]);
+				list3.indexer = (el) => el;
+				const list4 = new List<number>([1, 4, 7, 3]);
+				list4.indexer = (el) => el;
+				const list5 = new List<number>();
+				const list6 = new List<number>();
+
+				list1.same(list2).should.be.true;
+				list2.same(list1).should.be.true;
+				list1.same(list3).should.be.false;
+				list1.same(list4).should.be.false;
+				list5.same(list6).should.be.true;
+			});
+		it("Union returns the union of two lists",
+			function () {
+				const list1 = new List<number>([1, 4, 7, 2]);
+				list1.indexer = (el) => el;
+				const list2 = new List<number>([4, 2, 8]);
+				list2.indexer = (el) => el;
+				const list3 = new List<number>([5, 4, 7, 8]);
+				const list4 = new List<number>();
+
+				list1.union(list2).values.should.deep.equal([1, 4, 7, 2, 8]);
+				list2.union(list3).values.should.deep.equal([4, 2, 8, 5, 7]);
+				list1.union(list4).values.should.deep.equal([1, 4, 7, 2]);
+			});
+		it("Intersect returns a list containing the intersection of 2 lists",
+			function () {
+				const list1 = new List<number>([1, 4, 7, 2]);
+				list1.indexer = (el) => el;
+				const list2 = new List<number>([4, 2, 8]);
+				list2.indexer = (el) => el;
+				const list3 = new List<number>([5, 4, 7, 8]);
+				const list4 = new List<number>();
+
+				list1.intersect(list2).values.should.deep.equal([4, 2]);
+				list2.intersect(list3).values.should.deep.equal([4, 8]);
+				list1.intersect(list4).values.should.deep.equal([]);
+			});
 		it("Insert inserts an element at a position",
 			function () {
 				const list1 = new List([1, 2, 3, 4]);
+				list1.indexer = (el) => el;
 				list1.insertAt(2, 42);
 				list1.values.should.deep.equal([1, 2, 42, 3, 4]);
+				(list1 as any)._index.get(42).should.equal(42);
 			});
 		it("Some is true if any element is true",
 			function () {
