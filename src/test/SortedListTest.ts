@@ -121,6 +121,13 @@ describe("SortedList",
 				list1.removeAt(2).should.equal(4);
 				list1.contains(4).should.be.false;
 			});
+		it("RemoveFirst removes the first element from the list matching a function",
+			function () {
+				const list1 = this.list1.clone() as SortedList<any>;
+				list1.get(1).should.equal(2);
+				list1.removeFirst((el: number) => el === 2).should.equal(2);
+				list1.contains(2).should.be.false;
+			});
 		it("Filter returns filtered new list",
 			function() {
 				const list1 = this.list1 as SortedList<any>;

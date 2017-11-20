@@ -21,7 +21,45 @@ interface ICloneable<T> {
 interface IInitable<T> {
 	init(obj: Partial<T>): T;
 }
-interface IList<T> {
+interface IBasicList<T> {
+	values: Array<T>;
+	get(pos: number): T;
+	count: number;
+	clear(): IBasicList<T>;
+	add(v: T): IBasicList<T>;
+	pop(): T | undefined;
+	shift(): T | undefined;
+	copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
+	clone(): IBasicList<T>;
+	remove(v: T): IBasicList<T>;
+	removeFirst(fn: (el: T) => boolean): T;
+	removeAt(n: number): T;
+	forEach(fn: (el: T, i?: number) => any): IBasicList<T>;
+	forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
+	until(test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): IBasicList<T>;
+	reverseForEach(fn: (el: T, i: number) => any): IBasicList<T>
+	reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
+	first(fn?: (el: T) => boolean): T | undefined;
+	last(): T | undefined;
+	indexOf(v: T | ((el: T) => boolean)): number;
+	contains(v: T): boolean;
+	some(fn: (el: T) => boolean): boolean
+	all(fn: (el: T) => boolean): boolean
+	select(fn: (el: T) => boolean): IBasicList<T>;
+	selectInto(src: IBasicList<T> | Array<T>, fn: (el: T) => boolean): IBasicList<T>;
+	map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
+	mapInto(src: IBasicList<any> | Array<any>, fn: (el: any, i?: number) => any): IBasicList<T>;
+	reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+	equals(b: IBasicList<T>): boolean;
+	same(b: IBasicList<T>): boolean;
+	intersect(b: IBasicList<T>): IBasicList<T>;
+	union(b: IBasicList<T>): IBasicList<T>;
+	// zip<U, V>(list: IBasicList<U>, fn: (t: T, u: U) => V): IBasicList<V>;
+	// unzip<U, V>(fn: (el: T) => [U, V]): [IBasicList<U>, IBasicList<V>];
+	// flatten<U>(maxDepth?: number): IBasicList<U>
+	toJSON(): any;
+}
+interface IList<T> extends IBasicList<T> {
 	values: Array<T>;
 	get(pos: number): T;
 	count: number;
@@ -44,6 +82,7 @@ interface IList<T> {
 	reverseForEach(fn: (el: T, i: number) => any): IList<T>
 	reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IList<T>
 	first(fn?: (el: T) => boolean): T | undefined;
+	last(): T | undefined;
 	indexOf(v: T | ((el: T) => boolean)): number;
 	contains(v: T): boolean;
 	reverse(): IList<T>;
@@ -56,6 +95,9 @@ interface IList<T> {
 	mapInto(src: IList<any> | Array<any>, fn: (el: any, i?: number) => any): IList<T>;
 	reduce(fn: (acc: any, cur: T) => any, start?: any): any;
 	equals(b: IList<T>): boolean;
+	same(b: IList<T>): boolean;
+	intersect(b: IList<T>): IList<T>;
+	union(b: IList<T>): IList<T>;
 	zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
 	unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
 	flatten<U>(maxDepth?: number): IList<U>
@@ -175,6 +217,7 @@ declare namespace goodcore {
 		get(pos: number): T;
 		readonly count: number;
 		readonly length: number;
+		indexer: ((el: T) => any) | null;
 		clear(): List<T>;
 		add(v: T): List<T>;
 		insertAt(pos: number, v: T): List<T>;
@@ -200,6 +243,7 @@ declare namespace goodcore {
 		contains(v: T): boolean;
 		reverse(): List<T>;
 		first(fn?: (el: T) => boolean): T | undefined;
+		last(): T | undefined;
 		filter(fn: (el: T, i: number) => boolean): List<T>;
 		select(fn: (el: T, i: number) => boolean): List<T>;
 		selectInto(src: List<T> | T[], fn: (el: T, i: number) => boolean): List<T>;
@@ -208,12 +252,65 @@ declare namespace goodcore {
 		mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): List<T>;
 		reduce(fn: (acc: any, cur: T) => any, start?: any): any;
 		equals(b: List<T>): boolean;
+		same(b: List<T>): boolean;
+		intersect(b: List<T>): List<T>;
+		union(b: List<T>): List<T>;
 		zip<U, V>(list: List<U>, fn?: (t: T, u: U) => V): List<V>;
 		unzip<U, V>(fn?: (el: T) => [U, V]): [List<U>, List<V>];
-		flatten<U>(maxDepth?: number): List<U>
+		flatten<U>(maxDepth?: number): List<U>;
 		toJSON(): any;
 	}
 
+	export class Comparer {
+		static StringAsc: (a: string, b: string) => 1 | -1 | 0;
+		static StringDesc: (a: string, b: string) => 1 | -1 | 0;
+		static NumberAsc: (a: number, b: number) => 1 | -1 | 0;
+		static NumberDesc: (a: number, b: number) => 1 | -1 | 0;
+	}
+	export class SortedList<T> implements IBasicList<T> {
+		constructor(comparer: (a: T, b: T) => number, arr?: T[] | List<T> | SortedList<T>);
+		readonly values: T[];
+		get(pos: number): T;
+		readonly count: number;
+		readonly length: number;
+		comparer: (a: T, b: T) => number;
+		sort(): void;
+		clear(): SortedList<T>;
+		add(v: T): SortedList<T>;
+		pop(): T | undefined;
+		shift(): T | undefined;
+		bulkAdd(v: T[] | List<T> | SortedList<T>): SortedList<T>;
+		copy(src: SortedList<T> | List<T> | T[]): SortedList<T>;
+		clone(): SortedList<T>;
+		remove(v: T): SortedList<T>;
+		removeAt(n: number): T;
+		removeFirst(fn: (el: T) => boolean): T;
+		forEach(fn: (el: T, i: number) => any): SortedList<T>;
+		forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
+		until(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
+		reverseForEach(fn: (el: T, i: number) => any): SortedList<T>;
+		reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
+		some(fn: (el: T) => boolean): boolean;
+		all(fn: (el: T) => boolean): boolean;
+		getInsertIndex(v: T): number;
+		indexOf(v: T | ((el: T) => boolean)): number;
+		contains(v: T): boolean;
+		first(fn?: (el: T) => boolean): T | undefined;
+		last(): T | undefined;
+		filter(fn: (el: T, i: number) => boolean): SortedList<T>;
+		select(fn: (el: T, i: number) => boolean): SortedList<T>;
+		selectInto(src: SortedList<T> | List<T> | T[], fn: (el: T, i: number) => boolean): SortedList<T>;
+		map<S>(fn: (el: T, i: number) => S): List<S>;
+		mapInto<S>(src: SortedList<S> | List<S> | S[], fn: (el: S, i: number) => T): SortedList<T>;
+		reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+		equals(b: List<T> | SortedList<T>): boolean;
+		same(b: List<T> | SortedList<T>): boolean;
+		intersect(b: List<T> | SortedList<T>): SortedList<T>;
+		union(b: List<T> | SortedList<T>): SortedList<T>;
+		toList(): List<T>;
+		toJSON(): any;
+	}
+	
 	export class Dictionary<T> {
 		constructor();
 		has(key: number | string): boolean;
@@ -226,6 +323,7 @@ declare namespace goodcore {
 		readonly keys: string[];
 		readonly list: List<T>;
 		readonly count: number;
+		clone(): Dictionary<T>;
 		toJSON(): any;
 	}
 

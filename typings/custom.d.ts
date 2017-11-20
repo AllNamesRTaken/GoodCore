@@ -21,7 +21,45 @@ interface ICloneable<T> {
 interface IInitable<T> {
   init(obj: Partial<T>): T;
 }
-interface IList<T> {
+interface IBasicList<T> {
+  values: Array<T>;
+  get(pos: number): T;
+  count: number;
+  clear(): IBasicList<T>;
+  add(v: T): IBasicList<T>;
+  pop(): T | undefined;
+  shift(): T | undefined;
+  copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
+  clone(): IBasicList<T>;
+  remove(v: T): IBasicList<T>;
+  removeFirst(fn: (el: T) => boolean): T;
+  removeAt(n: number): T;
+  forEach(fn: (el: T, i?: number) => any): IBasicList<T>;
+  forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
+  until(test: (el: T, i?: number) => boolean, fn: (el: T, i?: number) => any): IBasicList<T>;
+  reverseForEach(fn: (el: T, i: number) => any): IBasicList<T> 
+  reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
+  first(fn?: (el: T) => boolean): T | undefined;
+  last(): T | undefined;
+  indexOf(v: T | ((el: T) => boolean)): number;
+  contains(v: T): boolean;
+  some(fn: (el: T) => boolean): boolean
+  all(fn: (el: T) => boolean): boolean
+  select(fn: (el: T) => boolean): IBasicList<T>;
+  selectInto(src: IBasicList<T> | Array<T>, fn: (el: T) => boolean): IBasicList<T>;
+  map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
+  mapInto(src: IBasicList<any> | Array<any>, fn: (el: any, i?: number) => any): IBasicList<T>;
+  reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+  equals(b: IBasicList<T>): boolean;
+	same(b: IBasicList<T>): boolean;
+	intersect(b: IBasicList<T>): IBasicList<T>;
+	union(b: IBasicList<T>): IBasicList<T>;
+  // zip<U, V>(list: IBasicList<U>, fn: (t: T, u: U) => V): IBasicList<V>;
+  // unzip<U, V>(fn: (el: T) => [U, V]): [IBasicList<U>, IBasicList<V>];
+  // flatten<U>(maxDepth?: number): IBasicList<U>
+  toJSON(): any;
+}
+interface IList<T> extends IBasicList<T> {
   values: Array<T>;
   get(pos: number): T;
   count: number;
@@ -44,6 +82,7 @@ interface IList<T> {
   reverseForEach(fn: (el: T, i: number) => any): IList<T> 
   reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IList<T>
   first(fn?: (el: T) => boolean): T | undefined;
+  last(): T | undefined;
   indexOf(v: T | ((el: T) => boolean)): number;
   contains(v: T): boolean;
   reverse(): IList<T>;
@@ -56,6 +95,9 @@ interface IList<T> {
   mapInto(src: IList<any> | Array<any>, fn: (el: any, i?: number) => any): IList<T>;
   reduce(fn: (acc: any, cur: T) => any, start?: any): any;
   equals(b: IList<T>): boolean;
+	same(b: IList<T>): boolean;
+	intersect(b: IList<T>): IList<T>;
+	union(b: IList<T>): IList<T>;
   zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
   unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
   flatten<U>(maxDepth?: number): IList<U>

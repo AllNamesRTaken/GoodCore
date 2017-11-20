@@ -8,7 +8,7 @@ export class Comparer {
 	public static NumberAsc = function(a: number, b: number) { return a < b ? -1 : a === b ? 0 : 1; };
 	public static NumberDesc = function(a: number, b: number) { return a < b ? 1 : a === b ? 0 : -1; };
 }
-export class SortedList<T> {
+export class SortedList<T> implements IBasicList<T> {
 	private _list: List<T> = new List<T>();
 	private _cmp: (a: T, b: T) => number;
 
@@ -93,6 +93,9 @@ export class SortedList<T> {
 	}
 	public removeAt(n: number): T {
 		return this._list.removeAt(n);
+	}
+	public removeFirst(fn: (el: T) => boolean): T {
+		return this._list.removeFirst(fn);
 	}
 	public forEach(fn: (el: T, i: number) => any): SortedList<T> {
 		this._list.forEach(fn);
