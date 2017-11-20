@@ -13,6 +13,14 @@
         },
         {
             "type": "node",
+            "request": "launch",
+            "name": "Debug Perf",
+            "program": "${workspaceRoot}\\dist\\test\\Perf.js",
+            "outFiles": [],
+            "sourceMaps": true
+        },
+        {
+            "type": "node",
             "request": "attach",
             "name": "Attach to Process",
             "address": "localhost",

@@ -1,5 +1,6 @@
 import {should} from "chai";
 import * as MocData from "../lib/MocData";
+import {List} from "../lib/struct/List";
 import { Comparer, SortedList } from "../lib/struct/SortedList";
 should();
 
@@ -11,6 +12,7 @@ describe("SortedList",
 				this.list1 = new SortedList(Comparer.NumberAsc, [1, 4, 7, 2] as number[]);
 				this.list2 = new SortedList(Comparer.NumberDesc, [4, 8, 1, 9] as number[]);
 				this.list3 = new SortedList(((a: {a: number}, b: {a: number}) => a.a < b.a ? -1 : a.a === b.a ? 0 : 1), [{a: 2}, {a: 1}] as any[]);
+				this.list4 = new SortedList(Comparer.NumberAsc, [4, 8, 1, 9] as number[]);
 			});
 		it("getter length returns the length",
 		function() {
@@ -189,6 +191,11 @@ describe("SortedList",
 			list1.first((el) => el > 3).should.equal(4);
 			(list1.first((el) => el > 8) === undefined).should.be.true;
 		});
+		it("Last returns last element",
+		function () {
+			const list1 = this.list1.clone() as SortedList<any>;
+			list1.last().should.equal(7);
+		});
 		it("ForSome works like Filtered ForEach",
 			function() {
 				const list1 = this.list1 as SortedList<any>;
@@ -212,11 +219,46 @@ describe("SortedList",
 		it("Equals deep compares two lists",
 			function(){
 				const list1 = this.list1 as SortedList<any>;
-				const list2 = this.list1.clone() as SortedList<any>;
+				const list2 = new SortedList<any>(list1.comparer, this.list1.toList().clone().reverse());
 				const list3 = this.list2 as SortedList<any>;
 				list1.equals(list2).should.be.true;
 				list1.equals(list3).should.be.false;
 			});
+		it("Same deep compares two lists",
+			function(){
+				const list1 = this.list1 as SortedList<any>;
+				const list2 = new SortedList<any>(list1.comparer, this.list1.toList().clone().reverse());
+				const list3 = this.list2 as SortedList<any>;
+				list1.same(list2).should.be.true;
+				list1.same(list3).should.be.false;
+			});
+		it("Union returns the union of two lists",
+			function(){
+				const list1 = this.list1 as SortedList<any>;
+				const list2 = this.list4 as SortedList<any>;
+				const list3 = new SortedList(list1.comparer, []);
+				const list4 = new List([3, 4]);
+				const list5 = new List([3, 4, 8, 9, 10]);
+				list1.union(list2).values.should.deep.equal([1, 2, 4, 7, 8, 9]);
+				list1.union(list3).values.should.deep.equal([1, 2, 4, 7]);
+				list3.union(list1).values.should.deep.equal([1, 2, 4, 7]);
+				list3.union(list3).values.should.deep.equal([]);
+				list1.union(list4).values.should.deep.equal([1, 2, 3, 4, 7]);
+				list1.union(list5).values.should.deep.equal([1, 2, 3, 4, 7, 8, 9, 10]);
+			});
+		it("Intersect returns a list containing the intersection of 2 lists",
+			function(){
+				const list1 = this.list1 as SortedList<any>;
+				const list2 = this.list4 as SortedList<any>;
+				const list3 = new SortedList(list1.comparer, []);
+				const list4 = new List<number>([2, 4, 42]);
+				const list5 = new List<number>([100, 7, 2, 4, 42]);
+				list1.intersect(list2).values.should.deep.equal([1, 4]);
+				list1.intersect(list3).values.should.deep.equal([]);
+				list3.intersect(list1).values.should.deep.equal([]);
+				list1.intersect(list4).values.should.deep.equal([2, 4]);
+				list1.intersect(list5).values.should.deep.equal([2, 4, 7]);
+			});		
 		it("Some is true if any element is true",
 		function() {
 			const list1 = new SortedList(Comparer.NumberAsc, [1, 2, 3, 4]);

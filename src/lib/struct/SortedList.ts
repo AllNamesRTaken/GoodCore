@@ -120,7 +120,7 @@ export class SortedList<T> {
 	public all(fn: (el: T) => boolean): boolean {
 		return this._list.all(fn);
 	}
-	private getInsertIndex(v: T): number {
+	public getInsertIndex(v: T): number {
 		return binarySearch(this._list.values, (el: T) => this._cmp(el, v), true);
 	}
 	public indexOf(v: T | ((el: T) => boolean)): number {
@@ -137,6 +137,9 @@ export class SortedList<T> {
 	}
 	public first(fn?: (el: T) => boolean): T | undefined {
 		return this._list.first(fn);
+	}
+	public last(): T | undefined {
+		return this._list.last();
 	}
 	public filter(fn: (el: T, i: number) => boolean): SortedList<T> {
 		return new SortedList<T>(this._cmp, this._list.filter(fn));
@@ -170,6 +173,94 @@ export class SortedList<T> {
 	}
 	public equals(b: List<T> | SortedList<T>): boolean {
 		const result = equals(this._list.values, b.values);
+		return result;
+	}
+	public same(b: List<T> | SortedList<T>): boolean {
+		return this.equals(b);
+	}
+	public intersect(b: List<T> | SortedList<T>): SortedList<T> {
+		let result = new SortedList<T>(this.comparer);		
+		let long: List<T> | SortedList<T>;
+		let short: List<T> | SortedList<T>;
+		if (this.length > 0 && b.length > 0) {
+			if (this.length < b.length) {
+				short = this, long = b;
+			} else {
+				long = this, short = b;
+			}
+			if (b instanceof SortedList && this.comparer === b.comparer) {
+				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)) - 1;
+				let lastPos = (long as SortedList<T>).getInsertIndex(short.last()!) - 1;
+				let i = -1;
+				let shortLen = short.length;
+				while (longPos < lastPos && ++i < shortLen) {
+					let el = short.get(i);
+					let aVsB;
+					while (++longPos < lastPos && (aVsB = this.comparer(long.get(longPos), el)) < 0 ) {
+						void(0);
+					}
+					if (longPos < lastPos && aVsB === 0) {
+						result.add(el);
+					}
+				}
+			} else if (long instanceof SortedList || (long instanceof List && long.indexer !== null)) {
+				short.forEach((el) => {
+					if (long.contains(el)) {
+						result.add(el);
+					}
+				});
+			} else {
+				result = result.bulkAdd((short as SortedList<T>).toList().intersect(long));
+			}
+		}
+		return result;
+	}
+	public union(b: List<T> | SortedList<T>): SortedList<T> {
+		let result: SortedList<T>;
+		let long: List<T> | SortedList<T>;
+		let short: List<T> | SortedList<T>;
+
+		if (this.length > 0 || b.length > 0) {
+			if (this.length < b.length) {
+				short = this, long = b;
+			} else {
+				long = this, short = b;
+			}
+			if (b instanceof SortedList && this.comparer === b.comparer) {
+				result = new SortedList<T>(this.comparer, long.values);
+				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)) - 1;
+				let lastPos = (long as SortedList<T>).getInsertIndex(short.last()!) - 1;
+				let i = -1;
+				let shortLen = short.length;
+				while (++i < shortLen && longPos < lastPos) {
+					let el = short.get(i);
+					let aVsB = -1;
+					while (++longPos < lastPos && (aVsB = this.comparer(long.get(longPos), el)) < 0 ) {
+						void(0);
+					}
+					if ((aVsB > 0 && longPos < lastPos) || longPos === lastPos) {
+						result.add(el);
+					}
+				}
+				if (i < shortLen) {
+					--i;
+					while (++i < shortLen) {
+						result.add(short.get(i));
+					}
+				}
+			} else if (long instanceof SortedList || (long instanceof List && long.indexer !== null)) {
+				result = new SortedList<T>(this.comparer, long.values);
+				short.forEach((el) => {
+					if (!long.contains(el)) {
+						result.add(el);
+					}
+				});
+			} else {
+				result = new SortedList<T>(this.comparer, (short as SortedList<T>).toList().union(long) );
+			}
+		} else {
+			result = new SortedList<T>(this.comparer);
+		}
 		return result;
 	}
 	public toList(): List<T> {

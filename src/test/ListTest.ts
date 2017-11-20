@@ -258,6 +258,11 @@ describe("List",
 				list1.first((el) => el > 3).should.equal(4);
 				(list1.first((el) => el > 8) === undefined).should.be.true;
 			});
+		it("Last returns last element",
+			function () {
+				const list1 = this.list1.clone() as List<any>;
+				list1.last().should.equal(2);
+			});
 		it("Select filters out and returns new List",
 			function () {
 				const list1 = this.list1.clone() as List<any>;

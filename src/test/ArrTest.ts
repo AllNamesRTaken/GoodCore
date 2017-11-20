@@ -195,6 +195,8 @@ describe("Arrays",
 				const arr = [1, 2, 3, 4];
 				Arr.insertAt(arr, 2, 42);
 				arr.should.deep.equal([1, 2, 42, 3, 4]);
+				Arr.insertAt(arr, 0, 7);
+				arr.should.deep.equal([7, 1, 2, 42, 3, 4]);
 			});
 		it("BinarySearch should return correct index or -1",
 			function() {

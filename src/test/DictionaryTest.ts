@@ -67,6 +67,8 @@ describe("Dictionary",
 				d.set("key1", "value1");
 				d.set("key2", "value2");
 				d.count.should.be.equal(2);
+				d.delete("key1");
+				d.count.should.be.equal(1);
 			});
 		it("Should return undefined for object prototype functions ",
 			function () {

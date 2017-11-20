@@ -210,6 +210,9 @@ export class List<T> implements IList<T> {
 		}
 		return index === -1 ? undefined : this.get(index);
 	}
+	public last(): T | undefined {
+		return this.length === 0 ? undefined : this.get(this.length - 1 );
+	}
 	public filter(fn: (el: T, i: number) => boolean): List<T> {
 		return new List<T>(Arr.filter(this._array, fn));
 	}
@@ -242,6 +245,7 @@ export class List<T> implements IList<T> {
 		const result = equals(this._array, b.values);
 		return result;
 	}
+	// Index is slower when less than 100
 	public same(b: List<T>): boolean {
 		let a = this;
 		let count = 0;

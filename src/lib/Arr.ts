@@ -267,7 +267,9 @@ export function all<T>(src: T[], fn: (el: T) => boolean): boolean {
 	return result;
 }
 export function insertAt<T>(src: T[], pos: number, v: T): void {
-	if (pos > 0) {
+	if (pos === 0) {
+		src.unshift(v);
+	} else if (pos > 0) {
 		let i = src.length;
 		while (--i >= pos) {
 			src[i + 1] = src[i];

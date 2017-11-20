@@ -4,8 +4,6 @@
 # GoodCore
 Good Core typescript library with utility functions and effective data structures for use with both Node and browser.
 
-**important! the default umd package is now goodcore.es6.umd.min.js (es6), if you need es5 you have to explicitly import the goodcore.umd.min.js**
-
 It brings:
 - type definitions
 - fluent api where applicable
@@ -16,8 +14,9 @@ It brings:
 
 It contains ...
 
-the following data structures:
-- List<T>
+the following JSON.stringify -able data structures:
+- List<T> (indexable)
+- SortedList<T> (O(log(n)) lookup)
 - Dictionary<T>
 - Stack<T>
 - Tree<T>

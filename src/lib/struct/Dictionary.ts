@@ -12,7 +12,7 @@ export class Dictionary<T> {
 		this._isDirty = false;
 	}
 	public has(key: number|string): boolean {
-		return Object.hasOwnProperty.call(this._lookup, key);
+		return this._lookup[key] !== undefined;
 	}
 	public contains(key: number|string): boolean {
 		return this.has(key);
@@ -22,9 +22,11 @@ export class Dictionary<T> {
 	}
 	public set(key: number|string, value: T): Dictionary<T> {
 		this._isDirty = this._isDirty || this.has(key);
-		this._lookup[key] = value;
-		if (!this._isDirty) {
-			this._list.push(value);
+		if (value !== undefined) {
+			this._lookup[key] = value;
+			if (!this._isDirty) {
+				this._list.push(value);
+			}
 		}
 		return this;
 	}
