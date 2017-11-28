@@ -29,6 +29,7 @@
 		"./typings/**/*.d.ts"
 	],
 	"exclude": [
-		"./src/test/**/*.ts"
+		"./src/test/**/*.ts",
+		"./src/lib/wip/**/*.ts"
 	]
 }

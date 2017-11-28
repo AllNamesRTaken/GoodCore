@@ -40,6 +40,7 @@ interface IBasicList<T> {
 	reverseForEach(fn: (el: T, i: number) => any): IBasicList<T>
 	reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
 	first(fn?: (el: T) => boolean): T | undefined;
+	find(fn: (el: T) => boolean): T | undefined;
 	last(): T | undefined;
 	indexOf(v: T | ((el: T) => boolean)): number;
 	contains(v: T): boolean;
@@ -82,6 +83,7 @@ interface IList<T> extends IBasicList<T> {
 	reverseForEach(fn: (el: T, i: number) => any): IList<T>
 	reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IList<T>
 	first(fn?: (el: T) => boolean): T | undefined;
+	find(fn: (el: T) => boolean): T | undefined;
 	last(): T | undefined;
 	indexOf(v: T | ((el: T) => boolean)): number;
 	contains(v: T): boolean;
@@ -337,6 +339,8 @@ declare namespace goodcore {
 		fastPush(obj: T): void;
 		limitedPush(obj: T): void;
 		pop(): T | undefined;
+		peek(): T | undefined;
+		peekAt(index: number): T | undefined;
 		toList(): List<T>;
 		toJSON(): any;
 	}

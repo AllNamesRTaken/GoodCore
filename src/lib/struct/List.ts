@@ -210,6 +210,9 @@ export class List<T> implements IList<T> {
 		}
 		return index === -1 ? undefined : this.get(index);
 	}
+	public find(fn: (el: T) => boolean): T | undefined {
+		return this.first(fn);
+	}
 	public last(): T | undefined {
 		return this.length === 0 ? undefined : this.get(this.length - 1 );
 	}

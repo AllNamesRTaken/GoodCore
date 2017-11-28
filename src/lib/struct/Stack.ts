@@ -1,6 +1,6 @@
 import { slice } from "../Arr";
-import { List } from "./List";
 import { position } from "../Dom";
+import { List } from "./List";
 
 export class Stack<T> {
 	public DEFAULT_SIZE = 100;
@@ -53,6 +53,12 @@ export class Stack<T> {
 			result = this._array[--this._pos];
 		}
 		return result;
+	}
+	public peek(): T | undefined {
+		return this._array[this._pos - 1];
+	}
+	public peekAt(index: number): T | undefined {
+		return index < 0 || index >= this._pos ? undefined : this._array[this._pos - index - 1];
 	}
 	public toList(): List<T> {
 		const result = new List<T>();

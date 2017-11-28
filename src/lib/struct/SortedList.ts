@@ -141,6 +141,9 @@ export class SortedList<T> implements IBasicList<T> {
 	public first(fn?: (el: T) => boolean): T | undefined {
 		return this._list.first(fn);
 	}
+	public find(fn: (el: T) => boolean): T | undefined {
+		return this._list.find(fn);
+	}
 	public last(): T | undefined {
 		return this._list.last();
 	}

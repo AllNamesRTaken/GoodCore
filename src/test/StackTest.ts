@@ -13,6 +13,19 @@ describe("Stack",
 				stack.pop();
 				stack.depth.should.equal(0);
 			});
+		it("Peek and PeekAt only lets you look at data inside stack",
+			function () {
+				const stack = new Stack();
+				(stack.peek() === undefined).should.be.true;
+				stack.push(1);
+				stack.push(5);
+				stack.push(3);
+				stack.pop();
+				stack.peek().should.equal(5);
+				stack.peekAt(1).should.equal(1);
+				(stack.peekAt(2) === undefined).should.be.true;
+				(stack.peekAt(-1) === undefined).should.be.true;
+			});
 		it("Values returns an array of the pushed elements in order",
 			function () {
 				const stack = new Stack();
