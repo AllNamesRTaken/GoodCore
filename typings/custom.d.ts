@@ -50,7 +50,8 @@ interface IBasicList<T> {
   selectInto(src: IBasicList<T> | Array<T>, fn: (el: T) => boolean): IBasicList<T>;
   map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
   mapInto(src: IBasicList<any> | Array<any>, fn: (el: any, i?: number) => any): IBasicList<T>;
-  reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+  reduce(fn: (acc: any, cur: T) => any, start: any): any;
+  reverseReduce(fn: (acc: any, cur: T) => any, start: any): any;
   equals(b: IBasicList<T>): boolean;
 	same(b: IBasicList<T>): boolean;
 	intersect(b: IBasicList<T>): IBasicList<T>;
@@ -95,7 +96,8 @@ interface IList<T> extends IBasicList<T> {
   orderBy(fn: (a: T, b: T) => number): IList<T>;
   map<S>(fn: (el: T, i?: number) => S): IList<S>;
   mapInto(src: IList<any> | Array<any>, fn: (el: any, i?: number) => any): IList<T>;
-  reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+  reduce(fn: (acc: any, cur: T) => any, start: any): any;
+  reverseReduce(fn: (acc: any, cur: T) => any, start: any): any;
   equals(b: IList<T>): boolean;
 	same(b: IList<T>): boolean;
 	intersect(b: IList<T>): IList<T>;

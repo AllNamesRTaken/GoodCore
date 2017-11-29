@@ -174,8 +174,11 @@ export class SortedList<T> implements IBasicList<T> {
 		this.sort();
 		return this;
 	}
-	public reduce(fn: (acc: any, cur: T) => any, start?: any): any {
-		return this._list.reduce(fn, start);
+	public reduce<U>(fn: (acc: U, cur: T) => any, start: U): U {
+		return this._list.reduce(fn, start) as U;
+	}
+	public reverseReduce<U>(fn: (acc: U, cur: T) => any, start: U): U {
+		return this._list.reverseReduce(fn, start) as U;
 	}
 	public equals(b: List<T> | SortedList<T>): boolean {
 		const result = equals(this._list.values, b.values);

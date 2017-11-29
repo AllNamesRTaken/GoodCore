@@ -243,9 +243,13 @@ describe("List",
 		it("Reduce works on numbers",
 			function () {
 				const list1 = this.list1 as List<any>;
-				list1.reduce((acc, cur) => cur + acc).should.equal(14);
+				list1.reduce((acc, cur) => cur + acc, 0).should.equal(14);
 			});
-
+		it("ReverseReduce works on numbers",
+			function () {
+				const list1 = this.list1 as List<any>;
+				list1.reverseReduce((acc, cur) => (acc.push(cur), acc), []).should.deep.equal(list1.clone().reverse().values);
+			});
 		it("Reverse reverses the list elements",
 			function () {
 				const list1 = this.list1.clone() as List<any>;

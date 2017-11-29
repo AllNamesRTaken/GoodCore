@@ -119,7 +119,7 @@ describe("Arrays",
 			});
 		it("Reduce works on numbers",
 			function() {
-				Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc).should.equal(14);
+				Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc, 0).should.equal(14);
 			});
 		it("RemoveAt removes correct item",
 			function() {

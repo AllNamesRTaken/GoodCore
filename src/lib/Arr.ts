@@ -199,11 +199,19 @@ export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T
 		target[i] = fn(src[i], i);
 	}
 }
-export function reduce<T>(src: T[], fn: (acc: any | number, cur: T) => any | number, start: any | number = 0): any | number {
+export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U {
 	let i = -1;
 	const len = src.length;
 	let acc: any | number = start;
 	while (++i < len) {
+		acc = fn(acc, src[i]);
+	}
+	return acc;
+}
+export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U {
+	let i = src.length;
+	let acc: any | number = start;
+	while (--i >= 0) {
 		acc = fn(acc, src[i]);
 	}
 	return acc;

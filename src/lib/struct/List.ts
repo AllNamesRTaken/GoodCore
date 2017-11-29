@@ -241,8 +241,11 @@ export class List<T> implements IList<T> {
 		this._reindex();
 		return this;
 	}
-	public reduce(fn: (acc: any, cur: T) => any, start?: any): any {
-		return Arr.reduce(this._array, fn, start);
+	public reduce<U>(fn: (acc: U, cur: T) => U, start: U): U {
+		return Arr.reduce(this._array, fn, start) as U;
+	}
+	public reverseReduce<U>(fn: (acc: U, cur: T) => U, start: U): U {
+		return Arr.reverseReduce(this._array, fn, start) as U;
 	}
 	public equals(b: List<T>): boolean {
 		const result = equals(this._array, b.values);

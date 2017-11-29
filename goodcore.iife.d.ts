@@ -51,6 +51,7 @@ interface IBasicList<T> {
 	map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
 	mapInto(src: IBasicList<any> | Array<any>, fn: (el: any, i?: number) => any): IBasicList<T>;
 	reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+	reverseReduce(fn: (acc: any, cur: T) => any, start?: any): any;
 	equals(b: IBasicList<T>): boolean;
 	same(b: IBasicList<T>): boolean;
 	intersect(b: IBasicList<T>): IBasicList<T>;
@@ -96,6 +97,7 @@ interface IList<T> extends IBasicList<T> {
 	map<S>(fn: (el: T, i?: number) => S): IList<S>;
 	mapInto(src: IList<any> | Array<any>, fn: (el: any, i?: number) => any): IList<T>;
 	reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+	reverseReduce(fn: (acc: any, cur: T) => any, start?: any): any;
 	equals(b: IList<T>): boolean;
 	same(b: IList<T>): boolean;
 	intersect(b: IList<T>): IList<T>;
@@ -245,6 +247,7 @@ declare namespace goodcore {
 		contains(v: T): boolean;
 		reverse(): List<T>;
 		first(fn?: (el: T) => boolean): T | undefined;
+		find(fn: (el: T) => boolean): T | undefined;
 		last(): T | undefined;
 		filter(fn: (el: T, i: number) => boolean): List<T>;
 		select(fn: (el: T, i: number) => boolean): List<T>;
@@ -252,7 +255,8 @@ declare namespace goodcore {
 		orderBy(fn: (a: T, b: T) => number): List<T>;
 		map<S>(fn: (el: T, i: number) => S): List<S>;
 		mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): List<T>;
-		reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+		reduce<U>(fn: (acc: U, cur: T) => any, start: U): U;
+		reverseReduce<U>(fn: (acc: U, cur: T) => any, start: U): U;
 		equals(b: List<T>): boolean;
 		same(b: List<T>): boolean;
 		intersect(b: List<T>): List<T>;
@@ -298,13 +302,15 @@ declare namespace goodcore {
 		indexOf(v: T | ((el: T) => boolean)): number;
 		contains(v: T): boolean;
 		first(fn?: (el: T) => boolean): T | undefined;
+		find(fn: (el: T) => boolean): T | undefined;
 		last(): T | undefined;
 		filter(fn: (el: T, i: number) => boolean): SortedList<T>;
 		select(fn: (el: T, i: number) => boolean): SortedList<T>;
 		selectInto(src: SortedList<T> | List<T> | T[], fn: (el: T, i: number) => boolean): SortedList<T>;
 		map<S>(fn: (el: T, i: number) => S): List<S>;
 		mapInto<S>(src: SortedList<S> | List<S> | S[], fn: (el: S, i: number) => T): SortedList<T>;
-		reduce(fn: (acc: any, cur: T) => any, start?: any): any;
+		reduce<U>(fn: (acc: U, cur: T) => any, start: U): U;
+		reverseReduce<U>(fn: (acc: U, cur: T) => any, start: U): U;
 		equals(b: List<T> | SortedList<T>): boolean;
 		same(b: List<T> | SortedList<T>): boolean;
 		intersect(b: List<T> | SortedList<T>): SortedList<T>;
