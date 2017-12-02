@@ -121,6 +121,18 @@ describe("Arrays",
 			function() {
 				Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc, 0).should.equal(14);
 			});
+		it("ReduceUntil works on numbers",
+			function() {
+				Arr.reduceUntil(this.arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0).should.equal(5);
+			});
+		it("ReverseReduce works on numbers",
+			function() {
+				Arr.reverseReduce(this.arr1 as number[], (acc, cur) => cur + acc, 0).should.equal(14);
+			});
+		it("ReverseReduceUntil works on numbers",
+			function() {
+				Arr.reverseReduceUntil(this.arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur === 4, 0).should.equal(9);
+			});
 		it("RemoveAt removes correct item",
 			function() {
 				const arr = [1, 2, 3, 4];
@@ -176,19 +188,31 @@ describe("Arrays",
 			function() {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
+				const arrEl2 = new Array<number>();
+				const arri2 = new Array<number>();
 				Arr.until(this.arr1 as number[], (el, i) => i >= 2, (el, i) => arrEl.push(el) );
 				Arr.until(this.arr1 as number[], (el, i) => i >= 2, (el, i) => arri.push(i) );
 				arrEl.should.deep.equal([1, 4]);
 				arri.should.deep.equal([0, 1]);
+				Arr.until(this.arr1 as number[], (el, i) => (arrEl2.push(el), i >= 2) );
+				Arr.until(this.arr1 as number[], (el, i) => (arri2.push(i), i >= 2) );
+				arrEl2.should.deep.equal([1, 4, 7]);
+				arri2.should.deep.equal([0, 1, 2]);
 			});
 		it("ReverseUntil work like ReverseForEach where returning true breaks the loop",
 			function() {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
-				Arr.reverseUntil(this.arr1 as number[], (el, i) => i <= 1, (el, i) => arrEl.push(el) );
-				Arr.reverseUntil(this.arr1 as number[], (el, i) => i <= 1, (el, i) => arri.push(i) );
+				const arrEl2 = new Array<number>();
+				const arri2 = new Array<number>();
+				Arr.reverseUntil(this.arr1 as number[], (el, i) => i === 1, (el, i) => arrEl.push(el) );
+				Arr.reverseUntil(this.arr1 as number[], (el, i) => i === 1, (el, i) => arri.push(i) );
 				arrEl.should.deep.equal([2, 7]);
 				arri.should.deep.equal([3, 2]);
+				Arr.reverseUntil(this.arr1 as number[], (el, i) => (arrEl2.push(el), i === 1) );
+				Arr.reverseUntil(this.arr1 as number[], (el, i) => (arri2.push(i), i === 1) );
+				arrEl2.should.deep.equal([2, 7, 4]);
+				arri2.should.deep.equal([3, 2, 1]);
 			});
 		it("Insert inserts an element at a position",
 			function() {

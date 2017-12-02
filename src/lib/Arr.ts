@@ -1,4 +1,4 @@
-import { clone } from "./Obj";
+import { clone, isUndefined } from "./Obj";
 import { isArray } from "./Test";
 
 class ArrayState {
@@ -208,10 +208,27 @@ export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U {
 	}
 	return acc;
 }
+export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U {
+	let i = -1;
+	const len = src.length;
+	let acc: any | number = start;
+	while (++i < len && !test(acc, src[i])) {
+		acc = fn(acc, src[i]);
+	}
+	return acc;
+}
 export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U {
 	let i = src.length;
 	let acc: any | number = start;
 	while (--i >= 0) {
+		acc = fn(acc, src[i]);
+	}
+	return acc;
+}
+export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U {
+	let i = src.length;
+	let acc: any | number = start;
+	while (--i >= 0 && !test(acc, src[i])) {
 		acc = fn(acc, src[i]);
 	}
 	return acc;
@@ -233,14 +250,13 @@ export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: 
 		}
 	}
 }
-export function until<T>(src: T[], test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => void): void;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): void {
 	let i = -1;
 	const len = src.length;
-	while (++i < len) {
-		if (test(src[i], i)) {
-			return;
-		}
-		fn(src[i], i);
+	let combined = isUndefined(fn);
+	while (++i < len && (combined ? !fnOrTest(src[i], i) : !(fnOrTest(src[i], i) || (fn!(src[i], i), false)))) {
 	}
 }
 export function reverseForEach<T>(src: T[], fn: (el: T, i: number) => any): void {
@@ -249,13 +265,12 @@ export function reverseForEach<T>(src: T[], fn: (el: T, i: number) => any): void
 		fn(src[i], i);
 	}
 }
-export function reverseUntil<T>(src: T[], test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
+export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => void): void;
+export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
+export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): void {
 	let i = src.length;
-	while (--i >= 0) {
-		if (test(src[i], i)) {
-			return;
-		}
-		fn(src[i], i);
+	let combined = isUndefined(fn);
+	while (--i >= 0 && (combined ? !fnOrTest(src[i], i) : !(fnOrTest(src[i], i) || (fn!(src[i], i), false)))) {
 	}
 }
 export function some<T>(src: T[], fn: (el: T) => boolean): boolean {

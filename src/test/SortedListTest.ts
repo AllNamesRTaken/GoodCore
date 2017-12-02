@@ -61,9 +61,12 @@ describe("SortedList",
 			const list = this.list1 as SortedList<number>;
 			const listEl = new Array<number>();
 			const listi = new Array<number>();
-			list.reverseUntil((el, i) => i < 2, (el, i) => listEl.push(el));
+			list.reverseUntil((el, i) => i === 1, (el, i) => listEl.push(el));
 			listEl.should.deep.equal([7, 4]);
-		});
+			const listEl2 = new Array<number>();
+			list.reverseUntil((el, i) => (listEl2.push(el), i === 1));
+			listEl2.should.deep.equal([7, 4, 2]);
+	});
 		it("reverseForEach work like ForEach in reverse",
 			function () {
 				const list = this.list1 as SortedList<number>;

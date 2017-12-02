@@ -160,16 +160,20 @@ export class List<T> implements IList<T> {
 		Arr.forSome(this._array, filter, fn);
 		return this;
 	}
-	public until(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T> {
-		Arr.until(this._array, test, fn);
+	public until(fnOrTest: (el: T, i: number) => void): List<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): List<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): List<T> {
+		Arr.until(this._array, fnOrTest as any, fn as any);
 		return this;
 	}
 	public reverseForEach(fn: (el: T, i: number) => any): List<T> {
 		Arr.reverseForEach(this._array, fn);
 		return this;
 	}
-	public reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T> {
-		Arr.reverseUntil(this._array, test, fn);
+	public reverseUntil(fnOrTest: (el: T, i: number) => void): List<T>;
+	public reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): List<T>;
+	public reverseUntil(fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): List<T> {
+		Arr.reverseUntil(this._array, fnOrTest as any, fn as any);
 		return this;
 	}
 	public some(fn: (el: T) => boolean): boolean {
@@ -244,8 +248,14 @@ export class List<T> implements IList<T> {
 	public reduce<U>(fn: (acc: U, cur: T) => U, start: U): U {
 		return Arr.reduce(this._array, fn, start) as U;
 	}
+	public reduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U {
+		return Arr.reduceUntil(this._array, fn, test, start) as U;
+	}
 	public reverseReduce<U>(fn: (acc: U, cur: T) => U, start: U): U {
 		return Arr.reverseReduce(this._array, fn, start) as U;
+	}
+	public reverseReduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U {
+		return Arr.reverseReduceUntil(this._array, fn, test, start) as U;
 	}
 	public equals(b: List<T>): boolean {
 		const result = equals(this._array, b.values);

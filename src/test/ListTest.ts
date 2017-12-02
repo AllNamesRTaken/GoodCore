@@ -291,14 +291,22 @@ describe("List",
 				list1.until((el, i) => i >= 2, (el, i) => listi.push(i));
 				listEl.should.deep.equal([1, 4]);
 				listi.should.deep.equal([0, 1]);
+				const listEl2 = new Array<number>();
+				const listi2 = new Array<number>();
+				list1.until((el, i) => (listEl2.push(el), i >= 2));
+				list1.until((el, i) => (listi2.push(i), i >= 2));
+				listEl2.should.deep.equal([1, 4, 7]);
+				listi2.should.deep.equal([0, 1, 2]);
 			});
 		it("reverseUntil work like Until in reverse",
 			function () {
 				const list1 = this.list1 as List<any>;
 				const listEl = new Array<number>();
-				const listi = new Array<number>();
-				list1.reverseUntil((el, i) => i < 2, (el, i) => listEl.push(el));
+				list1.reverseUntil((el, i) => i === 1, (el, i) => listEl.push(el));
 				listEl.should.deep.equal([2, 7]);
+				const listEl2 = new Array<number>();
+				list1.reverseUntil((el, i) => (listEl2.push(el), i === 1));
+				listEl2.should.deep.equal([2, 7, 4]);
 			});
 		it("reverseForEach work like ForEach in reverse",
 			function () {

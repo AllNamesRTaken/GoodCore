@@ -105,16 +105,20 @@ export class SortedList<T> implements IBasicList<T> {
 		this._list.forSome(filter, fn);
 		return this;
 	}
-	public until(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T> {
-		this._list.until(test, fn);
+	public until(fnOrTest: (el: T, i: number) => void): SortedList<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): SortedList<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): SortedList<T> {
+		this._list.until(fnOrTest as any, fn as any);
 		return this;
 	}
 	public reverseForEach(fn: (el: T, i: number) => any): SortedList<T> {
 		this._list.reverseForEach(fn);
 		return this;
 	}
-	public reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T> {
-		this._list.reverseUntil(test, fn);
+	public reverseUntil(fnOrTest: (el: T, i: number) => void): SortedList<T>;
+	public reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): SortedList<T>;
+	public reverseUntil(fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): SortedList<T> {
+		this._list.reverseUntil(fnOrTest as any, fn as any);
 		return this;
 	}
 	public some(fn: (el: T) => boolean): boolean {
@@ -177,8 +181,14 @@ export class SortedList<T> implements IBasicList<T> {
 	public reduce<U>(fn: (acc: U, cur: T) => any, start: U): U {
 		return this._list.reduce(fn, start) as U;
 	}
-	public reverseReduce<U>(fn: (acc: U, cur: T) => any, start: U): U {
+	public reduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U {
+		return this._list.reduceUntil(fn, test, start) as U;
+	}
+	public reverseReduce<U>(fn: (acc: U, cur: T) => U, start: U): U {
 		return this._list.reverseReduce(fn, start) as U;
+	}
+	public reverseReduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U {
+		return this._list.reverseReduceUntil(fn, test, start) as U;
 	}
 	public equals(b: List<T> | SortedList<T>): boolean {
 		const result = equals(this._list.values, b.values);

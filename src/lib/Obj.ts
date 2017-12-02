@@ -44,6 +44,20 @@ export function isNullOrUndefined(...args: any[]): boolean {
 export function isNotNullOrUndefined(...args: any[]): boolean {
 	return !isNullOrUndefined(...args);
 }
+export function isUndefined(...args: any[]): boolean {
+	const len = args.length;
+	let i = -1;
+	let a: any;
+	let result = false;
+	while (!result && ++i < len) {
+		a = args[i];
+		result = a === undefined;
+	}
+	return result;
+}
+export function isNotUndefined(...args: any[]): boolean {
+	return !isUndefined(...args);
+}
 export function isClassOf(a: any, b: any): boolean {
 	return isNotNullOrUndefined(a, b) && a instanceof b.constructor;
 }

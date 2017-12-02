@@ -101,6 +101,18 @@ describe("Obj",
 				Obj.isNotNullOrUndefined(1, {}, null, false).should.be.false;
 				Obj.isNotNullOrUndefined(1, undefined, 0, false).should.be.false;
 			});
+		it("IsUndefined is true if any arg is undefined",
+			function() {
+				Obj.isUndefined(1, {}, 0, false).should.be.false;
+				Obj.isUndefined(1, {}, null, false).should.be.false;
+				Obj.isUndefined(1, undefined, 0, false).should.be.true;
+			});
+		it("IsNotUndefined is true if no arg is undefined",
+			function() {
+				Obj.isNotUndefined(1, {}, 0, false).should.be.true;
+				Obj.isNotUndefined(1, {}, null, false).should.be.true;
+				Obj.isNotUndefined(1, undefined, 0, false).should.be.false;
+			});
 		it("Mixin overwrites target",
 			function() {
 				Obj.mixin({foo: "bar", a: 10}, null, this.obj1).should.deep.equal({foo: "bar", a: 1, b: {c: 2}, d: [3, 4, 5]});

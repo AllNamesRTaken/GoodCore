@@ -238,9 +238,11 @@ declare namespace goodcore {
 		removeAt(n: number): T;
 		forEach(fn: (el: T, i: number) => any): List<T>;
 		forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T>;
-		until(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T>;
+		until(fnOrTest: (el: T, i: number) => void): List<T>;
+		until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): List<T>;
 		reverseForEach(fn: (el: T, i: number) => any): List<T>;
-		reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T>;
+		reverseUntil(fnOrTest: (el: T, i: number) => void): List<T>;
+		reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): List<T>;
 		some(fn: (el: T) => boolean): boolean;
 		all(fn: (el: T) => boolean): boolean;
 		indexOf(v: T | ((el: T) => boolean)): number;
@@ -255,8 +257,10 @@ declare namespace goodcore {
 		orderBy(fn: (a: T, b: T) => number): List<T>;
 		map<S>(fn: (el: T, i: number) => S): List<S>;
 		mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): List<T>;
-		reduce<U>(fn: (acc: U, cur: T) => any, start: U): U;
-		reverseReduce<U>(fn: (acc: U, cur: T) => any, start: U): U;
+		reduce<U>(fn: (acc: U, cur: T) => U, start: U): U;
+		reduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
+		reverseReduce<U>(fn: (acc: U, cur: T) => U, start: U): U;
+		reverseReduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
 		equals(b: List<T>): boolean;
 		same(b: List<T>): boolean;
 		intersect(b: List<T>): List<T>;
@@ -293,9 +297,11 @@ declare namespace goodcore {
 		removeFirst(fn: (el: T) => boolean): T;
 		forEach(fn: (el: T, i: number) => any): SortedList<T>;
 		forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
-		until(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
+		until(fnOrTest: (el: T, i: number) => void): SortedList<T>;
+		until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): SortedList<T>;
 		reverseForEach(fn: (el: T, i: number) => any): SortedList<T>;
-		reverseUntil(test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
+		reverseUntil(fnOrTest: (el: T, i: number) => void): SortedList<T>;
+		reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): SortedList<T>;
 		some(fn: (el: T) => boolean): boolean;
 		all(fn: (el: T) => boolean): boolean;
 		getInsertIndex(v: T): number;
@@ -310,7 +316,9 @@ declare namespace goodcore {
 		map<S>(fn: (el: T, i: number) => S): List<S>;
 		mapInto<S>(src: SortedList<S> | List<S> | S[], fn: (el: S, i: number) => T): SortedList<T>;
 		reduce<U>(fn: (acc: U, cur: T) => any, start: U): U;
-		reverseReduce<U>(fn: (acc: U, cur: T) => any, start: U): U;
+		reduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
+		reverseReduce<U>(fn: (acc: U, cur: T) => U, start: U): U;
+		reverseReduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
 		equals(b: List<T> | SortedList<T>): boolean;
 		same(b: List<T> | SortedList<T>): boolean;
 		intersect(b: List<T> | SortedList<T>): SortedList<T>;
@@ -438,25 +446,32 @@ declare namespace goodcore {
 		export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void;
 		export function map<S, T>(src: S[], fn: (el: S, i: number) => T): T[];
 		export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T): void;
-		export function reduce<T>(src: T[], fn: (acc: any | number, cur: T) => any | number, start?: any | number): any | number;
+		export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U;
+		export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
+		export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U;
+		export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
 		export function forEach<T>(src: T[], fn: (el: T, i: number) => any): void;
 		export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void;
-		export function until<T>(src: T[], test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void;
+		export function until<T>(src: T[], fnOrTest: (el: T, i: number) => void): void;
+		export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
 		export function reverseForEach<T>(src: T[], fn: (el: T, i: number) => any): void;
-		export function reverseUntil<T>(src: T[], test: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void;
+		export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => void): void;
+		export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
 		export function some<T>(src: T[], fn: (el: T) => boolean): boolean;
 		export function all<T>(src: T[], fn: (el: T) => boolean): boolean;
 		export function insertAt<T>(src: T[], pos: number, v: T): void;
-		export function binarySearch<T>(src: T[], cmp: (el: T) => number): number;
+		export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
 		export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[];
 	}
 
-	export namespace Dom {
+	export namespace Obj {
 		export function destroy(obj: any): void;
 		export function wipe(obj: any): void;
 		export function setNull(obj: any): void;
 		export function isNullOrUndefined(...args: any[]): boolean;
 		export function isNotNullOrUndefined(...args: any[]): boolean;
+		export function isUndefined(...args: any[]): boolean;
+		export function isNotUndefined(...args: any[]): boolean;
 		export function isClassOf(a: any, b: any): boolean;
 		export function isSameClass(a: any, b: any): boolean;
 		export function inherits(a: any, b: any): boolean;
