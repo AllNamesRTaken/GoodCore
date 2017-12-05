@@ -2,8 +2,8 @@ import { deepCopy, flatten } from "./Arr";
 import { isArray, isFunction } from "./Test";
 
 export function destroy(obj: any): void {
-	if (obj.Destroy !== undefined) {
-		obj.Destroy();
+	if (obj.constructor.prototype.destroy !== undefined) {
+		obj.destroy();
 	} else {
 		setNull(obj);
 	}
@@ -17,8 +17,8 @@ export function wipe(obj: any): void {
 	}
 }
 export function setNull(obj: any): void {
-	if (obj.constructor.prototype.Clear !== undefined) {
-		obj.Clear();
+	if (obj.constructor.prototype.clear !== undefined) {
+		obj.clear();
 	} else {
 		const keys = Object.keys(obj);
 		let key = null;
@@ -83,9 +83,9 @@ export function equals(a: any, b: any): boolean {
 					}
 				}
 			}
-		} else if (a.constructor.prototype.Equals) {
+		} else if (a.constructor.prototype.equals) {
 			// Compare Coparables
-			result = a.Equals(b);
+			result = a.equals(b);
 		} else {
 			// Compare Objects
 			const keys = Object.keys(a);
@@ -243,7 +243,7 @@ export function setProperties(target: any, values: any, mapping?: any): void {
 			key = mapping[key];
 		}
 		if (key in target) {
-			target[key] = values[key];
+			target[key] = values[keys[i]];
 		}
 	}
 }
