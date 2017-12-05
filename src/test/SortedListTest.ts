@@ -2,6 +2,7 @@ import {should} from "chai";
 import * as MocData from "../lib/MocData";
 import {List} from "../lib/struct/List";
 import { Comparer, SortedList } from "../lib/struct/SortedList";
+import { Vec2 } from "../lib/struct/Vec2";
 should();
 
 describe("SortedList",
@@ -66,7 +67,7 @@ describe("SortedList",
 			const listEl2 = new Array<number>();
 			list.reverseUntil((el, i) => (listEl2.push(el), i === 1));
 			listEl2.should.deep.equal([7, 4, 2]);
-	});
+		});
 		it("reverseForEach work like ForEach in reverse",
 			function () {
 				const list = this.list1 as SortedList<number>;
@@ -193,10 +194,20 @@ describe("SortedList",
 				const list1 = this.list1 as SortedList<any>;
 				list1.reduce((acc, cur) => cur + acc, 0).should.equal(14);
 			});
+		it("ReduceUntil works like reduce with condition",
+			function () {
+				const list1 = this.list1 as SortedList<any>;
+				list1.reduceUntil((acc, cur) => `${acc}${cur}`, (acc, cur) => cur === 4, "").should.equal("12");
+			});
 		it("ReverseReduce works on numbers",
 			function () {
 				const list1 = this.list1 as SortedList<any>;
 				list1.reverseReduce((acc, cur) => (acc.push(cur), acc), []).should.deep.equal(list1.toList().reverse().values);
+			});
+		it("ReverseReduceUntil works like reverseReduce with condition",
+			function () {
+				const list1 = this.list1 as SortedList<any>;
+				list1.reverseReduceUntil((acc, cur) => `${acc}${cur}`, (acc, cur) => cur === 2, "").should.equal("74");
 			});
 		it("First returns first element or first matching element",
 		function() {
@@ -204,6 +215,12 @@ describe("SortedList",
 			list1.first().should.equal(1);
 			list1.first((el) => el > 3).should.equal(4);
 			(list1.first((el) => el > 8) === undefined).should.be.true;
+		});
+		it("Find returns the first matching element",
+		function() {
+			const list1 = this.list1.clone() as SortedList<any>;
+			list1.find((el) => el > 3).should.equal(4);
+			(list1.find((el) => el > 8) === undefined).should.be.true;
 		});
 		it("Last returns last element",
 		function () {
@@ -290,5 +307,24 @@ describe("SortedList",
 			const list1 = new SortedList(Comparer.NumberAsc, [1, 2, 3, 4]);
 			JSON.stringify(list1).should.equal("[1,2,3,4]");
 		});
+		it("Revive revives SortedList<T>",
+		function () {
+			class Revivable {
+				public foo: number;
+				public revive(data: any): Revivable {
+					this.foo = data + 1;
+					return this;
+				}
+			}
+			const list1 = new SortedList<number>(Comparer.NumberAsc);
+			const list2 = new SortedList<Revivable>((a, b) => a.foo < b.foo ? -1 : a.foo === b.foo ? 0 : 1);
+			const list3 = new SortedList<Vec2>((a, b) => a.x < b.x ? -1 : a.x === b.x ? 0 : 1);
+			list1.revive([2, 1, 3, 4]);
+			JSON.stringify(list1).should.equal("[1,2,3,4]");
+			list2.revive([2, 1, 3, 4], Revivable);
+			JSON.stringify(list2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
+			list3.revive([{x:1, y:1}, {x:2, y:2}], Vec2);
+			JSON.stringify(list3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
+	});
 	}
 );

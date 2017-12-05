@@ -1,5 +1,6 @@
 import { should } from "chai";
 import { Dictionary } from "../lib/struct/Dictionary";
+import { Vec2 } from "../lib/struct/Vec2";
 should();
 
 describe("Dictionary",
@@ -90,6 +91,25 @@ describe("Dictionary",
 				d.set("key1", "value1");
 				d.set("key2", "value2");
 				JSON.stringify(d).should.equal('{"key1":"value1","key2":"value2"}');
+			});
+		it("Revive revives Dictionary<T>",
+			function () {
+				class Revivable {
+					public value: number;
+					public revive(data: any): Revivable {
+						this.value = data + 1;
+						return this;
+					}
+				}
+				const d1 = new Dictionary<number>();
+				const d2 = new Dictionary<Revivable>();
+				const d3 = new Dictionary<Vec2>();
+				d1.revive({a:1, b:2, c:3, d:4});
+				JSON.stringify(d1).should.equal('{"a":1,"b":2,"c":3,"d":4}');
+				d2.revive({a:1, b:2, c:3, d:4}, Revivable);
+				JSON.stringify(d2).should.equal('{"a":{"value":2},"b":{"value":3},"c":{"value":4},"d":{"value":5}}');
+				d3.revive({a:{x:1, y:1}, b:{x:2, y:2}}, Vec2);
+				JSON.stringify(d3).should.equal('{"a":{"x":1,"y":1},"b":{"x":2,"y":2}}');
 			});
 	}
 

@@ -230,13 +230,18 @@ export function mixin(target: any = {}, exclude: any, ...sources: any[]): any {
 	}
 	return result;
 }
-export function setProperties(target: any, values: any): void {
+export function setProperties(target: any, values: any, mapping?: any): void {
 	const keys = Object.keys(values);
 	let key: string;
+	let value: any;
 	let i = -1;
 	const len = keys.length;
 	while (++i < len) {
 		key = keys[i];
+		value = values[key];
+		if (mapping && key in mapping) {
+			key = mapping[key];
+		}
 		if (key in target) {
 			target[key] = values[key];
 		}

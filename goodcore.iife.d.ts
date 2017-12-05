@@ -269,6 +269,7 @@ declare namespace goodcore {
 		unzip<U, V>(fn?: (el: T) => [U, V]): [List<U>, List<V>];
 		flatten<U>(maxDepth?: number): List<U>;
 		toJSON(): any;
+		revive(array: any[], ...types: Array<Constructor<any>>): List<T>;
 	}
 
 	export class Comparer {
@@ -325,6 +326,7 @@ declare namespace goodcore {
 		union(b: List<T> | SortedList<T>): SortedList<T>;
 		toList(): List<T>;
 		toJSON(): any;
+		revive(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
 	}
 	
 	export class Dictionary<T> {
@@ -341,6 +343,7 @@ declare namespace goodcore {
 		readonly count: number;
 		clone(): Dictionary<T>;
 		toJSON(): any;
+		revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
 	}
 
 	export class Stack<T> {

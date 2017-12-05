@@ -5,7 +5,6 @@ type AnyObject<T> = {
   [key: string]: any;
   constructor: ICtor<T>;
 }
-
 interface IPool<T extends IPoolable> {
   get(): T;
   release(obj: T): void;
@@ -19,7 +18,10 @@ interface ICloneable<T> {
   clone(): T;
 }
 interface IInitable<T> {
-  init(obj: Partial<T>): T;
+  init(obj: Partial<T> | any, ...types: Array<ICtor<any>>): T;
+}
+interface IRevivable<T> {
+  revive(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IBasicList<T> {
   values: Array<T>;

@@ -1,7 +1,7 @@
-import { clone, wipe } from "../Obj";
+import { clone, isNotUndefined, setProperties, wipe } from "../Obj";
 import { List } from "./List";
 
-export class Dictionary<T> {
+export class Dictionary<T> implements IRevivable<Dictionary<T>> {
 	private _lookup: any;
 	private _list: List<T>;
 	private _isDirty: boolean;
@@ -86,5 +86,27 @@ export class Dictionary<T> {
 	}
 	public toJSON(): any {
 		return this._lookup;
+	}
+	public revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T> {
+		let [T, ...passthroughT] = types;
+		this.clear();
+		if (isNotUndefined(T)) {
+			if (isNotUndefined(T.prototype.revive)) {
+				for (let key of Object.keys(obj)) {
+					this.set(key, (new T()).revive(obj[key], ...passthroughT));
+				}
+			} else {
+				for (let key of Object.keys(obj)) {
+					let newT = new T();
+					setProperties(newT, obj[key]);
+					this.set(key, newT);
+				}
+			}
+		} else {
+			for (let key of Object.keys(obj)) {
+				this.set(key, obj[key]);
+			}
+		}
+		return this;
 	}
 }

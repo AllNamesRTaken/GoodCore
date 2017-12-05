@@ -1,5 +1,5 @@
 import { binarySearch } from "../Arr";
-import { equals } from "../Obj";
+import { equals, isNotUndefined, setProperties } from "../Obj";
 import { List } from "./List";
 
 export class Comparer {
@@ -8,7 +8,7 @@ export class Comparer {
 	public static NumberAsc = function(a: number, b: number) { return a < b ? -1 : a === b ? 0 : 1; };
 	public static NumberDesc = function(a: number, b: number) { return a < b ? 1 : a === b ? 0 : -1; };
 }
-export class SortedList<T> implements IBasicList<T> {
+export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 	private _list: List<T> = new List<T>();
 	private _cmp: (a: T, b: T) => number;
 
@@ -287,5 +287,24 @@ export class SortedList<T> implements IBasicList<T> {
 	}
 	public toJSON(): any {
 		return this.values;
+	}
+	public revive(array: any[], ...types: Array<Constructor<any>>): SortedList<T> {
+		let [T, ...passthroughT] = types;
+		if (isNotUndefined(T)) {
+			if (isNotUndefined(T.prototype.revive)) {
+				this.mapInto(array, (el) => {
+					return (new T()).revive(el, ...passthroughT);
+				});
+			} else {
+				this.mapInto(array, (el) => {
+					let newT = new T();
+					setProperties(newT, el);
+					return newT;
+				});
+			}
+		} else {
+			this.copy(array);
+		}
+		return this;
 	}
 }

@@ -1,9 +1,9 @@
 import * as Arr from "../Arr";
-import { equals } from "../Obj";
+import { equals, isNotUndefined, setProperties } from "../Obj";
 import { isArray } from "../Test";
 import { Dictionary } from "./Dictionary";
 
-export class List<T> implements IList<T> {
+export class List<T> implements IList<T>, IRevivable<List<T>> {
 	private _array: T[] = [];
 	private _index: Dictionary<T> | null = null;
 	private _indexer: ((el: T) => any) | null = null;
@@ -368,5 +368,24 @@ export class List<T> implements IList<T> {
 	}
 	public toJSON(): any {
 		return this.values;
+	}
+	public revive(array: any[], ...types: Array<Constructor<any>>): List<T> {
+		let [T, ...passthroughT] = types;
+		if (isNotUndefined(T)) {
+			if (isNotUndefined(T.prototype.revive)) {
+				this.mapInto(array, (el) => {
+					return (new T()).revive(el, ...passthroughT);
+				});
+			} else {
+				this.mapInto(array, (el) => {
+					let newT = new T();
+					setProperties(newT, el);
+					return newT;
+				});
+			}
+		} else {
+			this.copy(array);
+		}
+		return this;
 	}
 }
