@@ -13,6 +13,12 @@ export class Stack<T> {
 	public get depth(): number {
 		return this._pos;
 	}
+	public get size(): number {
+		return this._pos;
+	}
+	public get isEmpty(): boolean {
+		return this.size === 0;
+	}
 	public get limit(): number {
 		return this._limit;
 	}
@@ -33,6 +39,7 @@ export class Stack<T> {
 		if (!size) {
 			size = this.DEFAULT_SIZE;
 		}
+		this.DEFAULT_SIZE = size;
 		this._array = new Array<T>(size);
 		this.push = this.fastPush;
 	}
@@ -63,6 +70,11 @@ export class Stack<T> {
 	public toList(): List<T> {
 		const result = new List<T>();
 		return new List(this.values);
+	}
+	public clear(): Stack<T> {
+		this._pos = 0;
+		this._array.length = this.DEFAULT_SIZE;
+		return this;
 	}
 	private limitObjects() {
 		if (this._limit > 0) {

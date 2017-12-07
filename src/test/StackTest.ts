@@ -13,6 +13,24 @@ describe("Stack",
 				stack.pop();
 				stack.depth.should.equal(0);
 			});
+		it("size === depth",
+			function () {
+				const stack = new Stack();
+				stack.depth.should.equal(stack.size);
+				stack.push(1);
+				stack.depth.should.equal(stack.size);
+				stack.pop();
+				stack.depth.should.equal(stack.size);
+			});
+		it("isEmpty is true when empty",
+			function () {
+				const stack = new Stack();
+				stack.isEmpty.should.be.true;
+				stack.push(1);
+				stack.isEmpty.should.be.false;
+				stack.pop();
+				stack.isEmpty.should.be.true;
+			});
 		it("Peek and PeekAt only lets you look at data inside stack",
 			function () {
 				const stack = new Stack();
@@ -59,6 +77,18 @@ describe("Stack",
 				stack.limit = -1;
 				//limit is >= 0
 				stack.limit.should.equal(0);
+			});
+		it("clear sets the pos to 0",
+			function () {
+				const stack = new Stack(2);
+				stack.push(1);
+				stack.push(2);
+				stack.push(3);
+				stack.size.should.equal(3);
+				stack.peek().should.equal(3);
+				stack.clear();
+				stack.size.should.equal(0);
+				(stack.peek() === undefined).should.be.true;
 			});
 		it("ToJson formats Stack correct",
 			function () {
