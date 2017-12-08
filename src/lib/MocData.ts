@@ -22,11 +22,6 @@ export function randomNumber(): number {
 export function numericArray(length: number, type: MocDataType = MocDataType.LinearInt): number[] {
 	const result: number[] = new Array(length);
 	switch (type) {
-		case MocDataType.LinearInt:
-			for (let i = 0; i < length; i += 1) {
-				result[i] = i;
-			}
-			break;
 		case MocDataType.RandomInt:
 			for (let i = 0; i < length; i += 1) {
 				result[i] = this.randomInt();
@@ -43,6 +38,9 @@ export function numericArray(length: number, type: MocDataType = MocDataType.Lin
 			}
 			break;
 		default:
+			for (let i = 0; i < length; i += 1) {
+				result[i] = i;
+			}
 			break;
 	}
 	return result;

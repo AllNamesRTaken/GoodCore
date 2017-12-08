@@ -37,7 +37,7 @@ describe("Obj",
 				clone1.b.should.not.equal(this.obj1.b);
 				let usedClone = false;
 				const cloneable = new Able();
-				proxyFn((cloneable as any), "clone", function(superfn) {
+				proxyFn(cloneable, "clone", function(superfn) {
 					usedClone = true;
 					return superfn();
 				});
@@ -116,30 +116,6 @@ describe("Obj",
 				const other = new Object();
 				Obj.isSameClass(c1, c1).should.be.true;
 				Obj.isSameClass(c1, other).should.be.false;
-			});
-		it("IsNullOrUndefined is true if any arg is null or undefined",
-			function() {
-				Obj.isNullOrUndefined(1, {}, 0, false).should.be.false;
-				Obj.isNullOrUndefined(1, {}, null, false).should.be.true;
-				Obj.isNullOrUndefined(1, undefined, 0, false).should.be.true;
-			});
-		it("IsNotNullOrUndefined is true if no arg is null or undefined",
-			function() {
-				Obj.isNotNullOrUndefined(1, {}, 0, false).should.be.true;
-				Obj.isNotNullOrUndefined(1, {}, null, false).should.be.false;
-				Obj.isNotNullOrUndefined(1, undefined, 0, false).should.be.false;
-			});
-		it("IsUndefined is true if any arg is undefined",
-			function() {
-				Obj.isUndefined(1, {}, 0, false).should.be.false;
-				Obj.isUndefined(1, {}, null, false).should.be.false;
-				Obj.isUndefined(1, undefined, 0, false).should.be.true;
-			});
-		it("IsNotUndefined is true if no arg is undefined",
-			function() {
-				Obj.isNotUndefined(1, {}, 0, false).should.be.true;
-				Obj.isNotUndefined(1, {}, null, false).should.be.true;
-				Obj.isNotUndefined(1, undefined, 0, false).should.be.false;
 			});
 		it("Mixin overwrites target",
 			function() {

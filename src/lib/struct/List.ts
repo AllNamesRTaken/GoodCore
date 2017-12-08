@@ -1,6 +1,6 @@
 import * as Arr from "../Arr";
-import { equals, isNotUndefined, setProperties } from "../Obj";
-import { isArray } from "../Test";
+import { equals, setProperties } from "../Obj";
+import { isArray, isNotUndefined } from "../Test";
 import { Dictionary } from "./Dictionary";
 
 export class List<T> implements IList<T>, IRevivable<List<T>> {
@@ -25,6 +25,17 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 	}
 	public get(pos: number): T {
 		return this._array[pos];
+	}
+	public set(pos: number, v: T): List<T> {
+		if (pos >= 0 && pos < this.length) {
+			this._array[pos | 0] = v;
+			if (this._indexer !== null) {
+				this._index!.set(this._indexer!(v), v);
+			}
+		} else {
+			throw new Error(`index out of bounds on <List>.set(${pos}, ${v.toString()})`);
+		}
+		return this;
 	}
 	public get count(): number {
 		return this._array.length;
@@ -152,18 +163,18 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		this.unindexEl(result);
 		return result;
 	}
-	public forEach(fn: (el: T, i: number) => any): List<T> {
-		Arr.forEach(this._array, fn);
+	public forEach(fn: (el: T, i: number) => any, startIndex: number = 0): List<T> {
+		Arr.forEach(this._array, fn, startIndex);
 		return this;
 	}
 	public forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T> {
 		Arr.forSome(this._array, filter, fn);
 		return this;
 	}
-	public until(fnOrTest: (el: T, i: number) => void): List<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): List<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): List<T> {
-		Arr.until(this._array, fnOrTest as any, fn as any);
+	public until(fnOrTest: (el: T, i: number) => void, startIndex?: number): List<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): List<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean | void, fn?: ((el: T, i: number) => void) | number, startIndex?: number): List<T> {
+		Arr.until(this._array, fnOrTest as any, fn as any, startIndex);
 		return this;
 	}
 	public reverseForEach(fn: (el: T, i: number) => any): List<T> {

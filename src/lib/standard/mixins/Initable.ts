@@ -1,4 +1,4 @@
-import { isNotUndefined, setProperties } from "../../Obj";
+import { setProperties } from "../../Obj";
 
 export function Initable<T>(base: Constructor<T>): Constructor<T> & Constructor<IInitable<T>> {
 	return class extends (base as Constructor<{}>) implements IInitable<T>{

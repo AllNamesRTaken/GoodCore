@@ -36,10 +36,10 @@ interface IBasicList<T> {
   remove(v: T): IBasicList<T>;
   removeFirst(fn: (el: T) => boolean): T;
   removeAt(n: number): T;
-  forEach(fn: (el: T, i?: number) => any): IBasicList<T>;
+  forEach(fn: (el: T, i?: number) => any, startIndex?: number): IBasicList<T>;
   forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
-  until(fnOrTest: (el: T, i: number) => void): IBasicList<T>;
-	until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): IBasicList<T>;
+  until(fnOrTest: (el: T, i: number) => void, startIndex?: number): IBasicList<T>;
+	until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number, startIndex?: number) => void): IBasicList<T>;
   reverseForEach(fn: (el: T, i: number) => any): IBasicList<T> 
 	reverseUntil(fnOrTest: (el: T, i: number) => void): IBasicList<T>;
 	reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): IBasicList<T>;
@@ -66,6 +66,7 @@ interface IBasicList<T> {
   toJSON(): any;
 }
 interface IList<T> extends IBasicList<T> {
+  set(pos: number, value: T): IList<T>;  
   push(v: T): number;
   concat(v: Array<T> | IList<T>): IList<T>;
   append(v: Array<T> | IList<T>): void;

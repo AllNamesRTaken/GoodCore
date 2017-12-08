@@ -1,4 +1,5 @@
-import { clone, isNotUndefined, setProperties, wipe } from "../Obj";
+import { clone, setProperties, wipe } from "../Obj";
+import { isNotUndefined } from "../Test";
 import { List } from "./List";
 
 export class Dictionary<T> implements IRevivable<Dictionary<T>> {

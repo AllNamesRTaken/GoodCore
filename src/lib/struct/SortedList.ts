@@ -1,5 +1,6 @@
 import { binarySearch } from "../Arr";
-import { equals, isNotUndefined, setProperties } from "../Obj";
+import { equals, setProperties } from "../Obj";
+import { isNotUndefined } from "../Test";
 import { List } from "./List";
 
 export class Comparer {
@@ -97,18 +98,18 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 	public removeFirst(fn: (el: T) => boolean): T {
 		return this._list.removeFirst(fn);
 	}
-	public forEach(fn: (el: T, i: number) => any): SortedList<T> {
-		this._list.forEach(fn);
+	public forEach(fn: (el: T, i: number) => any, startIndex: number = 0): SortedList<T> {
+		this._list.forEach(fn, startIndex);
 		return this;
 	}
 	public forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T> {
 		this._list.forSome(filter, fn);
 		return this;
 	}
-	public until(fnOrTest: (el: T, i: number) => void): SortedList<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): SortedList<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): SortedList<T> {
-		this._list.until(fnOrTest as any, fn as any);
+	public until(fnOrTest: (el: T, i: number) => void, startIndex?: number): SortedList<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): SortedList<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean | void, fn?: ((el: T, i: number) => void) | number, startIndex?: number): SortedList<T> {
+		this._list.until(fnOrTest as any, fn as any, startIndex);
 		return this;
 	}
 	public reverseForEach(fn: (el: T, i: number) => any): SortedList<T> {

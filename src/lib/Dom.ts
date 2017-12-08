@@ -88,12 +88,10 @@ export function get(id: string): HTMLElement {
 	let result = DomState._document!.getElementById(id) as HTMLElement;
 	if (result === null) {
 		switch (id) {
-			case "body":
+			default:
 				result = DomState._document!.body;
 				break;
-			default:
-				break;
-		}
+	}
 	}
 	return result;
 }

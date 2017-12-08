@@ -90,6 +90,17 @@ describe("Arrays",
 				arrEl.should.deep.equal(this.arr1);
 				arri.should.deep.equal([0, 1, 2, 3]);
 			});
+		it("ForEach with startIndex loops correctly",
+			function () {
+				const arrEl = new Array<number>();
+				const arri = new Array<number>();
+				Arr.forEach(this.arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); }, 1);
+				arrEl.should.deep.equal([4, 7, 2]);
+				arri.should.deep.equal([1, 2, 3]);
+				const arrEl2 = new Array<number>();
+				Arr.forEach(this.arr1 as number[], (el, i) => { arrEl2.push(el); }, 42);
+				arrEl2.should.deep.equal([]);
+			});
 		it("ReverseForEach loops correctly",
 			function() {
 				const arrEl = new Array<number>();
@@ -170,10 +181,13 @@ describe("Arrays",
 				Arr.shallowFill(this.arr3, copy, 2);
 				copy.should.deep.equal([1, 2, {a: 1}, {a: 2}]);
 				copy[2].should.equal(this.arr3[0]);
+				Arr.shallowFill([5, 6, 7, 8, 9], copy, 0);
+				copy[4].should.equal(9);
 			});
 		it("Slice does slice",
 			function() {
 				Arr.slice(this.arr1, 1, 2).should.deep.equal([4, 7]);
+				Arr.slice(this.arr1, 10, 2).should.deep.equal([]);
 			});
 		it("ForSome works like Filtered ForEach",
 			function() {
@@ -198,6 +212,24 @@ describe("Arrays",
 				Arr.until(this.arr1 as number[], (el, i) => (arri2.push(i), i >= 2) );
 				arrEl2.should.deep.equal([1, 4, 7]);
 				arri2.should.deep.equal([0, 1, 2]);
+			});
+		it("Until with startIndex work like ForEach with startIndex where returning true breaks the loop",
+			function() {
+				const arrEl = new Array<number>();
+				const arri = new Array<number>();
+				const arrEl2 = new Array<number>();
+				const arri2 = new Array<number>();
+				const arrEl3 = new Array<number>();
+				Arr.until(this.arr1 as number[], (el, i) => i >= 2, (el, i) => arrEl.push(el), 1 );
+				Arr.until(this.arr1 as number[], (el, i) => i >= 2, (el, i) => arri.push(i), 1 );
+				arrEl.should.deep.equal([4]);
+				arri.should.deep.equal([1]);
+				Arr.until(this.arr1 as number[], (el, i) => (arrEl2.push(el), i >= 2), 1 );
+				Arr.until(this.arr1 as number[], (el, i) => (arri2.push(i), i >= 2), 1 );
+				arrEl2.should.deep.equal([4, 7]);
+				arri2.should.deep.equal([1, 2]);
+				Arr.until(this.arr1 as number[], (el, i) => (arrEl3.push(el), i >= 2), 42);
+				arrEl3.should.deep.equal([]);
 			});
 		it("ReverseUntil work like ReverseForEach where returning true breaks the loop",
 			function() {
@@ -234,6 +266,8 @@ describe("Arrays",
 			function() {
 				let arr = Arr.create<number>(10, (i, arr) => i < 2 ? 1 : arr[i - 2] + arr[i - 1]);
 				arr.should.deep.equal([1, 1, 2, 3, 5, 8, 13, 21, 34, 55]);
+				let arr2 = Arr.create<number>(-10, (i, arr) => i < 2 ? 1 : arr[i - 2] + arr[i - 1]);
+				arr2.should.deep.equal([]);
 			});
 		it("Some is true if any element is true",
 		function() {

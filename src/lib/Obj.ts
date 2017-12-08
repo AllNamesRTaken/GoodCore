@@ -1,5 +1,5 @@
 import { deepCopy, flatten } from "./Arr";
-import { isArray, isFunction } from "./Test";
+import { areNotNullOrUndefined, isArray, isFunction } from "./Test";
 
 export function destroy(obj: any): void {
 	if (obj.constructor.prototype.destroy !== undefined) {
@@ -30,39 +30,12 @@ export function setNull(obj: any): void {
 		}
 	}
 }
-export function isNullOrUndefined(...args: any[]): boolean {
-	const len = args.length;
-	let i = -1;
-	let a: any;
-	let result = false;
-	while (!result && ++i < len) {
-		a = args[i];
-		result = a === undefined || a === null;
-	}
-	return result;
-}
-export function isNotNullOrUndefined(...args: any[]): boolean {
-	return !isNullOrUndefined(...args);
-}
-export function isUndefined(...args: any[]): boolean {
-	const len = args.length;
-	let i = -1;
-	let a: any;
-	let result = false;
-	while (!result && ++i < len) {
-		a = args[i];
-		result = a === undefined;
-	}
-	return result;
-}
-export function isNotUndefined(...args: any[]): boolean {
-	return !isUndefined(...args);
-}
+
 export function isClassOf(a: any, b: any): boolean {
-	return isNotNullOrUndefined(a, b) && a instanceof b.constructor;
+	return areNotNullOrUndefined(a, b) && a instanceof b.constructor;
 }
 export function isSameClass(a: any, b: any): boolean {
-	return isNotNullOrUndefined(a, b) && a.constructor === b.constructor;
+	return areNotNullOrUndefined(a, b) && a.constructor === b.constructor;
 }
 export function inherits(a: any, b: any): boolean {
 	return isClassOf(a, b) && !isSameClass(a, b);

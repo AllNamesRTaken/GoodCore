@@ -92,6 +92,21 @@ describe("List",
 				const list1 = this.list1 as List<any>;
 				list1.get(2).should.equal(7);
 			});
+		it("Set sets a value at a given position if it exists in the list, or throws",
+			function () {
+				const list1 = (this.list1 as List<any>).clone();
+				const list2 = (this.list1 as List<any>).clone();
+				list2.indexer = (el) => el;
+				list1.set(2, 42).get(2).should.equal(42);
+				let err: Error = null;
+				try {
+					list1.set(4, 42);
+				} catch (error) {
+					err = error;
+				}
+				(err !== undefined).should.be.true;
+				list2.set(2, 42).get(2).should.equal(42);
+			});
 		it("Count returns the lists length",
 			function () {
 				const list1 = this.list1 as List<any>;
@@ -213,6 +228,18 @@ describe("List",
 				listEl.should.deep.equal(this.list1.values);
 				listi.should.deep.equal([0, 1, 2, 3]);
 			});
+		it("ForEach with startIndex loops correctly",
+			function () {
+				const list1 = this.list1 as List<any>;
+				const listEl = new Array<number>();
+				const listi = new Array<number>();
+				list1.forEach((el, i) => { listEl.push(el); listi.push(i); }, 1);
+				listEl.should.deep.equal([4, 7, 2] );
+				listi.should.deep.equal([1, 2, 3]);
+				const listEl2 = new Array<number>();
+				list1.forEach((el, i) => { listEl2.push(el); listi.push(i); }, 42);
+				listEl2.should.deep.equal([] );
+			});
 		it("IndexOf returns elements index or -1",
 			function () {
 				const list1 = this.list1 as List<any>;
@@ -315,6 +342,25 @@ describe("List",
 				list1.until((el, i) => (listi2.push(i), i >= 2));
 				listEl2.should.deep.equal([1, 4, 7]);
 				listi2.should.deep.equal([0, 1, 2]);
+			});
+		it("Until with startIndex work like ForEach with startIndex where returning true breaks the loop",
+			function () {
+				const list1 = this.list1 as List<any>;
+				const listEl = new Array<number>();
+				const listi = new Array<number>();
+				list1.until((el, i) => i >= 2, (el, i) => listEl.push(el), 1);
+				list1.until((el, i) => i >= 2, (el, i) => listi.push(i), 1);
+				listEl.should.deep.equal([4]);
+				listi.should.deep.equal([1]);
+				const listEl2 = new Array<number>();
+				const listi2 = new Array<number>();
+				list1.until((el, i) => (listEl2.push(el), i >= 2), 1);
+				list1.until((el, i) => (listi2.push(i), i >= 2), 1);
+				listEl2.should.deep.equal([4, 7]);
+				listi2.should.deep.equal([1, 2]);
+				const listEl3 = new Array<number>();
+				list1.until((el, i) => (listEl3.push(el), i >= 2), 42);
+				listEl3.should.deep.equal([]);
 			});
 		it("reverseUntil work like Until in reverse",
 			function () {

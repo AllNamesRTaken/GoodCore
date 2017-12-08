@@ -163,6 +163,18 @@ describe("SortedList",
 				listEl.should.deep.equal(this.list1.values);
 				listi.should.deep.equal([0, 1, 2, 3]);
 			});
+		it("ForEach with startIndex loops correctly",
+			function () {
+				const list1 = this.list1 as SortedList<any>;
+				const listEl = new Array<number>();
+				const listi = new Array<number>();
+				list1.forEach((el, i) => {listEl.push(el); listi.push(i); }, 1);
+				listEl.should.deep.equal([2, 4, 7]);
+				listi.should.deep.equal([1, 2, 3]);
+				const listEl2 = new Array<number>();
+				list1.forEach((el, i) => { listEl2.push(el); listi.push(i); }, 42);
+				listEl2.should.deep.equal([] );
+			});
 		it("IndexOf returns elements index or -1",
 			function() {
 				const list1 = this.list1 as SortedList<any>;
@@ -247,6 +259,19 @@ describe("SortedList",
 				listEl.should.deep.equal([1, 2]);
 				listi.should.deep.equal([0, 1]);
 			});
+		it("Until with startIndex work like ForEach with startIndex where returning true breaks the loop",
+			function () {
+				const list1 = this.list1 as SortedList<any>;
+				const listEl = new Array<number>();
+				const listi = new Array<number>();
+				list1.until((el, i) => i >= 2, (el, i) => listEl.push(el), 1 );
+				list1.until((el, i) => i >= 2, (el, i) => listi.push(i), 1 );
+				listEl.should.deep.equal([2]);
+				listi.should.deep.equal([1]);
+				const listEl3 = new Array<number>();
+				list1.until((el, i) => (listEl3.push(el), i >= 2), 42);
+				listEl3.should.deep.equal([]);
+			});
 		it("Equals deep compares two lists",
 			function(){
 				const list1 = this.list1 as SortedList<any>;
@@ -325,6 +350,11 @@ describe("SortedList",
 			JSON.stringify(list2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
 			list3.revive([{x:1, y:1}, {x:2, y:2}], Vec2);
 			JSON.stringify(list3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
-	});
+		});
+		it("descending string sort does sort descending", 
+		function () {
+			let list5 = new SortedList(Comparer.StringDesc, ["b", "a", "d", "c"] as string[]);
+			list5.values.should.deep.equal(["d", "c", "b", "a"]);
+		});
 	}
 );

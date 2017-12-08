@@ -1,4 +1,5 @@
-import { clone, isUndefined } from "./Obj";
+import { isNumber, isUndefined } from "util";
+import { clone } from "./Obj";
 import { isArray } from "./Test";
 
 class ArrayState {
@@ -233,8 +234,8 @@ export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, te
 	}
 	return acc;
 }
-export function forEach<T>(src: T[], fn: (el: T, i: number) => any): void {
-	let i = -1;
+export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex: number = 0): void {
+	let i = startIndex - 1;
 	const len = src.length;
 	while (++i < len) {
 		fn(src[i], i);
@@ -250,13 +251,14 @@ export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: 
 		}
 	}
 }
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => void): void;
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): void {
-	let i = -1;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => void, startIndex?: number): void;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): void;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn?: ((el: T, i: number) => void) | number, startIndex?: number): void {
+	let isCombined = isUndefined(fn) || isNumber(fn);
+	startIndex = isCombined ? fn as number : startIndex;
+	let i = isUndefined(startIndex) || startIndex! < 0 ? -1 : startIndex! - 1;
 	const len = src.length;
-	let combined = isUndefined(fn);
-	while (++i < len && (combined ? !fnOrTest(src[i], i) : !(fnOrTest(src[i], i) || (fn!(src[i], i), false)))) {
+	while (++i < len && (isCombined ? !fnOrTest(src[i], i) : !(fnOrTest(src[i], i) || ((fn as (el: T, i: number) => void)!(src[i], i), false)))) {
 	}
 }
 export function reverseForEach<T>(src: T[], fn: (el: T, i: number) => any): void {
@@ -320,11 +322,11 @@ export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest: boole
 	return closest ? lo : -1;
 }
 export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[] {
-	let arr = new Array<T>(length);
-	let i = -1;	
 	if (length < 0) {
 		length = 0;
 	}
+	let arr = new Array<T>(length);
+	let i = -1;	
 	while (++i < length) {
 		arr[i] = populator(i, arr);		
 	}

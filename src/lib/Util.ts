@@ -1,5 +1,5 @@
 import { Global } from "./Global";
-import { hasConsole, hasWindow } from "./Test";
+import { hasConsole, hasWindow, isNotUndefined } from "./Test";
 import { Timer } from "./Timer";
 
 export interface IObjectWithFunctions<T extends Object | void> {
@@ -20,6 +20,7 @@ export function getFunctionName(fn: Function): string {
 	if (fn.hasOwnProperty("name") !== undefined) {
 		result = (fn as any).name;
 	} else {
+		//for old browsers not inferring anonymous function names.
 		const fnString = fn.toString();
 		result = fnString.substring(9, fnString.indexOf("("));
 	}
@@ -97,25 +98,23 @@ export function assert(assertion: boolean, message: string, isDebug: boolean = t
 	}
 	return result;
 }
-export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends IObjectWithFunctions<S>>(
-	that: U,
+export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(
+	objOrClass: U,
 	fnName: string,
-	proxyFn: (fn: (...args: any[]) => S | V, ...args: any[]) => void,
-	onPrototype: boolean = false
+	proxyFn: (
+		originalFn: (...args: any[]) => S | V, 
+		...args: any[]) => void
 ): void {
-	const fn = that[fnName];
+	objOrClass = isNotUndefined(objOrClass.prototype) ? objOrClass.prototype : objOrClass;
+	const fn = objOrClass[fnName];
 	const _superFn = function (...args: any[]): S {
 		if (args.length !== 0) {
-			return fn.apply(that, args);
+			return fn.apply(this || objOrClass, args);
 		} else {
-			return fn.call(that);
+			return fn.call(this || objOrClass);
 		}
 	};
-	if (onPrototype && that.prototype && (that.prototype as any)[fnName]) {
-		(that.prototype as any)[fnName] = proxyFn.bind(_superFn);
-	} else {
-		that[fnName] = proxyFn.bind(that, _superFn);
-	}
+	objOrClass[fnName] = proxyFn.bind(objOrClass, _superFn);
 }
 export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void {
 	let i = -1;
