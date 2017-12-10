@@ -25,7 +25,7 @@ interface IRevivable<T> {
 }
 interface IBasicList<T> {
   values: Array<T>;
-  get(pos: number): T;
+  get(pos: number): T | undefined;
   count: number;
   clear(): IBasicList<T>;
   add(v: T): IBasicList<T>;
@@ -47,7 +47,7 @@ interface IBasicList<T> {
   find(fn: (el: T) => boolean): T | undefined;
   last(): T | undefined;
   indexOf(v: T | ((el: T) => boolean)): number;
-  contains(v: T): boolean;
+  contains(v: T | ((el: T) => boolean)): boolean;
   some(fn: (el: T) => boolean): boolean
   all(fn: (el: T) => boolean): boolean
   select(fn: (el: T) => boolean): IBasicList<T>;
@@ -66,7 +66,8 @@ interface IBasicList<T> {
   toJSON(): any;
 }
 interface IList<T> extends IBasicList<T> {
-  set(pos: number, value: T): IList<T>;  
+  getByIndex(key: number | string): T | undefined;
+  set(pos: number, value: T): IList<T>;
   push(v: T): number;
   concat(v: Array<T> | IList<T>): IList<T>;
   append(v: Array<T> | IList<T>): void;

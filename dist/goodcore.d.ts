@@ -25,7 +25,7 @@ interface IRevivable<T> {
 }
 interface IBasicList<T> {
   values: Array<T>;
-  get(pos: number): T;
+  get(pos: number): T | undefined;
   count: number;
   clear(): IBasicList<T>;
   add(v: T): IBasicList<T>;
@@ -47,7 +47,7 @@ interface IBasicList<T> {
   find(fn: (el: T) => boolean): T | undefined;
   last(): T | undefined;
   indexOf(v: T | ((el: T) => boolean)): number;
-  contains(v: T): boolean;
+  contains(v: T | ((el: T) => boolean)): boolean;
   some(fn: (el: T) => boolean): boolean
   all(fn: (el: T) => boolean): boolean
   select(fn: (el: T) => boolean): IBasicList<T>;
@@ -66,7 +66,8 @@ interface IBasicList<T> {
   toJSON(): any;
 }
 interface IList<T> extends IBasicList<T> {
-  set(pos: number, value: T): IList<T>;  
+  getByIndex(key: number | string): T | undefined;
+  set(pos: number, value: T): IList<T>;
   push(v: T): number;
   concat(v: Array<T> | IList<T>): IList<T>;
   append(v: Array<T> | IList<T>): void;
@@ -144,6 +145,7 @@ declare module 'goodcore/struct/Vec2' {
         y: number;
         readonly isZero: boolean;
         constructor(x?: number, y?: number);
+        protected create(x?: number, y?: number): Vec2;
         set(src: IVec2): Vec2;
         clone(out?: Vec2): Vec2;
         toInt(): Vec2;
@@ -187,6 +189,7 @@ declare module 'goodcore/struct/Range2' {
         size: Vec2;
         readonly isZero: boolean;
         constructor(x?: number, y?: number, w?: number, h?: number);
+        protected create(x?: number, y?: number, w?: number, h?: number): Range2;
         set(src: IRange2): Range2;
         clone(out?: Range2): Range2;
         toRect(endInclusive?: boolean, out?: Rect): Rect;
@@ -215,6 +218,7 @@ declare module 'goodcore/struct/Rect' {
         endInclusive: boolean;
         readonly isZero: boolean;
         constructor(x1?: number, y1?: number, x2?: number, y2?: number, endInclusive?: boolean);
+        protected create(x1?: number, y1?: number, x2?: number, y2?: number, endInclusive?: boolean): Rect;
         set(src: IRect): Rect;
         clone(out?: Rect): Rect;
         toRange2(out?: Range2): Range2;
@@ -233,10 +237,12 @@ declare module 'goodcore/struct/Rect' {
 }
 
 declare module 'goodcore/struct/List' {
-    export class List<T> implements IList<T>, IRevivable<List<T>> {
+    export class List<T> implements IList<T>, IRevivable<List<T>>, ICloneable<List<T>> {
         constructor(arr?: T[] | List<T>);
+        protected create<S = T>(arr?: S[] | List<S>): List<S>;
         readonly values: T[];
-        get(pos: number): T;
+        get(pos: number): T | undefined;
+        getByIndex(key: number | string): T | undefined;
         set(pos: number, v: T): List<T>;
         readonly count: number;
         readonly length: number;
@@ -265,7 +271,7 @@ declare module 'goodcore/struct/List' {
         some(fn: (el: T) => boolean): boolean;
         all(fn: (el: T) => boolean): boolean;
         indexOf(v: T | ((el: T) => boolean)): number;
-        contains(v: T): boolean;
+        contains(v: T | ((el: T) => boolean)): boolean;
         reverse(): List<T>;
         first(fn?: (el: T) => boolean): T | undefined;
         find(fn: (el: T) => boolean): T | undefined;
@@ -300,10 +306,11 @@ declare module 'goodcore/struct/SortedList' {
         static NumberAsc: (a: number, b: number) => 1 | 0 | -1;
         static NumberDesc: (a: number, b: number) => 1 | 0 | -1;
     }
-    export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
-        constructor(comparer: (a: T, b: T) => number, arr?: T[] | List<T> | SortedList<T>);
+    export class SortedList<T = number> implements IBasicList<T>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
+        constructor(comparer?: ((a: T, b: T) => number), arr?: T[] | List<T> | SortedList<T>);
+        protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
         readonly values: T[];
-        get(pos: number): T;
+        get(pos: number): T | undefined;
         readonly count: number;
         readonly length: number;
         comparer: (a: T, b: T) => number;
@@ -329,7 +336,7 @@ declare module 'goodcore/struct/SortedList' {
         all(fn: (el: T) => boolean): boolean;
         getInsertIndex(v: T): number;
         indexOf(v: T | ((el: T) => boolean)): number;
-        contains(v: T): boolean;
+        contains(v: T | ((el: T) => boolean)): boolean;
         first(fn?: (el: T) => boolean): T | undefined;
         find(fn: (el: T) => boolean): T | undefined;
         last(): T | undefined;
@@ -354,11 +361,12 @@ declare module 'goodcore/struct/SortedList' {
 
 declare module 'goodcore/struct/Dictionary' {
     import { List } from "goodcore/struct/List";
-    export class Dictionary<T> implements IRevivable<Dictionary<T>> {
+    export class Dictionary<T> implements IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
         constructor();
+        protected create<S = T>(): Dictionary<S>;
         has(key: number | string): boolean;
         contains(key: number | string): boolean;
-        get(key: number | string): T;
+        get(key: number | string): T | undefined;
         set(key: number | string, value: T): Dictionary<T>;
         delete(key: number | string): Dictionary<T>;
         clear(): Dictionary<T>;
@@ -374,7 +382,7 @@ declare module 'goodcore/struct/Dictionary' {
 
 declare module 'goodcore/struct/Stack' {
     import { List } from "goodcore/struct/List";
-    export class Stack<T> {
+    export class Stack<T> implements IRevivable<Stack<T>>, ICloneable<Stack<T>> {
         DEFAULT_SIZE: number;
         readonly values: T[];
         readonly depth: number;
@@ -382,6 +390,7 @@ declare module 'goodcore/struct/Stack' {
         readonly isEmpty: boolean;
         limit: number;
         constructor(size?: number);
+        protected create<S = T>(size?: number): Stack<S>;
         push(obj: T): void;
         fastPush(obj: T): void;
         limitedPush(obj: T): void;
@@ -390,7 +399,9 @@ declare module 'goodcore/struct/Stack' {
         peekAt(index: number): T | undefined;
         toList(): List<T>;
         clear(): Stack<T>;
+        clone(): Stack<T>;
         toJSON(): any;
+        revive(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
     }
 }
 
@@ -408,6 +419,7 @@ declare module 'goodcore/struct/Tree' {
             data?: ((node: S) => any) | string;
         }): Tree<T>;
         constructor();
+        protected create<S = T>(): Tree<S>;
         init(obj: Partial<Tree<T>>): Tree<T>;
         insertAt(pos: number, data: T): void;
         add(data: T | Tree<T>): void;

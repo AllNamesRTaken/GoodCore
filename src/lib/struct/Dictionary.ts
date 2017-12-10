@@ -2,7 +2,7 @@ import { clone, setProperties, wipe } from "../Obj";
 import { isNotUndefined } from "../Test";
 import { List } from "./List";
 
-export class Dictionary<T> implements IRevivable<Dictionary<T>> {
+export class Dictionary<T> implements IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
 	private _lookup: any;
 	private _list: List<T>;
 	private _isDirty: boolean;
@@ -12,13 +12,17 @@ export class Dictionary<T> implements IRevivable<Dictionary<T>> {
 		this._list = new List<T>();
 		this._isDirty = false;
 	}
+
+	protected create<S = T>(): Dictionary<S> {
+		return new ((this as any).constructor)();
+	}
 	public has(key: number|string): boolean {
 		return this._lookup[key] !== undefined;
 	}
 	public contains(key: number|string): boolean {
 		return this.has(key);
 	}
-	public get(key: number|string): T {
+	public get(key: number|string): T | undefined {
 		return this._lookup[key];
 	}
 	public set(key: number|string, value: T): Dictionary<T> {
@@ -79,7 +83,7 @@ export class Dictionary<T> implements IRevivable<Dictionary<T>> {
 		}
 	}
 	public clone(): Dictionary<T> {
-		let result = new Dictionary<T>();
+		let result = this.create<T>();
 		result._isDirty = this._isDirty;
 		result._list = this._list.clone();
 		result._lookup = clone(this._lookup);

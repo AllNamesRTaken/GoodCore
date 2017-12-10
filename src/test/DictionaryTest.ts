@@ -11,6 +11,8 @@ describe("Dictionary",
 				d.set("key1", "value1");
 				d.get("key1").should.equal("value1");
 				(d.get("key2") === undefined).should.be.true;
+				d.set("key1", undefined);
+				d.get("key1").should.equal("value1");
 			});
 		it("Values return array of values",
 			function () {

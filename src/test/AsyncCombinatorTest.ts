@@ -23,7 +23,7 @@ describe("AsyncCombinators",
 					}
 					@async.before!( function(): Promise<any> { 
 						return new Promise<any>( (resolve, reject) => {
-							resolve();
+							reject();
 						});
 					})
 					@async

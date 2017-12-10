@@ -92,6 +92,14 @@ describe("List",
 				const list1 = this.list1 as List<any>;
 				list1.get(2).should.equal(7);
 			});
+		it("getByIndex gets the value at a given index key in an indexed list",
+			function () {
+				const list1 = (this.list1 as List<any>).clone();
+				(list1.getByIndex("k2") === undefined).should.be.true;
+				list1.indexer = (el: number) => "k" + el;
+				list1.getByIndex("k2").should.equal(2);
+				(list1.getByIndex("k42") === undefined).should.be.true;
+			});
 		it("Set sets a value at a given position if it exists in the list, or throws",
 			function () {
 				const list1 = (this.list1 as List<any>).clone();
@@ -153,10 +161,12 @@ describe("List",
 			});
 		it("Contains checks if a list contains a certain element",
 			function () {
-				const list1 = this.list1 as List<any>;
+				const list1 = this.list1 as List<number>;
 				list1.contains(4).should.be.true;
 				list1.contains(42).should.be.false;
-
+				list1.contains((v) => v === 4).should.be.true;
+				list1.contains((v) => v === 42).should.be.false;
+				
 				const indexed = (this.indexed as List<number>).clone();
 				indexed.add(4);
 				indexed.contains(4).should.be.true;
@@ -478,6 +488,7 @@ describe("List",
 			function () {
 				const list1 = new List([[1, 2], 3, new List([4, [5, [6]]])]);
 				list1.flatten(1).values.should.deep.equal([1, 2, 3, 4, [5, [6]]]);
+				list1.flatten(0).equals(list1).should.be.true;
 			});
 		it("ToJson formats List correct",
 			function () {

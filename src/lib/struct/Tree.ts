@@ -49,11 +49,11 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 		list.forEach((el, i) => {
 			let parent = map.parent(el);
 			if (lookup.contains(parent)) {
-				lookup.get(parent).add(lookup.get(map.id(el)));
+				lookup.get(parent)!.add(lookup.get(map.id(el))!);
 			}
 		});
 		// find root
-		result = lookup.get(map.id(list.get(0)));
+		result = lookup.get(map.id(list.get(0)))!;
 		while (result.parent) {
 			result = result.parent;
 		}
@@ -64,6 +64,9 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 		this.id = newUUID();
 	}
 
+	protected create<S = T>(): Tree<S> {
+		return new ((this as any).constructor)();
+	}
 	public init(obj: Partial<Tree<T>>): Tree<T> {
 		setProperties(this, obj);
 		return this;
@@ -72,7 +75,7 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 		if (this.children === null || this.children.count <= pos) {
 			this.add(data);
 		} else {
-			this.children.insertAt(pos, new Tree<T>().init({ data, parent: this }));
+			this.children.insertAt(pos, this.create<T>().init({ data, parent: this }));
 		}
 	}
 	public add(data: T|Tree<T>): void {
@@ -83,7 +86,7 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 			(data as Tree<T>).parent = this;
 			this.children.add(data as Tree<T>);
 		} else {
-			this.children.add((new Tree<T>()).init({ data: data as T, parent: this }));
+			this.children.add((this.create<T>()).init({ data: data as T, parent: this }));
 		}
 	}
 	public remove(): void {
@@ -114,7 +117,7 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 			acc = fn(acc, cur);
 			i = (cur.children && cur.children.count) || 0;
 			while (i--) {
-				stack.push(cur.children!.get(i));
+				stack.push(cur.children!.get(i)!);
 			}
 		}
 		return acc;

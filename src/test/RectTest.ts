@@ -9,9 +9,12 @@ describe("Rect",
 			function(){
 				const r1 = new Rect(1, 1, 3, 4);
 				const r2 = r1.clone();
+				let r3 = new Rect();
+				r1.clone(r3);
 				r2.start.equals(new Vec2(1, 1)).should.be.true;
 				r2.stop.equals(new Vec2(3, 4)).should.be.true;
 				r1.should.not.equal(r2);
+				r1.equals(r3).should.be.true;
 			});
 		it("Equals is true when comparing equal rectangles",
 			function() {
@@ -70,6 +73,16 @@ describe("Rect",
 				const range1 = r1.toRange2();
 				range1.pos.equals(new Vec2(1, 1)).should.be.true;
 				range1.size.equals(new Vec2(3, 4)).should.be.true;
+
+				const r2 = new Rect(3, 4, 1, 1, true);
+				const range2 = r2.toRange2();
+				range2.pos.equals(new Vec2(3, 4)).should.be.true;
+				range2.size.equals(new Vec2(-3, -4)).should.be.true;
+				
+				r1.endInclusive = false;
+				let endInclusive = r1.toRange2();
+				endInclusive.pos.equals(new Vec2(1, 1)).should.be.true;
+				endInclusive.size.equals(new Vec2(2, 3)).should.be.true;
 			});
 		it("Area return the correct size of the rectangle",
 			function(){

@@ -1,8 +1,10 @@
-import { slice } from "../Arr";
+import { deepCopy, deepCopyInto, mapInto, slice } from "../Arr";
 import { position } from "../Dom";
+import { setProperties } from "../Obj";
+import { isNotUndefined } from "../Test";
 import { List } from "./List";
 
-export class Stack<T> {
+export class Stack<T> implements IRevivable<Stack<T>>, ICloneable<Stack<T>> {
 	public DEFAULT_SIZE = 100;
 	private _array: T[];
 	private _pos: number = 0;
@@ -43,6 +45,9 @@ export class Stack<T> {
 		this._array = new Array<T>(size);
 		this.push = this.fastPush;
 	}
+	protected create<S = T>(size?: number): Stack<S> {
+		return new ((this as any).constructor)(size);
+	}
 	public push(obj: T): void {
 	}
 	public fastPush(obj: T): void {
@@ -76,6 +81,14 @@ export class Stack<T> {
 		this._array.length = this.DEFAULT_SIZE;
 		return this;
 	}
+	public clone(): Stack<T> {
+		const arr = deepCopy(this._array);
+		let result = this.create(this.DEFAULT_SIZE);
+		result._array = arr;
+		result._limit = this._limit;
+		result._pos = this._pos;
+		return result;
+	}
 	private limitObjects() {
 		if (this._limit > 0) {
 			while (this._pos > this._limit) {
@@ -85,6 +98,27 @@ export class Stack<T> {
 		}
 	}
 	public toJSON(): any {
-		return this.values;
+		return slice(this.values, 0, this._pos);
 	}
+	public revive(array: any[], ...types: Array<Constructor<any>>): Stack<T> {
+		let [T, ...passthroughT] = types;
+		if (isNotUndefined(T)) {
+			if (isNotUndefined(T.prototype.revive)) {
+				mapInto(array, this._array, (el) => {
+					return (new T()).revive(el, ...passthroughT);
+				});
+			} else {
+				mapInto(array, this._array, (el) => {
+					let newT = new T();
+					setProperties(newT, el);
+					return newT;
+				});
+			}
+		} else {
+			deepCopyInto(array, this._array);
+		}
+		this._pos = array.length;
+		return this;
+	}
+
 }

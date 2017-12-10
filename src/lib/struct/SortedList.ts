@@ -9,11 +9,11 @@ export class Comparer {
 	public static NumberAsc = function(a: number, b: number) { return a < b ? -1 : a === b ? 0 : 1; };
 	public static NumberDesc = function(a: number, b: number) { return a < b ? 1 : a === b ? 0 : -1; };
 }
-export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
+export class SortedList<T = number> implements IBasicList<T>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
 	private _list: List<T> = new List<T>();
 	private _cmp: (a: T, b: T) => number;
 
-	constructor(comparer: (a: T, b: T) => number, arr?: T[] | List<T> | SortedList<T>) {
+	constructor(comparer: ((a: T, b: T) => number) = ((a: T, b: T) => a < b ? -1 : a === b ? 0 : 1 ), arr?: T[] | List<T> | SortedList<T>) {
 		this._cmp = comparer;
 
 		if (arr === undefined) {
@@ -27,10 +27,13 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 		}
 	}
 
+	protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S> {
+		return new ((this as any).constructor)(comparer, arr);
+	}
 	public get values(): T[] {
 		return this._list.values;
 	}
-	public get(pos: number): T {
+	public get(pos: number): T | undefined {
 		return this._list.get(pos);
 	}
 	public get count(): number {
@@ -83,7 +86,7 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 		return this;
 	}
 	public clone(): SortedList<T> {
-		return new SortedList(this._cmp, this._list.clone());
+		return this.create(this._cmp, this._list.clone());
 	}
 	public remove(v: T): SortedList<T> {
 		let index = this.indexOf(v);
@@ -140,7 +143,7 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 		}
 		return result;
 	}
-	public contains(v: T): boolean {
+	public contains(v: T | ((el: T) => boolean)): boolean {
 		return this.indexOf(v) !== -1;
 	}
 	public first(fn?: (el: T) => boolean): T | undefined {
@@ -153,10 +156,10 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 		return this._list.last();
 	}
 	public filter(fn: (el: T, i: number) => boolean): SortedList<T> {
-		return new SortedList<T>(this._cmp, this._list.filter(fn));
+		return this.create(this._cmp, this._list.filter(fn));
 	}
 	public select(fn: (el: T, i: number) => boolean): SortedList<T> {
-		return new SortedList<T>(this._cmp, this._list.filter(fn));
+		return this.create(this._cmp, this._list.filter(fn));
 	}
 	public selectInto(src: SortedList<T> | List<T> | T[], fn: (el: T, i: number) => boolean): SortedList<T> {
 		if (src instanceof List || src instanceof SortedList) {
@@ -199,7 +202,7 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 		return this.equals(b);
 	}
 	public intersect(b: List<T> | SortedList<T>): SortedList<T> {
-		let result = new SortedList<T>(this.comparer);		
+		let result = this.create(this.comparer);		
 		let long: List<T> | SortedList<T>;
 		let short: List<T> | SortedList<T>;
 		if (this.length > 0 && b.length > 0) {
@@ -209,14 +212,14 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 				long = this, short = b;
 			}
 			if (b instanceof SortedList && this.comparer === b.comparer) {
-				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)) - 1;
+				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)!) - 1;
 				let lastPos = (long as SortedList<T>).getInsertIndex(short.last()!) - 1;
 				let i = -1;
 				let shortLen = short.length;
 				while (longPos < lastPos && ++i < shortLen) {
-					let el = short.get(i);
+					let el = short.get(i)!;
 					let aVsB;
-					while (++longPos < lastPos && (aVsB = this.comparer(long.get(longPos), el)) < 0 ) {
+					while (++longPos < lastPos && (aVsB = this.comparer(long.get(longPos)!, el)) < 0 ) {
 						void(0);
 					}
 					if (longPos < lastPos && aVsB === 0) {
@@ -247,15 +250,15 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 				long = this, short = b;
 			}
 			if (b instanceof SortedList && this.comparer === b.comparer) {
-				result = new SortedList<T>(this.comparer, long.values);
-				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)) - 1;
+				result = this.create(this.comparer, long.values);
+				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)!) - 1;
 				let lastPos = (long as SortedList<T>).getInsertIndex(short.last()!) - 1;
 				let i = -1;
 				let shortLen = short.length;
 				while (++i < shortLen && longPos < lastPos) {
-					let el = short.get(i);
+					let el = short.get(i)!;
 					let aVsB = -1;
-					while (++longPos < lastPos && (aVsB = this.comparer(long.get(longPos), el)) < 0 ) {
+					while (++longPos < lastPos && (aVsB = this.comparer(long.get(longPos)!, el)) < 0 ) {
 						void(0);
 					}
 					if ((aVsB > 0 && longPos < lastPos) || longPos === lastPos) {
@@ -265,21 +268,21 @@ export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>> {
 				if (i < shortLen) {
 					--i;
 					while (++i < shortLen) {
-						result.add(short.get(i));
+						result.add(short.get(i)!);
 					}
 				}
 			} else if (long instanceof SortedList || (long instanceof List && long.indexer !== null)) {
-				result = new SortedList<T>(this.comparer, long.values);
+				result = this.create(this.comparer, long.values);
 				short.forEach((el) => {
 					if (!long.contains(el)) {
 						result.add(el);
 					}
 				});
 			} else {
-				result = new SortedList<T>(this.comparer, (short as SortedList<T>).toList().union(long) );
+				result = this.create(this.comparer, (short as SortedList<T>).toList().union(long) );
 			}
 		} else {
-			result = new SortedList<T>(this.comparer);
+			result = this.create(this.comparer);
 		}
 		return result;
 	}

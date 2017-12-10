@@ -18,13 +18,16 @@ export class Vec2 implements IVec2 {
 		this.x = x;
 		this.y = y;
 	}
+	protected create(x: number = 0, y: number = 0): Vec2 {
+		return new ((this as any).constructor)(x, y);
+	}
 	public set(src: IVec2): Vec2 {
 		this.x = src.x;
 		this.y = src.y;
 		return this;
 	}
 	public clone(out?: Vec2): Vec2 {
-		const result = out ? out.set(this) : new Vec2(this.x, this.y);
+		const result = out ? out.set(this) :this.create(this.x, this.y);
 		return result;
 	}
 	public toInt(): Vec2 {

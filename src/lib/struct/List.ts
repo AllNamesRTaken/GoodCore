@@ -1,9 +1,9 @@
 import * as Arr from "../Arr";
 import { equals, setProperties } from "../Obj";
-import { isArray, isNotUndefined } from "../Test";
+import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined } from "../Test";
 import { Dictionary } from "./Dictionary";
 
-export class List<T> implements IList<T>, IRevivable<List<T>> {
+export class List<T> implements IList<T>, IRevivable<List<T>>, ICloneable<List<T>> {
 	private _array: T[] = [];
 	private _index: Dictionary<T> | null = null;
 	private _indexer: ((el: T) => any) | null = null;
@@ -20,11 +20,18 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		}
 	}
 
+	protected create<S = T>(arr?: S[] | List<S>): List<S> {
+		return new ((this as any).constructor)(arr);
+	}
 	public get values(): T[] {
 		return this._array;
 	}
-	public get(pos: number): T {
+	public get(pos: number): T | undefined {
 		return this._array[pos];
+	}
+	public getByIndex(key: number | string): T | undefined {
+		let result: T | undefined;
+		return isNotNullOrUndefined(this._index) ? this._index!.get(key) : undefined;
 	}
 	public set(pos: number, v: T): List<T> {
 		if (pos >= 0 && pos < this.length) {
@@ -107,7 +114,7 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		let arr: T[];
 		let arr2: T[] = v instanceof List ? v.values : v;
 		arr = Arr.concat(this._array, arr2);
-		return new List<T>(arr);
+		return this.create(arr);
 	}
 	private index(arr: T[]): void {
 		if (this._indexer !== null) {
@@ -141,7 +148,7 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 	}
 	public clone(): List<T> {
 		const arr = Arr.deepCopy(this._array);
-		let result = new List(arr);
+		let result = this.create(arr);
 		if (this._indexer !== null) {
 			result._indexer = this._indexer;
 			result._index = this._index!.clone();
@@ -195,19 +202,23 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 	}
 	public indexOf(v: T | ((el: T) => boolean)): number {
 		let result: number = -1;
-		if (v instanceof Function) {
-			result = Arr.indexOf(this._array, v);
+		if ( isFunction(v) ) {
+			result = Arr.indexOf(this._array, v as ((el: T) => boolean));
 		} else {
 			result = Arr.indexOfElement(this._array, v);
 		}
 		return result;
 	}
-	public contains(v: T): boolean {
+	public contains(v: T | ((el: T) => boolean)): boolean {
 		let result = false;
-		if (this._indexer !== null) {
-			result = this._index!.contains(this._indexer(v));
+		if ( isFunction(v) ) {
+			result = this.find(v as ((el: T) => boolean)) !== undefined;
 		} else {
-			result = Arr.indexOfElement(this._array, v) !== -1;
+			if (this._indexer !== null) {
+				result = this._index!.contains(this._indexer(v as T));
+			} else {
+				result = Arr.indexOfElement(this._array, v) !== -1;
+			}
 		}
 		return result;
 	}
@@ -232,10 +243,10 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		return this.length === 0 ? undefined : this.get(this.length - 1 );
 	}
 	public filter(fn: (el: T, i: number) => boolean): List<T> {
-		return new List<T>(Arr.filter(this._array, fn));
+		return this.create(Arr.filter(this._array, fn));
 	}
 	public select(fn: (el: T, i: number) => boolean): List<T> {
-		return new List<T>(Arr.filter(this._array, fn));
+		return this.create(Arr.filter(this._array, fn));
 	}
 	public selectInto(src: List<T> | T[], fn: (el: T, i: number) => boolean): List<T> {
 		let arr = src instanceof List ? src.values : src;
@@ -248,7 +259,7 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		return this;
 	}
 	public map<S>(fn: (el: T, i: number) => S): List<S> {
-		return new List<any>(Arr.map<T, S>(this._array, fn));
+		return this.create<S>(Arr.map<T, S>(this._array, fn));
 	}
 	public mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): List<T> {
 		let arr = src instanceof List ? src.values : src;
@@ -286,7 +297,7 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		return count === a.length;
 	}
 	public intersect(b: List<T>): List<T> {
-		let result = new List<T>();
+		let result = this.create();
 		let long: List<T>;
 		let short: List<T>;
 		result.indexer = this.indexer;
@@ -311,7 +322,7 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		return result;
 	}
 	public union(b: List<T>): List<T> {
-		let result = new List<T>();
+		let result = this.create();
 		let long: List<T>;
 		let short: List<T>;
 		result.indexer = this.indexer;
@@ -338,17 +349,17 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		return result;
 	}
 	public zip<U, V>(list: List<U>, fn: (t: T, u: U) => V = (t: T, u: U) => [t, u] as any): List<V> {
-		let result = new List<V>();
+		let result: List<V> = this.create<V>();
 		let length = list.length;
 		this.until(function (el: T, i: number) {
 			return i >= length;
 		}, function (el: T, i: number) {
-			result.push(fn(el, list.get(i)));
+			result.push(fn(el, list.get(i)!));
 		});
 		return result;
 	}
 	public unzip<U, V>(fn: (el: T) => [U, V] = (el: any) => [el[0], el[1]]): [List<U>, List<V>] {
-		let result: [List<U>, List<V>] = [new List<U>(), new List<V>()];
+		let result: [List<U>, List<V>] = [this.create<U>(), this.create<V>()];
 		this.forEach(function (el) {
 			let tuple = fn(el);
 			result[0].push(tuple[0]);
@@ -357,7 +368,7 @@ export class List<T> implements IList<T>, IRevivable<List<T>> {
 		return result;
 	}
 	public flatten<U>(maxDepth: number = Infinity): List<U> {
-		return new List(maxDepth < 1 ? this.values as any : this._flattenInner(this.values, maxDepth));
+		return this.create<U>(maxDepth < 1 ? this.values as any : this._flattenInner(this.values, maxDepth));
 	}
 	private _flattenInner<U>(src: any[], maxDepth: number, depth: number = -1, result: U[] = []): U[] {
 		let i = -1;

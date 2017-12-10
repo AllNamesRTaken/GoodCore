@@ -49,9 +49,12 @@ describe("Vec2",
 			function(){
 				const v1 = new Vec2(2, 3);
 				const v2 = v1.clone();
+				const v3 = new Vec2();
+				v1.clone(v3);
 				v1.x.should.equal(v2.x);
 				v1.y.should.equal(v2.y);
 				v1.should.not.equal(v2);
+				v1.equals(v3).should.be.true;
 			});
 		it("Ceil performs ceiling on both factors",
 			function(){

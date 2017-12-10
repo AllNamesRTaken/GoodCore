@@ -23,8 +23,11 @@ describe("Range2",
 			function(){
 				const r1 = new Range2(1, 1, 2, 3);
 				const r2 = r1.clone();
+				let r3 = new Range2();
+				r1.clone(r3);
 				r1.equals(r1).should.be.true;
 				r1.should.not.equal(r2);
+				r1.equals(r3).should.be.true;
 			});
 		it("Contains is true when a point is inside the range",
 			function(){
@@ -32,7 +35,7 @@ describe("Range2",
 				r1.containsPoint(new Vec2(2, 2)).should.be.true;
 			});
 
-		it("First returns first point that fulfills a condition",
+		it("First returns first point that fulfills a condition or null",
 			function(){
 				const r1 = new Range2(1, 1, 2, 3);
 				r1
@@ -40,6 +43,11 @@ describe("Range2",
 						return p.equals(new Vec2(2, 2));
 					})!
 					.equals(new Vec2(2, 2)).should.be.true;
+				let notFound = r1
+					.first(function(p){
+						return p.equals(new Vec2(200, 200));
+					});
+				(notFound === null).should.be.true;
 			});
 		it("ForEach loops over all points",
 			function(){
@@ -120,6 +128,10 @@ describe("Range2",
 			function(){
 				const r1 = new Range2(1, 1, 2, 3);
 				r1.toRect().equals(new Rect(1, 1, 3, 4)).should.be.true;
+				let endInclusive = r1.toRect(true);
+				endInclusive.equals(new Rect(1, 1, 2, 3)).should.be.true;
+				let endInclusiveNeg = (new Range2(1, 1, -2, -3)).toRect(true);
+				endInclusiveNeg.equals(new Rect(1, 1, 0, -1)).should.be.true;
 			});
 		it("Contains is true if another range is fully contained",
 			function(){

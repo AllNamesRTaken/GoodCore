@@ -1,5 +1,6 @@
 import { should } from "chai";
 import { Stack } from "../lib/struct/Stack";
+import { Vec2 } from "../lib/struct/Vec2";
 should();
 
 describe("Stack",
@@ -90,6 +91,15 @@ describe("Stack",
 				stack.size.should.equal(0);
 				(stack.peek() === undefined).should.be.true;
 			});
+		it("clone clones the tree",
+			function () {
+				const stack = new Stack(2);
+				stack.push(1);
+				stack.push(2);
+				stack.push(3);
+				let stack2 = stack.clone();
+				stack.toList().equals(stack2.toList()).should.be.true;
+			});
 		it("ToJson formats Stack correct",
 			function () {
 				const stack = new Stack();
@@ -98,6 +108,25 @@ describe("Stack",
 				stack.push(3);
 				stack.pop();
 				JSON.stringify(stack).should.equal("[1,2]");
+			});
+		it("Revive revives Stack<T>",
+			function () {
+				class Revivable {
+					public foo: number;
+					public revive(data: any): Revivable {
+						this.foo = data + 1;
+						return this;
+					}
+				}
+				const stack1 = new Stack<number>();
+				const stack2 = new Stack<Revivable>();
+				const stack3 = new Stack<Vec2>();
+				stack1.revive([1, 2, 3, 4]);
+				JSON.stringify(stack1).should.equal("[1,2,3,4]");
+				stack2.revive([1, 2, 3, 4], Revivable);
+				JSON.stringify(stack2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
+				stack3.revive([{x:1, y:1}, {x:2, y:2}], Vec2);
+				JSON.stringify(stack3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
 			});
 	}
 );

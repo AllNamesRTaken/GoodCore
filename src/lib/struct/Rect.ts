@@ -17,13 +17,16 @@ export class Rect implements IRect {
 		this.stop = new Vec2(x2, y2);
 		this.endInclusive = endInclusive;
 	}
+	protected create(x1: number = 0, y1: number = 0, x2: number = 0, y2: number = 0, endInclusive: boolean = false): Rect {
+		return new ((this as any).constructor)(x1, y1, x2, y2, endInclusive);
+	}
 	public set(src: IRect): Rect {
 		this.start.set(src.start);
 		this.stop.set(src.stop);
 		return this;
 	}
 	public clone(out?: Rect): Rect {
-		const result = out ? out.set(this) : new Rect(this.start.x, this.start.y, this.stop.x, this.stop.y);
+		const result = out ? out.set(this) : this.create(this.start.x, this.start.y, this.stop.x, this.stop.y);
 		return result;
 	}
 	public toRange2(out?: Range2): Range2 {

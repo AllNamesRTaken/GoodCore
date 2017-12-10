@@ -15,13 +15,16 @@ export class Range2 implements IRange2 {
 		this.pos = new Vec2(x, y);
 		this.size = new Vec2(w, h);
 	}
+	protected create(x: number = 0, y: number = 0, w: number = 0, h: number = 0): Range2 {
+		return new ((this as any).constructor)(x, y, w, h);
+	}
 	public set(src: IRange2): Range2 {
 		this.pos.set(src.pos);
 		this.size.set(src.size);
 		return this;
 	}
 	public clone(out?: Range2): Range2 {
-		const result = out ? out.set(this) : new Range2(this.pos.x, this.pos.y, this.size.x, this.size.y);
+		const result = out ? out.set(this) : this.create(this.pos.x, this.pos.y, this.size.x, this.size.y);
 		return result;
 	}
 	public toRect(endInclusive: boolean = false, out?: Rect): Rect {
