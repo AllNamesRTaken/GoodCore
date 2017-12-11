@@ -1,10 +1,11 @@
+import { isFunction } from "util";
 import { deepCopy, deepCopyInto, mapInto, slice } from "../Arr";
 import { position } from "../Dom";
 import { setProperties } from "../Obj";
 import { isNotUndefined } from "../Test";
 import { List } from "./List";
 
-export class Stack<T> implements IRevivable<Stack<T>>, ICloneable<Stack<T>> {
+export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable<Stack<T>> {
 	public DEFAULT_SIZE = 100;
 	private _array: T[];
 	private _pos: number = 0;
@@ -100,6 +101,9 @@ export class Stack<T> implements IRevivable<Stack<T>>, ICloneable<Stack<T>> {
 	public toJSON(): any {
 		return slice(this.values, 0, this._pos);
 	}
+	public serialize(): T[] {
+		return slice(this.values, 0, this._pos).map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
+	}
 	public revive(array: any[], ...types: Array<Constructor<any>>): Stack<T> {
 		let [T, ...passthroughT] = types;
 		if (isNotUndefined(T)) {
@@ -120,5 +124,7 @@ export class Stack<T> implements IRevivable<Stack<T>>, ICloneable<Stack<T>> {
 		this._pos = array.length;
 		return this;
 	}
-
+	public deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T> {
+		return this.revive(array, ...types);
+	}
 }

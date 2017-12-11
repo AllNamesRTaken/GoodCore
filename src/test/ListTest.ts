@@ -3,6 +3,7 @@ import * as MocData from "../lib/MocData";
 import { Dictionary } from "../lib/struct/Dictionary";
 import { List } from "../lib/struct/List";
 import { Vec2 } from "../lib/struct/Vec2";
+import { proxyFn } from "../lib/Util";
 
 should();
 
@@ -490,10 +491,41 @@ describe("List",
 				list1.flatten(1).values.should.deep.equal([1, 2, 3, 4, [5, [6]]]);
 				list1.flatten(0).equals(list1).should.be.true;
 			});
-		it("ToJson formats List correct",
+		it("toJSON formats List correct",
 			function () {
 				const list1 = new List([1, 2, 3, 4]);
 				JSON.stringify(list1).should.equal("[1,2,3,4]");
+				class Serializable {
+					public foo: number;
+					public bar: number;
+					constructor(foo: number, bar: number) {
+						this.foo = foo;
+						this.bar = bar;
+					}
+					public toJSON(): any {
+						return this.foo;
+					}
+				}
+				const list2 = new List([new Serializable(1, 2), new Serializable(3, 4)]);
+				JSON.stringify(list2).should.equal("[1,3]");
+			});
+		it("serialize works like a typed toJSON but deep",
+			function () {
+				const list1 = new List([1, 2, 3, 4]);
+				list1.toJSON().should.deep.equal(list1.serialize());
+				class Serializable {
+					public foo: number;
+					public bar: number;
+					constructor(foo: number, bar: number) {
+						this.foo = foo;
+						this.bar = bar;
+					}
+					public serialize(): any {
+						return this.foo;
+					}
+				}
+				const list2 = new List([new Serializable(1, 2), new Serializable(3, 4)]);
+				list2.serialize().should.deep.equal([1, 3]);
 			});
 		it("Revive revives List<T>",
 			function () {
@@ -513,6 +545,14 @@ describe("List",
 				JSON.stringify(list2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
 				list3.revive([{x:1, y:1}, {x:2, y:2}], Vec2);
 				JSON.stringify(list3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
+			});
+		it("deserialize calls revive",
+			function () {
+				let called = false;
+				const list1 = new List<number>([1, 2, 3]);
+				proxyFn(list1, "revive", (org, ...args) => { called = true; org(...args); } );
+				list1.deserialize([4, 5, 6]);
+				called.should.be.true;
 			});
 	}
 );

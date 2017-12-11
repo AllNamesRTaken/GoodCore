@@ -1,9 +1,11 @@
 type Constructor<T> = new (...args: any[]) => T;
 interface ICtor<T> { new (...args: any[]): T }
 
-type AnyObject<T> = {
+interface IObject {
   [key: string]: any;
-  constructor: ICtor<T>;
+}
+interface IInstance<T> extends IObject {
+  constructor?: ICtor<T>;
 }
 interface IPool<T extends IPoolable> {
   get(): T;
@@ -20,8 +22,13 @@ interface ICloneable<T> {
 interface IInitable<T> {
   init(obj: Partial<T> | any, ...types: Array<ICtor<any>>): T;
 }
+interface ISerializable<T> {
+  toJSON(): any;
+  serialize(): T
+}
 interface IRevivable<T> {
   revive(data: any, ...types: Array<Constructor<any>>): T;
+  deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IBasicList<T> {
   values: Array<T>;
@@ -60,10 +67,6 @@ interface IBasicList<T> {
 	same(b: IBasicList<T>): boolean;
 	intersect(b: IBasicList<T>): IBasicList<T>;
 	union(b: IBasicList<T>): IBasicList<T>;
-  // zip<U, V>(list: IBasicList<U>, fn: (t: T, u: U) => V): IBasicList<V>;
-  // unzip<U, V>(fn: (el: T) => [U, V]): [IBasicList<U>, IBasicList<V>];
-  // flatten<U>(maxDepth?: number): IBasicList<U>
-  toJSON(): any;
 }
 interface IList<T> extends IBasicList<T> {
   getByIndex(key: number | string): T | undefined;
@@ -237,7 +240,7 @@ declare module 'goodcore/struct/Rect' {
 }
 
 declare module 'goodcore/struct/List' {
-    export class List<T> implements IList<T>, IRevivable<List<T>>, ICloneable<List<T>> {
+    export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable<List<T>> {
         constructor(arr?: T[] | List<T>);
         protected create<S = T>(arr?: S[] | List<S>): List<S>;
         readonly values: T[];
@@ -294,7 +297,9 @@ declare module 'goodcore/struct/List' {
         unzip<U, V>(fn?: (el: T) => [U, V]): [List<U>, List<V>];
         flatten<U>(maxDepth?: number): List<U>;
         toJSON(): any;
+        serialize(): T[];
         revive(array: any[], ...types: Array<Constructor<any>>): List<T>;
+        deserialize(array: any[], ...types: Array<Constructor<any>>): List<T>;
     }
 }
 
@@ -306,7 +311,7 @@ declare module 'goodcore/struct/SortedList' {
         static NumberAsc: (a: number, b: number) => 1 | 0 | -1;
         static NumberDesc: (a: number, b: number) => 1 | 0 | -1;
     }
-    export class SortedList<T = number> implements IBasicList<T>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
+    export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
         constructor(comparer?: ((a: T, b: T) => number), arr?: T[] | List<T> | SortedList<T>);
         protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
         readonly values: T[];
@@ -355,13 +360,15 @@ declare module 'goodcore/struct/SortedList' {
         union(b: List<T> | SortedList<T>): SortedList<T>;
         toList(): List<T>;
         toJSON(): any;
+        serialize(): T[];
         revive(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
+        deserialize(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
     }
 }
 
 declare module 'goodcore/struct/Dictionary' {
     import { List } from "goodcore/struct/List";
-    export class Dictionary<T> implements IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+    export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
         constructor();
         protected create<S = T>(): Dictionary<S>;
         has(key: number | string): boolean;
@@ -376,13 +383,15 @@ declare module 'goodcore/struct/Dictionary' {
         readonly count: number;
         clone(): Dictionary<T>;
         toJSON(): any;
+        serialize(): IObject;
         revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
+        deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
     }
 }
 
 declare module 'goodcore/struct/Stack' {
     import { List } from "goodcore/struct/List";
-    export class Stack<T> implements IRevivable<Stack<T>>, ICloneable<Stack<T>> {
+    export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable<Stack<T>> {
         DEFAULT_SIZE: number;
         readonly values: T[];
         readonly depth: number;
@@ -401,13 +410,15 @@ declare module 'goodcore/struct/Stack' {
         clear(): Stack<T>;
         clone(): Stack<T>;
         toJSON(): any;
+        serialize(): T[];
         revive(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
+        deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
     }
 }
 
 declare module 'goodcore/struct/Tree' {
     import { List } from "goodcore/struct/List";
-    export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
+    export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
         id: string;
         parent: Tree<T> | null;
         children: List<Tree<T>> | null;
@@ -433,6 +444,7 @@ declare module 'goodcore/struct/Tree' {
         contains(condition: (data: T) => boolean): boolean;
         depth(): number;
         toJSON(): any;
+        serialize(): T[];
     }
 }
 

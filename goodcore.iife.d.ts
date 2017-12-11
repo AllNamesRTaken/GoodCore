@@ -1,11 +1,12 @@
 type Constructor<T> = new (...args: any[]) => T;
 interface ICtor<T> { new(...args: any[]): T }
 
-type AnyObject<T> = {
+interface IObject {
 	[key: string]: any;
-	constructor: ICtor<T>;
+  }
+interface IInstance<T> extends IObject {
+constructor?: ICtor<T>;
 }
-
 interface IPool<T extends IPoolable> {
 	get(): T;
 	release(obj: T): void;
@@ -15,8 +16,13 @@ interface IPoolable {
 	release(): void;
 	initPool(pool: IPool<IPoolable>): void;
 }
+interface ISerializable<T> {
+  toJSON(): any;
+  serialize(): T
+}
 interface IRevivable<T> {
 	revive(data: any, ...types: Array<Constructor<any>>): T;
+	deserialize(array: any, ...types: Array<Constructor<any>>): T;
 }
 interface ICloneable<T> {
 	clone(): T;
@@ -64,7 +70,8 @@ interface IBasicList<T> {
 	// zip<U, V>(list: IBasicList<U>, fn: (t: T, u: U) => V): IBasicList<V>;
 	// unzip<U, V>(fn: (el: T) => [U, V]): [IBasicList<U>, IBasicList<V>];
 	// flatten<U>(maxDepth?: number): IBasicList<U>
-	toJSON(): any;  
+	toJSON(): any;
+	serialize(): T[];
 }
 interface IList<T> extends IBasicList<T> {
 	getByIndex(key: number | string): T | undefined;
@@ -190,7 +197,7 @@ declare namespace goodcore {
 		zero(): Rect;
 	}
 
-	export class List<T> implements IList<T>, IRevivable<List<T>>, ICloneable<List<T>> {
+	export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable<List<T>> {
 		constructor(arr?: T[] | List<T>);
 		protected create<S = T>(arr?: S[] | List<S>): List<S>;
 		readonly values: T[];
@@ -247,8 +254,10 @@ declare namespace goodcore {
 		unzip<U, V>(fn?: (el: T) => [U, V]): [List<U>, List<V>];
 		flatten<U>(maxDepth?: number): List<U>;
 		toJSON(): any;
+		serialize(): T[];
 		revive(array: any[], ...types: Array<Constructor<any>>): List<T>;
-	}
+		deserialize(array: any[], ...types: Array<Constructor<any>>): List<T>;
+		}
 
 	export class Comparer {
 		static StringAsc: (a: string, b: string) => 1 | -1 | 0;
@@ -256,7 +265,7 @@ declare namespace goodcore {
 		static NumberAsc: (a: number, b: number) => 1 | -1 | 0;
 		static NumberDesc: (a: number, b: number) => 1 | -1 | 0;
 	}
-	export class SortedList<T> implements IBasicList<T>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
+	export class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
 		constructor(comparer?: (a: T, b: T) => number, arr?: T[] | List<T> | SortedList<T>);
 		protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
 		readonly values: T[];
@@ -305,10 +314,12 @@ declare namespace goodcore {
 		union(b: List<T> | SortedList<T>): SortedList<T>;
 		toList(): List<T>;
 		toJSON(): any;
+		serialize(): T[];
 		revive(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
+		deserialize(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
 	}
 	
-	export class Dictionary<T> implements IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+	export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
 		constructor();
 		protected create<S = T>(): Dictionary<S>;
 		has(key: number | string): boolean;
@@ -323,10 +334,12 @@ declare namespace goodcore {
 		readonly count: number;
 		clone(): Dictionary<T>;
 		toJSON(): any;
+		serialize(): IObject;
 		revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
+		deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
 	}
 
-	export class Stack<T> implements IRevivable<Stack<T>>, ICloneable<Stack<T>> {
+	export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable<Stack<T>> {
 		DEFAULT_SIZE: number;
 		readonly values: T[];
 		readonly depth: number;
@@ -345,10 +358,12 @@ declare namespace goodcore {
 		clear(): Stack<T>;
 		clone(): Stack<T>;
 		toJSON(): any;
+		serialize(): T[];
 		revive(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
+		deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
 	}
 
-	export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
+	export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
 		id: string;
 		parent: Tree<T> | null;
 		children: List<Tree<T>> | null;
@@ -373,6 +388,7 @@ declare namespace goodcore {
 		find(condition: (data: T | null) => boolean): Tree<T> | null;
 		contains(condition: (data: T) => boolean): boolean;
 		depth(): number;
+		serialize(): T[];		
 		toJSON(): any;
 	}
 

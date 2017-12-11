@@ -1,6 +1,7 @@
 import { should } from "chai";
 import { Stack } from "../lib/struct/Stack";
 import { Vec2 } from "../lib/struct/Vec2";
+import { proxyFn } from "../lib/Util";
 should();
 
 describe("Stack",
@@ -109,6 +110,31 @@ describe("Stack",
 				stack.pop();
 				JSON.stringify(stack).should.equal("[1,2]");
 			});
+		it("serialize works like a typed toJSON",
+			function () {
+				const stack = new Stack();
+				stack.push(1);
+				stack.push(2);
+				stack.push(3);
+				stack.pop();
+				stack.toJSON().should.deep.equal(stack.serialize());
+
+				class Serializable {
+					public foo: number;
+					public bar: number;
+					constructor(foo: number, bar: number) {
+						this.foo = foo;
+						this.bar = bar;
+					}
+					public serialize(): any {
+						return this.foo;
+					}
+				}
+				const stack2 = new Stack();
+				stack2.push(new Serializable(1, 2));
+				stack2.push(new Serializable(3, 4));
+				stack2.serialize().should.deep.equal([1, 3]);
+			});
 		it("Revive revives Stack<T>",
 			function () {
 				class Revivable {
@@ -127,6 +153,14 @@ describe("Stack",
 				JSON.stringify(stack2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
 				stack3.revive([{x:1, y:1}, {x:2, y:2}], Vec2);
 				JSON.stringify(stack3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
+			});
+		it("deserialize calls revive",
+			function () {
+				let called = false;
+				const stack = new Stack();
+				proxyFn(stack, "revive", (org, ...args) => { called = true; org(...args); } );
+				stack.deserialize([4, 5, 6]);
+				called.should.be.true;
 			});
 	}
 );

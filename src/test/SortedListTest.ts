@@ -3,6 +3,7 @@ import * as MocData from "../lib/MocData";
 import {List} from "../lib/struct/List";
 import { Comparer, SortedList } from "../lib/struct/SortedList";
 import { Vec2 } from "../lib/struct/Vec2";
+import { proxyFn } from "../lib/Util";
 should();
 
 describe("SortedList",
@@ -332,6 +333,25 @@ describe("SortedList",
 			const list1 = new SortedList(Comparer.NumberAsc, [1, 2, 3, 4]);
 			JSON.stringify(list1).should.equal("[1,2,3,4]");
 		});
+		it("serialize works like a typed toJSON but deep",
+			function () {
+				const list1 = new SortedList(Comparer.NumberAsc, [1, 2, 3, 4]);
+				list1.toJSON().should.deep.equal(list1.serialize());
+
+				class Serializable {
+					public foo: number;
+					public bar: number;
+					constructor(foo: number, bar: number) {
+						this.foo = foo;
+						this.bar = bar;
+					}
+					public serialize(): any {
+						return this.foo;
+					}
+				}
+				const list2 = new SortedList((a, b) => a.foo < b.foo ? -1 : a.foo === b.foo ? 0 : 1, [new Serializable(1, 2), new Serializable(3, 4)]);
+				list2.serialize().should.deep.equal([1, 3]);
+			});
 		it("Revive revives SortedList<T>",
 		function () {
 			class Revivable {
@@ -351,10 +371,19 @@ describe("SortedList",
 			list3.revive([{x:1, y:1}, {x:2, y:2}], Vec2);
 			JSON.stringify(list3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
 		});
+		it("deserialize calls revive",
+		function () {
+			let called = false;
+			const list1 = new SortedList<number>(Comparer.NumberAsc, [1, 2, 3]);
+			proxyFn(list1, "revive", (org, ...args) => { called = true; org(...args); } );
+			list1.deserialize([4, 5, 6]);
+			called.should.be.true;
+		});
 		it("descending string sort does sort descending", 
 		function () {
 			let list5 = new SortedList(Comparer.StringDesc, ["b", "a", "d", "c"] as string[]);
 			list5.values.should.deep.equal(["d", "c", "b", "a"]);
 		});
+		
 	}
 );

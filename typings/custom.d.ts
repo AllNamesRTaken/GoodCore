@@ -1,9 +1,11 @@
 type Constructor<T> = new (...args: any[]) => T;
 interface ICtor<T> { new (...args: any[]): T }
 
-type AnyObject<T> = {
+interface IObject {
   [key: string]: any;
-  constructor: ICtor<T>;
+}
+interface IInstance<T> extends IObject {
+  constructor?: ICtor<T>;
 }
 interface IPool<T extends IPoolable> {
   get(): T;
@@ -20,8 +22,13 @@ interface ICloneable<T> {
 interface IInitable<T> {
   init(obj: Partial<T> | any, ...types: Array<ICtor<any>>): T;
 }
+interface ISerializable<T> {
+  toJSON(): any;
+  serialize(): T
+}
 interface IRevivable<T> {
   revive(data: any, ...types: Array<Constructor<any>>): T;
+  deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IBasicList<T> {
   values: Array<T>;
@@ -60,10 +67,6 @@ interface IBasicList<T> {
 	same(b: IBasicList<T>): boolean;
 	intersect(b: IBasicList<T>): IBasicList<T>;
 	union(b: IBasicList<T>): IBasicList<T>;
-  // zip<U, V>(list: IBasicList<U>, fn: (t: T, u: U) => V): IBasicList<V>;
-  // unzip<U, V>(fn: (el: T) => [U, V]): [IBasicList<U>, IBasicList<V>];
-  // flatten<U>(maxDepth?: number): IBasicList<U>
-  toJSON(): any;
 }
 interface IList<T> extends IBasicList<T> {
   getByIndex(key: number | string): T | undefined;

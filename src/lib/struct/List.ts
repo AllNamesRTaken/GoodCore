@@ -3,7 +3,7 @@ import { equals, setProperties } from "../Obj";
 import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined } from "../Test";
 import { Dictionary } from "./Dictionary";
 
-export class List<T> implements IList<T>, IRevivable<List<T>>, ICloneable<List<T>> {
+export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable<List<T>> {
 	private _array: T[] = [];
 	private _index: Dictionary<T> | null = null;
 	private _indexer: ((el: T) => any) | null = null;
@@ -391,12 +391,19 @@ export class List<T> implements IList<T>, IRevivable<List<T>>, ICloneable<List<T
 	public toJSON(): any {
 		return this.values;
 	}
+	public serialize(): T[] {
+		return this.values.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
+	}
 	public revive(array: any[], ...types: Array<Constructor<any>>): List<T> {
 		let [T, ...passthroughT] = types;
 		if (isNotUndefined(T)) {
 			if (isNotUndefined(T.prototype.revive)) {
 				this.mapInto(array, (el) => {
 					return (new T()).revive(el, ...passthroughT);
+				});
+			} else if (isNotUndefined(T.prototype.serialize)) {
+				this.mapInto(array, (el) => {
+					return (new T()).serialize(el, ...passthroughT);
 				});
 			} else {
 				this.mapInto(array, (el) => {
@@ -409,5 +416,8 @@ export class List<T> implements IList<T>, IRevivable<List<T>>, ICloneable<List<T
 			this.copy(array);
 		}
 		return this;
+	}
+	public deserialize(array: any[], ...types: Array<Constructor<any>>): List<T> {
+		return this.revive(array, ...types);
 	}
 }

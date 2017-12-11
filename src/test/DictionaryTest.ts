@@ -1,6 +1,8 @@
 import { should } from "chai";
+import { equals } from "../lib/Obj";
 import { Dictionary } from "../lib/struct/Dictionary";
 import { Vec2 } from "../lib/struct/Vec2";
+import { proxyFn } from "../lib/Util";
 should();
 
 describe("Dictionary",
@@ -94,6 +96,29 @@ describe("Dictionary",
 				d.set("key2", "value2");
 				JSON.stringify(d).should.equal('{"key1":"value1","key2":"value2"}');
 			});
+		it("serialize works like a typed toJSON but deep",
+			function () {
+				const d = new Dictionary<string>();
+				d.set("key1", "value1");
+				d.set("key2", "value2");
+				JSON.stringify(d.serialize()).should.equal('{"key1":"value1","key2":"value2"}');
+
+				class Serializable {
+					public foo: number;
+					public bar: number;
+					constructor(foo: number, bar: number) {
+						this.foo = foo;
+						this.bar = bar;
+					}
+					public serialize(): any {
+						return this.foo;
+					}
+				}
+				const d2 = new Dictionary<Serializable>();
+				d2.set("key1", new Serializable(1, 2));
+				d2.set("key2", new Serializable(3, 4));
+				JSON.stringify(d2.serialize()).should.equal('{"key1":1,"key2":3}');
+			});
 		it("Revive revives Dictionary<T>",
 			function () {
 				class Revivable {
@@ -112,6 +137,14 @@ describe("Dictionary",
 				JSON.stringify(d2).should.equal('{"a":{"value":2},"b":{"value":3},"c":{"value":4},"d":{"value":5}}');
 				d3.revive({a:{x:1, y:1}, b:{x:2, y:2}}, Vec2);
 				JSON.stringify(d3).should.equal('{"a":{"x":1,"y":1},"b":{"x":2,"y":2}}');
+			});
+		it("deserialize calls revive",
+			function () {
+				let called = false;
+				const d = new Dictionary<string>();
+				proxyFn(d, "revive", (org, ...args) => { called = true; org(...args); } );
+				d.deserialize({});
+				called.should.be.true;
 			});
 	}
 

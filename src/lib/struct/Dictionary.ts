@@ -1,8 +1,9 @@
+import { forEach } from "../Arr";
 import { clone, setProperties, wipe } from "../Obj";
-import { isNotUndefined } from "../Test";
+import { isFunction, isNotUndefined } from "../Test";
 import { List } from "./List";
 
-export class Dictionary<T> implements IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
 	private _lookup: any;
 	private _list: List<T>;
 	private _isDirty: boolean;
@@ -92,6 +93,14 @@ export class Dictionary<T> implements IRevivable<Dictionary<T>>, ICloneable<Dict
 	public toJSON(): any {
 		return this._lookup;
 	}
+	public serialize(): IObject {
+		let obj = Object.create(null);
+		forEach(this.keys, (key) => {
+			let v = this.get(key);
+			obj[key] = isFunction((v as any).serialize) ? (v as any).serialize() : v;
+		});
+		return obj;
+	}
 	public revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T> {
 		let [T, ...passthroughT] = types;
 		this.clear();
@@ -113,5 +122,8 @@ export class Dictionary<T> implements IRevivable<Dictionary<T>>, ICloneable<Dict
 			}
 		}
 		return this;
+	}
+	public deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T> {
+		return this.revive(obj, ...types);
 	}
 }

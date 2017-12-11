@@ -7,7 +7,7 @@ import { Dictionary } from "./Dictionary";
 import { List } from "./List";
 import { Stack } from "./Stack";
 
-export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
+export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
 	public id: string = "";
 	public parent: Tree<T> | null = null;
 	public children: List<Tree<T>> | null = null;
@@ -204,5 +204,13 @@ export class Tree<T> implements ICloneable<Tree<T>>, IInitable<Tree<T>> {
 			this.children.forEach((node) => result.append(node.toJSON()));
 		}
 		return result.toJSON();
+	}
+	public serialize(): T[] {
+		let result = new List<any>();
+		result.push({id: this.id, data: this.data, parent: this.parent === null ? null : this.parent.id, children: this.children === null ? null : this.children.map((el) => el.id)});
+		if (this.children !== null) {
+			this.children.forEach((node) => result.append(node.serialize()));
+		}
+		return result.serialize();
 	}
 }

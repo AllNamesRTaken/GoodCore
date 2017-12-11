@@ -1,4 +1,5 @@
-import { binarySearch } from "../Arr";
+import { isFunction } from "util";
+import { binarySearch, shallowCopy } from "../Arr";
 import { equals, setProperties } from "../Obj";
 import { isNotUndefined } from "../Test";
 import { List } from "./List";
@@ -9,7 +10,7 @@ export class Comparer {
 	public static NumberAsc = function(a: number, b: number) { return a < b ? -1 : a === b ? 0 : 1; };
 	public static NumberDesc = function(a: number, b: number) { return a < b ? 1 : a === b ? 0 : -1; };
 }
-export class SortedList<T = number> implements IBasicList<T>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
+export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
 	private _list: List<T> = new List<T>();
 	private _cmp: (a: T, b: T) => number;
 
@@ -292,12 +293,19 @@ export class SortedList<T = number> implements IBasicList<T>, IRevivable<SortedL
 	public toJSON(): any {
 		return this.values;
 	}
+	public serialize(): T[] {
+		return this.values.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
+	}
 	public revive(array: any[], ...types: Array<Constructor<any>>): SortedList<T> {
 		let [T, ...passthroughT] = types;
 		if (isNotUndefined(T)) {
 			if (isNotUndefined(T.prototype.revive)) {
 				this.mapInto(array, (el) => {
 					return (new T()).revive(el, ...passthroughT);
+				});
+			} else if (isNotUndefined(T.prototype.serialize)) {
+				this.mapInto(array, (el) => {
+					return (new T()).serialize(el, ...passthroughT);
 				});
 			} else {
 				this.mapInto(array, (el) => {
@@ -310,5 +318,8 @@ export class SortedList<T = number> implements IBasicList<T>, IRevivable<SortedL
 			this.copy(array);
 		}
 		return this;
+	}
+	public deserialize(array: any[], ...types: Array<Constructor<any>>): SortedList<T> {
+		return this.revive(array, ...types);
 	}
 }

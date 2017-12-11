@@ -141,5 +141,17 @@ describe("Tree",
 					{ id: "1", data: {category: "toys"}, parent: "-", children: null },
 				]));
 			});
+		it("serialize works like a typed toJSON",
+			function () {
+				let nodeList: any[] = [
+					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
+					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
+					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
+					{ uid: "0-0", parent: "0", category: "adventure", children: ["0-0-0", "0-0-1"] },
+					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] }
+				];
+				const tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
+				tree.toJSON().should.deep.equal(tree.serialize());
+			});
 	}
 );
