@@ -549,9 +549,17 @@ describe("List",
 		it("deserialize calls revive",
 			function () {
 				let called = false;
-				const list1 = new List<number>([1, 2, 3]);
+				const list1 = new List<Deserializable>();
 				proxyFn(list1, "revive", (org, ...args) => { called = true; org(...args); } );
-				list1.deserialize([4, 5, 6]);
+				class Deserializable {
+					public foo: number;
+					public deserialize(data: any): Deserializable {
+						this.foo = data + 1;
+						return this;
+					}
+				}
+				list1.deserialize([1, 2, 3, 4], Deserializable);
+				JSON.stringify(list1).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
 				called.should.be.true;
 			});
 	}

@@ -111,6 +111,10 @@ export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, IClon
 				mapInto(array, this._array, (el) => {
 					return (new T()).revive(el, ...passthroughT);
 				});
+			} else if (isNotUndefined(T.prototype.deserialize)) {
+				mapInto(array, this._array, (el) => {
+					return (new T()).deserialize(el, ...passthroughT);
+				});
 			} else {
 				mapInto(array, this._array, (el) => {
 					let newT = new T();

@@ -286,10 +286,10 @@ declare namespace goodcore {
 		removeFirst(fn: (el: T) => boolean): T;
 		forEach(fn: (el: T, i: number) => any, startIndex?: number): SortedList<T>;
 		forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
-		until(fnOrTest: (el: T, i: number) => void, startIndex?: number): SortedList<T>;
+		until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): SortedList<T>;
 		until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): SortedList<T>;
 		reverseForEach(fn: (el: T, i: number) => any): SortedList<T>;
-		reverseUntil(fnOrTest: (el: T, i: number) => void): SortedList<T>;
+		reverseUntil(fnOrTest: (el: T, i: number) => boolean): SortedList<T>;
 		reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): SortedList<T>;
 		some(fn: (el: T) => boolean): boolean;
 		all(fn: (el: T) => boolean): boolean;

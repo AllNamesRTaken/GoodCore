@@ -374,16 +374,39 @@ describe("SortedList",
 		it("deserialize calls revive",
 		function () {
 			let called = false;
-			const list1 = new SortedList<number>(Comparer.NumberAsc, [1, 2, 3]);
+			const list1 = new SortedList<Deserializable>((a, b) => a.foo < b.foo ? -1 : a.foo === b.foo ? 0 : 1);
 			proxyFn(list1, "revive", (org, ...args) => { called = true; org(...args); } );
-			list1.deserialize([4, 5, 6]);
+			class Deserializable {
+				public foo: number;
+				public deserialize(data: any): Deserializable {
+					this.foo = data + 1;
+					return this;
+				}
+			}
+			list1.deserialize([1, 2, 3, 4], Deserializable);
+			JSON.stringify(list1).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
 			called.should.be.true;
 		});
 		it("descending string sort does sort descending", 
 		function () {
-			let list5 = new SortedList(Comparer.StringDesc, ["b", "a", "d", "c"] as string[]);
-			list5.values.should.deep.equal(["d", "c", "b", "a"]);
+			let list5 = new SortedList(Comparer.StringDesc, ["b", "a", "b", "d", "c"] as string[]);
+			list5.values.should.deep.equal(["d", "c", "b", "b", "a"]);
 		});
-		
+		it("ascending string sort does sort ascending", 
+		function () {
+			let list5 = new SortedList(Comparer.StringAsc, ["b", "a", "b", "d", "c"] as string[]);
+			list5.values.should.deep.equal(["a", "b", "b", "c", "d"]);
+		});
+		it("descending number sort does sort descending", 
+		function () {
+			let list5 = new SortedList(Comparer.NumberDesc, [2, 1, 2, 4, 3]);
+			list5.values.should.deep.equal([4, 3, 2, 2, 1]);
+		});
+		it("ascending number sort does sort ascending", 
+		function () {
+			let list5 = new SortedList(Comparer.NumberAsc, [2, 1, 2, 4, 3] );
+			list5.values.should.deep.equal([1, 2, 2, 3, 4]);
+		});
+
 	}
 );

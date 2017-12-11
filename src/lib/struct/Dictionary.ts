@@ -109,6 +109,10 @@ export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Diction
 				for (let key of Object.keys(obj)) {
 					this.set(key, (new T()).revive(obj[key], ...passthroughT));
 				}
+			} else if (isNotUndefined(T.prototype.deserialize)) {
+				for (let key of Object.keys(obj)) {
+					this.set(key, (new T()).deserialize(obj[key], ...passthroughT));
+				}
 			} else {
 				for (let key of Object.keys(obj)) {
 					let newT = new T();

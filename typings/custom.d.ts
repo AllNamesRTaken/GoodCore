@@ -45,10 +45,10 @@ interface IBasicList<T> {
   removeAt(n: number): T;
   forEach(fn: (el: T, i?: number) => any, startIndex?: number): IBasicList<T>;
   forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
-  until(fnOrTest: (el: T, i: number) => void, startIndex?: number): IBasicList<T>;
+  until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): IBasicList<T>;
 	until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number, startIndex?: number) => void): IBasicList<T>;
   reverseForEach(fn: (el: T, i: number) => any): IBasicList<T> 
-	reverseUntil(fnOrTest: (el: T, i: number) => void): IBasicList<T>;
+	reverseUntil(fnOrTest: (el: T, i: number) => boolean): IBasicList<T>;
 	reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): IBasicList<T>;
   first(fn?: (el: T) => boolean): T | undefined;
   find(fn: (el: T) => boolean): T | undefined;

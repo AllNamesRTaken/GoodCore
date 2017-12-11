@@ -45,10 +45,10 @@ interface IBasicList<T> {
   removeAt(n: number): T;
   forEach(fn: (el: T, i?: number) => any, startIndex?: number): IBasicList<T>;
   forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
-  until(fnOrTest: (el: T, i: number) => void, startIndex?: number): IBasicList<T>;
+  until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): IBasicList<T>;
 	until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number, startIndex?: number) => void): IBasicList<T>;
   reverseForEach(fn: (el: T, i: number) => any): IBasicList<T> 
-	reverseUntil(fnOrTest: (el: T, i: number) => void): IBasicList<T>;
+	reverseUntil(fnOrTest: (el: T, i: number) => boolean): IBasicList<T>;
 	reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): IBasicList<T>;
   first(fn?: (el: T) => boolean): T | undefined;
   find(fn: (el: T) => boolean): T | undefined;
@@ -224,11 +224,10 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
     removeAt(n: number): T;
     forEach(fn: (el: T, i: number) => any, startIndex?: number): List<T>;
     forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T>;
-    until(fnOrTest: (el: T, i: number) => void, startIndex?: number): List<T>;
+    until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): List<T>;
     until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): List<T>;
     reverseForEach(fn: (el: T, i: number) => any): List<T>;
-    reverseUntil(fnOrTest: (el: T, i: number) => void): List<T>;
-    reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): List<T>;
+    reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): List<T>;
     some(fn: (el: T) => boolean): boolean;
     all(fn: (el: T) => boolean): boolean;
     indexOf(v: T | ((el: T) => boolean)): number;
@@ -287,11 +286,10 @@ export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>
     removeFirst(fn: (el: T) => boolean): T;
     forEach(fn: (el: T, i: number) => any, startIndex?: number): SortedList<T>;
     forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
-    until(fnOrTest: (el: T, i: number) => void, startIndex?: number): SortedList<T>;
+    until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): SortedList<T>;
     until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): SortedList<T>;
     reverseForEach(fn: (el: T, i: number) => any): SortedList<T>;
-    reverseUntil(fnOrTest: (el: T, i: number) => void): SortedList<T>;
-    reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): SortedList<T>;
+    reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): SortedList<T>;
     some(fn: (el: T) => boolean): boolean;
     all(fn: (el: T) => boolean): boolean;
     getInsertIndex(v: T): number;
@@ -454,11 +452,10 @@ export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: 
 export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
 export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex?: number): void;
 export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void;
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => void, startIndex?: number): void;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, startIndex?: number): void;
 export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): void;
 export function reverseForEach<T>(src: T[], fn: (el: T, i: number) => any): void;
-export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => void): void;
-export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
+export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): void;
 export function some<T>(src: T[], fn: (el: T) => boolean): boolean;
 export function all<T>(src: T[], fn: (el: T) => boolean): boolean;
 export function insertAt<T>(src: T[], pos: number, v: T): void;

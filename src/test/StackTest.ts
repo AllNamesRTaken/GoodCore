@@ -157,9 +157,17 @@ describe("Stack",
 		it("deserialize calls revive",
 			function () {
 				let called = false;
-				const stack = new Stack();
+				const stack = new Stack<Deserializable>();
 				proxyFn(stack, "revive", (org, ...args) => { called = true; org(...args); } );
-				stack.deserialize([4, 5, 6]);
+				class Deserializable {
+					public foo: number;
+					public deserialize(data: any): Deserializable {
+						this.foo = data + 1;
+						return this;
+					}
+				}
+				stack.deserialize([1, 2, 3, 4], Deserializable);
+				JSON.stringify(stack).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
 				called.should.be.true;
 			});
 	}

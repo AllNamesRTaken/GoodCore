@@ -251,9 +251,9 @@ export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: 
 		}
 	}
 }
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => void, startIndex?: number): void;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, startIndex?: number): void;
 export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): void;
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn?: ((el: T, i: number) => void) | number, startIndex?: number): void {
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn?: ((el: T, i: number) => void) | number, startIndex?: number): void {
 	let isCombined = isUndefined(fn) || isNumber(fn);
 	startIndex = isCombined ? fn as number : startIndex;
 	let i = isUndefined(startIndex) || startIndex! < 0 ? -1 : startIndex! - 1;
@@ -267,9 +267,7 @@ export function reverseForEach<T>(src: T[], fn: (el: T, i: number) => any): void
 		fn(src[i], i);
 	}
 }
-export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => void): void;
-export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
-export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): void {
+export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): void {
 	let i = src.length;
 	let combined = isUndefined(fn);
 	while (--i >= 0 && (combined ? !fnOrTest(src[i], i) : !(fnOrTest(src[i], i) || (fn!(src[i], i), false)))) {

@@ -178,9 +178,9 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
 		Arr.forSome(this._array, filter, fn);
 		return this;
 	}
-	public until(fnOrTest: (el: T, i: number) => void, startIndex?: number): List<T>;
+	public until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): List<T>;
 	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): List<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean | void, fn?: ((el: T, i: number) => void) | number, startIndex?: number): List<T> {
+	public until(fnOrTest: (el: T, i: number) => boolean, fn?: ((el: T, i: number) => void) | number, startIndex?: number): List<T> {
 		Arr.until(this._array, fnOrTest as any, fn as any, startIndex);
 		return this;
 	}
@@ -188,9 +188,7 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
 		Arr.reverseForEach(this._array, fn);
 		return this;
 	}
-	public reverseUntil(fnOrTest: (el: T, i: number) => void): List<T>;
-	public reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): List<T>;
-	public reverseUntil(fnOrTest: (el: T, i: number) => boolean | void, fn?: (el: T, i: number) => void): List<T> {
+	public reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): List<T> {
 		Arr.reverseUntil(this._array, fnOrTest as any, fn as any);
 		return this;
 	}
@@ -401,9 +399,9 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
 				this.mapInto(array, (el) => {
 					return (new T()).revive(el, ...passthroughT);
 				});
-			} else if (isNotUndefined(T.prototype.serialize)) {
+			} else if (isNotUndefined(T.prototype.deserialize)) {
 				this.mapInto(array, (el) => {
-					return (new T()).serialize(el, ...passthroughT);
+					return (new T()).deserialize(el, ...passthroughT);
 				});
 			} else {
 				this.mapInto(array, (el) => {

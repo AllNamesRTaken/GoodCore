@@ -141,10 +141,18 @@ describe("Dictionary",
 		it("deserialize calls revive",
 			function () {
 				let called = false;
-				const d = new Dictionary<string>();
+				const d = new Dictionary<Deserializable>();
 				proxyFn(d, "revive", (org, ...args) => { called = true; org(...args); } );
-				d.deserialize({});
+				class Deserializable {
+					public foo: number;
+					public deserialize(data: any): Deserializable {
+						this.foo = data + 1;
+						return this;
+					}
+				}
+				d.deserialize({key1: 1, key2: 2}, Deserializable);
 				called.should.be.true;
+				JSON.stringify(d).should.equal('{"key1":{"foo":2},"key2":{"foo":3}}');
 			});
 	}
 
