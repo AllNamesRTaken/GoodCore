@@ -1,8 +1,7 @@
-import { isFunction } from "util";
 import { deepCopy, deepCopyInto, mapInto, slice } from "../Arr";
 import { position } from "../Dom";
 import { setProperties } from "../Obj";
-import { isNotUndefined } from "../Test";
+import { isFunction, isNotUndefined } from "../Test";
 import { List } from "./List";
 
 export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable<Stack<T>> {

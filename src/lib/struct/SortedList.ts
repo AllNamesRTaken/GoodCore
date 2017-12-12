@@ -1,7 +1,6 @@
-import { isFunction } from "util";
 import { binarySearch, shallowCopy } from "../Arr";
 import { equals, setProperties } from "../Obj";
-import { isNotUndefined } from "../Test";
+import { isFunction, isNotUndefined } from "../Test";
 import { List } from "./List";
 
 export class Comparer {

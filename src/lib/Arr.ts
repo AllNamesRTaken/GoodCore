@@ -1,6 +1,5 @@
-import { isNumber, isUndefined } from "util";
 import { clone } from "./Obj";
-import { isArray } from "./Test";
+import { isArray, isNumber, isUndefined } from "./Test";
 
 class ArrayState {
 	public static _int: number;
