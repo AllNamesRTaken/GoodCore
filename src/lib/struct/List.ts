@@ -1,5 +1,5 @@
 import * as Arr from "../Arr";
-import { equals, setProperties } from "../Obj";
+import { clone, equals, setProperties } from "../Obj";
 import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined } from "../Test";
 import { Dictionary } from "./Dictionary";
 
@@ -68,6 +68,18 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
 			}
 			this.forEach((el) => this._index!.set(this._indexer!(el), el));
 		}
+	}
+	public fill(size: number, populator: ((i: number) => T) | T): List<T> {
+		size = Math.max(0, size);
+		if (isFunction(populator)) {
+			this._array = Arr.create(size, populator as (i: number) => T);
+		} else if (!(populator instanceof Object)) {
+			this._array = Arr.create(size, () => populator);
+		} else {
+			this._array = Arr.create(size, () => clone<T>(populator as T));
+		}
+		this._reindex();
+		return this;
 	}
 	public clear(): List<T> {
 		this._array.length = 0;
@@ -250,6 +262,11 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
 		let arr = src instanceof List ? src.values : src;
 		Arr.filterInto<T>(arr, this._array, fn);
 		this.index(arr);
+		return this;
+	}
+	public splice(pos: number = 0, remove: number = Infinity, insert: T[] | List<T> = []): List<T> {
+		Arr.splice(this._array, pos, remove, isArray(insert) ? insert as T[] : (insert as List<T>).values);
+		this._reindex();
 		return this;
 	}
 	public orderBy(fn: (a: T, b: T) => number): List<T> {

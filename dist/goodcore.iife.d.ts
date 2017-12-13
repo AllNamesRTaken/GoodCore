@@ -40,6 +40,7 @@ interface IBasicList<T> {
 	shift(): T | undefined;
 	copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
 	clone(): IBasicList<T>;
+	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
 	remove(v: T): IBasicList<T>;
 	removeFirst(fn: (el: T) => boolean): T;
 	removeAt(n: number): T;
@@ -77,6 +78,7 @@ interface IList<T> extends IBasicList<T> {
 	getByIndex(key: number | string): T | undefined;
 	set(pos: number, value: T): IList<T>;  
 	push(v: T): number;
+	splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
 	concat(v: Array<T> | IList<T>): IList<T>;
 	append(v: Array<T> | IList<T>): void;
 	shallowCopy(src: IList<T> | Array<T>): IList<T>;
@@ -213,6 +215,8 @@ declare namespace goodcore {
 		push(v: T): number;
 		pop(): T | undefined;
 		shift(): T | undefined;
+		fill(size: number, populator: ((i: number) => T) | T): List<T>;
+		splice(pos?: number, remove?: number, insert?: T[] | IList<T>): List<T>;
 		concat(v: T[] | List<T>): List<T>;
 		append(v: T[] | List<T>): List<T>;
 		copy(src: List<T> | T[]): List<T>;
@@ -280,6 +284,7 @@ declare namespace goodcore {
 		shift(): T | undefined;
 		bulkAdd(v: T[] | List<T> | SortedList<T>): SortedList<T>;
 		copy(src: SortedList<T> | List<T> | T[]): SortedList<T>;
+		fill(size: number, populator: ((i: number) => T) | T): List<T>;
 		clone(): SortedList<T>;
 		remove(v: T): SortedList<T>;
 		removeAt(n: number): T;
@@ -436,6 +441,7 @@ declare namespace goodcore {
 		export function reverse<T>(array: T[]): T[];
 		export function concat(...arrs: any[]): any[];
 		export function slice<T>(src: T[], from?: number, count?: number): T[];
+		export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[])
 		export function append<T>(arr: T[], values: T[]): void;
 		export function removeAt(arr: any[], index: number): any;
 		export function indexOfElement(src: any[], el: any): number;

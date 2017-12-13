@@ -39,6 +39,7 @@ interface IBasicList<T> {
   pop(): T | undefined;
   shift(): T | undefined;
   copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
+  fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>
   clone(): IBasicList<T>;
   remove(v: T): IBasicList<T>;
   removeFirst(fn: (el: T) => boolean): T;
@@ -72,6 +73,7 @@ interface IList<T> extends IBasicList<T> {
   getByIndex(key: number | string): T | undefined;
   set(pos: number, value: T): IList<T>;
   push(v: T): number;
+  splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
   concat(v: Array<T> | IList<T>): IList<T>;
   append(v: Array<T> | IList<T>): void;
   shallowCopy(src: IList<T> | Array<T>): IList<T>;
@@ -250,6 +252,7 @@ declare module 'goodcore/struct/List' {
         readonly count: number;
         readonly length: number;
         indexer: ((el: T) => any) | null;
+        fill(size: number, populator: ((i: number) => T) | T): List<T>;
         clear(): List<T>;
         add(v: T): List<T>;
         insertAt(pos: number, v: T): List<T>;
@@ -281,6 +284,7 @@ declare module 'goodcore/struct/List' {
         filter(fn: (el: T, i: number) => boolean): List<T>;
         select(fn: (el: T, i: number) => boolean): List<T>;
         selectInto(src: List<T> | T[], fn: (el: T, i: number) => boolean): List<T>;
+        splice(pos?: number, remove?: number, insert?: T[] | List<T>): List<T>;
         orderBy(fn: (a: T, b: T) => number): List<T>;
         map<S>(fn: (el: T, i: number) => S): List<S>;
         mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): List<T>;
@@ -319,6 +323,7 @@ declare module 'goodcore/struct/SortedList' {
         readonly length: number;
         comparer: (a: T, b: T) => number;
         sort(): void;
+        fill(size: number, populator: ((i: number) => T) | T): SortedList<T>;
         clear(): SortedList<T>;
         add(v: T): SortedList<T>;
         pop(): T | undefined;
@@ -490,6 +495,7 @@ declare module 'goodcore/Arr' {
     export function reverse<T>(array: T[]): T[];
     export function concat(...arrs: any[]): any[];
     export function slice<T>(src: T[], from?: number, count?: number): T[];
+    export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void;
     export function append<T>(arr: T[], values: T[]): void;
     export function removeAt(arr: any[], index: number): any;
     export function indexOfElement(src: any[], el: any): number;
@@ -520,7 +526,7 @@ declare module 'goodcore/Arr' {
     export function all<T>(src: T[], fn: (el: T) => boolean): boolean;
     export function insertAt<T>(src: T[], pos: number, v: T): void;
     export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
-    export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[];
+    export function create<T>(length: number, populator: (i?: number, arr?: T[]) => T): T[];
 }
 
 declare module 'goodcore/Obj' {

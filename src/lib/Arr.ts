@@ -48,6 +48,35 @@ export function slice<T>(src: T[], from: number = 0, count: number = Infinity): 
 	}
 	return result;
 }
+export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, insert: T[] = []) {
+	let srcLen = src.length;
+	pos = Math.max(0, pos);
+	pos = Math.min(pos, srcLen);
+	remove = Math.max(0, remove);
+	remove = Math.min(remove, srcLen - pos);
+	let insertLen = insert.length;
+	let newLen = srcLen - remove + insertLen;
+	let delta = remove - insertLen;
+	if (delta < 0) {
+		src.length = newLen;		
+		let i = newLen;
+		while (--i >= pos + remove) {
+			src[i] = src[i + delta];
+		}
+	}
+
+	let i = pos - 1;
+	while (++i < pos + insertLen) {
+		src[i] = insert[i - pos];
+	}
+	if ( delta > 0) {
+		--i;
+		while (++i < srcLen - delta) {
+			src[i] = src[i + delta];
+		}
+		src.length = newLen;
+	}
+}
 export function append<T>(arr: T[], values: T[]): void {
 	let index = -1;
 	const offset = arr.length;
@@ -318,7 +347,7 @@ export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest: boole
 	}
 	return closest ? lo : -1;
 }
-export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[] {
+export function create<T>(length: number, populator: (i?: number, arr?: T[]) => T): T[] {
 	if (length < 0) {
 		length = 0;
 	}

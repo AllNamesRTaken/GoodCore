@@ -52,6 +52,11 @@ export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>
 	public sort() {
 		this._list.orderBy(this._cmp);
 	}
+	public fill(size: number, populator: ((i: number) => T) | T): SortedList<T> {
+		this._list.fill(size, populator);
+		this.sort();
+		return this;
+	}
 	public clear(): SortedList<T> {
 		this._list.clear();
 		return this;

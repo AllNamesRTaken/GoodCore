@@ -39,6 +39,7 @@ interface IBasicList<T> {
   pop(): T | undefined;
   shift(): T | undefined;
   copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
+  fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>
   clone(): IBasicList<T>;
   remove(v: T): IBasicList<T>;
   removeFirst(fn: (el: T) => boolean): T;
@@ -72,6 +73,7 @@ interface IList<T> extends IBasicList<T> {
   getByIndex(key: number | string): T | undefined;
   set(pos: number, value: T): IList<T>;
   push(v: T): number;
+  splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
   concat(v: Array<T> | IList<T>): IList<T>;
   append(v: Array<T> | IList<T>): void;
   shallowCopy(src: IList<T> | Array<T>): IList<T>;

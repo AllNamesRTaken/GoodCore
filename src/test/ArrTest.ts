@@ -189,6 +189,40 @@ describe("Arrays",
 				Arr.slice(this.arr1, 1, 2).should.deep.equal([4, 7]);
 				Arr.slice(this.arr1, 10, 2).should.deep.equal([]);
 			});
+		it("Splice does splice",
+			function() {
+				let arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, -1, -1);
+				arr1.should.deep.equal([1, 4, 7, 2]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, -1);
+				arr1.should.deep.equal([]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1);
+				arr1.should.deep.equal([]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 100);
+				arr1.should.deep.equal([1, 4, 7, 2]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 1, 2);
+				arr1.should.deep.equal([1, 2]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 1, 2, [3, 4]);
+				arr1.should.deep.equal([1, 3, 4, 2]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 1, 100, [3, 4]);
+				arr1.should.deep.equal([1, 3, 4]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 1, 1, [3, 4]);
+				arr1.should.deep.equal([1, 3, 4, 7, 2]);
+			});
 		it("ForSome works like Filtered ForEach",
 			function() {
 				const arrEl = new Array<number>();

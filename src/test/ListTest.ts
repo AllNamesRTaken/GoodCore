@@ -48,6 +48,47 @@ describe("List",
 				const indexed = org.clone();
 				indexed.indexer.should.deep.equal(org.indexer);
 			});
+		it("Fill fills an array with new data", function() {
+			let list1 = new List([1, 4, 7, 2]);
+			let list2 = new List<{a: number}>();
+			let obj = { a: 1 };
+
+			list1.fill(-1, 0).values.should.deep.equal([]);
+			list1.fill(2, 0).values.should.deep.equal([0, 0]);
+			list1.fill(2, () => 1).values.should.deep.equal([1, 1]);
+			list1.fill(3, (i) => i).values.should.deep.equal([0, 1, 2]);
+			list2.fill(2, obj).values.should.deep.equal([{ a: 1 }, { a: 1 }]);
+			list2.get(0).should.not.equal(obj);
+		});
+		it("Splice does splice",
+			function() {
+				let list1 = new List([1, 4, 7, 2]);
+				list1.splice(-1, -1).values.should.deep.equal([1, 4, 7, 2]);
+
+				list1 = new List([1, 4, 7, 2]);
+				list1.splice(-1).values.should.deep.equal([]);
+
+				list1 = new List([1, 4, 7, 2]);
+				list1.splice().values.should.deep.equal([]);
+
+				list1 = new List([1, 4, 7, 2]);
+				list1.splice(100).values.should.deep.equal([1, 4, 7, 2]);
+
+				list1 = new List([1, 4, 7, 2]);
+				list1.splice(1, 2).values.should.deep.equal([1, 2]);
+
+				list1 = new List([1, 4, 7, 2]);
+				list1.splice(1, 2, [3, 4]).values.should.deep.equal([1, 3, 4, 2]);
+
+				list1 = new List([1, 4, 7, 2]);
+				list1.splice(1, 2, new List([3, 4])).values.should.deep.equal([1, 3, 4, 2]);
+
+				list1 = new List([1, 4, 7, 2]);
+				list1.splice(1, 100, [3, 4]).values.should.deep.equal([1, 3, 4]);
+
+				list1 = new List([1, 4, 7, 2]);
+				list1.splice(1, 1, [3, 4]).values.should.deep.equal([1, 3, 4, 7, 2]);
+			});
 		it("ShallowCopy references same inner objects",
 			function () {
 				const list = this.list3 as List<any>;
