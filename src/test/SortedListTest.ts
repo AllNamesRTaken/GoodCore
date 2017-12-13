@@ -170,6 +170,21 @@ describe("SortedList",
 				list3.selectInto(list1.values, (el, i) => i > 1);
 				list3.values.should.deep.equal([4, 7]);
 			});
+		it("Head returns new list with fist x items",
+			function () {
+				const list1 = this.list1 as SortedList<any>;
+				list1.head(2).values.should.deep.equal([1, 2]);
+				list1.head(-2).values.should.deep.equal([]);
+				list1.head(20).values.should.deep.equal([1, 2, 4, 7]);
+			});		
+		it("Tail returns new list with last x items",
+			function () {
+				const list1 = this.list1 as List<any>;
+				list1.tail(2).values.should.deep.equal([4, 7]);
+				list1.tail(-2).values.should.deep.equal([]);
+				list1.tail(20).values.should.deep.equal([1, 2, 4, 7]);
+			});		
+
 		it("ForEach loops correctly",
 			function () {
 				const list1 = this.list1 as SortedList<any>;

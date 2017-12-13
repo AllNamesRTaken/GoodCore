@@ -264,6 +264,14 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
 		this.index(arr);
 		return this;
 	}
+	public head(count: number = 1): List<T> {
+		count = Math.max(0, count);
+		return this.create(Arr.slice(this._array, 0, count));
+	}
+	public tail(count: number = 1): List<T> {
+		count = Math.min(this._array.length, count);
+		return this.create(Arr.slice(this._array, Math.max(0, this._array.length - count)));		
+	}
 	public splice(pos: number = 0, remove: number = Infinity, insert: T[] | List<T> = []): List<T> {
 		Arr.splice(this._array, pos, remove, isArray(insert) ? insert as T[] : (insert as List<T>).values);
 		this._reindex();

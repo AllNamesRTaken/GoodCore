@@ -173,6 +173,12 @@ export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>
 		this.sort();
 		return this;
 	}
+	public head(count: number = 1): SortedList<T> {
+		return this.create(this.comparer, this._list.head(count));
+	}
+	public tail(count: number = 1): SortedList<T> {
+		return this.create(this.comparer, this._list.tail(count));
+	}
 	public map<S>(fn: (el: T, i: number) => S): List<S> {
 		return this._list.map(fn);
 	}

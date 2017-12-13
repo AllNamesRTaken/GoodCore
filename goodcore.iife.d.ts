@@ -60,6 +60,8 @@ interface IBasicList<T> {
 	all(fn: (el: T) => boolean): boolean
 	select(fn: (el: T) => boolean): IBasicList<T>;
 	selectInto(src: IBasicList<T> | Array<T>, fn: (el: T) => boolean): IBasicList<T>;
+	head(count?: number): IBasicList<T>;
+	tail(count?: number): IBasicList<T>;
 	map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
 	mapInto(src: IBasicList<any> | Array<any>, fn: (el: any, i?: number) => any): IBasicList<T>;
 	reduce(fn: (acc: any, cur: T) => any, start: any): any;
@@ -243,6 +245,8 @@ declare namespace goodcore {
 		filter(fn: (el: T, i: number) => boolean): List<T>;
 		select(fn: (el: T, i: number) => boolean): List<T>;
 		selectInto(src: List<T> | T[], fn: (el: T, i: number) => boolean): List<T>;
+		head(count?: number): List<T>;
+		tail(count?: number): List<T>;
 		orderBy(fn: (a: T, b: T) => number): List<T>;
 		map<S>(fn: (el: T, i: number) => S): List<S>;
 		mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): List<T>;
@@ -307,6 +311,8 @@ declare namespace goodcore {
 		filter(fn: (el: T, i: number) => boolean): SortedList<T>;
 		select(fn: (el: T, i: number) => boolean): SortedList<T>;
 		selectInto(src: SortedList<T> | List<T> | T[], fn: (el: T, i: number) => boolean): SortedList<T>;
+		head(count?: number): SortedList<T>;
+		tail(count?: number): SortedList<T>;
 		map<S>(fn: (el: T, i: number) => S): List<S>;
 		mapInto<S>(src: SortedList<S> | List<S> | S[], fn: (el: S, i: number) => T): SortedList<T>;
 		reduce<U>(fn: (acc: U, cur: T) => any, start: U): U;

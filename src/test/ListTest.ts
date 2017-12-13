@@ -266,6 +266,20 @@ describe("List",
 				list3.selectInto(list1.values, (el, i) => i > 1);
 				list3.values.should.deep.equal([7, 2]);
 			});
+		it("Head returns new list with fist x items",
+			function () {
+				const list1 = this.list1 as List<any>;
+				list1.head(2).values.should.deep.equal([1, 4]);
+				list1.head(-2).values.should.deep.equal([]);
+				list1.head(20).values.should.deep.equal([1, 4, 7, 2]);
+			});		
+		it("Tail returns new list with last x items",
+			function () {
+				const list1 = this.list1 as List<any>;
+				list1.tail(2).values.should.deep.equal([7, 2]);
+				list1.tail(-2).values.should.deep.equal([]);
+				list1.tail(20).values.should.deep.equal([1, 4, 7, 2]);
+			});		
 		it("OrderBy sorts the Lists values",
 			function () {
 				const list1 = this.list1.clone() as List<any>;
