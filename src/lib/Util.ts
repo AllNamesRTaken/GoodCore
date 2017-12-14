@@ -53,7 +53,7 @@ export function pipeOut(
 	warn: (...args: any[]) => void,
 	error: (...args: any[]) => void
 ) {
-	if (hasConsole) {
+	if (hasConsole()) {
 		proxyFn(
 			console as any,
 			"log",
@@ -77,11 +77,9 @@ export function pipeOut(
 		};
 		if (!(hasWindow())) {
 			Global.window = {
-				console
 			} as any;
-		} else {
-			(Global.window as any).console = console;
 		}
+		(Global.window as any).console = console;
 	}
 }
 export function assert(assertion: boolean, message: string, isDebug: boolean = true): boolean {

@@ -143,7 +143,8 @@ describe("Obj",
 				let obj2 = new Able();
 				let cleared = false;
 				obj2.clear = () => { cleared = true; };
-				Obj.setNull(obj);
+				Obj.setNull(obj2);
+				cleared.should.be.true;
 			});
 		it("SetProperties copys values to existing properties by ref",
 			function() {

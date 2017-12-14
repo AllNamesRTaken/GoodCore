@@ -4,14 +4,14 @@ should();
 
 describe("Timer",
 	function() {
-		it("Test Start Stop Time over 500ms",
+		it("Test Start Stop Time over 100ms",
 			function(done){
 				Timer.start();
 				setTimeout(function() {
 					Timer.stop();
-					Timer.time.should.be.approximately(500, 50);
+					Timer.time.should.be.approximately(100, 50);
 					done();
-				}, 500);
+				}, 100);
 			});
 	}
 );

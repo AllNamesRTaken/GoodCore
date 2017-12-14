@@ -8,13 +8,16 @@ describe("Uri",
 	function() {
 		before(function() {
 			const dom = new JSDOM();
-			const win = dom.window;
+			this.win = dom.window;
 			dom.reconfigure({ url: "http://domain.com/path/page.html?arg1=1&arg2=2" });
-			Global.window = win;
 		});
 		it("Uri is populated",
 			function(){
 				let uri = new Uri();
+				Global.window = null;
+				uri.init();
+				uri.hostName.should.equal("");
+				Global.window = this.win;
 				uri.init();
 				uri.hostName.should.equal("domain.com");
 				uri.pathName.should.equal("/path/page.html");

@@ -1,9 +1,11 @@
 import {should} from "chai";
 import { JSDOM } from "jsdom";
+import { Global } from "../lib/Global";
 import * as MocData from "../lib/MocData";
 import * as Test from "../lib/Test";
 import { Timer } from "../lib/Timer";
 import * as Util from "../lib/Util";
+
 should();
 
 describe("Util",
@@ -14,11 +16,24 @@ describe("Util",
 				// this.document = this.window.document;
 				Util.init();
 			});
+		it("init sets Global.window object",
+			function() {
+				let org = Global.window;
+				Util.init("foo" as any);
+				Global.window.should.equal("foo");
+				Global.window = org;
+			});
 		it("Assert writes to console.error and PipeOut catches it.",
 			function() {
 				const log: any[] = [];
 				const warn: any[] = [];
 				const error: any[] = [];
+				let real = {
+					log: console.log,
+					warn: console.warn,
+					error: console.error,
+					window: Global.window
+				};
 				Util.pipeOut(
 					function(...args: any[]){
 						log.push.apply(log, args);
@@ -40,6 +55,27 @@ describe("Util",
 				console.warn("warned");
 				warn[0].should.contain("warned");
 				//cannot console.log here since that is overridden by Mocha
+
+				Global.window = null;
+				Util.pipeOut(
+					function(...args: any[]){
+						log.push.apply(log, args);
+					},
+					function(...args: any[]){
+						warn.push.apply(warn, args);
+					},
+					function(...args: any[]){
+						error.push.apply(error, args);
+					}
+				);
+				console.log("logged2");
+				log[1].should.contain("logged2");
+
+				Global.window = real.window;
+				console.log = real.log;
+				console.warn = real.warn;
+				console.error = real.error;
+
 			});
 		it("proxyFn wraps object method",
 			function() {
@@ -65,6 +101,9 @@ describe("Util",
 		it("GetFunctionName returns correct name",
 				function() {
 					Util.getFunctionName(function foo() {}).should.equal("foo");
+					function fn() {}
+					fn.hasOwnProperty = () => undefined as any;
+					Util.getFunctionName(fn).should.equal("fn");
 				});
 		it("GetFunctionCode returns correct code as string",
 				function() {

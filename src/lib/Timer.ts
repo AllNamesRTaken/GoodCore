@@ -10,9 +10,6 @@ export class Timer {
 	public static get time(): number {
 		return TimerState._time;
 	}
-	constructor() {
-		Timer.start();
-	}
 	public static now(): number {
 		if (TimerState._hasPerformance) {
 			return performance.now();

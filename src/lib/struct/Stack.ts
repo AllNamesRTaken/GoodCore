@@ -90,11 +90,9 @@ export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, IClon
 		return result;
 	}
 	private limitObjects() {
-		if (this._limit > 0) {
-			while (this._pos > this._limit) {
-				this._array.shift();
-				--this._pos;
-			}
+		while (this._pos > this._limit) {
+			this._array.shift();
+			--this._pos;
 		}
 	}
 	public toJSON(): any {
