@@ -1,5 +1,5 @@
 import {should} from "chai";
-import { after, around, before, provided } from "../lib/standard/Combinators";
+import { after, around, before, once, provided } from "../lib/standard/Combinators";
 should();
 
 describe("Combinators",
@@ -92,5 +92,20 @@ describe("Combinators",
 				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(2);
 			});
+		it("once returns first value",
+			function(){
+				class Person {
+					public anxiety: number = 0;
+					@once
+					public fret(...args: any[]) {
+						return ++this.anxiety;
+					}
+				}
+				let sam = new Person();
+				sam.fret(1, 2, 3);
+				sam.fret(1, 2, 3);
+				sam.anxiety.should.equal(1);
+			});
+			
 	}
 );

@@ -348,7 +348,7 @@ export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest: boole
 	return closest ? lo : -1;
 }
 export function create<T>(length: number, populator: (i?: number, arr?: T[]) => T): T[] {
-	if (length < 0) {
+	if ((length || -1) < 0) {
 		length = 0;
 	}
 	let arr = new Array<T>(length);

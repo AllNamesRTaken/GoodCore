@@ -33,6 +33,7 @@ method combinator decorators:
 - @after
 - @around
 - @provided
+- @once (caches first result)
 - @async
 - @async.before 
 - @async.after 

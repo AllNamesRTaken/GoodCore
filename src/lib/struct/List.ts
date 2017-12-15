@@ -70,11 +70,11 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
 		}
 	}
 	public fill(size: number, populator: ((i: number) => T) | T): List<T> {
-		size = Math.max(0, size);
+		size = Math.max(0, size || 0);
 		if (isFunction(populator)) {
 			this._array = Arr.create(size, populator as (i: number) => T);
 		} else if (!(populator instanceof Object)) {
-			this._array = Arr.create(size, () => populator);
+			this._array = Arr.create<T>(size, () => populator);
 		} else {
 			this._array = Arr.create(size, () => clone<T>(populator as T));
 		}
