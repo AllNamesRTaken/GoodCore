@@ -442,7 +442,7 @@ declare namespace goodcore {
 		export function setStylesExplicitly(element: HTMLElement, ...styles: string[]): void;
 	}
 
-	export namespace Array {
+	export namespace Arr {
 		export function flatten<T>(src: any[]): T[];
 		export function reverse<T>(array: T[]): T[];
 		export function concat(...arrs: any[]): any[];
