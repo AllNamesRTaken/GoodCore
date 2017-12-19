@@ -582,11 +582,11 @@ describe("List",
 				const list2 = new List([new Serializable(1, 2), new Serializable(3, 4)]);
 				list2.serialize().should.deep.equal([1, 3]);
 			});
-		it("Revive revives List<T>",
+		it("deserialize revives List<T>",
 			function () {
 				class Revivable {
 					public foo: number;
-					public revive(data: any): Revivable {
+					public deserialize(data: any): Revivable {
 						this.foo = data + 1;
 						return this;
 					}
@@ -594,28 +594,12 @@ describe("List",
 				const list1 = new List<number>();
 				const list2 = new List<Revivable>();
 				const list3 = new List<Vec2>();
-				list1.revive([1, 2, 3, 4]);
+				list1.deserialize([1, 2, 3, 4]);
 				JSON.stringify(list1).should.equal("[1,2,3,4]");
-				list2.revive([1, 2, 3, 4], Revivable);
+				list2.deserialize([1, 2, 3, 4], Revivable);
 				JSON.stringify(list2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
-				list3.revive([{x:1, y:1}, {x:2, y:2}], Vec2);
+				list3.deserialize([{x:1, y:1}, {x:2, y:2}], Vec2);
 				JSON.stringify(list3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
-			});
-		it("deserialize calls revive",
-			function () {
-				let called = false;
-				const list1 = new List<Deserializable>();
-				proxyFn(list1, "revive", (org, ...args) => { called = true; org(...args); } );
-				class Deserializable {
-					public foo: number;
-					public deserialize(data: any): Deserializable {
-						this.foo = data + 1;
-						return this;
-					}
-				}
-				list1.deserialize([1, 2, 3, 4], Deserializable);
-				JSON.stringify(list1).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
-				called.should.be.true;
 			});
 	}
 );

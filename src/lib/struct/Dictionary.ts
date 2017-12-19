@@ -3,7 +3,7 @@ import { clone, setProperties, wipe } from "../Obj";
 import { isFunction, isNotUndefined } from "../Test";
 import { List } from "./List";
 
-export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable<Dictionary<T>> {
 	private _lookup: any;
 	private _list: List<T>;
 	private _isDirty: boolean;
@@ -101,15 +101,11 @@ export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Diction
 		});
 		return obj;
 	}
-	public revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T> {
+	public deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T> {
 		let [T, ...passthroughT] = types;
 		this.clear();
 		if (isNotUndefined(T)) {
-			if (isNotUndefined(T.prototype.revive)) {
-				for (let key of Object.keys(obj)) {
-					this.set(key, (new T()).revive(obj[key], ...passthroughT));
-				}
-			} else if (isNotUndefined(T.prototype.deserialize)) {
+			if (isNotUndefined(T.prototype.deserialize)) {
 				for (let key of Object.keys(obj)) {
 					this.set(key, (new T()).deserialize(obj[key], ...passthroughT));
 				}
@@ -126,8 +122,5 @@ export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Diction
 			}
 		}
 		return this;
-	}
-	public deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T> {
-		return this.revive(obj, ...types);
 	}
 }

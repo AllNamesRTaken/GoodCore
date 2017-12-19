@@ -480,6 +480,7 @@ declare namespace goodcore {
 		export function insertAt<T>(src: T[], pos: number, v: T): void;
 		export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
 		export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[];
+		export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
 	}
 
 	export namespace Obj {

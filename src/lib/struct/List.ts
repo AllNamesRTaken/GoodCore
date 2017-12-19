@@ -3,7 +3,7 @@ import { clone, equals, setProperties } from "../Obj";
 import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined } from "../Test";
 import { Dictionary } from "./Dictionary";
 
-export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable<List<T>> {
+export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
 	private _array: T[] = [];
 	private _index: Dictionary<T> | null = null;
 	private _indexer: ((el: T) => any) | null = null;
@@ -417,30 +417,8 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>
 	public serialize(): T[] {
 		return this.values.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
-	public revive(array: any[], ...types: Array<Constructor<any>>): List<T> {
-		let [T, ...passthroughT] = types;
-		if (isNotUndefined(T)) {
-			if (isNotUndefined(T.prototype.revive)) {
-				this.mapInto(array, (el) => {
-					return (new T()).revive(el, ...passthroughT);
-				});
-			} else if (isNotUndefined(T.prototype.deserialize)) {
-				this.mapInto(array, (el) => {
-					return (new T()).deserialize(el, ...passthroughT);
-				});
-			} else {
-				this.mapInto(array, (el) => {
-					let newT = new T();
-					setProperties(newT, el);
-					return newT;
-				});
-			}
-		} else {
-			this.copy(array);
-		}
-		return this;
-	}
 	public deserialize(array: any[], ...types: Array<Constructor<any>>): List<T> {
-		return this.revive(array, ...types);
+		Arr.deserialize(array, this._array, ...types);
+		return this;
 	}
 }

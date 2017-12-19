@@ -1,10 +1,10 @@
-import { deepCopy, deepCopyInto, mapInto, slice } from "../Arr";
+import { deepCopy, deepCopyInto, mapInto, slice, deserialize } from "../Arr";
 import { position } from "../Dom";
 import { setProperties } from "../Obj";
 import { isFunction, isNotUndefined } from "../Test";
 import { List } from "./List";
 
-export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable<Stack<T>> {
+export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable<Stack<T>> {
 	public DEFAULT_SIZE = 100;
 	private _array: T[];
 	private _pos: number = 0;
@@ -101,31 +101,9 @@ export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, IClon
 	public serialize(): T[] {
 		return slice(this.values, 0, this._pos).map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
-	public revive(array: any[], ...types: Array<Constructor<any>>): Stack<T> {
-		let [T, ...passthroughT] = types;
-		if (isNotUndefined(T)) {
-			if (isNotUndefined(T.prototype.revive)) {
-				mapInto(array, this._array, (el) => {
-					return (new T()).revive(el, ...passthroughT);
-				});
-			} else if (isNotUndefined(T.prototype.deserialize)) {
-				mapInto(array, this._array, (el) => {
-					return (new T()).deserialize(el, ...passthroughT);
-				});
-			} else {
-				mapInto(array, this._array, (el) => {
-					let newT = new T();
-					setProperties(newT, el);
-					return newT;
-				});
-			}
-		} else {
-			deepCopyInto(array, this._array);
-		}
+	public deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T> {
+		deserialize(array, this._array, ...types);
 		this._pos = array.length;
 		return this;
-	}
-	public deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T> {
-		return this.revive(array, ...types);
 	}
 }

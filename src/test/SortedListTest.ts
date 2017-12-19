@@ -382,11 +382,11 @@ describe("SortedList",
 				const list2 = new SortedList((a, b) => a.foo < b.foo ? -1 : a.foo === b.foo ? 0 : 1, [new Serializable(1, 2), new Serializable(3, 4)]);
 				list2.serialize().should.deep.equal([1, 3]);
 			});
-		it("Revive revives SortedList<T>",
+		it("deserialize revives SortedList<T>",
 			function () {
 				class Revivable {
 					public foo: number;
-					public revive(data: any): Revivable {
+					public deserialize(data: any): Revivable {
 						this.foo = data + 1;
 						return this;
 					}
@@ -394,28 +394,12 @@ describe("SortedList",
 				const list1 = new SortedList<number>(Comparer.NumberAsc);
 				const list2 = new SortedList<Revivable>((a, b) => a.foo < b.foo ? -1 : a.foo === b.foo ? 0 : 1);
 				const list3 = new SortedList<Vec2>((a, b) => a.x < b.x ? -1 : a.x === b.x ? 0 : 1);
-				list1.revive([2, 1, 3, 4]);
+				list1.deserialize([2, 1, 3, 4]);
 				JSON.stringify(list1).should.equal("[1,2,3,4]");
-				list2.revive([2, 1, 3, 4], Revivable);
+				list2.deserialize([2, 1, 3, 4], Revivable);
 				JSON.stringify(list2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
-				list3.revive([{ x: 1, y: 1 }, { x: 2, y: 2 }], Vec2);
+				list3.deserialize([{ x: 1, y: 1 }, { x: 2, y: 2 }], Vec2);
 				JSON.stringify(list3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
-			});
-		it("deserialize calls revive",
-			function () {
-				let called = false;
-				const list1 = new SortedList<Deserializable>((a, b) => a.foo < b.foo ? -1 : a.foo === b.foo ? 0 : 1);
-				proxyFn(list1, "revive", (org, ...args) => { called = true; org(...args); });
-				class Deserializable {
-					public foo: number;
-					public deserialize(data: any): Deserializable {
-						this.foo = data + 1;
-						return this;
-					}
-				}
-				list1.deserialize([1, 2, 3, 4], Deserializable);
-				JSON.stringify(list1).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
-				called.should.be.true;
 			});
 		it("descending string sort does sort descending",
 			function () {

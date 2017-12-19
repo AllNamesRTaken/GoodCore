@@ -26,8 +26,7 @@ interface ISerializable<T> {
   toJSON(): any;
   serialize(): T
 }
-interface IRevivable<T> {
-  revive(data: any, ...types: Array<Constructor<any>>): T;
+interface IDeserializable<T> {
   deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IBasicList<T> {

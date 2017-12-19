@@ -26,8 +26,7 @@ interface ISerializable<T> {
   toJSON(): any;
   serialize(): T
 }
-interface IRevivable<T> {
-  revive(data: any, ...types: Array<Constructor<any>>): T;
+interface IDeserializable<T> {
   deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IBasicList<T> {
@@ -242,7 +241,7 @@ declare module 'goodcore/struct/Rect' {
 }
 
 declare module 'goodcore/struct/List' {
-    export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable<List<T>> {
+    export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
         constructor(arr?: T[] | List<T>);
         protected create<S = T>(arr?: S[] | List<S>): List<S>;
         readonly values: T[];
@@ -303,7 +302,6 @@ declare module 'goodcore/struct/List' {
         flatten<U>(maxDepth?: number): List<U>;
         toJSON(): any;
         serialize(): T[];
-        revive(array: any[], ...types: Array<Constructor<any>>): List<T>;
         deserialize(array: any[], ...types: Array<Constructor<any>>): List<T>;
     }
 }
@@ -316,7 +314,7 @@ declare module 'goodcore/struct/SortedList' {
         static NumberAsc: (a: number, b: number) => 1 | 0 | -1;
         static NumberDesc: (a: number, b: number) => 1 | 0 | -1;
     }
-    export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
+    export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>, IDeserializable<SortedList<T>>, ICloneable<SortedList<T>> {
         constructor(comparer?: ((a: T, b: T) => number), arr?: T[] | List<T> | SortedList<T>);
         protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
         readonly values: T[];
@@ -368,14 +366,13 @@ declare module 'goodcore/struct/SortedList' {
         toList(): List<T>;
         toJSON(): any;
         serialize(): T[];
-        revive(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
         deserialize(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
     }
 }
 
 declare module 'goodcore/struct/Dictionary' {
     import { List } from "goodcore/struct/List";
-    export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+    export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable<Dictionary<T>> {
         constructor();
         protected create<S = T>(): Dictionary<S>;
         has(key: number | string): boolean;
@@ -391,14 +388,13 @@ declare module 'goodcore/struct/Dictionary' {
         clone(): Dictionary<T>;
         toJSON(): any;
         serialize(): IObject;
-        revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
         deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
     }
 }
 
 declare module 'goodcore/struct/Stack' {
     import { List } from "goodcore/struct/List";
-    export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable<Stack<T>> {
+    export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable<Stack<T>> {
         DEFAULT_SIZE: number;
         readonly values: T[];
         readonly depth: number;
@@ -418,7 +414,6 @@ declare module 'goodcore/struct/Stack' {
         clone(): Stack<T>;
         toJSON(): any;
         serialize(): T[];
-        revive(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
         deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
     }
 }
@@ -531,6 +526,7 @@ declare module 'goodcore/Arr' {
     export function insertAt<T>(src: T[], pos: number, v: T): void;
     export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
     export function create<T>(length: number, populator: (i?: number, arr?: T[]) => T): T[];
+    export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
 }
 
 declare module 'goodcore/Obj' {

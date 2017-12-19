@@ -139,7 +139,7 @@ describe("Stack",
 			function () {
 				class Revivable {
 					public foo: number;
-					public revive(data: any): Revivable {
+					public deserialize(data: any): Revivable {
 						this.foo = data + 1;
 						return this;
 					}
@@ -147,28 +147,12 @@ describe("Stack",
 				const stack1 = new Stack<number>();
 				const stack2 = new Stack<Revivable>();
 				const stack3 = new Stack<Vec2>();
-				stack1.revive([1, 2, 3, 4]);
+				stack1.deserialize([1, 2, 3, 4]);
 				JSON.stringify(stack1).should.equal("[1,2,3,4]");
-				stack2.revive([1, 2, 3, 4], Revivable);
+				stack2.deserialize([1, 2, 3, 4], Revivable);
 				JSON.stringify(stack2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
-				stack3.revive([{x:1, y:1}, {x:2, y:2}], Vec2);
+				stack3.deserialize([{x:1, y:1}, {x:2, y:2}], Vec2);
 				JSON.stringify(stack3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
-			});
-		it("deserialize calls revive",
-			function () {
-				let called = false;
-				const stack = new Stack<Deserializable>();
-				proxyFn(stack, "revive", (org, ...args) => { called = true; org(...args); } );
-				class Deserializable {
-					public foo: number;
-					public deserialize(data: any): Deserializable {
-						this.foo = data + 1;
-						return this;
-					}
-				}
-				stack.deserialize([1, 2, 3, 4], Deserializable);
-				JSON.stringify(stack).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
-				called.should.be.true;
 			});
 	}
 );

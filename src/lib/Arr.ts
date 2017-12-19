@@ -1,5 +1,5 @@
-import { clone } from "./Obj";
-import { isArray, isNullOrUndefined, isNumber, isUndefined } from "./Test";
+import { clone, setProperties } from "./Obj";
+import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined } from "./Test";
 
 class ArrayState {
 	public static _int: number;
@@ -363,4 +363,23 @@ export function create<T>(length: number, populator: (i?: number, arr?: T[]) => 
 		arr[i] = populator(i, arr);		
 	}
 	return arr;
+}
+export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[] {
+	let [T, ...passthroughT] = types;
+	if (isNotUndefined(T)) {
+		if (isNotUndefined(T.prototype.deserialize)) {
+			mapInto(array, target, (el) => {
+				return (new T()).deserialize(el, ...passthroughT);
+			});
+		} else {
+			mapInto(array, target, (el) => {
+				let newT = new T();
+				setProperties(newT, el);
+				return newT;
+			});
+		}
+	} else {
+		deepCopyInto(array, target);
+	}
+	return this;
 }

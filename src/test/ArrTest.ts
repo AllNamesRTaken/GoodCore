@@ -1,6 +1,7 @@
 import {should} from "chai";
 import * as Arr from "../lib/Arr";
 import * as MocData from "../lib/MocData";
+import { Vec2 } from "../lib/struct/Vec2";
 import { assert } from "../lib/Util";
 should();
 
@@ -375,5 +376,24 @@ describe("Arrays",
 			Arr.all(arr, (el) => el > 0).should.be.true;
 			Arr.all(arr, (el) => el < 4).should.be.false;
 			Arr.all(null, (el) => el < 4).should.be.true;
+		});
+		it("Deserialize revives Array<T>",
+		function () {
+			class Revivable {
+				public foo: number;
+				public deserialize(data: any): Revivable {
+					this.foo = data + 1;
+					return this;
+				}
+			}
+			const list1 = new Array<number>();
+			const list2 = new Array<Revivable>();
+			const list3 = new Array<Vec2>();
+			Arr.deserialize([1, 2, 3, 4], list1);
+			JSON.stringify(list1).should.equal("[1,2,3,4]");
+			Arr.deserialize([1, 2, 3, 4], list2, Revivable);
+			JSON.stringify(list2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
+			Arr.deserialize([{x:1, y:1}, {x:2, y:2}], list3, Vec2);
+			JSON.stringify(list3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
 		});
 });
