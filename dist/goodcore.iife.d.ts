@@ -381,6 +381,7 @@ declare namespace goodcore {
 		parent: Tree<T> | null;
 		children: List<Tree<T>> | null;
 		data: T | null;
+		virtual: boolean;
 		static fromObject<T>(obj: any): Tree<T>;
 		static fromNodeList<S, T>(nodes: S[], mapcfg?: {
 			id?: ((node: S) => string) | string;
