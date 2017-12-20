@@ -498,6 +498,15 @@ describe("List",
 				list2.intersect(list3).values.should.deep.equal([4, 8]);
 				list1.intersect(list4).values.should.deep.equal([]);
 			});
+		it("Subtract returns a list containing the the items of a - b",
+			function () {
+				const list1 = new List<number>([1, 4, 7, 2]);
+				list1.indexer = (el) => el;
+				const list2 = new List<number>([4, 2, 8]);
+				list2.indexer = (el) => el;
+
+				list1.subtract(list2).values.should.deep.equal([1, 7]);
+			});
 		it("Insert inserts an element at a position",
 			function () {
 				const list1 = new List([1, 2, 3, 4]);

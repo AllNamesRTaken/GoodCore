@@ -78,6 +78,7 @@ interface IList<T> extends IBasicList<T> {
   shallowCopy(src: IList<T> | Array<T>): IList<T>;
   reverse(): IList<T>;
   orderBy(fn: (a: T, b: T) => number): IList<T>;
+  subtract(b: IList<T>): IList<T>;
   zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
   unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
   flatten<U>(maxDepth?: number): IList<U>
@@ -297,6 +298,7 @@ declare module 'goodcore/struct/List' {
         same(b: List<T>): boolean;
         intersect(b: List<T>): List<T>;
         union(b: List<T>): List<T>;
+        subtract(b: List<T>): List<T>;
         zip<U, V>(list: List<U>, fn?: (t: T, u: U) => V): List<V>;
         unzip<U, V>(fn?: (el: T) => [U, V]): [List<U>, List<V>];
         flatten<U>(maxDepth?: number): List<U>;
@@ -421,16 +423,17 @@ declare module 'goodcore/struct/Stack' {
 declare module 'goodcore/struct/Tree' {
     import { List } from "goodcore/struct/List";
     export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
-        id: string;
+        id: string | number;
         parent: Tree<T> | null;
         children: List<Tree<T>> | null;
         data: T | null;
+        virtual: boolean;
         static fromObject<T>(obj: any): Tree<T>;
         static fromNodeList<S, T>(nodes: S[], mapcfg?: {
-            id?: ((node: S) => string) | string;
-            parent?: ((node: S) => string) | string;
+            id?: ((node: S) => string | number) | string | number;
+            parent?: ((node: S) => string | number) | string | number;
             data?: ((node: S) => any) | string;
-        }): Tree<T>;
+        }, virtualRoot?: boolean): Tree<T>;
         constructor();
         protected create<S = T>(): Tree<S>;
         init(obj: Partial<Tree<T>>): Tree<T>;

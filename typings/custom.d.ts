@@ -78,6 +78,7 @@ interface IList<T> extends IBasicList<T> {
   shallowCopy(src: IList<T> | Array<T>): IList<T>;
   reverse(): IList<T>;
   orderBy(fn: (a: T, b: T) => number): IList<T>;
+  subtract(b: IList<T>): IList<T>;
   zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
   unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
   flatten<U>(maxDepth?: number): IList<U>

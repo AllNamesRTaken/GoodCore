@@ -24,7 +24,7 @@ describe("Tree",
 				const tree = this.tree as Tree<string>;
 				tree.children!.get(1).children!.get(1).data!.should.equal("c2-2");
 			});
-		it("Tree.fromNodeList returns correct tree",
+		it("Tree.fromNodeList returns correct tree in case with single root",
 			function () {
 				let nodeList: any[] = [
 					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
@@ -33,8 +33,29 @@ describe("Tree",
 					{ uid: "0-0", parent: "0", category: "adventure", children: ["0-0-0", "0-0-1"] },
 					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] }
 				];
-				const tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
+				let tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
 				tree.children!.get(0).children!.get(1).data!.should.deep.equal({ category: "drama" });
+				tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true);
+				tree.virtual.should.be.true;
+				tree.children!.get(0).id.should.equal("-");
+			});
+		it("Tree.fromNodeList returns correct tree in case with multiple roots",
+			function () {
+				let nodeList: any[] = [
+					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
+					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
+					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
+					{ uid: "0-0", parent: "0", category: "adventure", children: ["0-0-0", "0-0-1"] },
+					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] },
+					{ uid: "foo", parent: null, category: "second root", children: ["0", "1"] },
+				];
+				let tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true);
+				tree.virtual.should.be.true;
+				tree.children!.get(0).id.should.equal("-");
+				tree.children!.get(1).id.should.equal("foo");
+				tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
+				tree.virtual.should.be.false;
+				tree.id.should.equal("-");
 			});
 		it("Find finds the correct node",
 			function () {

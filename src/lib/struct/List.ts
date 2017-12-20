@@ -371,6 +371,12 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<Li
 		}
 		return result;
 	}
+	public subtract(b: List<T>): List<T> {
+		let result = this.create();
+		result.indexer = this.indexer;
+		result = this.select((el) => !b.contains(el));
+		return result;
+	}
 	public zip<U, V>(list: List<U>, fn: (t: T, u: U) => V = (t: T, u: U) => [t, u] as any): List<V> {
 		let result: List<V> = this.create<V>();
 		let length = list.length;

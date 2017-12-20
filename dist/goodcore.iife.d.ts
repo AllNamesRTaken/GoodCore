@@ -86,6 +86,7 @@ interface IList<T> extends IBasicList<T> {
 	shallowCopy(src: IList<T> | Array<T>): IList<T>;
 	reverse(): IList<T>;
 	orderBy(fn: (a: T, b: T) => number): IList<T>;
+	subtract(b: IList<T>): IList<T>;
 	zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
 	unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
 	flatten<U>(maxDepth?: number): IList<U>
@@ -258,6 +259,7 @@ declare namespace goodcore {
 		same(b: List<T>): boolean;
 		intersect(b: List<T>): List<T>;
 		union(b: List<T>): List<T>;
+		subtract(b: List<T>): List<T>;
 		zip<U, V>(list: List<U>, fn?: (t: T, u: U) => V): List<V>;
 		unzip<U, V>(fn?: (el: T) => [U, V]): [List<U>, List<V>];
 		flatten<U>(maxDepth?: number): List<U>;
@@ -384,7 +386,7 @@ declare namespace goodcore {
 			id?: ((node: S) => string) | string;
 			parent?: ((node: S) => string) | string;
 			data?: ((node: S) => any) | string;
-		}): Tree<T>;
+		}, virtualRoot?: boolean): Tree<T>;
 		constructor();
 		protected create<S = T>(): Tree<S>;
 		init(obj: Partial<Tree<T>>): Tree<T>;

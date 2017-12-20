@@ -8,10 +8,11 @@ import { List } from "./List";
 import { Stack } from "./Stack";
 
 export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
-	public id: string = "";
+	public id: string | number = "";
 	public parent: Tree<T> | null = null;
 	public children: List<Tree<T>> | null = null;
 	public data: T | null = null;
+	public virtual: boolean = false;
 	public static fromObject<T>(obj: any): Tree<T> {
 		const parent: Tree<T> | null = (this instanceof Tree) ? this : null;
 		const root = new Tree<T>().init({ id: obj.id || newUUID(), data: obj.data, parent });
@@ -21,10 +22,11 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		return root;
 	}
 	public static fromNodeList<S, T>(nodes: S[], mapcfg?: {
-		id?: ((node: S) => string)|string, 
-		parent?: ((node: S) => string)|string, 
+		id?: ((node: S) => string | number)|string | number, 
+		parent?: ((node: S) => string | number)|string | number, 
 		data?: ((node: S) => any)|string
-	}): Tree<T> {
+	// tslint:disable-next-line:align
+	}, virtualRoot: boolean = false): Tree<T> {
 		let result = new Tree<T>();
 		// create map
 		let mapResolver = (key: string) => {
@@ -45,17 +47,24 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 			// map
 			lookup.set(node.id, node);
 		});
+
 		// hook nodes together
+		let rootNodes = new List<Tree<T>>();
 		list.forEach((el, i) => {
 			let parent = map.parent(el);
 			if (lookup.contains(parent)) {
 				lookup.get(parent)!.add(lookup.get(map.id(el))!);
+			} else {
+				rootNodes.add(lookup.get(map.id(el))!);
 			}
 		});
+
 		// find root
-		result = lookup.get(map.id(list.get(0)))!;
-		while (result.parent) {
-			result = result.parent;
+		if (virtualRoot === false) {
+			result = rootNodes.first()!;
+		} else {
+			result = new Tree<T>().init({id: newUUID(), virtual: true});
+			rootNodes.forEach((el) => result.add(el));
 		}
 		return result;
 	}

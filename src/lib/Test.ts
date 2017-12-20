@@ -7,7 +7,7 @@ export function hasConsole(): boolean {
 	return this.hasWindow() && Global.window.console !== undefined || typeof (console) === "function";
 }
 export function isArray(it: any): boolean {
-	return !!(it && (it instanceof Array || typeof (it) === "array" as any));
+	return Array.isArray ? Array.isArray(it) : Object.prototype.toString.call(it) === "[object Array]";
 }
 export function isElement(target: any): boolean {
 	return target !== undefined && target !== null && target.nodeType === 1 ? true : false;
