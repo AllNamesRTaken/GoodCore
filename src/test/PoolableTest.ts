@@ -9,13 +9,19 @@ describe("Poolable",
 		});
 		it("Poolable has all the methods and does what i should",
 			function() {
-				class BaseObj {
+				@Poolable
+				class PoolableFoo implements IPoolable {
+					__pool__: IPool<IPoolable>;
+					release(): void {
+						throw new Error("Method not implemented.");
+					}
+					initPool(pool: IPool<IPoolable>): void {
+						throw new Error("Method not implemented.");
+					}
 					public Foo = "foo";
 				}
-				const _foo = Poolable(BaseObj);
-				class PoolableFoo extends _foo { }	
 				const pool = new Pool(PoolableFoo);
-				const obj = new PoolableFoo(1, 2, 3);
+				const obj = new PoolableFoo();
 				obj.Foo.should.equal("foo");
 				obj.initPool(pool);
 				obj.__pool__.should.equal(pool);

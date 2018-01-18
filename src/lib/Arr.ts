@@ -48,7 +48,7 @@ export function slice<T>(src: T[], from: number = 0, count: number = Infinity): 
 	}
 	return result;
 }
-export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, insert: T[] = []) {
+export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, insert: T[] = []): void {
 	if (isNullOrUndefined(src)) {
 		throw new Error("Unable to splice on null or undefined");
 	}

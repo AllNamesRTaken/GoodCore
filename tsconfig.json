@@ -6,7 +6,7 @@
 	    "target": "es5",
 	    "module": "es2015",
 	    "moduleResolution": "node",
-	    "declaration": true,
+	    "declaration": false,
 	    "noImplicitAny": true,
 		"noImplicitThis": false,
 		"strictNullChecks": true,
@@ -27,10 +27,10 @@
     },
 	"include": [
 		"./src/**/*.ts",
+		"./src/test/**/*.ts",
 		"./typings/**/*.d.ts"
 	],
 	"exclude": [
-		"./src/test/**/*.ts",
 		"./src/lib/wip/**/*.ts"
 	]
 }

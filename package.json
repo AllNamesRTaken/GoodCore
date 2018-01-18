@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.12.3",
+  "version": "0.13.0",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "./dist/goodcore.es5.umd.min.js",
   "module": "./dist/lib/index.js",
@@ -21,8 +21,8 @@
     "clean": "rimraf ./dist",
     "tsc": "tsc",
     "rollup": "node rollup.js",
-    "build": "npm run clean && tsc && gulp build-es5 && tsc -p tsconfig.es6.json && gulp build-es6 && npm run bundle_d_ts && gulp copyDTS",
-    "test": "npm run clean && tsc -p tsconfig-test.json && npm run run_test",
+    "build": "npm run clean && tsc -p tsconfig.app.json && gulp build-es5 && tsc -p tsconfig.es6.json && gulp build-es6 && gulp copyDTS",
+    "test": "npm run clean && tsc -p tsconfig.test.json && npm run run_test",
     "testcoverage": "npm run clean && tsc -p tsconfig-test.json && npm run coveralls",
     "run_test": "mocha ./dist/test/*Test.js",
     "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./dist/test/*.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",

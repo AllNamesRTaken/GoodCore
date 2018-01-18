@@ -4,7 +4,7 @@
 		"outDir": "./dist",
 	    "sourceMap": true,
 	    "target": "es6",
-	    "module": "es2015",
+	    "module": "commonjs",
 	    "moduleResolution": "node",
 	    "declaration": false,
 	    "noImplicitAny": true,
@@ -16,20 +16,22 @@
 	    "preserveConstEnums": true,
 		"allowJs": false,
 		"listFiles": false,
-		"strictNullChecks": true,
+		"listEmittedFiles": false,
 		"lib": [
             "dom",
             "es6",
             "es2015.promise",
 			"scripthost"
-        ]
+		],
+		"types": [
+			"node"
+		]
     },
 	"include": [
 		"./src/**/*.ts",
+		"./src/test/**/*.ts",
 		"./typings/**/*.d.ts"
 	],
 	"exclude": [
-		"./src/test/**/*.ts",
-		"./src/lib/wip/**/*.ts"
 	]
 }

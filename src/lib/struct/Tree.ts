@@ -7,7 +7,8 @@ import { Dictionary } from "./Dictionary";
 import { List } from "./List";
 import { Stack } from "./Stack";
 
-export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
+@Initable
+export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 	public id: string | number = "";
 	public parent: Tree<T> | null = null;
 	public children: List<Tree<T>> | null = null;

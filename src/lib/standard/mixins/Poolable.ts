@@ -1,6 +1,10 @@
 import { Pool } from "../Pool";
-export function Poolable<T>(Base: Constructor<T>): Constructor<T> & Constructor<IPoolable> {
-	return class extends (Base as Constructor<{}>) implements IPoolable {
+
+export function Poolable<T extends { new(...args: any[]): {} }>(constructor: T): T & Constructor<IPoolable> {
+	return class extends constructor implements IPoolable {
+		constructor(...args: any[]) {
+			super(...args);
+		}
 		public __pool__: Pool<this>;
 		public release() {
 			this.__pool__.release(this);
@@ -8,8 +12,5 @@ export function Poolable<T>(Base: Constructor<T>): Constructor<T> & Constructor<
 		public initPool(pool: Pool<this>): void {
 			this.__pool__ = pool;
 		}
-		constructor(...args: any[]) {
-			super(...args);
-		}
-	} as any;
+	}
 }

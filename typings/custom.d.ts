@@ -20,7 +20,7 @@ interface ICloneable<T> {
   clone(): T;
 }
 interface IInitable<T> {
-  init(obj: Partial<T> | any, ...types: Array<ICtor<any>>): T;
+  init(obj: Partial<T> | any, mapping?: any): this;
 }
 interface ISerializable<T> {
   toJSON(): any;

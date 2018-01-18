@@ -60,7 +60,7 @@ gulp.task("build-es5", async function () {
 });
 
 gulp.task("copyDTS", () => {
-    return gulp.src("goodcore.iife.d.ts")
+    return gulp.src("./*.d.ts")
         .pipe(gulp.dest("dist"));
 });
 //This should build both but when I sequence them then they leek code into each other.

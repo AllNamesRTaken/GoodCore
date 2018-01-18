@@ -450,7 +450,7 @@ declare namespace goodcore {
 		export function reverse<T>(array: T[]): T[];
 		export function concat(...arrs: any[]): any[];
 		export function slice<T>(src: T[], from?: number, count?: number): T[];
-		export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[])
+		export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void
 		export function append<T>(arr: T[], values: T[]): void;
 		export function removeAt(arr: any[], index: number): any;
 		export function indexOfElement(src: any[], el: any): number;
@@ -559,9 +559,8 @@ declare namespace goodcore {
 		init(): void;
 	}
 
-	export function Poolable<T>(Base: Constructor<T>): Constructor<T> & Constructor<IPoolable>;
-
-	export function Initable<T>(base: Constructor<T>): Constructor<T> & Constructor<IInitable<T>>;
+	export function Poolable<T extends { new(...args: any[]): {} }>(constructor: T): T & Constructor<IPoolable>
+	export function Initable<T extends { new(...args: any[]): {} }>(constructor: T): T & Constructor<IInitable<T>>
 
 	export function before<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
 	export function after<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
