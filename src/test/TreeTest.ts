@@ -22,7 +22,7 @@ describe("Tree",
 		it("Tree.fromObject returns correct tree",
 			function () {
 				const tree = this.tree as Tree<string>;
-				tree.children!.get(1).children!.get(1).data!.should.equal("c2-2");
+				tree.children!.get(1)!.children!.get(1)!.data!.should.equal("c2-2");
 			});
 		it("Tree.fromNodeList returns correct tree in case with single root",
 			function () {
@@ -34,10 +34,27 @@ describe("Tree",
 					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] }
 				];
 				let tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
-				tree.children!.get(0).children!.get(1).data!.should.deep.equal({ category: "drama" });
+				tree.children!.get(0)!.children!.get(1)!.data!.should.deep.equal({ category: "drama" });
 				tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true);
 				tree.virtual.should.be.true;
-				tree.children!.get(0).id.should.equal("-");
+				tree.children!.get(0)!.id.should.equal("-");
+			});
+		it("Tree.fromNodeList returns correct tree in case with single root and duplicate IDs",
+			function () {
+				let nodeList: any[] = [
+					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
+					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
+					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
+					{ uid: "0-0", parent: "0", category: "adventure", children: ["0-0-0", "0-0-1"] },
+					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] },
+					{ uid: "0-1", parent: "1", category: "drama", children: ["0-1-0", "0-1-1"] }
+				];
+				let tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
+				tree.children!.get(0)!.children!.get(1)!.data!.should.deep.equal({ category: "drama" });
+				tree.children!.get(1)!.children!.get(0)!.data!.should.deep.equal({ category: "drama" });
+				tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true);
+				tree.virtual.should.be.true;
+				tree.children!.get(0)!.id.should.equal("-");
 			});
 		it("Tree.fromNodeList returns correct tree in case with multiple roots",
 			function () {
@@ -51,8 +68,8 @@ describe("Tree",
 				];
 				let tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true);
 				tree.virtual.should.be.true;
-				tree.children!.get(0).id.should.equal("-");
-				tree.children!.get(1).id.should.equal("foo");
+				tree.children!.get(0)!.id.should.equal("-");
+				tree.children!.get(1)!.id.should.equal("foo");
 				tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
 				tree.virtual.should.be.false;
 				tree.id.should.equal("-");
@@ -66,8 +83,8 @@ describe("Tree",
 			function () {
 				const tree = this.tree as Tree<string>;
 				const filtered = tree.filter((node) => node.children !== null);
-				filtered.children!.get(0).data!.should.equal("c2");
-				filtered.children!.get(0).children!.count.should.equal(0);
+				filtered.children!.get(0)!.data!.should.equal("c2");
+				filtered.children!.get(0)!.children!.count.should.equal(0);
 			});
 		it("Contains is true if node exists otherwise false",
 			function () {
@@ -117,32 +134,32 @@ describe("Tree",
 				const tree = this.tree as Tree<string>;
 				let list: Array<Tree<string>> = tree.reduce();
 				list.length.should.equal(6);
-				list[0].data.should.equal("root");
-				list[5].data.should.equal("c3");
+				list[0].data!.should.equal("root");
+				list[5].data!.should.equal("c3");
 			});
 		it("InsertAt inserts at the correct position",
 			function () {
 				const tree = this.tree as Tree<string>;
 				tree.insertAt(1, "c1.5");
-				tree.children!.get(1).data!.should.equal("c1.5");
-				tree.children!.get(2).data!.should.equal("c2");
-				tree.children!.get(1).remove();
+				tree.children!.get(1)!.data!.should.equal("c1.5");
+				tree.children!.get(2)!.data!.should.equal("c2");
+				tree.children!.get(1)!.remove();
 				tree.insertAt(100000, "c4");
-				tree.children!.get(3).data!.should.equal("c4");
-				tree.children!.get(3).remove();
+				tree.children!.get(3)!.data!.should.equal("c4");
+				tree.children!.get(3)!.remove();
 			});
 		it("Prune removes all children from a node",
 			function () {
 				const tree = (this.tree as Tree<string>).clone();
-				tree.children!.get(1).prune();
-				(tree.children!.get(1).children === null).should.be.true;
+				tree.children!.get(1)!.prune();
+				(tree.children!.get(1)!.children === null).should.be.true;
 			});
 		it("Depth returns correct depth",
 			function () {
 				const tree = (this.tree as Tree<string>).clone();
 				tree.depth().should.equal(0);
-				tree.children.get(1).depth().should.equal(1);
-				tree.children.get(1).children.get(0).depth().should.equal(2);
+				tree.children!.get(1)!.depth().should.equal(1);
+				tree.children!.get(1)!.children!.get(0)!.depth().should.equal(2);
 			});
 		it("ToJson formats Tree correct",
 			function () {
@@ -151,7 +168,8 @@ describe("Tree",
 					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
 					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
 					{ uid: "0-0", parent: "0", category: "adventure", children: ["0-0-0", "0-0-1"] },
-					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] }
+					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] },
+					{ uid: "0-1", parent: "1", category: "drama", children: ["1-0-0", "1-0-1"] }
 				];
 				const tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
 				JSON.stringify(tree).should.equal(JSON.stringify([
@@ -159,7 +177,8 @@ describe("Tree",
 					{ id: "0", data: {category: "books"}, parent: "-", children: ["0-0", "0-1"] },
 					{ id: "0-0", data: {category: "adventure"}, parent: "0", children: null },
 					{ id: "0-1", data: {category: "drama"}, parent: "0", children: null },
-					{ id: "1", data: {category: "toys"}, parent: "-", children: null },
+					{ id: "1", data: {category: "toys"}, parent: "-", children: ["0-1"] },
+					{ id: "0-1", data: {category: "drama"}, parent: "1", children: null },
 				]));
 			});
 		it("serialize works like a typed toJSON",

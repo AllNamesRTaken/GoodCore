@@ -42,21 +42,27 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		};
 		// create node lookup
 		let list = new List<S>(nodes);
-		let lookup: Dictionary<Tree<T>> = new Dictionary();
-		list.forEach((el, i) => {
-			let node = new Tree<T>().init({id: map.id(el), data: map.data(el)});
-			// map
-			lookup.set(node.id, node);
+		let lookup: Dictionary<Array<Tree<T>>> = new Dictionary();
+		function getLookupKey(node: Tree<T>): string {
+			return node.parent ? `${node.parent.id}_${node.id}` : "_root_" + node.id;
+		}
+		let nodeList = list.map((el) => new Tree<T>().init({id: map.id(el), data: map.data(el)}));
+		nodeList.forEach((node, i) => {
+			if (!lookup.has(node.id)) {
+				lookup.set(node.id, []);
+			}
+			lookup.get(node.id)!.push(node);
 		});
 
 		// hook nodes together
 		let rootNodes = new List<Tree<T>>();
 		list.forEach((el, i) => {
-			let parent = map.parent(el);
-			if (lookup.contains(parent)) {
-				lookup.get(parent)!.add(lookup.get(map.id(el))!);
+			let parentId: string = map.parent(el);
+			let nodeId: string = map.id(el);
+			if (lookup.contains(parentId)) {
+				lookup.get(parentId)!.forEach((p) => p.add(nodeList.get(i)!));
 			} else {
-				rootNodes.add(lookup.get(map.id(el))!);
+				rootNodes.add(nodeList.get(i)!);
 			}
 		});
 
