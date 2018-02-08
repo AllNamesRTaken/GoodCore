@@ -34,7 +34,7 @@ describe("List",
 				indexed.copy(list.values);
 				((indexed as any)._index as Dictionary<number>).keys.should.deep.equal(["1", "2", "4", "7"]);
 				((indexed as any)._index as Dictionary<number>).values.should.deep.equal([1, 4, 7, 2]);
-				((indexed as any)._index as Dictionary<number>).get(7).should.equal(7);
+				((indexed as any)._index as Dictionary<number>).get(7)!.should.equal(7);
 			});
 		it("clone copies values correctly into a new List",
 			function () {
@@ -46,7 +46,7 @@ describe("List",
 				const org = (new List([1, 2, 3]));
 				org.indexer = (el) => el - 1;
 				const indexed = org.clone();
-				indexed.indexer.should.deep.equal(org.indexer);
+				indexed.indexer!.should.deep.equal(org.indexer);
 			});
 		it("Fill fills an array with new data", function() {
 			let list1 = new List([1, 4, 7, 2]);
@@ -58,7 +58,7 @@ describe("List",
 			list1.fill(2, () => 1).values.should.deep.equal([1, 1]);
 			list1.fill(3, (i) => i).values.should.deep.equal([0, 1, 2]);
 			list2.fill(2, obj).values.should.deep.equal([{ a: 1 }, { a: 1 }]);
-			list2.get(0).should.not.equal(obj);
+			list2.get(0)!.should.not.equal(obj);
 		});
 		it("Splice does splice",
 			function() {
@@ -148,7 +148,7 @@ describe("List",
 				const list2 = (this.list1 as List<any>).clone();
 				list2.indexer = (el) => el;
 				list1.set(2, 42).get(2).should.equal(42);
-				let err: Error = null;
+				let err: Error | undefined;
 				try {
 					list1.set(4, 42);
 				} catch (error) {
@@ -348,7 +348,7 @@ describe("List",
 		it("ReverseReduce works on numbers",
 			function () {
 				const list1 = this.list1 as List<any>;
-				list1.reverseReduce((acc, cur) => (acc.push(cur), acc), []).should.deep.equal(list1.clone().reverse().values);
+				list1.reverseReduce((acc, cur) => (acc.push(cur), acc), [] as number[]).should.deep.equal(list1.clone().reverse().values);
 			});
 		it("ReverseReduceUntil works like reverseReduce with condition",
 			function () {
@@ -609,6 +609,18 @@ describe("List",
 				JSON.stringify(list2).should.equal('[{"foo":2},{"foo":3},{"foo":4},{"foo":5}]');
 				list3.deserialize([{x:1, y:1}, {x:2, y:2}], Vec2);
 				JSON.stringify(list3).should.equal('[{"x":1,"y":1},{"x":2,"y":2}]');
+			});
+		it("should iterate correctly with for ... of", 
+			function () {
+				let list = new List<number>([2, 4, 7, 1]);
+				let sum = 0;
+				for (let v of list) {
+					sum += v;
+				}
+				for (let v of list) {
+					sum += v;
+				}
+				sum.should.equal(28);
 			});
 	}
 );

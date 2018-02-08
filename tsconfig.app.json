@@ -18,9 +18,11 @@
 	    "experimentalDecorators": true,
 	    "allowJs": false,
 		"listFiles": false,
+		"downlevelIteration": true,
 		"lib": [
 			"dom",
 			"es5",
+			"es6",
             "es2015.promise",
 			"scripthost"
         ]

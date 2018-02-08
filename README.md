@@ -15,8 +15,8 @@ It brings:
 It contains ...
 
 the following JSON.stringify -able data structures:
-- List<T> (indexable)
-- SortedList<T> (O(log(n)) lookup)
+- List<T> (indexable, with iterator)
+- SortedList<T> (O(log(n)) lookup, and iterator)
 - Dictionary<T>
 - Stack<T>
 - Tree<T>
@@ -57,6 +57,9 @@ and lots of utility functions for:
   - Log pipe
   - Guid generation
   - looping
+
+# Caveat
+Iterator support in List and SortedList requires that the browser supports it too. So if you have to support a browser which do not such as IE11 then please use a polyfill like core.js. 
 
 # Examples
 Here is a small example that makes no sense other than show what the lib looks like in use.

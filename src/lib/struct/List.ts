@@ -3,10 +3,12 @@ import { clone, equals, setProperties } from "../Obj";
 import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined } from "../Test";
 import { Dictionary } from "./Dictionary";
 
-export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
+(window as any).Symbol = (window as any).Symbol || { iterator: "iterator" };
+export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
 	private _array: T[] = [];
 	private _index: Dictionary<T> | null = null;
 	private _indexer: ((el: T) => any) | null = null;
+	private _pointer: number = 0;
 
 	constructor(arr?: T[] | List<T>) {
 		if (arr === undefined) {
@@ -20,6 +22,15 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<Li
 		}
 	}
 
+	public [Symbol.iterator](): IterableIterator<T> {
+		return this;
+	}
+	public next(value?: any): IteratorResult<T> {
+		return {
+				done: this._pointer >= this.length,
+				value: this._pointer < this.length ? this._array[this._pointer++] : (this._pointer = 0, undefined as any)
+			};
+	}
 	protected create<S = T>(arr?: S[] | List<S>): List<S> {
 		return new ((this as any).constructor)(arr);
 	}

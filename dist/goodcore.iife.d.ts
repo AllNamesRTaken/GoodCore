@@ -31,6 +31,8 @@ interface IInitable<T> {
 	init(obj: Partial<T>): T;
 }
 interface IBasicList<T> {
+	[Symbol.iterator](): IterableIterator<T>;
+	next(value?: any): IteratorResult<T>;
 	values: Array<T>;
 	get(pos: number): T;
 	count: number;
@@ -204,6 +206,8 @@ declare namespace goodcore {
 
 	export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable<List<T>> {
 		constructor(arr?: T[] | List<T>);
+		[Symbol.iterator](): IterableIterator<T>;
+		next(value?: any): IteratorResult<T>;
 		protected create<S = T>(arr?: S[] | List<S>): List<S>;
 		readonly values: T[];
 		get(pos: number): T | undefined;
@@ -277,6 +281,8 @@ declare namespace goodcore {
 	}
 	export class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
 		constructor(comparer?: (a: T, b: T) => number, arr?: T[] | List<T> | SortedList<T>);
+		[Symbol.iterator](): IterableIterator<T>;
+		next(value?: any): IteratorResult<T>;
 		protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
 		readonly values: T[];
 		get(pos: number): T | undefined;

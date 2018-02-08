@@ -3,15 +3,18 @@ import { equals, setProperties } from "../Obj";
 import { isFunction, isNotUndefined } from "../Test";
 import { List } from "./List";
 
+(window as any).Symbol = (window as any).Symbol || { iterator: "iterator" };
+
 export class Comparer {
 	public static StringAsc = function(a: string, b: string) { return a < b ? -1 : a === b ? 0 : 1; };
 	public static StringDesc = function(a: string, b: string) { return a < b ? 1 : a === b ? 0 : -1; };
 	public static NumberAsc = function(a: number, b: number) { return a < b ? -1 : a === b ? 0 : 1; };
 	public static NumberDesc = function(a: number, b: number) { return a < b ? 1 : a === b ? 0 : -1; };
 }
-export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>, IDeserializable<SortedList<T>>, ICloneable<SortedList<T>> {
+export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T>, ISerializable<T[]>, IDeserializable<SortedList<T>>, ICloneable<SortedList<T>> {
 	private _list: List<T> = new List<T>();
 	private _cmp: (a: T, b: T) => number;
+	private _pointer: number = 0;
 
 	constructor(comparer: ((a: T, b: T) => number) = ((a: T, b: T) => a < b ? -1 : a === b ? 0 : 1 ), arr?: T[] | List<T> | SortedList<T>) {
 		this._cmp = comparer;
@@ -27,6 +30,15 @@ export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>
 		}
 	}
 
+	public [Symbol.iterator](): IterableIterator<T> {
+		return this;
+	}
+	public next(value?: any): IteratorResult<T> {
+		return {
+				done: this._pointer >= this.length,
+				value: this._pointer < this.length ? this.values[this._pointer++] : (this._pointer = 0, undefined as any)
+			};
+	}
 	protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S> {
 		return new ((this as any).constructor)(comparer, arr);
 	}

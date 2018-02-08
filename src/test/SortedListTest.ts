@@ -421,6 +421,18 @@ describe("SortedList",
 				let list5 = new SortedList(Comparer.NumberAsc, [2, 1, 2, 4, 3]);
 				list5.values.should.deep.equal([1, 2, 2, 3, 4]);
 			});
+		it("should iterate correctly with for ... of", 
+			function () {
+				let list = new SortedList(Comparer.NumberDesc, [2, 4, 7, 1]);
+				let sum = 0;
+				for (let v of list) {
+					sum += v;
+				}
+				for (let v of list) {
+					sum += v;
+				}
+				sum.should.equal(28);
+			});
 
 	}
 );

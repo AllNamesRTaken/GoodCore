@@ -30,7 +30,9 @@ interface IDeserializable<T> {
   deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IBasicList<T> {
-  values: Array<T>;
+    [Symbol.iterator](): IterableIterator<T>;
+    next(value?: any): IteratorResult<T>;
+    values: Array<T>;
   get(pos: number): T | undefined;
   count: number;
   clear(): IBasicList<T>;
@@ -244,6 +246,8 @@ declare module 'goodcore/struct/Rect' {
 declare module 'goodcore/struct/List' {
     export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
         constructor(arr?: T[] | List<T>);
+		[Symbol.iterator](): IterableIterator<T>;
+		next(value?: any): IteratorResult<T>;
         protected create<S = T>(arr?: S[] | List<S>): List<S>;
         readonly values: T[];
         get(pos: number): T | undefined;
@@ -318,6 +322,8 @@ declare module 'goodcore/struct/SortedList' {
     }
     export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>, IDeserializable<SortedList<T>>, ICloneable<SortedList<T>> {
         constructor(comparer?: ((a: T, b: T) => number), arr?: T[] | List<T> | SortedList<T>);
+		[Symbol.iterator](): IterableIterator<T>;
+		next(value?: any): IteratorResult<T>;
         protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
         readonly values: T[];
         get(pos: number): T | undefined;
