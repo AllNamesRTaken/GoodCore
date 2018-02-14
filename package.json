@@ -1,20 +1,20 @@
 {
   "name": "goodcore",
-  "version": "0.14.0",
+  "version": "0.14.7",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
-  "main": "./dist/goodcore.es5.umd.min.js",
-  "module": "./dist/lib/index.js",
-  "typings": "./dist/goodcore.d.ts",
-  "unpkg": "dist/goodcore.es5.iife.min.js",
+  "main": "goodcore.es5.umd.min.js",
+  "module": "index.js",
+  "typings": "goodcore.d.ts",
+  "unpkg": "goodcore.es5.iife.min.js",
   "files": [
-    "dist/goodcore.es5.iife.min.js",
-    "dist/goodcore.es5.umd.min.js",
-    "dist/goodcore.es5.es2015.min.js",
-    "dist/goodcore.es6.min.js",
-    "dist/goodcore.es6.umd.min.js",
-    "dist/goodcore.d.ts",
-    "dist/goodcore.iife.d.ts",
-    "dist/lib/"
+    "goodcore.es5.iife.min.js",
+    "goodcore.es5.umd.min.js",
+    "goodcore.es5.es2015.min.js",
+    "goodcore.es6.min.js",
+    "goodcore.es6.umd.min.js",
+    "goodcore.d.ts",
+    "goodcore.iife.d.ts",
+    "*"
   ],
   "scripts": {
     "install_tools": "npm install && typings install",
@@ -27,7 +27,8 @@
     "run_test": "mocha ./dist/test/*Test.js",
     "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./dist/test/*.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "cover": "npm run test && istanbul cover ./node_modules/mocha/bin/_mocha -- ./dist/test/*.js",
-    "bundle_d_ts": "node dts-bundle.js"
+    "bundle_d_ts": "node dts-bundle.js",
+    "deploy": "gulp package && npm publish dist/lib"
   },
   "dependencies": {},
   "devDependencies": {

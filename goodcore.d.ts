@@ -468,6 +468,7 @@ declare module 'goodcore/struct/IndexedTree' {
         constructor(id?: string | number, indexer?: (node: Tree<T>) => string | number, index?: Dictionary<Tree<T>>);
         protected create<S = T>(...args: any[]): Tree<S>;
         insertAt(pos: number, data: T, id?: string | number): void;
+		addTo(parentId: string | number, data: T|Tree<T>, id?: string | number): IndexedTree<T> | undefined;
         add(data: T | Tree<T>, id?: string | number): void;
         contains(condition: (data: T) => boolean): boolean;
         get(id: string | number): IndexedTree<T> | undefined;
