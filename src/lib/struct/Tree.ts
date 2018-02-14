@@ -16,7 +16,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 	public virtual: boolean = false;
 	public static fromObject<T>(obj: any): Tree<T> {
 		const parent: Tree<T> | null = (this instanceof Tree) ? this : null;
-		const root = new Tree<T>().init({ id: obj.id || newUUID(), data: obj.data, parent });
+		const root = new Tree<T>(obj.id).init({ data: obj.data, parent });
 		if (obj.children !== undefined && isArray(obj.children)) {
 			root.children = new List<Tree<T>>(map<any, Tree<T>>(obj.children as Array<Tree<T>>, Tree.fromObject.bind(root)));
 		}
@@ -70,40 +70,47 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		if (virtualRoot === false) {
 			result = rootNodes.first()!;
 		} else {
-			result = new Tree<T>().init({id: newUUID(), virtual: true});
+			result = new Tree<T>().init({virtual: true});
 			rootNodes.forEach((el) => result.add(el));
 		}
 		return result;
 	}
 
-	constructor() {
-		this.id = newUUID();
+	constructor(id?: string | number) {
+		this.id = id || newUUID();
 	}
 
-	protected create<S = T>(): Tree<S> {
-		return new ((this as any).constructor)();
+	protected create<S = T>(...args: any[]): Tree<S> {
+		return new ((this as any).constructor)(...args);
 	}
 	public init(obj: Partial<Tree<T>>): Tree<T> {
 		setProperties(this, obj);
 		return this;
 	}
-	public insertAt(pos: number, data: T): void {
+	public insertAt(pos: number, data: T, id?: string | number): Tree<T> {
+		let node: Tree<T>;
 		if (this.children === null || this.children.count <= pos) {
-			this.add(data);
+			node = this.add(data);
 		} else {
-			this.children.insertAt(pos, this.create<T>().init({ data, parent: this }));
+			node = this.create<T>(id).init({ data, parent: this });
+			this.children.insertAt(pos, node);
 		}
+		return node;
 	}
-	public add(data: T|Tree<T>): void {
+	public add(data: T|Tree<T>, id?: string | number): Tree<T> {
+		let node: Tree<T>;
 		if (this.children === null) {
 			this.children = new List<Tree<T>>();
 		}
 		if (isSameClass(data, this)) {
-			(data as Tree<T>).parent = this;
-			this.children.add(data as Tree<T>);
+			node = data as Tree<T>;
+			node.parent = this;
+			this.children.add(node);
 		} else {
-			this.children.add((this.create<T>()).init({ data: data as T, parent: this }));
+			node = (this.create<T>(id)).init({ data: data as T, parent: this });
+			this.children.add(node);
 		}
+		return node;
 	}
 	public remove(): void {
 		if (this.parent !== null) {
@@ -139,15 +146,15 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		return acc;
 	}
 	public clone(): Tree<T> {
-		const result = new ((this as any).constructor as ICtor<Tree<T>>)();
+		const result = this.create();
 		result.id = this.id;
 		result.parent = this.parent;
 		result.children = this.children === null ? null : this.children.clone();
 		result.data = this.data === null || this.data === undefined ? this.data : clone(this.data);
 		return result;
 	}
-	private duplicateNode(): Tree<T> {
-		const result = new ((this as any).constructor as ICtor<Tree<T>>)();
+	protected duplicateNode(): Tree<T> {
+		const result = this.create();
 		result.id = this.id;
 		result.parent = this.parent;
 		result.children = this.children;
@@ -201,9 +208,6 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		}
 		return result;
 	}
-	public contains(condition: (data: T) => boolean): boolean {
-		return this.find(condition) !== null;
-	}
 	public depth(): number {
 		let result = 0;
 		let node = this as Tree<T>;
@@ -212,6 +216,13 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 			++result;
 		}
 		return result;
+	}
+	public sort(comparer: (a: Tree<T>, b: Tree<T>) => number): Tree<T> {
+		if (this.children !== null) {
+			this.children.orderBy(comparer);
+			this.children.forEach((el) => el.sort(comparer));
+		}
+		return this;
 	}
 	public toJSON(): any {
 		let result = new List<any>();
@@ -230,3 +241,4 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		return result.serialize();
 	}
 }
+

@@ -114,6 +114,7 @@ declare module 'goodcore' {
     export { Dictionary as Dictionary } from "goodcore/struct/Dictionary";
     export { Stack as Stack } from "goodcore/struct/Stack";
     export { Tree as Tree } from "goodcore/struct/Tree";
+    export { IndexedTree as IndexedTree } from "goodcore/struct/IndexedTree";
     import * as Calc from "goodcore/Calc";
     export { Calc as Calc };
     import * as Dom from "goodcore/Dom";
@@ -428,34 +429,48 @@ declare module 'goodcore/struct/Stack' {
 
 declare module 'goodcore/struct/Tree' {
     import { List } from "goodcore/struct/List";
-    export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
-        id: string | number;
-        parent: Tree<T> | null;
-        children: List<Tree<T>> | null;
-        data: T | null;
-        virtual: boolean;
-        static fromObject<T>(obj: any): Tree<T>;
-        static fromNodeList<S, T>(nodes: S[], mapcfg?: {
-            id?: ((node: S) => string | number) | string | number;
-            parent?: ((node: S) => string | number) | string | number;
-            data?: ((node: S) => any) | string;
-        }, virtualRoot?: boolean): Tree<T>;
-        constructor();
-        protected create<S = T>(): Tree<S>;
-        init(obj: Partial<Tree<T>>): Tree<T>;
-        insertAt(pos: number, data: T): void;
-        add(data: T | Tree<T>): void;
-        remove(): void;
-        prune(): Tree<T>;
-        reduce(fn?: (acc: any, cur: Tree<T> | null) => any, start?: any): any;
-        clone(): Tree<T>;
-        filter(condition: (node: Tree<T>) => boolean): Tree<T>;
-        select(condition?: (node: Tree<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
-        find(condition: (data: T | null) => boolean): Tree<T> | null;
+	export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
+		id: string;
+		parent: Tree<T> | null;
+		children: List<Tree<T>> | null;
+		data: T | null;
+		virtual: boolean;
+		static fromObject<T>(obj: any): Tree<T>;
+		static fromNodeList<S, T>(nodes: S[], mapcfg?: {
+			id?: ((node: S) => string) | string;
+			parent?: ((node: S) => string) | string;
+			data?: ((node: S) => any) | string;
+		}, virtualRoot?: boolean): Tree<T>;
+		constructor(id?: string | number);
+		protected create<S = T>(...args: any[]): Tree<S>;
+		init(obj: Partial<Tree<T>>): Tree<T>;
+		insertAt(pos: number, data: T, id?: string | number): void;
+		add(data: T | Tree<T>, id?: string | number): void;
+		remove(): void;
+		prune(): Tree<T>;
+		reduce(fn?: (acc: any, cur: Tree<T> | null) => any, start?: any): any;
+		clone(): Tree<T>;
+		filter(condition: (node: Tree<T>) => boolean): Tree<T>;
+		select(condition?: (node: Tree<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
+		find(condition: (data: T | null) => boolean): Tree<T> | null;
+		depth(): number;
+		sort(comparer: (a: Tree<T>, b: Tree<T>) => number): Tree<T>;
+		serialize(): T[];		
+		toJSON(): any;
+	}
+}
+declare module 'goodcore/struct/IndexedTree' {
+    import { Dictionary } from "goodcore/struct/Dictionary";
+    import { Tree } from "goodcore/struct/Tree";
+    export class IndexedTree<T> extends Tree<T> {
+        indexer: (node: Tree<T>) => string | number;
+        static fromObject<T>(obj: any, indexer?: (node: Tree<T>) => string | number): Tree<T>;
+        constructor(id?: string | number, indexer?: (node: Tree<T>) => string | number, index?: Dictionary<Tree<T>>);
+        protected create<S = T>(...args: any[]): Tree<S>;
+        insertAt(pos: number, data: T, id?: string | number): void;
+        add(data: T | Tree<T>, id?: string | number): void;
         contains(condition: (data: T) => boolean): boolean;
-        depth(): number;
-        toJSON(): any;
-        serialize(): T[];
+        get(id: string | number): IndexedTree<T> | undefined;
     }
 }
 
@@ -558,6 +573,16 @@ declare module 'goodcore/Util' {
     export interface IObjectWithFunctions<T extends Object | void> {
         [key: string]: (...args: any[]) => T;
     }
+    export class LoggableCounter {
+        public name: string;
+        public log(): void;
+        public inc(): LoggableCounter;
+        public reset(): LoggableCounter;
+        valueOf(): number;
+        toString(): string;
+    }
+    export function counter(key?: number | string): LoggableCounter;
+    export function count(key?: number | string): LoggableCounter;
     export function init(win?: Window): void;
     export function getFunctionName(fn: Function): string;
     export function getFunctionCode(fn: Function): string;

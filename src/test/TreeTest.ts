@@ -86,12 +86,6 @@ describe("Tree",
 				filtered.children!.get(0)!.data!.should.equal("c2");
 				filtered.children!.get(0)!.children!.count.should.equal(0);
 			});
-		it("Contains is true if node exists otherwise false",
-			function () {
-				const tree = this.tree as Tree<string>;
-				tree.contains((data) => data === "c2-2").should.be.true;
-				tree.contains((data) => data === "c2-3").should.be.false;
-			});
 		it("Select returns a list of matching nodes",
 			function () {
 				const tree = this.tree as Tree<string>;
@@ -109,7 +103,7 @@ describe("Tree",
 				const c4 = tree.find((data) => data === "c4");
 				c4!.data!.should.equal("c4");
 				(c4 as Tree<string>).remove();
-				tree.contains((data) => data === "c4").should.be.false;
+				(tree.find((data) => data === "c4") !== null).should.be.false;
 				let node = new Tree<string>().init({ data: "treenode" });
 				tree.add(node);
 				const treenode = tree.find((data) => data === "treenode");
@@ -160,6 +154,13 @@ describe("Tree",
 				tree.depth().should.equal(0);
 				tree.children!.get(1)!.depth().should.equal(1);
 				tree.children!.get(1)!.children!.get(0)!.depth().should.equal(2);
+			});
+		it("Sort sorts all children recursivly",
+			function () {
+				const tree = (this.tree as Tree<string>).clone();
+				tree.sort((a, b) => (a.data! < b.data! ? 1 : a.data! > b.data! ? -1 : 0));
+				tree.children!.get(0)!.data!.should.equal("c3");
+				tree.children!.get(1)!.children!.get(1)!.data!.should.equal("c2-1");
 			});
 		it("ToJson formats Tree correct",
 			function () {

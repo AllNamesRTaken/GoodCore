@@ -6,8 +6,33 @@ export interface IObjectWithFunctions<T extends Object | void> {
 	[key: string]: (...args: any[]) => T;
 }
 
+class LoggableCounter {
+	public name = "";
+	private _value = 0;
+	public log() {
+		console.log("Counter " + this.name + ": " + this.toString());
+	}
+	constructor(name: string = "") {
+		this.name = name;
+	}
+	public inc() {
+		this._value++;
+		return this;
+	}
+	public reset() {
+		this._value = 0;
+		return this;
+	}
+	valueOf(): number {
+		return this._value;
+	}
+	toString(): string {
+		return this._value.toString();
+	}
+}
 class UtilState {
-	public static _int: number = 0;
+	public static _int: {[key: string]: number} = {"0": 0};
+	public static _counter: {[key: string]: LoggableCounter} = {"": new LoggableCounter("")};
 }
 
 export function init(win?: Window) {
@@ -41,8 +66,20 @@ export function newUUID(): string { // export function Domain/MIT
 		return (c === "x" ? r : (r & 0x3 | 0x8)).toString(16);
 	});
 }
-export function newInt(): number {
-	return UtilState._int++;
+export function newInt(key: number | string = 0): number {
+	if (UtilState._int[key] === undefined) {
+		UtilState._int[key] = 0;
+	}
+	return UtilState._int[key]++;
+}
+export function counter(key: number | string = ""): LoggableCounter {
+	if (UtilState._counter[key] === undefined) {
+		UtilState._counter[key] = new LoggableCounter(key.toString());
+	}
+	return UtilState._counter[key];
+}
+export function count(key: number | string = ""): LoggableCounter {
+	return counter(key).inc();
 }
 export function callDebugger(): void {
 	// tslint:disable-next-line:no-debugger

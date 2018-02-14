@@ -145,5 +145,30 @@ describe("Util",
 					Util.loop(10, (i) => sum += i);
 					sum.should.equal(45);
 				});
+		it("Count should increase",
+				function() {
+					let sum = 0;
+					Util.loop(10, (i) => Util.count());
+					(+Util.counter()).should.equal(10);
+				});
+		it("Count with name should be resetable",
+				function() {
+					let sum = 0;
+					Util.count("one");
+					Util.loop(10, (i) => Util.count("loop"));
+					(+Util.counter("loop")).should.equal(10);
+					(+Util.counter("loop").reset()).should.equal(0);
+					(+Util.counter("one")).should.equal(1);
+				});
+		it("Counter.log should log to console",
+				function() {
+					let output = "";
+					let log = console.log;
+					console.log = (text: string) => output = text;
+					Util.counter().reset();
+					Util.count().log();
+					output.endsWith("1");
+					console.log = log;
+				});
 	}
 );

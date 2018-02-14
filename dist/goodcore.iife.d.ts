@@ -394,11 +394,11 @@ declare namespace goodcore {
 			parent?: ((node: S) => string) | string;
 			data?: ((node: S) => any) | string;
 		}, virtualRoot?: boolean): Tree<T>;
-		constructor();
-		protected create<S = T>(): Tree<S>;
+		constructor(id?: string | number);
+		protected create<S = T>(...args: any[]): Tree<S>;
 		init(obj: Partial<Tree<T>>): Tree<T>;
-		insertAt(pos: number, data: T): void;
-		add(data: T | Tree<T>): void;
+		insertAt(pos: number, data: T, id?: string | number): void;
+		add(data: T | Tree<T>, id?: string | number): void;
 		remove(): void;
 		prune(): Tree<T>;
 		reduce(fn?: (acc: any, cur: Tree<T> | null) => any, start?: any): any;
@@ -406,10 +406,21 @@ declare namespace goodcore {
 		filter(condition: (node: Tree<T>) => boolean): Tree<T>;
 		select(condition?: (node: Tree<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
 		find(condition: (data: T | null) => boolean): Tree<T> | null;
-		contains(condition: (data: T) => boolean): boolean;
 		depth(): number;
+		sort(comparer: (a: Tree<T>, b: Tree<T>) => number): Tree<T>;
 		serialize(): T[];		
 		toJSON(): any;
+	}
+
+	export class IndexedTree<T> extends Tree<T> {
+		indexer: (node: Tree<T>) => string | number;
+		static fromObject<T>(obj: any, indexer?: (node: Tree<T>) => string | number): Tree<T>;
+		constructor(id?: string | number, indexer?: (node: Tree<T>) => string | number, index?: Dictionary<Tree<T>>);
+		protected create<S = T>(...args: any[]): Tree<S>;
+		insertAt(pos: number, data: T, id?: string | number): void;
+		add(data: T | Tree<T>, id?: string | number): void;
+		contains(condition: (data: T) => boolean): boolean;
+		get(id: string | number): IndexedTree<T> | undefined;
 	}
 
 	export class CalcConst {
@@ -512,6 +523,16 @@ declare namespace goodcore {
 	}
 
 	export namespace Util {
+		export class LoggableCounter {
+			public name: string;
+			public log(): void;
+			public inc(): LoggableCounter;
+			public reset(): LoggableCounter;
+			valueOf(): number;
+			toString(): string;
+		}
+		export function counter(key?: number | string): LoggableCounter;
+		export function count(key?: number | string): LoggableCounter;
 		export function init(win?: Window): void;
 		export function getFunctionName(fn: Function): string;
 		export function getFunctionCode(fn: Function): string;

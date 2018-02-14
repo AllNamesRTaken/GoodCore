@@ -1,9 +1,11 @@
 import { binarySearch, shallowCopy } from "../Arr";
 import { equals, setProperties } from "../Obj";
-import { isFunction, isNotUndefined } from "../Test";
+import { isFunction, isNotUndefined, hasWindow } from "../Test";
 import { List } from "./List";
 
-(window as any).Symbol = (window as any).Symbol || { iterator: "iterator" };
+if (hasWindow() && !(window as any).Symbol) {
+	(window as any).Symbol = { iterator: "iterator" };
+}
 
 export class Comparer {
 	public static StringAsc = function(a: string, b: string) { return a < b ? -1 : a === b ? 0 : 1; };

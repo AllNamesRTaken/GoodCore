@@ -1,9 +1,11 @@
 import * as Arr from "../Arr";
 import { clone, equals, setProperties } from "../Obj";
-import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined } from "../Test";
+import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow } from "../Test";
 import { Dictionary } from "./Dictionary";
 
-(window as any).Symbol = (window as any).Symbol || { iterator: "iterator" };
+if (hasWindow() && !(window as any).Symbol) {
+	(window as any).Symbol = { iterator: "iterator" };
+}
 export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
 	private _array: T[] = [];
 	private _index: Dictionary<T> | null = null;
