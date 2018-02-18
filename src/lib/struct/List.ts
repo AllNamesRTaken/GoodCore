@@ -82,6 +82,11 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 			this.forEach((el) => this._index!.set(this._indexer!(el), el));
 		}
 	}
+	public truncate(size: number = 0): List<T> {
+		this._array.length = Math.max(0, Math.min(this._array.length, size));
+		this._reindex();
+		return this;
+	}
 	public fill(size: number, populator: ((i: number) => T) | T): List<T> {
 		size = Math.max(0, size || 0);
 		if (isFunction(populator)) {

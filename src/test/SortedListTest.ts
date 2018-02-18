@@ -49,6 +49,27 @@ describe("SortedList",
 				copy.values.should.deep.equal(list.values);
 				copy.values.should.not.equal(list.values);
 			});
+		it("trucate shortens the list to given length",
+			function () {
+				const list = (this.list1 as SortedList<number>).clone();
+				list.truncate(2).length.should.equal(2);
+				list.get(1)!.should.equal(2);
+			});
+		it("trucate with no size empties array",
+			function () {
+				const list = (this.list1 as SortedList<number>).clone();
+				list.truncate().length.should.equal(0);
+			});
+		it("trucate with large size keeps List as is",
+			function () {
+				const list = (this.list1 as SortedList<number>).clone();
+				list.truncate(123).length.should.equal(4);
+			});
+		it("trucate with negative size sets length to 0",
+			function () {
+				const list = (this.list1 as SortedList<number>).clone();
+				list.truncate(-123).length.should.equal(0);
+			});
 		it("Fill fills an array with new data",
 			function () {
 				let list1 = new SortedList(Comparer.NumberAsc, [1, 4, 7, 2]);

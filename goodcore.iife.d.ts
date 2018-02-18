@@ -41,7 +41,8 @@ interface IBasicList<T> {
 	pop(): T | undefined;
 	shift(): T | undefined;
 	copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
-	clone(): IBasicList<T>;
+	clone(): IBasicList<T>;	
+	truncate(size?: number): IBasicList<T>
 	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
 	remove(v: T): IBasicList<T>;
 	removeFirst(fn: (el: T) => boolean): T;
@@ -222,6 +223,7 @@ declare namespace goodcore {
 		push(v: T): number;
 		pop(): T | undefined;
 		shift(): T | undefined;
+		truncate(size?: number): List<T>
 		fill(size: number, populator: ((i: number) => T) | T): List<T>;
 		splice(pos?: number, remove?: number, insert?: T[] | IList<T>): List<T>;
 		concat(v: T[] | List<T>): List<T>;
@@ -296,6 +298,7 @@ declare namespace goodcore {
 		shift(): T | undefined;
 		bulkAdd(v: T[] | List<T> | SortedList<T>): SortedList<T>;
 		copy(src: SortedList<T> | List<T> | T[]): SortedList<T>;
+		truncate(size?: number): List<T>
 		fill(size: number, populator: ((i: number) => T) | T): List<T>;
 		clone(): SortedList<T>;
 		remove(v: T): SortedList<T>;

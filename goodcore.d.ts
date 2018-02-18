@@ -40,6 +40,7 @@ interface IBasicList<T> {
   pop(): T | undefined;
   shift(): T | undefined;
   copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
+  truncate(size?: number): IBasicList<T>
   fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>
   clone(): IBasicList<T>;
   remove(v: T): IBasicList<T>;
@@ -257,6 +258,7 @@ declare module 'goodcore/struct/List' {
         readonly count: number;
         readonly length: number;
         indexer: ((el: T) => any) | null;
+		truncate(size?: number): List<T>
         fill(size: number, populator: ((i: number) => T) | T): List<T>;
         clear(): List<T>;
         add(v: T): List<T>;
@@ -332,6 +334,7 @@ declare module 'goodcore/struct/SortedList' {
         readonly length: number;
         comparer: (a: T, b: T) => number;
         sort(): void;
+		truncate(size?: number): SortedList<T>
         fill(size: number, populator: ((i: number) => T) | T): SortedList<T>;
         clear(): SortedList<T>;
         add(v: T): SortedList<T>;

@@ -48,6 +48,27 @@ describe("List",
 				const indexed = org.clone();
 				indexed.indexer!.should.deep.equal(org.indexer);
 			});
+		it("trucate shortens the list to given length",
+			function () {
+				const list = (this.list1 as List<number>).clone();
+				list.truncate(2).length.should.equal(2);
+				list.get(1)!.should.equal(4);
+			});
+		it("trucate with no size empties array",
+			function () {
+				const list = (this.list1 as List<number>).clone();
+				list.truncate().length.should.equal(0);
+			});
+		it("trucate with large size keeps List as is",
+			function () {
+				const list = (this.list1 as List<number>).clone();
+				list.truncate(123).length.should.equal(4);
+			});
+		it("trucate with negative size sets length to 0",
+			function () {
+				const list = (this.list1 as List<number>).clone();
+				list.truncate(-123).length.should.equal(0);
+			});
 		it("Fill fills an array with new data", function() {
 			let list1 = new List([1, 4, 7, 2]);
 			let list2 = new List<{a: number}>();

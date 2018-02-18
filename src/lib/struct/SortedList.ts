@@ -66,6 +66,10 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	public sort() {
 		this._list.orderBy(this._cmp);
 	}
+	public truncate(size: number = 0): SortedList<T> {
+		this._list.truncate(size);
+		return this;
+	}
 	public fill(size: number, populator: ((i: number) => T) | T): SortedList<T> {
 		this._list.fill(size, populator);
 		this.sort();
