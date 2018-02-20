@@ -423,7 +423,7 @@ declare namespace goodcore {
 		insertAt(pos: number, data: T, id?: string | number): void;
 		addTo(parentId: string | number, data: T|Tree<T>, id?: string | number): IndexedTree<T> | undefined;
 		add(data: T | Tree<T>, id?: string | number): void;
-		contains(condition: (data: T) => boolean): boolean;
+		contains(node: Tree<T> | string): boolean
 		get(id: string | number): IndexedTree<T> | undefined;
 	}
 
