@@ -74,17 +74,31 @@ describe("Tree",
 				tree.virtual.should.be.false;
 				tree.id.should.equal("-");
 			});
+		it("Root returns root of tree",
+			function () {
+				const tree = this.tree as Tree<string>;
+				(tree.children!.get(1)!.children!.get(1)!.root === tree).should.be.true;
+			});
+		it("Nodes are initable",
+			function () {
+				const tree = new Tree<string>("newNode");
+				tree.init( { data: "dataString" } );
+				tree.data!.should.equal("dataString");
+			});
 		it("Find finds the correct node",
 			function () {
 				const tree = this.tree as Tree<string>;
-				tree.find((data) => data === "c2-2")!.data!.should.equal("c2-2");
+				tree.find((node) => node.data === "c2-2")!.data!.should.equal("c2-2");
+				(tree.find((node) => node.data === "not there") === null).should.be.true
 			});
 		it("Filter returns filtered tree",
 			function () {
 				const tree = this.tree as Tree<string>;
 				const filtered = tree.filter((node) => node.children !== null);
-				filtered.children!.get(0)!.data!.should.equal("c2");
-				filtered.children!.get(0)!.children!.count.should.equal(0);
+				filtered!.children!.get(0)!.data!.should.equal("c2");
+				filtered!.children!.get(0)!.children!.count.should.equal(0);
+				const filtered2 = tree.filter((node) => node.children !== null && node.children.length > 42);
+				(filtered2 === null).should.be.true;
 			});
 		it("Select returns a list of matching nodes",
 			function () {
@@ -100,21 +114,21 @@ describe("Tree",
 			function () {
 				const tree = this.tree as Tree<string>;
 				tree.add("c4");
-				const c4 = tree.find((data) => data === "c4");
+				const c4 = tree.find((node) => node.data === "c4");
 				c4!.data!.should.equal("c4");
 				(c4 as Tree<string>).remove();
-				(tree.find((data) => data === "c4") !== null).should.be.false;
+				(tree.find((node) => node.data === "c4") !== null).should.be.false;
 				let node = new Tree<string>().init({ data: "treenode" });
 				tree.add(node);
-				const treenode = tree.find((data) => data === "treenode");
+				const treenode = tree.find((node) => node.data === "treenode");
 				treenode!.data!.should.equal("treenode");
 				(treenode as Tree<string>).remove();
 			});
 		it("Clone clones deep",
 			function () {
 				const tree = this.tree as Tree<string>;
-				const orgc2t2 = tree.find((data) => data === "c2-2");
-				const c2t2 = tree.clone().find((data) => data === "c2-2");
+				const orgc2t2 = tree.find((node) => node.data === "c2-2");
+				const c2t2 = tree.clone().find((node) => node.data === "c2-2");
 				c2t2!.data!.should.equal("c2-2");
 				orgc2t2!.should.not.equal(c2t2);
 			});

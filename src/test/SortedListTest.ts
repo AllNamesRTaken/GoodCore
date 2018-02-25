@@ -65,10 +65,11 @@ describe("SortedList",
 				const list = (this.list1 as SortedList<number>).clone();
 				list.truncate(123).length.should.equal(4);
 			});
-		it("trucate with negative size sets length to 0",
+		it("trucate with negative size takes from end",
 			function () {
 				const list = (this.list1 as SortedList<number>).clone();
-				list.truncate(-123).length.should.equal(0);
+				list.truncate(-2).length.should.equal(2);
+				list.get(1)!.should.equal(7);
 			});
 		it("Fill fills an array with new data",
 			function () {
@@ -83,7 +84,7 @@ describe("SortedList",
 				list1.fill(3, (i) => i).values.should.deep.equal([0, 1, 2]);
 				list1.fill(3, (i) => 3 - i).values.should.deep.equal([1, 2, 3]);
 				list2.fill(2, obj).values.should.deep.equal([{ a: 1 }, { a: 1 }]);
-				list2.get(0).should.not.equal(obj);
+				list2.get(0)!.should.not.equal(obj);
 			});
 		it("bulkAdd adds multiple values",
 			function () {
@@ -266,7 +267,7 @@ describe("SortedList",
 		it("ReverseReduce works on numbers",
 			function () {
 				const list1 = this.list1 as SortedList<any>;
-				list1.reverseReduce((acc, cur) => (acc.push(cur), acc), []).should.deep.equal(list1.toList().reverse().values);
+				list1.reverseReduce((acc: any[], cur) => (acc.push(cur), acc), []).should.deep.equal(list1.toList().reverse().values);
 			});
 		it("ReverseReduceUntil works like reverseReduce with condition",
 			function () {

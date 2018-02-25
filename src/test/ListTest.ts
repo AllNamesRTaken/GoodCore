@@ -64,10 +64,11 @@ describe("List",
 				const list = (this.list1 as List<number>).clone();
 				list.truncate(123).length.should.equal(4);
 			});
-		it("trucate with negative size sets length to 0",
+		it("trucate with negative size takes elements from the end",
 			function () {
 				const list = (this.list1 as List<number>).clone();
-				list.truncate(-123).length.should.equal(0);
+				list.truncate(-2).length.should.equal(2);
+				list.get(1)!.should.equal(2);
 			});
 		it("Fill fills an array with new data", function() {
 			let list1 = new List([1, 4, 7, 2]);
@@ -429,6 +430,12 @@ describe("List",
 				list1.until((el, i) => (listi2.push(i), i >= 2));
 				listEl2.should.deep.equal([1, 4, 7]);
 				listi2.should.deep.equal([0, 1, 2]);
+				const listEl3 = new Array<number>();
+				const listi3 = new Array<number>();
+				list1.until((el: number, i) => el.valueOf() > 42, (el, i) => listEl3.push(el));
+				list1.until((el: number, i) => el.valueOf() > 42, (el, i) => listi3.push(i));
+				listEl3.should.deep.equal([1, 4, 7, 2]);
+				listi3.should.deep.equal([0, 1, 2, 3]);
 			});
 		it("Until with startIndex work like ForEach with startIndex where returning true breaks the loop",
 			function () {

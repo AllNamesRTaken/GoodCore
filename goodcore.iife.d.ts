@@ -391,6 +391,7 @@ declare namespace goodcore {
 		children: List<Tree<T>> | null;
 		data: T | null;
 		virtual: boolean;
+		root: Tree<T>;
 		static fromObject<T>(obj: any): Tree<T>;
 		static fromNodeList<S, T>(nodes: S[], mapcfg?: {
 			id?: ((node: S) => string) | string;
@@ -408,7 +409,7 @@ declare namespace goodcore {
 		clone(): Tree<T>;
 		filter(condition: (node: Tree<T>) => boolean): Tree<T>;
 		select(condition?: (node: Tree<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
-		find(condition: (data: T | null) => boolean): Tree<T> | null;
+		find(condition: (node: Tree<T>) => boolean): Tree<T> | null;
 		depth(): number;
 		sort(comparer: (a: Tree<T>, b: Tree<T>) => number): Tree<T>;
 		serialize(): T[];		
@@ -416,15 +417,18 @@ declare namespace goodcore {
 	}
 
 	export class IndexedTree<T> extends Tree<T> {
+		index: Dictionary<Tree<T>>;
 		indexer: (node: Tree<T>) => string | number;
+		count: number;
 		static fromObject<T>(obj: any, indexer?: (node: Tree<T>) => string | number): Tree<T>;
 		constructor(id?: string | number, indexer?: (node: Tree<T>) => string | number, index?: Dictionary<Tree<T>>);
 		protected create<S = T>(...args: any[]): Tree<S>;
-		insertAt(pos: number, data: T, id?: string | number): void;
-		addTo(parentId: string | number, data: T|Tree<T>, id?: string | number): IndexedTree<T> | undefined;
-		add(data: T | Tree<T>, id?: string | number): void;
-		contains(node: Tree<T> | string): boolean
+		insertAt(pos: number, data: T, id?: string | number, updateIndex?: boolean): void;
+		addTo(parentId: string | number, data: T|Tree<T>, id?: string | number, updateIndex?: boolean): IndexedTree<T> | undefined;
+		add(data: T | Tree<T>, id?: string | number, updateIndex?: boolean): void;
+		contains(node: Tree<T> | string | number): boolean
 		get(id: string | number): IndexedTree<T> | undefined;
+        cut(): IndexedTree<T>;
 	}
 
 	export class CalcConst {

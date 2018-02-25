@@ -1,7 +1,7 @@
 import { map } from "../Arr";
 import { clone, isSameClass, setProperties } from "../Obj";
 import { Initable } from "../standard/mixins/Initable";
-import { isArray } from "../Test";
+import { isArray, isNullOrUndefined } from "../Test";
 import { newUUID } from "../Util";
 import { Dictionary } from "./Dictionary";
 import { List } from "./List";
@@ -27,7 +27,10 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		parent?: ((node: S) => string | number)|string | number, 
 		data?: ((node: S) => any)|string
 	// tslint:disable-next-line:align
-	}, virtualRoot: boolean = false): Tree<T> {
+	}, 
+	virtualRoot: boolean = false,
+	ctor: Constructor<Tree<T>> = Tree
+	): Tree<T> {
 		let result = new Tree<T>();
 		// create map
 		let mapResolver = (key: string) => {
@@ -43,10 +46,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		// create node lookup
 		let list = new List<S>(nodes);
 		let lookup: Dictionary<Array<Tree<T>>> = new Dictionary();
-		function getLookupKey(node: Tree<T>): string {
-			return node.parent ? `${node.parent.id}_${node.id}` : "_root_" + node.id;
-		}
-		let nodeList = list.map((el) => new Tree<T>().init({id: map.id(el), data: map.data(el)}));
+		let nodeList = list.map((el) => new ctor().init({id: map.id(el), data: map.data(el)}));
 		nodeList.forEach((node, i) => {
 			if (!lookup.has(node.id)) {
 				lookup.set(node.id, []);
@@ -70,14 +70,21 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		if (virtualRoot === false) {
 			result = rootNodes.first()!;
 		} else {
-			result = new Tree<T>().init({virtual: true});
+			result = new ctor().init({virtual: true});
 			rootNodes.forEach((el) => result.add(el));
 		}
 		return result;
 	}
 
 	constructor(id?: string | number) {
-		this.id = id || newUUID();
+		this.id = isNullOrUndefined(id) ? newUUID() : id!;
+	}
+	public get root(): Tree<T> {
+		let root = this as Tree<T>;
+		while (root.parent) {
+			root = root.parent as Tree<T>;
+		}
+		return root;
 	}
 
 	protected create<S = T>(...args: any[]): Tree<S> {
@@ -87,12 +94,17 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		setProperties(this, obj);
 		return this;
 	}
-	public insertAt(pos: number, data: T, id?: string | number): Tree<T> {
+	public insertAt(pos: number, data: T|Tree<T>, id?: string | number): Tree<T> {
 		let node: Tree<T>;
 		if (this.children === null || this.children.count <= pos) {
 			node = this.add(data);
 		} else {
-			node = this.create<T>(id).init({ data, parent: this });
+			if ( data instanceof Tree ) {
+				node = data;
+				data.parent = this;
+			} else {
+				node = this.create<T>(id).init({ data, parent: this });
+			}
 			this.children.insertAt(pos, node);
 		}
 		return node;
@@ -128,6 +140,18 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		this.children = null;
 		return this;
 	}
+	public cut(): Tree<T> {
+		this.remove();
+		this.parent = null;
+		return this;
+	}
+	public forEach(fn: (el: Tree<T>, i: number) => void, _i: number = 0): Tree<T> {
+		fn(this, _i);
+		if(this.children) {
+			this.children.forEach((child) => child.forEach(fn));
+		}
+		return this;
+	}
 	public reduce(fn?: (acc: any, cur: Tree<T> | null) => any, start?: any): any {
 		const stack = new Stack<Tree<T>>();
 		let acc: any = start;
@@ -148,31 +172,35 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 	public clone(): Tree<T> {
 		const result = this.create();
 		result.id = this.id;
-		result.parent = this.parent;
 		result.children = this.children === null ? null : this.children.clone();
+		if (result.children !== null) {
+			result.children.forEach((node) => node.parent = result);
+		}
 		result.data = this.data === null || this.data === undefined ? this.data : clone(this.data);
 		return result;
 	}
 	protected duplicateNode(): Tree<T> {
 		const result = this.create();
 		result.id = this.id;
-		result.parent = this.parent;
-		result.children = this.children;
 		result.data = this.data;
 		return result;
 	}
-	public filter(condition: (node: Tree<T>) => boolean): Tree<T> {
-		const root = this.duplicateNode();
-		const children = this.children;
-		if (children !== null) {
-			root.children =
-				root.children!
-					.select(condition)
-					.map(function(el: Tree<T>, i: number) {
-						return el.filter(condition);
-					});
+	public filter(condition: (node: Tree<T>) => boolean, parent: Tree<T> | null = null): Tree<T> | null {
+		let node: Tree<T> | null = null;
+		if (condition(this)) {
+			node = this.duplicateNode();
+			const children = this.children;
+			node.parent = parent;
+			if (children !== null) {
+				node.children =
+					children!
+						.select(condition)
+						.map(function(el: Tree<T>, i: number) {
+							return el.filter(condition, node)!;
+						});
+			}
 		}
-		return root;
+		return node;
 	}
 	public select(condition?: (node: Tree<T>) => boolean, acc: List<Tree<T>> = new List<Tree<T>>()): List<Tree<T>> {
 		const result = acc;
@@ -187,7 +215,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 		}
 		return result;
 	}
-	public find(condition: (data: T | null) => boolean): Tree<T> | null {
+	public find(condition: (node: Tree<T>) => boolean): Tree<T> | null {
 		let result: Tree<T> | null = null;
 		const children = this.children;
 		if (children !== null) {
@@ -195,7 +223,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 			const len = this.children!.count;
 			const val = this.children!.values;
 			while (++i < len) {
-				if (condition(val[i].data)) {
+				if (condition(val[i])) {
 					result = val[i];
 					break;
 				} else {

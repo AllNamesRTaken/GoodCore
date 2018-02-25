@@ -9,6 +9,7 @@ export { SortedList as SortedList} from "./struct/SortedList";
 export { Dictionary as Dictionary} from "./struct/Dictionary";
 export { Stack as Stack} from "./struct/Stack";
 export { Tree as Tree } from "./struct/Tree";
+export { IndexedTree as IndexedTree } from "./struct/IndexedTree";
 import * as Calc from "./Calc";
 export { Calc as Calc };
 import * as Dom from "./Dom";

@@ -83,6 +83,16 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		}
 	}
 	public truncate(size: number = 0): List<T> {
+		if (size < 0) {
+			let arr = this._array;
+			let len = arr.length;
+			size = Math.min(len, -1 * size);
+			let i = len - size - 1;
+			let j = -1;
+			while ( ++i < len) {
+				arr[++j] = arr[i];
+			}
+		}
 		this._array.length = Math.max(0, Math.min(this._array.length, size));
 		this._reindex();
 		return this;
