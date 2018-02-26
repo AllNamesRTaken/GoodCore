@@ -28,8 +28,11 @@ export class IndexedTree<T> extends Tree<T> {
 		}
         return this._index!;
     }
+    public set index(v: Dictionary<IndexedTree<T>>) {
+		throw "Not a settable property"
+    }
     public get indexer(): (node: IndexedTree<T>) => string | number {
-        return this._indexer;
+		return this._indexer;
     }
     public set indexer(v: (node: IndexedTree<T>) => string | number) {
 		let hasChanged = this._indexer !== v;
@@ -54,7 +57,7 @@ export class IndexedTree<T> extends Tree<T> {
 	public get(id: string | number): IndexedTree<T> | undefined {
 		return this.index.get(id) as IndexedTree<T>;
 	}
-	public addTo(parentId: string | number, data: T|Tree<T>, id?: string | number, updateIndex = true): IndexedTree<T> | undefined {
+	public addTo(parentId: string | number, data: T|IndexedTree<T>, id?: string | number, updateIndex = true): IndexedTree<T> | undefined {
 		let parent = this.index.get(parentId) as IndexedTree<T>;
 		let node: IndexedTree<T> | undefined = undefined;
 		if (parent) {
@@ -62,7 +65,7 @@ export class IndexedTree<T> extends Tree<T> {
 		}
 		return node;
 	}
-	public add(data: T|Tree<T>, id?: string | number, updateIndex = true): IndexedTree<T> {
+	public add(data: T|IndexedTree<T>, id?: string | number, updateIndex = true): IndexedTree<T> {
 		let node = super.add(data, id) as IndexedTree<T>;
 		if (updateIndex) {
 			let hasSameIndex = this.index === node.index;

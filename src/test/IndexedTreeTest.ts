@@ -111,7 +111,7 @@ describe("IndexedTree",
 				(c4 as IndexedTree<string>).remove();
 				tree.count.should.equal(6);
 				tree.contains("c4").should.be.false;
-				let node = new IndexedTree<string>("treenode").init({ data: "treenode" });
+				let node = new IndexedTree<string>("treenode").init({ data: "treenode" }) as IndexedTree<string>;
 				tree.add(node);
 				const treenode = tree.get("treenode");
 				treenode!.data!.should.equal("treenode");
