@@ -470,7 +470,7 @@ declare module 'goodcore/struct/IndexedTree' {
     import { Tree } from "goodcore/struct/Tree";
     export class IndexedTree<T> extends Tree<T> {
 		init(obj: Partial<IndexedTree<T>>): IndexedTree<T>;
-		index: IndexedTree<Tree<T>>;
+		index: Dictionary<IndexedTree<T>>;
 		indexer: (node: IndexedTree<T>) => string | number;
 		count: number;
 		static fromObject<T>(obj: any, indexer?: (node: IndexedTree<T>) => string | number): Tree<T>;
