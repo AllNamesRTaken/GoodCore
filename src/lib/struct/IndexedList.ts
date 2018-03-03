@@ -2,15 +2,16 @@ import { shallowCopy, create, insertAt, concat, forEach, append, deepCopy, deepC
 	shallowCopyInto, remove, removeAt, forSome, until, reverseForEach, indexOfElement, map,  
 	reverseUntil, some, all, reverse, indexOf, filterInto, slice, splice, filter, 
 	mapInto, reduce, reduceUntil, reverseReduce, reverseReduceUntil, deserialize } from "../Arr";
-import { clone, equals, setProperties, wipe } from "../Obj";
+import { clone, equals, setProperties } from "../Obj";
 import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow } from "../Test";
+import { Dictionary } from "./Dictionary";
 
 if (hasWindow() && !(window as any).Symbol) {
 	(window as any).Symbol = { iterator: "iterator" };
 }
 export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
 	private _array: T[] = [];
-	private _index: {[key: string]: T} | null = Object.create(null);
+	private _index: Dictionary<T> | null = null;
 	private _indexer: ((el: T) => any) | null = null;
 	private _pointer: number = 0;
 
@@ -46,13 +47,13 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	}
 	public getByIndex(key: number | string): T | undefined {
 		let result: T | undefined;
-		return isNotNullOrUndefined(this._index) ? this._index![key] : undefined;
+		return isNotNullOrUndefined(this._index) ? this._index!.get(key) : undefined;
 	}
 	public set(pos: number, v: T): List<T> {
 		if (pos >= 0 && pos < this.length) {
 			this._array[pos | 0] = v;
 			if (this._indexer !== null) {
-				this._index![this._indexer!(v)] = v;
+				this._index!.set(this._indexer!(v), v);
 			}
 		} else {
 			throw new Error(`index out of bounds on <List>.set(${pos}, ${v.toString()})`);
@@ -77,11 +78,11 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 			this._index = null;
 		} else {
 			if (this._index === null) {
-				this._index = Object.create(null);
+				this._index = new Dictionary<T>();
 			} else {
-				wipe(this._index);
+				this._index.clear();
 			}
-			this.forEach((el) => this._index![this._indexer!(el)] = el);
+			this.forEach((el) => this._index!.set(this._indexer!(el), el));
 		}
 	}
 	public truncate(size: number = 0): List<T> {
@@ -114,41 +115,41 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	public clear(): List<T> {
 		this._array.length = 0;
 		if (this._index !== null) {
-			wipe(this._index);
+			this._index.clear();
 		}
 		return this;
 	}
 	public add(v: T): List<T> {
 		this._array.push(v);
 		if (this._indexer !== null) {
-			this._index![this._indexer!(v)] = v;
+			this._index!.set(this._indexer!(v), v);
 		}
 		return this;
 	}
 	public insertAt(pos: number, v: T): List<T> {
 		insertAt(this._array, pos, v);
 		if (this._indexer !== null) {
-			this._index![this._indexer!(v)] = v;
+			this._index!.set(this._indexer!(v), v);
 		}
 		return this;
 	}
 	public push(v: T): number {
 		if (this._indexer !== null) {
-			this._index![this._indexer!(v)] = v;
+			this._index!.set(this._indexer!(v), v);
 		}
 		return this._array.push(v);
 	}
 	public pop(): T | undefined {
 		let result = this._array.pop();
 		if (result !== undefined && this._indexer !== null) {
-			delete this._index![this._indexer!(result)];
+			this._index!.delete(this._indexer!(result));
 		}
 		return result;
 	}
 	public shift(): T | undefined {
 		let result = this._array.shift();
 		if (result !== undefined && this._indexer !== null) {
-			delete this._index![this._indexer!(result)];
+			this._index!.delete(this._indexer!(result));
 		}
 		return result;
 	}
@@ -161,13 +162,13 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	private index(arr: T[]): void {
 		if (this._indexer !== null) {
 			forEach(arr, (el) => {
-				this._index![this._indexer!(el)] = el;
+				this._index!.set(this._indexer!(el), el);
 			});
 		}
 	}
 	private unindexEl(el: T): void {
 		if (this._indexer !== null) {
-			delete this._index![this._indexer!(el)];
+			this._index!.delete(this._indexer!(el));
 		}
 	}
 	public append(v: T[] | List<T>): List<T> {
@@ -193,7 +194,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		let result = this.create(arr);
 		if (this._indexer !== null) {
 			result._indexer = this._indexer;
-			result._index = clone(this._index);
+			result._index = this._index!.clone();
 		}
 		return result;
 	}
@@ -255,7 +256,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 			result = this.find(v as ((el: T) => boolean)) !== undefined;
 		} else {
 			if (this._indexer !== null) {
-				result = this._index![this._indexer(v as T)] !== undefined;
+				result = this._index!.contains(this._indexer(v as T));
 			} else {
 				result = indexOfElement(this._array, v) !== -1;
 			}
