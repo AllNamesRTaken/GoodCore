@@ -396,7 +396,6 @@ declare module 'goodcore/struct/Dictionary' {
         clear(): Dictionary<T>;
         readonly values: T[];
         readonly keys: string[];
-        readonly list: List<T>;
         readonly count: number;
         clone(): Dictionary<T>;
         toJSON(): any;

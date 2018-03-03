@@ -352,7 +352,6 @@ declare namespace goodcore {
 		clear(): Dictionary<T>;
 		readonly values: T[];
 		readonly keys: string[];
-		readonly list: List<T>;
 		readonly count: number;
 		clone(): Dictionary<T>;
 		toJSON(): any;
