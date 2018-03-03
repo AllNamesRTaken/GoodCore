@@ -11,10 +11,10 @@ describe("Dictionary",
 			function () {
 				const d = new Dictionary<string>();
 				d.set("key1", "value1");
-				d.get("key1").should.equal("value1");
+				d.get("key1")!.should.equal("value1");
 				(d.get("key2") === undefined).should.be.true;
-				d.set("key1", undefined);
-				d.get("key1").should.equal("value1");
+				d.set("key1", undefined!);
+				d.get("key1")!.should.equal("value1");
 			});
 		it("Values return array of values",
 			function () {
@@ -29,13 +29,6 @@ describe("Dictionary",
 				d.set("key1", "value1");
 				d.set("key2", "value2");
 				d.keys.should.deep.equal(["key1", "key2"]);
-			});
-		it("List return List of values",
-			function () {
-				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
-				d.list.values.should.deep.equal(["value1", "value2"]);
 			});
 		it("Clear empties the dictionary",
 			function () {

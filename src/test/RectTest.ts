@@ -1,6 +1,7 @@
 import {should} from "chai";
 import { Rect } from "../lib/struct/Rect";
 import { Vec2 } from "../lib/struct/Vec2";
+import { Range2 } from "../lib/struct/Range2";
 should();
 
 describe("Rect",
@@ -55,35 +56,23 @@ describe("Rect",
 				r1.equals(new Rect(1, 1, 3, 4)).should.be.false;
 				r1.toInt().equals(new Rect(1, 1, 3, 4)).should.be.true;
 			});
-		it("Translate converts the rect into a new system defined by a vector",
+		it("Translate moved the rectangle by a vector",
 			function(){
 				const r1 = new Rect(1, 1, 3, 4);
-				r1.translate(new Vec2(2, 3)).equals(new Rect(2, 3, 6, 12)).should.be.true;
+				r1.translate(new Vec2(2, 3)).equals(new Rect(3, 4, 5, 7)).should.be.true;
 			});
-		it("ToRange returns the correct Range",
+		it("FromRange returns the correct rect",
 			function(){
-				const r1 = new Rect(1, 1, 3, 4);
-				const range1 = r1.toRange2();
-				range1.pos.equals(new Vec2(1, 1)).should.be.true;
-				range1.size.equals(new Vec2(2, 3)).should.be.true;
+				const r1 = new Range2(1, 1, 3, 4);
+				let rect1 = new Rect().fromRange2(r1);
+				rect1.start.equals(new Vec2(1, 1)).should.be.true;
+				rect1.stop.equals(new Vec2(4, 5)).should.be.true;
 			});
-		it("ToRange returns the correct Range with end inclusive",
-			function(){
-				const r1 = new Rect(1, 1, 3, 4, true);
-				const range1 = r1.toRange2();
-				range1.pos.equals(new Vec2(1, 1)).should.be.true;
-				range1.size.equals(new Vec2(3, 4)).should.be.true;
 
-				const r2 = new Rect(3, 4, 1, 1, true);
-				const range2 = r2.toRange2();
-				range2.pos.equals(new Vec2(3, 4)).should.be.true;
-				range2.size.equals(new Vec2(-3, -4)).should.be.true;
-				
-				r1.endInclusive = false;
-				let endInclusive = r1.toRange2();
-				endInclusive.pos.equals(new Vec2(1, 1)).should.be.true;
-				endInclusive.size.equals(new Vec2(2, 3)).should.be.true;
-			});
+			const r2 = new Range2(1, 1, -3, -4);
+			let rect2 = new Rect().fromRange2(r2, true);
+			rect2.start.equals(new Vec2(1, 1)).should.be.true;
+			rect2.stop.equals(new Vec2(-1, -2)).should.be.true;
 		it("Area return the correct size of the rectangle",
 			function(){
 				const r1 = new Rect(1, 1, 3, 4);

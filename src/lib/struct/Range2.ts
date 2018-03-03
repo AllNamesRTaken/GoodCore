@@ -27,14 +27,14 @@ export class Range2 implements IRange2 {
 		const result = out ? out.set(this) : this.create(this.pos.x, this.pos.y, this.size.x, this.size.y);
 		return result;
 	}
-	public toRect(endInclusive: boolean = false, out?: Rect): Rect {
-		let result = out || new Rect();
-		result.start.x = this.pos.x,
-		result.start.y = this.pos.y,
-		result.stop.x = this.pos.x - (endInclusive ? (this.size.x < 0 ? -1 : 1) : 0) + this.size.x,
-		result.stop.y = this.pos.y - (endInclusive ? (this.size.y < 0 ? -1 : 1) : 0) + this.size.y,
-		result.endInclusive = endInclusive;
-		return result;
+	public fromRect(rect: IRect): Range2 {
+		let start = rect.start;
+		let stop = rect.stop;
+		this.pos.x = start.x;
+		this.pos.y = start.y;
+		this.size.x = stop.x + (rect.endInclusive ? (stop.x < start.x ? -1 : 1) : 0) - start.x;
+		this.size.y = stop.y + (rect.endInclusive ? (stop.y < start.y ? -1 : 1) : 0) - start.y;
+		return this;
 	}
 	public scale(factor: IVec2, keepCenter: boolean = true): Range2 {
 		let org: Vec2 | null = null;
@@ -48,7 +48,7 @@ export class Range2 implements IRange2 {
 		return this;
 	}
 	public translate(system: IVec2): Range2 {
-		this.toRect(false).translate(system).toRange2(this);
+		this.pos.add(system);
 		return this;
 	}
 	public toInt(): Range2 {
@@ -66,11 +66,6 @@ export class Range2 implements IRange2 {
 			this.pos.y <= target.pos.y &&
 			this.pos.x + this.size.x >= target.pos.x + target.size.x &&
 			this.pos.y + this.size.y >= target.pos.y + target.size.y;
-	}
-	public intersect(target: Range2): boolean {
-		let s = this.toRect();
-		let t = target.clone().toRect();
-		return s.intersect(t);
 	}
 	public containsPoint(vec: IVec2) {
 		return vec.x >= this.pos.x && vec.x <= this.pos.x + this.size.x - 1

@@ -1,16 +1,15 @@
 import { forEach } from "../Arr";
 import { clone, setProperties, wipe } from "../Obj";
 import { isFunction, isNotUndefined } from "../Test";
-import { List } from "./List";
 
 export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable<Dictionary<T>> {
 	private _lookup: any;
-	private _list: List<T>;
+	private _list: Array<T>;
 	private _isDirty: boolean;
 
 	constructor() {
 		this._lookup = Object.create(null);
-		this._list = new List<T>();
+		this._list = new Array<T>();
 		this._isDirty = false;
 	}
 
@@ -45,26 +44,22 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 	}
 	public clear(): Dictionary<T> {
 		wipe(this._lookup);
-		this._list.clear();
+		this._list.length = 0;
 		return this;
 	}
 	public get values(): T[] {
 		this.cleanList();
-		return this._list.values;
+		return this._list;
 	}
 	public get keys(): string[] {
 		return Object.keys(this._lookup);
-	}
-	public get list(): List<T> {
-		this.cleanList();
-		return this._list;
 	}
 	public get count(): number {
 		let result = 0;
 		if (this._isDirty) {
 			result = this.keys.length;
 		} else {
-			result = this._list.count;
+			result = this._list.length;
 		}
 		return result;
 	}
@@ -78,15 +73,15 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		let keys = Object.keys(this._lookup);
 		let i = -1;
 		let list = this._list;
-		list.clear();
+		list.length = 0;
 		while (++i < keys.length) {
-			list.add(lookup[keys[i]]);
+			list.push(lookup[keys[i]]);
 		}
 	}
 	public clone(): Dictionary<T> {
 		let result = this.create<T>();
 		result._isDirty = this._isDirty;
-		result._list = this._list.clone();
+		result._list = clone(this._list);
 		result._lookup = clone(this._lookup);
 		return result;
 	}

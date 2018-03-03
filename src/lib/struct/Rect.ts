@@ -29,15 +29,13 @@ export class Rect implements IRect {
 		const result = out ? out.set(this) : this.create(this.start.x, this.start.y, this.stop.x, this.stop.y);
 		return result;
 	}
-	public toRange2(out?: Range2): Range2 {
-		let result = out || new Range2();
-		let start = this.start;
-		let stop = this.stop;
-		result.pos.x = start.x;
-		result.pos.y = start.y;
-		result.size.x = stop.x + (this.endInclusive ? (stop.x < start.x ? -1 : 1) : 0) - start.x;
-		result.size.y = stop.y + (this.endInclusive ? (stop.y < start.y ? -1 : 1) : 0) - start.y;
-		return result;
+	public fromRange2(range: IRange2, endInclusive: boolean = false): Rect {
+		this.start.x = range.pos.x,
+		this.start.y = range.pos.y,
+		this.stop.x = range.pos.x - (endInclusive ? (range.size.x < 0 ? -1 : 1) : 0) + range.size.x,
+		this.stop.y = range.pos.y - (endInclusive ? (range.size.y < 0 ? -1 : 1) : 0) + range.size.y,
+		this.endInclusive = endInclusive;
+		return this;
 	}
 	public scale(factor: IVec2, keepCenter: boolean = true): Rect {
 		const ow = this.stop.x - this.start.x;
@@ -54,9 +52,14 @@ export class Rect implements IRect {
 		this.stop.y = this.start.y + h;
 		return this;
 	}
+	// public translate(system: IVec2): Rect {
+	// 	this.start.scale(system);
+	// 	this.stop.scale(system);
+	// 	return this;
+	// }
 	public translate(system: IVec2): Rect {
-		this.start.scale(system);
-		this.stop.scale(system);
+		this.start.add(system);
+		this.stop.add(system);
 		return this;
 	}
 	public equals(rect: IRect): boolean {

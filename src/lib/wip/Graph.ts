@@ -167,11 +167,11 @@ export class Graph<T> {
 				let nid = neighbours[i];
 				if (lookup.contains(nid)) {
 					let elB = lookup.get(nid);
-					lookup.get(id).connect(elB, isNullOrUndefined(costs) ? undefined : costs[i], isNullOrUndefined(edgeTypes) ? undefined : edgeTypes[i]);
+					lookup.get(id)!.connect(elB!, isNullOrUndefined(costs) ? undefined : costs[i], isNullOrUndefined(edgeTypes) ? undefined : edgeTypes[i]);
 				}
 			}
 		});
-		this._nodes.bulkAdd(lookup.list);
+		this._nodes.bulkAdd(new List(lookup.values));
 	}
 
 	public add() {}

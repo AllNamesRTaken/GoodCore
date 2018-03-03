@@ -99,5 +99,6 @@ interface IRange2 {
 }
 interface IRect {
 	start: IVec2;
-	stop: IVec2;
+  stop: IVec2;
+  endInclusive?: boolean;
 }

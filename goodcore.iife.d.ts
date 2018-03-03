@@ -663,5 +663,6 @@ declare namespace goodcore {
 	export interface IRect {
 		start: IVec2;
 		stop: IVec2;
+		endInclusive?: boolean;
 	}
 }

@@ -119,19 +119,24 @@ describe("Range2",
 				r1.toDecimal().equals(r2).should.be.false;
 				r1.toDecimal().toInt().equals(r2).should.be.true;
 			});
-		it("Translate treats the range as a rectangle and multiplies each point with a vector",
+		it("Translate moves the range by a vector",
 			function(){
 				const r1 = new Range2(1, 1, 2, 3);
-				r1.translate(new Vec2(2, 3)).equals(new Range2(2, 3, 4, 9)).should.be.true;
+				r1.translate(new Vec2(2, 3)).equals(new Range2(3, 4, 2, 3)).should.be.true;
 			});
-		it("ToRect converts the range into a rect with end non-inclusive",
+		it("FromRect converts the a Rect to a range with end non-inclusive",
 			function(){
-				const r1 = new Range2(1, 1, 2, 3);
-				r1.toRect().equals(new Rect(1, 1, 3, 4)).should.be.true;
-				let endInclusive = r1.toRect(true);
-				endInclusive.equals(new Rect(1, 1, 2, 3)).should.be.true;
-				let endInclusiveNeg = (new Range2(1, 1, -2, -3)).toRect(true);
-				endInclusiveNeg.equals(new Rect(1, 1, 0, -1)).should.be.true;
+				const r1 = new Rect(1, 1, 3, 4);
+				let range1 = new Range2().fromRect(r1);
+				range1.equals(new Range2(1, 1, 2, 3)).should.be.true;
+
+				const r2 = new Rect(1, 1, 3, 4, true);
+				let range2 = new Range2().fromRect(r2);
+				range2.equals(new Range2(1, 1, 3, 4)).should.be.true;
+
+				const r3 = new Rect(1, 1, -2, -3, true);
+				let range3 = new Range2().fromRect(r3);
+				range3.equals(new Range2(1, 1, -4, -5)).should.be.true;
 			});
 		it("Contains is true if another range is fully contained",
 			function(){
@@ -140,16 +145,6 @@ describe("Range2",
 				const partially = new Range2(1, 1, 2, 4);
 				r1.contains(inside).should.be.true;
 				r1.contains(partially).should.be.false;
-			});
-		it("Intersect is true if another range is partially contained",
-			function(){
-				const r1 = new Range2(1, 1, 2, 3);
-				const inside = new Range2(1, 1, 2, 2);
-				const partially = new Range2(1, 1, 2, 4);
-				const outside = new Range2(10, 10, 2, 4);
-				r1.intersect(inside).should.be.true;
-				r1.intersect(partially).should.be.true;
-				r1.intersect(outside).should.be.false;
 			});
 		it("isZero checks if both vectors are zero",
 		function(){

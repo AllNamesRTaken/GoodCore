@@ -1,5 +1,4 @@
-import { deepCopy, flatten } from "./Arr";
-import { areNotNullOrUndefined, isArray, isFunction } from "./Test";
+import { areNotNullOrUndefined, isArray, isFunction, isNullOrUndefined } from "./Test";
 
 export function destroy(obj: any): void {
 	if (obj.constructor.prototype.destroy !== undefined) {
@@ -104,7 +103,12 @@ export function clone<T>(obj: T): T {
 		result = ((obj as any) as ICloneable<T>).clone();
 	} else if (isArray(obj)) {
 		//Array
-		result = deepCopy(obj as any);
+		let i = -1;
+		const len = (obj as any).length;
+		result = new Array(len);
+		while (++i < len) {
+			result[i] = (clone((obj as any)[i]));
+		}
 	} else if (obj instanceof Date) {
 		return new Date(obj.getTime()) as any;
 	} else if (obj instanceof RegExp) {
@@ -171,7 +175,6 @@ export function mixin(target: any = {}, exclude: any, ...sources: any[]): any {
 		result = target,
 		len = sources ? sources.length : 0;
 	let i = 0;
-	sources = flatten(sources);
 	for (; i < len; i++) {
 		let src = sources[i];
 		if (isFunction(src)) {
