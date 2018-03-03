@@ -1,14 +1,12 @@
 import { map } from "../Arr";
 import { clone, isSameClass, setProperties } from "../Obj";
-import { Initable } from "../standard/mixins/Initable";
 import { isArray, isNullOrUndefined } from "../Test";
 import { newUUID } from "../Util";
 import { Dictionary } from "./Dictionary";
 import { List } from "./List";
 import { Stack } from "./Stack";
 
-@Initable
-export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
+export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
 	public id: string | number = "";
 	public parent: Tree<T> | null = null;
 	public children: List<Tree<T>> | null = null;
@@ -90,7 +88,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>> {
 	protected create<S = T>(...args: any[]): Tree<S> {
 		return new ((this as any).constructor)(...args);
 	}
-	public init(obj: Partial<Tree<T>>): Tree<T> {
+	public init(obj: Partial<Tree<T>>, mapping?: any): this {
 		setProperties(this, obj);
 		return this;
 	}
