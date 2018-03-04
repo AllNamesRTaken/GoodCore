@@ -399,7 +399,7 @@ declare namespace goodcore {
 		}, virtualRoot?: boolean): Tree<T>;
 		constructor(id?: string | number);
 		protected create<S = T>(...args: any[]): Tree<S>;
-		init(obj: Partial<Tree<T>>): Tree<T>;
+		init(obj: Partial<Tree<T>>, mapping?: any): this;
 		insertAt(pos: number, data: T, id?: string | number): void;
 		add(data: T | Tree<T>, id?: string | number): void;
 		remove(): void;
@@ -416,7 +416,7 @@ declare namespace goodcore {
 	}
 
 	export class IndexedTree<T> extends Tree<T> {
-		init(obj: Partial<IndexedTree<T>>): IndexedTree<T>;
+		init(obj: Partial<IndexedTree<T>>, mapping?: any): this;
 		index: Dictionary<IndexedTree<T>>;
 		indexer: (node: IndexedTree<T>) => string | number;
 		count: number;
