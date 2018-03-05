@@ -20,6 +20,7 @@
 		"listFiles": false,
 		"downlevelIteration": true,
 		"lib": [
+			"es2015.symbol.wellknown",
 			"dom",
 			"es5",
 			"es6",
