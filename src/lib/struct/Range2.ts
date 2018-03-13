@@ -48,6 +48,11 @@ export class Range2 implements IRange2 {
 		return this;
 	}
 	public translate(system: IVec2): Range2 {
+		this.pos.scale(system);
+		this.size.scale(system);
+		return this;
+	}
+	public move(system: IVec2): Range2 {
 		this.pos.add(system);
 		return this;
 	}

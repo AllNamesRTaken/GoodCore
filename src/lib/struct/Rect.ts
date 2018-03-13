@@ -58,8 +58,8 @@ export class Rect implements IRect {
 	// 	return this;
 	// }
 	public translate(system: IVec2): Rect {
-		this.start.add(system);
-		this.stop.add(system);
+		this.start.scale(system);
+		this.stop.scale(system);
 		return this;
 	}
 	public equals(rect: IRect): boolean {

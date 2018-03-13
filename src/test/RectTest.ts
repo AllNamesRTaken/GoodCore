@@ -59,7 +59,7 @@ describe("Rect",
 		it("Translate moved the rectangle by a vector",
 			function(){
 				const r1 = new Rect(1, 1, 3, 4);
-				r1.translate(new Vec2(2, 3)).equals(new Rect(3, 4, 5, 7)).should.be.true;
+				r1.translate(new Vec2(2, 3)).equals(new Rect(2, 3, 6, 12)).should.be.true;
 			});
 		it("FromRange returns the correct rect",
 			function(){

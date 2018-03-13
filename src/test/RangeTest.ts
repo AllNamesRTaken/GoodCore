@@ -119,10 +119,15 @@ describe("Range2",
 				r1.toDecimal().equals(r2).should.be.false;
 				r1.toDecimal().toInt().equals(r2).should.be.true;
 			});
-		it("Translate moves the range by a vector",
+		it("Translate scales both pos and size by a system vector",
 			function(){
 				const r1 = new Range2(1, 1, 2, 3);
-				r1.translate(new Vec2(2, 3)).equals(new Range2(3, 4, 2, 3)).should.be.true;
+				r1.translate(new Vec2(2, 3)).equals(new Range2(2, 3, 4, 9)).should.be.true;
+			});
+		it("Move adds a vector to the position",
+			function(){
+				const r1 = new Range2(1, 1, 2, 3);
+				r1.move(new Vec2(2, 3)).equals(new Range2(3, 4, 2, 3)).should.be.true;
 			});
 		it("FromRect converts the a Rect to a range with end non-inclusive",
 			function(){

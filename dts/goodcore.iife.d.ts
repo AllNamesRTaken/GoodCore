@@ -176,6 +176,7 @@ declare namespace goodcore {
 		toRect(endInclusive?: boolean, out?: Rect): Rect;
 		scale(factor: IVec2, keepCenter?: boolean): Range2;
 		translate(system: IVec2): Range2;
+		move(system: IVec2): Range2;
 		toInt(): Range2;
 		toDecimal(): Range2;
 		contains(target: Range2): boolean;
