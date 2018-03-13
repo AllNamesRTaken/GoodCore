@@ -1,7 +1,11 @@
 import { isNotUndefined } from "./Test";
 import { IDebounceOptions, debounce } from "./Util";
 
-export function debounced<S>(duration?: number, options?: Partial<IDebounceOptions>) {
+export function debounced<S>(duration?: number, options?: Partial<IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+    configurable: boolean;
+    enumerable: boolean | undefined;
+    get: () => any;
+} {
     return function innerDecorator<S>(target: S, key: string, descriptor: PropertyDescriptor) {
         return {
             configurable: true,
