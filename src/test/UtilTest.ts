@@ -56,7 +56,7 @@ describe("Util",
 				warn[0].should.contain("warned");
 				//cannot console.log here since that is overridden by Mocha
 
-				Global.window = null;
+				(Global.window as any) = null;
 				Util.pipeOut(
 					function (...args: any[]) {
 						log.push.apply(log, args);

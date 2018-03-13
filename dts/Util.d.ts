@@ -30,4 +30,4 @@ interface IDebounceOptions {
 interface IDebouncedFunction extends Function{
 	clear?: () => void;
 }
-export function debounce<T extends Function>(method: T, duration = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction;
+export function debounce<T extends Function>(method: T, duration?: number, options?: Partial<IDebounceOptions>): IDebouncedFunction;

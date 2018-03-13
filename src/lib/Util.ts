@@ -167,7 +167,7 @@ export interface IDebounceOptions {
 export interface IDebouncedFunction extends Function{
 	clear?: () => void;
 }
-export function debounce<T extends Function>(method: T, duration = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction {
+export function debounce<T extends Function>(method: T, duration:number = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction {
     let timeoutHandle: any = null;
 
     let wrapper: IDebouncedFunction = function (...args: any[]) {
