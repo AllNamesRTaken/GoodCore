@@ -82,6 +82,14 @@ describe("Dictionary",
 				d2.has("key1").should.be.true;
 				d2.has("key2").should.be.true;
 			});
+		it("clone has a correct list",
+			function () {
+				const d = new Dictionary<string>();
+				d.set("key1", "value1");
+				d.set("key2", "value2");
+				let d2 = d.clone();
+				d2.values.should.deep.equal(["value1", "value2"]);
+			});
 		it("ToJson formats Dict correct",
 			function () {
 				const d = new Dictionary<string>();
@@ -130,6 +138,12 @@ describe("Dictionary",
 				JSON.stringify(d2).should.equal('{"a":{"value":2},"b":{"value":3},"c":{"value":4},"d":{"value":5}}');
 				d3.deserialize({a:{x:1, y:1}, b:{x:2, y:2}}, Vec2);
 				JSON.stringify(d3).should.equal('{"a":{"x":1,"y":1},"b":{"x":2,"y":2}}');
+			});
+		it("deserialize Dictionary<T> populates the values",
+			function () {
+				const d1 = new Dictionary<number>();
+				d1.deserialize({a:1, b:2, c:3, d:4});
+				d1.values.should.deep.equal([1, 2, 3, 4]);
 			});
 	}
 

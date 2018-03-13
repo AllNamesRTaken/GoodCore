@@ -24,3 +24,10 @@ export function assert(assertion: boolean, message: string, isDebug?: boolean): 
 export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(objOrClass: U, fnName: string, proxyFn: (originalFn: (...args: any[]) => S | V, ...args: any[]) => void): void;
 export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void;
 export function toArray<T>(arr: ArrayLike<T>): T[];
+interface IDebounceOptions {
+    leading: boolean;
+}
+interface IDebouncedFunction extends Function{
+	clear?: () => void;
+}
+export function debounce<T extends Function>(method: T, duration = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction;

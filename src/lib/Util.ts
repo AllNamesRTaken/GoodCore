@@ -160,3 +160,36 @@ export function loop(count: number, fn: (i: number, ...args: any[]) => any | voi
 export function toArray<T>(arr: ArrayLike<T>): T[] {
 	return Array.prototype.slice.call(arr);
 }
+export const DEFAULT_DURATION = 100;
+export interface IDebounceOptions {
+    leading: boolean;
+}
+export interface IDebouncedFunction extends Function{
+	clear?: () => void;
+}
+export function debounce<T extends Function>(method: T, duration = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction {
+    let timeoutHandle: any = null;
+
+    let wrapper: IDebouncedFunction = function (...args: any[]) {
+        if(timeoutHandle === null) {
+            if (isNotUndefined(options) && isNotUndefined(options!.leading)) {
+                method.apply(this, args);
+            }    
+        }
+        wrapper.clear!()
+
+        timeoutHandle = setTimeout(() => {
+            timeoutHandle = null
+            method.apply(this, args)
+        }, duration)
+    }
+
+    wrapper.clear = function () {
+        if (timeoutHandle) {
+            clearTimeout(timeoutHandle)
+            timeoutHandle = null
+        }
+    }
+
+    return wrapper
+}

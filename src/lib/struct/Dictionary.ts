@@ -77,12 +77,13 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		while (++i < keys.length) {
 			list.push(lookup[keys[i]]);
 		}
+		this._isDirty = false;
 	}
 	public clone(): Dictionary<T> {
 		let result = this.create<T>();
-		result._isDirty = this._isDirty;
-		result._list = clone(this._list);
+		result._isDirty = true;
 		result._lookup = clone(this._lookup);
+		result.reCreateList();
 		return result;
 	}
 	public toJSON(): any {
@@ -116,6 +117,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 				this.set(key, obj[key]);
 			}
 		}
+		this.reCreateList();
 		return this;
 	}
 }

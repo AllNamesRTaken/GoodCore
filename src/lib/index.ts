@@ -33,3 +33,5 @@ export { integrate as integrate} from "./Integration";
 import * as MocData from "./MocData";
 export { MocData as MocData };
 export { KeyValuePair as KeyValuePair} from "./struct/KeyValuePair";
+import  * as Decorators from "./Decorators"; 
+export { Decorators as Decorators };

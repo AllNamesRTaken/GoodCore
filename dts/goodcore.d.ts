@@ -32,4 +32,6 @@ import * as MocData from "./MocData";
 export { MocData as MocData };
 export { KeyValuePair as KeyValuePair } from "./KeyValuePair";
 export function integrate(alias?: string | object): void;
+import  * as Decorators from "./Decorators"; 
+export { Decorators as Decorators };
 
