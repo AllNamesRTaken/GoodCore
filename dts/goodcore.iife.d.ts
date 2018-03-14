@@ -523,6 +523,8 @@ declare namespace goodcore {
 		export function insertAt<T>(src: T[], pos: number, v: T): void;
 		export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
 		export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[];
+		export function zip<S, T, U = [S|undefined, T|undefined]>(a: S[], b: T[], fn?: (a: S|undefined, b: T|undefined, i?: number) => U ): U[];
+		export function unzip<S, T, U = [S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
 		export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
 	}
 

@@ -153,8 +153,9 @@ export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, 
 }
 export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void {
 	let i = -1;
-	while (++i < count) {
-		fn(i);
+	let run = true;
+	while (run && ++i < count) {
+		run = fn(i) !== true;
 	}
 }
 export function toArray<T>(arr: ArrayLike<T>): T[] {

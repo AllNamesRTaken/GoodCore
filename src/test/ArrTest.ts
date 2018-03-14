@@ -368,14 +368,26 @@ describe("Arrays",
 			const arr = [1, 2, 3, 4];
 			Arr.some(arr, (el) => el === 3).should.be.true;
 			Arr.some(arr, (el) => el === 5).should.be.false;
-			Arr.some(null, (el) => el === 5).should.be.false;
+			Arr.some(null!, (el) => el === 5).should.be.false;
 		});
 		it("All is true if all elements are true",
 		function() {
 			const arr = [1, 2, 3, 4];
 			Arr.all(arr, (el) => el > 0).should.be.true;
 			Arr.all(arr, (el) => el < 4).should.be.false;
-			Arr.all(null, (el) => el < 4).should.be.true;
+			Arr.all(null!, (el) => el < 4).should.be.true;
+		});
+		it("Zip zips 2 arrays",
+		function() {
+			Arr.zip([1,2,3], ["a", "b", "c"]).should.deep.equal([[1, "a"], [2, "b"], [3, "c"]]);
+			Arr.zip<number, string, string>([1,2,3], ["a", "b", "c"], (a, b, i) => b!.repeat(a!) )
+				.should.deep.equal([ "a", "bb", "ccc" ]);
+		});
+		it("Unzip unzips 1 array to a tuple of 2 arrays",
+		function() {
+			Arr.unzip<number, string>([[1, "a"], [2, "b"], [3, "c"]]).should.deep.equal([ [1, 2, 3], ["a", "b", "c"] ]);
+			Arr.unzip<number, string, string>(["f", "fo", "foo"], (u, i, out) => [u.length, u])
+				.should.deep.equal([ [1, 2, 3], ["f", "fo", "foo"] ]);
 		});
 		it("Deserialize revives Array<T>",
 		function () {

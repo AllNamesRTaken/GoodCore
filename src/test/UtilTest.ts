@@ -145,6 +145,15 @@ describe("Util",
 				Util.loop(10, (i) => sum += i);
 				sum.should.equal(45);
 			});
+		it("Loop should stop if fn is returning false",
+			function () {
+				let sum = 0;
+				Util.loop(10, (i) => {
+					sum += i;
+					return i === 5;
+				});
+				sum.should.equal(15);
+			});
 		it("Count should increase",
 			function () {
 				let sum = 0;

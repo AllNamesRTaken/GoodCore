@@ -364,6 +364,32 @@ export function create<T>(length: number, populator: (i?: number, arr?: T[]) => 
 	}
 	return arr;
 }
+export function zip<S, T, U = [S|undefined, T|undefined]>(a: S[], b: T[], fn: (a: S|undefined, b: T|undefined, i?: number) => U = (a: S|undefined, b: T|undefined): U => [a, b] as any ): U[] {
+	let i = -1;
+	let min = Math.max(a.length, b.length);
+	let max = Math.max(a.length, b.length);
+	let u: U;
+	let result: U[] = [];
+	while (++i < max && (u = fn(a[i], b[i], i)) !== undefined) {
+		result.push(u);
+	}
+	return result;
+}
+export function unzip<S, T, U = [S, T]>(arr: U[], fn: (u: U, i?: number, out?: [S, T]) => [S, T] = (u: any, i: number, out: [S, T]) => (out[0] = (u[0] as any), out[1] = u[1], out) as any ): [S[], T[]] {
+	let i = -1;
+	let len = arr.length;
+	let u: U;
+	let split: [S, T] =  [undefined as any, undefined as any];
+	let result: [S[], T[]] = [
+		new Array<S>(),
+		new Array<T>()
+	];
+	while (++i < len && (split = fn(arr[i], i, split) ) ) {
+		result[0].push(split[0]);
+		result[1].push(split[1]);
+	}
+	return result;
+}
 export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[] {
 	let [T, ...passthroughT] = types;
 	if (isNotUndefined(T)) {
