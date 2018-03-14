@@ -19,7 +19,7 @@ describe("Arrays",
 				assert(false, "this works");
 				const arr = this.arr1;
 				const copy = Arr.deepCopy(arr);
-				Arr.deepCopy(null).should.deep.equal([]);
+				Arr.deepCopy(null!).should.deep.equal([]);
 				copy.should.deep.equal(arr);
 				copy.should.not.equal(arr);
 			});
@@ -28,7 +28,7 @@ describe("Arrays",
 				const arr = this.arr3;
 				const copy = Arr.shallowCopy(arr);
 				copy[1].should.equal(arr[1]);
-				Arr.shallowCopy(null).should.deep.equal([]);
+				Arr.shallowCopy(null!).should.deep.equal([]);
 			});
 		it("Append appends two arrays into the first",
 			function() {
@@ -38,7 +38,7 @@ describe("Arrays",
 				copy.length.should.equal(this.arr1.length + this.arr2.length);
 				copy.should.deep.equal(this.arr1.concat(this.arr2));
 				let arr = [1];
-				Arr.append(arr, null);
+				Arr.append(arr, null!);
 				arr.should.deep.equal([1]);
 			});
 		it("Concat works and does not change the sources",
@@ -59,7 +59,7 @@ describe("Arrays",
 				copy.should.deep.equal(this.arr2);
 				copy.should.not.equal(this.arr2);
 				let arr = [1];
-				Arr.deepCopyInto(null, arr);
+				Arr.deepCopyInto(null!, arr);
 				arr.should.deep.equal([]);
 			});
 		it("Deepfill works like deepcopy at a position",
@@ -70,34 +70,34 @@ describe("Arrays",
 				copy.length.should.equal(len);
 				copy.should.deep.equal([1, 4, 4, 8, 1, 9]);
 				let arr = [1, 2];
-				Arr.deepFill(null, arr, 1);
+				Arr.deepFill(null!, arr, 1);
 				arr.should.deep.equal([1, 2]);
 			});
 		it("IndexOf returns correct index",
 			function() {
 				Arr.indexOf(this.arr1, (el) => el === 7).should.equal(2);
 				Arr.indexOf(this.arr1, (el) => el === 17).should.equal(-1);
-				Arr.indexOf(null, (el) => true).should.equal(-1);
+				Arr.indexOf(null!, (el) => true).should.equal(-1);
 			});
 		it("Filter returns correct array",
 			function() {
 				const copy = Arr.filter(this.arr1, (el, i) => i > 1);
 				copy.should.deep.equal([7, 2]);
-				Arr.filter(null, (el, i) => true).should.deep.equal([]);
+				Arr.filter(null!, (el, i) => true).should.deep.equal([]);
 			});
 		it("FilterInto uses supplied array",
 			function() {
 				const copy = Arr.shallowCopy(this.arr1);
 				Arr.filterInto(this.arr2, copy, (el, i) => i > 1);
 				copy.should.deep.equal([1, 9]);
-				Arr.filterInto(null, copy, (el, i) => i > 1);
+				Arr.filterInto(null!, copy, (el, i) => i > 1);
 				copy.should.deep.equal([]);
 			});
 		it("Flatten returns correct array",
 			function() {
 				const copy = Arr.flatten([1, [2, 3], 4]);
 				copy.should.deep.equal([1, 2, 3, 4]);
-				Arr.flatten(null).should.deep.equal([]);
+				Arr.flatten(null!).should.deep.equal([]);
 			});
 		it("ForEach loops correctly",
 			function() {
@@ -106,7 +106,7 @@ describe("Arrays",
 				Arr.forEach(this.arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				arrEl.should.deep.equal(this.arr1);
 				arri.should.deep.equal([0, 1, 2, 3]);
-				Arr.forEach(null as number[], (el, i) => {arrEl.push(el); arri.push(i); });
+				Arr.forEach(null! as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				arri.should.deep.equal([0, 1, 2, 3]);
 			});
 		it("ForEach with startIndex loops correctly",
@@ -119,7 +119,7 @@ describe("Arrays",
 				const arrEl2 = new Array<number>();
 				Arr.forEach(this.arr1 as number[], (el, i) => { arrEl2.push(el); }, 42);
 				arrEl2.should.deep.equal([]);
-				Arr.forEach(null as number[], (el, i) => { arrEl2.push(el); }, 0);
+				Arr.forEach(null! as number[], (el, i) => { arrEl2.push(el); }, 0);
 				arrEl2.should.deep.equal([]);
 			});
 		it("ReverseForEach loops correctly",
@@ -129,20 +129,20 @@ describe("Arrays",
 				Arr.reverseForEach(this.arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				arrEl.should.deep.equal(Arr.reverse(Arr.shallowCopy(this.arr1)));
 				arri.should.deep.equal([3, 2, 1, 0]);
-				Arr.reverseForEach(null as number[], (el, i) => {arrEl.push(el); arri.push(i); });
+				Arr.reverseForEach(null! as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				arri.should.deep.equal([3, 2, 1, 0]);
 			});
 		it("IndexOfElement returns correct index",
 			function() {
 				Arr.indexOfElement(this.arr1, 7).should.equal(2);
 				Arr.indexOfElement(this.arr1, 17).should.equal(-1);
-				Arr.indexOfElement(null, 17).should.equal(-1);
+				Arr.indexOfElement(null!, 17).should.equal(-1);
 			});
 		it("Map el and i are correct",
 			function() {
 				Arr.map(this.arr1 as number[], (el, i) => el).should.deep.equal([1, 4, 7, 2]);
 				Arr.map(this.arr1 as number[], (el, i) => i).should.deep.equal([0, 1, 2, 3]);
-				Arr.map(null as number[], (el, i) => i).should.deep.equal([]);
+				Arr.map(null! as number[], (el, i) => i).should.deep.equal([]);
 			});
 		it("MapInto maps correctly and sets length",
 			function() {
@@ -153,56 +153,56 @@ describe("Arrays",
 				Arr.mapInto(this.arr1 as number[], copy, (el, i) => i);
 				copy.should.deep.equal([0, 1, 2, 3]);
 				copy = [1, 2, 3, 4, 5];
-				Arr.mapInto(null as number[], copy, (el, i) => i);
+				Arr.mapInto(null! as number[], copy, (el, i) => i);
 				copy.should.deep.equal([]);
 			});
 		it("Reduce works on numbers",
 			function() {
 				Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc, 0).should.equal(14);
-				Arr.reduce(null as number[], (acc, cur) => cur + acc, 0).should.equal(0);
+				Arr.reduce(null! as number[], (acc, cur) => cur + acc, 0).should.equal(0);
 			});
 		it("ReduceUntil works on numbers",
 			function() {
 				Arr.reduceUntil(this.arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0).should.equal(5);
-				Arr.reduceUntil(null as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0).should.equal(0);
+				Arr.reduceUntil(null! as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0).should.equal(0);
 			});
 		it("ReverseReduce works on numbers",
 			function() {
 				Arr.reverseReduce(this.arr1 as number[], (acc, cur) => cur + acc, 0).should.equal(14);
-				Arr.reverseReduce(null as number[], (acc, cur) => cur + acc, 0).should.equal(0);
+				Arr.reverseReduce(null! as number[], (acc, cur) => cur + acc, 0).should.equal(0);
 			});
 		it("ReverseReduceUntil works on numbers",
 			function() {
 				Arr.reverseReduceUntil(this.arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur === 4, 0).should.equal(9);
-				Arr.reverseReduceUntil(null as number[], (acc, cur) => cur + acc, (acc, cur) => cur === 4, 0).should.equal(0);
+				Arr.reverseReduceUntil(null! as number[], (acc, cur) => cur + acc, (acc, cur) => cur === 4, 0).should.equal(0);
 			});
 		it("RemoveAt removes correct item",
 			function() {
 				const arr = [1, 2, 3, 4];
 				Arr.removeAt(arr, 2).should.equal(3);
 				arr.should.deep.equal([1, 2, 4]);
-				(Arr.removeAt(null, 2) === undefined).should.be.true;
+				(Arr.removeAt(null!, 2) === undefined).should.be.true;
 			});
 		it("Remove removes correct element",
 			function() {
 				const arr = [1, 2, 3, 4];
 				Arr.remove(arr, 2);
 				arr.should.deep.equal([1, 3, 4]);
-				Arr.remove(null, 2); // no crash
+				Arr.remove(null!, 2); // no crash
 			});
 		it("RemoveOneByFn removes correct element",
 			function() {
 				const arr = [1, 2, 3, 4];
 				Arr.removeOneByFn(arr, (el) => el > 2);
 				arr.should.deep.equal([1, 2, 4]);
-				Arr.removeOneByFn(null, (el) => el > 2); // no crash
+				Arr.removeOneByFn(null!, (el) => el > 2); // no crash
 			});
 		it("Reverse reverses the array",
 			function() {
 				const arr = [1, 2, 3, 4];
 				Arr.reverse(arr);
 				arr.should.deep.equal([4, 3, 2, 1]);
-				(Arr.reverse(null) === null).should.be.true;
+				(Arr.reverse(null!) === null).should.be.true;
 			});
 		it("ShallowCopyInto copys correctly and keeps references",
 			function() {
@@ -210,7 +210,7 @@ describe("Arrays",
 				Arr.shallowCopyInto(this.arr3, copy);
 				copy.should.deep.equal(this.arr3);
 				copy[1].should.equal(this.arr3[1]);
-				Arr.shallowCopyInto(null, copy);
+				Arr.shallowCopyInto(null!, copy);
 				copy.should.deep.equal([]);
 			});
 		it("ShallowFill works like ShallowCopyInto but at a position",
@@ -221,14 +221,14 @@ describe("Arrays",
 				copy[2].should.equal(this.arr3[0]);
 				Arr.shallowFill([5, 6, 7, 8, 9], copy, 0);
 				copy[4].should.equal(9);
-				Arr.shallowFill(null, copy, 0);
+				Arr.shallowFill(null!, copy, 0);
 				copy.length.should.equal(5);
 			});
 		it("Slice does slice",
 			function() {
 				Arr.slice(this.arr1, 1, 2).should.deep.equal([4, 7]);
 				Arr.slice(this.arr1, 10, 2).should.deep.equal([]);
-				Arr.slice(null, 0, 2).should.deep.equal([]);
+				Arr.slice(null!, 0, 2).should.deep.equal([]);
 			});
 		it("Splice does splice",
 			function() {
@@ -264,7 +264,7 @@ describe("Arrays",
 				Arr.splice(arr1, 1, 1, [3, 4]);
 				arr1.should.deep.equal([1, 3, 4, 7, 2]);
 
-				arr1 = null;
+				arr1 = null!;
 				try {
 					Arr.splice(arr1, 1, 1, [3, 4]);
 				} catch (err) {
@@ -279,7 +279,7 @@ describe("Arrays",
 				Arr.forSome(this.arr1 as number[], (el, i) => i > 1, (el, i) => arri.push(i));
 				arrEl.should.deep.equal([7, 2]);
 				arri.should.deep.equal([2, 3]);
-				Arr.forSome(null as number[], (el, i) => i > 1, (el, i) => arri.push(i));
+				Arr.forSome(null! as number[], (el, i) => i > 1, (el, i) => arri.push(i));
 				arri.should.deep.equal([2, 3]);
 			});
 		it("Until work like ForEach where returning true breaks the loop",
@@ -296,7 +296,7 @@ describe("Arrays",
 				Arr.until(this.arr1 as number[], (el, i) => (arri2.push(i), i >= 2) );
 				arrEl2.should.deep.equal([1, 4, 7]);
 				arri2.should.deep.equal([0, 1, 2]);
-				Arr.until(null as number[], (el, i) => (arri2.push(i), i >= 2) );
+				Arr.until(null! as number[], (el, i) => (arri2.push(i), i >= 2) );
 				arri2.should.deep.equal([0, 1, 2]);
 			});
 		it("Until with startIndex work like ForEach with startIndex where returning true breaks the loop",
@@ -331,7 +331,7 @@ describe("Arrays",
 				Arr.reverseUntil(this.arr1 as number[], (el, i) => (arri2.push(i), i === 1) );
 				arrEl2.should.deep.equal([2, 7, 4]);
 				arri2.should.deep.equal([3, 2, 1]);
-				Arr.reverseUntil(null as number[], (el, i) => (arri2.push(i), i === 1) );
+				Arr.reverseUntil(null! as number[], (el, i) => (arri2.push(i), i === 1) );
 				arri2.should.deep.equal([3, 2, 1]);
 			});
 		it("InsertAt inserts an element at a position",
@@ -342,7 +342,7 @@ describe("Arrays",
 				Arr.insertAt(arr, 0, 7);
 				arr.should.deep.equal([7, 1, 2, 42, 3, 4]);
 				try {
-					Arr.insertAt(null, 0, 7);
+					Arr.insertAt(null!, 0, 7);
 				} catch (err) {
 					(err as Error).message.indexOf("Unable to insertAt").should.equal(0);
 				}
@@ -354,13 +354,13 @@ describe("Arrays",
 				i1.should.equal(1);
 				let i2 = Arr.binarySearch(arr, (el) => el.a - 5);
 				i2.should.equal(-1);
-				Arr.binarySearch(null, (el) => 1).should.equal(-1);
+				Arr.binarySearch(null!, (el) => 1).should.equal(-1);
 			});
 		it("Create creates an array of a given length and populates it using a function",
 			function() {
-				let arr = Arr.create<number>(10, (i, arr) => i < 2 ? 1 : arr[i - 2] + arr[i - 1]);
+				let arr = Arr.create<number>(10, (i, arr) => i! < 2 ? 1 : arr![i! - 2] + arr![i! - 1]);
 				arr.should.deep.equal([1, 1, 2, 3, 5, 8, 13, 21, 34, 55]);
-				let arr2 = Arr.create<number>(-10, (i, arr) => i < 2 ? 1 : arr[i - 2] + arr[i - 1]);
+				let arr2 = Arr.create<number>(-10, (i, arr) => i! < 2 ? 1 : arr![i! - 2] + arr![i! - 1]);
 				arr2.should.deep.equal([]);
 			});
 		it("Some is true if any element is true",
