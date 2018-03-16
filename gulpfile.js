@@ -47,7 +47,7 @@ gulp.task("build-es5", async function () {
     const bundle = await rollup.rollup({
         input: './dist/lib/index.js',
         plugins: [
-            uglify({}, es.minify)
+            // uglify({}, es.minify)
         ]
     });
   

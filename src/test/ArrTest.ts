@@ -161,11 +161,19 @@ describe("Arrays",
 				Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc, 0).should.equal(14);
 				Arr.reduce(null! as number[], (acc, cur) => cur + acc, 0).should.equal(0);
 			});
+		it("Reduce works with from and to",
+		function() {
+			Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc, 0, 1, 2).should.equal(11);
+		});
 		it("ReduceUntil works on numbers",
 			function() {
 				Arr.reduceUntil(this.arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0).should.equal(5);
 				Arr.reduceUntil(null! as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0).should.equal(0);
 			});
+		it("ReduceUntil works with from and to",
+		function() {
+			Arr.reduceUntil([9,2,3,7,5,6] as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0, 1, 4).should.equal(5);
+		});
 		it("ReverseReduce works on numbers",
 			function() {
 				Arr.reverseReduce(this.arr1 as number[], (acc, cur) => cur + acc, 0).should.equal(14);

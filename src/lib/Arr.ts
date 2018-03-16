@@ -1,5 +1,5 @@
 import { clone, setProperties } from "./Obj";
-import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined } from "./Test";
+import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined } from "./Test";
 
 class ArrayState {
 	public static _int: number;
@@ -231,21 +231,27 @@ export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T
 		target[i] = fn(src[i], i);
 	}
 }
-export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U {
-	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
+export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, from?: number, to?: number): U {
 	let acc: any | number = start;
-	while (++i < len) {
-		acc = fn(acc, src[i]);
+	if(isNotNullOrUndefined(src)) {
+		from = Math.min(Math.max(0, isUndefined(from) ? 0 : from!), src.length - 1);
+		to = Math.min(Math.max(0, isUndefined(to) ? src.length - 1 : to!), src.length - 1);
+		let i = from - 1;
+		while (++i < to + 1) {
+			acc = fn(acc, src[i]);
+		}
 	}
 	return acc;
 }
-export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U {
-	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
+export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U, from?: number, to?: number): U {
 	let acc: any | number = start;
-	while (++i < len && !test(acc, src[i])) {
-		acc = fn(acc, src[i]);
+	if(isNotNullOrUndefined(src)) {
+		from = Math.min(Math.max(0, isUndefined(from) ? 0 : from!), src.length - 1);
+		to = Math.min(Math.max(0, isUndefined(to) ? src.length - 1 : to!), src.length - 1);
+		let i = from - 1;
+		while (++i < to + 1 && !test(acc, src[i])) {
+			acc = fn(acc, src[i]);
+		}
 	}
 	return acc;
 }

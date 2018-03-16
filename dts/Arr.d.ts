@@ -21,8 +21,8 @@
     export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void;
     export function map<S, T>(src: S[], fn: (el: S, i: number) => T): T[];
     export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T): void;
-    export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U;
-    export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
+    export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, from?: number, to?: number): U;
+    export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U, from?: number, to?: number): U;
     export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U;
     export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
     export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex?: number): void;
