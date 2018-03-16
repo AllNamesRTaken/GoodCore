@@ -120,7 +120,10 @@ interface IDebouncedFunction extends Function{
 }
 
 declare namespace goodcore {
-
+	export const Global: {
+		window: Window;
+		hasNativeWindow: boolean;
+	};
 	export class Vec2Const {
 		static EPSILON: number;
 		static IDENTITY: IVec2;

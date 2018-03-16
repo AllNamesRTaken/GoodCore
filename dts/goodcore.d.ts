@@ -1,5 +1,6 @@
 /// <reference path="base.d.ts" />
 
+export { Global as Global} from "./Global";
 export { Vec2 as Vec2, Vec2Const as Vec2Const } from "./Vec2";
 export { Range2 as Range2 } from "./Range2";
 export { Rect as Rect } from "./Rect";
