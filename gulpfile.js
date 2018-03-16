@@ -72,7 +72,7 @@ gulp.task("build-es5", async function () {
 });
 
 gulp.task("copyDTS", () => {
-    return gulp.src("./dts/*.d.ts")
+    return gulp.src("./dts/**/*.d.ts")
         .pipe(gulp.dest("dist/lib"));
 });
 //This should build both but when I sequence them then they leek code into each other.

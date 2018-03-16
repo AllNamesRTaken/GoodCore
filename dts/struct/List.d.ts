@@ -1,4 +1,4 @@
-/// <reference path="base.d.ts" />
+/// <reference path="../base.d.ts" />
 
 export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
     constructor(arr?: T[] | List<T>);

@@ -1,4 +1,4 @@
-/// <reference path="base.d.ts" />
+/// <reference path="../base.d.ts" />
 import { Vec2 } from "./Vec2";
 
 export class Range2 implements IRange2 {

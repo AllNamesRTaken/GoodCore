@@ -1,4 +1,4 @@
-/// <reference path="base.d.ts" />
+/// <reference path="../base.d.ts" />
 
 export let async: {
     <S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;

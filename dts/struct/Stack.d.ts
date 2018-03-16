@@ -1,4 +1,4 @@
-/// <reference path="base.d.ts" />
+/// <reference path="../base.d.ts" />
 
 import { List } from "./List";
 export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable<Stack<T>> {

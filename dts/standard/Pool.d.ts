@@ -1,4 +1,4 @@
-/// <reference path="base.d.ts" />
+/// <reference path="../base.d.ts" />
 
 export class Pool<T extends IPoolable> implements IPool<IPoolable> {
     readonly available: number;

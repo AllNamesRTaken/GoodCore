@@ -1,4 +1,4 @@
-/// <reference path="base.d.ts" />
+/// <reference path="../base.d.ts" />
 
 import { Dictionary } from "./Dictionary";
 import { Tree } from "./Tree";

@@ -1,4 +1,4 @@
-/// <reference path="base.d.ts" />
+/// <reference path="../base.d.ts" />
 import { Vec2 } from "./Vec2";
 
 export class Rect implements IRect {
