@@ -22,7 +22,6 @@ const rootPatterns = [{
     if (match) {
       let m = path.match(match.regex);
       if (m!.length > 1) {
-        console.log(match.root, match, m![m!.length - 1]);
         match.root[match.root.length - 1] = m![m!.length - 1];
       }
       return [...match.root];
