@@ -11,6 +11,10 @@ const isWatch = (arg) => (arg || "").match("^w|watch$") !== null;
 // const isTest = (arg) => (arg || "").match("^t|test$") !== null;
 // const isTestWatch = (arg) => (arg || "").match("^tw|testwatch$") !== null;
 
+var libEntries = {};
+libEntries[package.name] = "./src/lib/index.ts";
+libEntries["webpackExternals"] = "./src/lib/webpackExternals.ts";
+
 module.exports = (envOptions) => {
 	envOptions = envOptions || {};
 	console.log(chalk.green("arguments: " + JSON.stringify(envOptions)));
@@ -25,12 +29,12 @@ module.exports = (envOptions) => {
 		target: "web",
 		externals: [nodeExternals()],
 		// context: source,
-		entry: "./src/lib/index.ts",
+		entry: libEntries,
 		output: {
 			path: destination,
-			filename: package.name + ".bundle.js",
-			chunkFilename: package.name + ".chunk.js",
-			library: package.name,
+			filename: "[name].bundle.js",
+			chunkFilename: "[name].chunk.js",
+			library: "[name]",
 			libraryTarget: "umd"
 		},
 		resolve: {
