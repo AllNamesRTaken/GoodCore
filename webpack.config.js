@@ -1,6 +1,6 @@
 const webpack = require("webpack");
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
-const UglifyJsPlugin = require("uglifyjs-webpack-plugin");
+var nodeExternals = require('webpack-node-externals');
 const HappyPack = require('happypack');
 const path = require("path");
 const chalk = require("chalk");
@@ -22,6 +22,8 @@ module.exports = (envOptions) => {
 
 	const config = {
 		mode: isProd(envOptions.MODE) ? "production" : "development",
+		target: "web",
+		externals: [nodeExternals()],
 		// context: source,
 		entry: "./src/lib/index.ts",
 		output: {
@@ -36,8 +38,6 @@ module.exports = (envOptions) => {
 		},
 		node: {
 			process: false
-		},
-		externals: {
 		},
 		module: {
 			rules: [
@@ -77,31 +77,6 @@ module.exports = (envOptions) => {
 			...config.module.rules,
 			...[
 			]];
-		// config.plugins.push(
-		// 	new UglifyJsPlugin({
-		// 		cache: true,
-		// 		parallel: true,
-		// 		uglifyOptions: {
-		// 			beautify: false,
-		// 			output: {
-		// 				comments: false
-		// 			},
-		// 			mangle: true,
-		// 			compress: {
-		// 				warnings: false,
-		// 				conditionals: true,
-		// 				unused: true,
-		// 				comparisons: true,
-		// 				sequences: true,
-		// 				dead_code: true,
-		// 				evaluate: true,
-		// 				if_return: true,
-		// 				join_vars: true,
-		// 				negate_iife: false
-		// 			},
-		// 		}
-		// 	})
-		// );
 	} else {
 		let isWatchMode = isWatch(envOptions.MODE);
 		if (isWatchMode) {
