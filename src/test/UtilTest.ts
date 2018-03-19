@@ -20,7 +20,7 @@ describe("Util",
 			function () {
 				let org = Global.window;
 				Util.init("foo" as any);
-				Global.window.should.equal("foo");
+				Global.window!.should.equal("foo");
 				Global.window = org;
 			});
 		it("Assert writes to console.error and PipeOut catches it.",

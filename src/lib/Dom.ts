@@ -8,7 +8,7 @@ export enum Sides {
 }
 class DomState {
 	public static Sides = Sides;
-	public static _window: Window = Global.window;
+	public static _window: Window = Global.window!;
 	public static _document: Document | undefined = Global.window ? Global.window.document : undefined;
 	public static _el: Element | undefined = Global.window ? Global.window.document.createElement("div") : undefined;
 }

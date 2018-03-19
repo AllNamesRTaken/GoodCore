@@ -44,7 +44,7 @@ console.log("list: ", time2 / i);
 console.log("diff ", time2 / time);
 
 //Compare same between indexed (on UUID) and unindexed list.
-let tmp2: List<{id: string}>;
+let tmp2: List<{id: string}> = new List();
 time = 0;
 time2 = 0;
 for (i = 0; i < 100; i++) {

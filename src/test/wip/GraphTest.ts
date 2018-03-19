@@ -15,7 +15,7 @@ describe("Graph",
 					{id: "2", nodeType: "blue", neighbours: ["0", "3"], costs: [20, 10]},
 					{id: "3", nodeType: "green", neighbours: ["1", "2"], costs: [10, 10]},
 				]);
-				graph.get("0").neighbours.length.should.equal(2);
+				graph.get("0")!.neighbours.length.should.equal(2);
 			});
 	}
 );

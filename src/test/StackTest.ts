@@ -41,8 +41,8 @@ describe("Stack",
 				stack.push(5);
 				stack.push(3);
 				stack.pop();
-				stack.peek().should.equal(5);
-				stack.peekAt(1).should.equal(1);
+				stack.peek()!.should.equal(5);
+				stack.peekAt(1)!.should.equal(1);
 				(stack.peekAt(2) === undefined).should.be.true;
 				(stack.peekAt(-1) === undefined).should.be.true;
 			});
@@ -87,7 +87,7 @@ describe("Stack",
 				stack.push(2);
 				stack.push(3);
 				stack.size.should.equal(3);
-				stack.peek().should.equal(3);
+				stack.peek()!.should.equal(3);
 				stack.clear();
 				stack.size.should.equal(0);
 				(stack.peek() === undefined).should.be.true;

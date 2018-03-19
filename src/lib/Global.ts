@@ -11,15 +11,15 @@ if (typeof (window) === "undefined") {
 
 // tslint:disable-next-line:class-name
 export class _Global {
-	private _window: Window = win;
+	private _window: Window | null = win;
 	private _nativeWindow: boolean = nativeWindow;
 
-	public get window(): Window {
+	public get window(): Window|null {
 		return this._window;
 	}
-	public set window(v: Window) {
+	public set window(v: Window|null) {
 		this._window = v;
-		if (this.hasNativeWindow) {
+		if (this.hasNativeWindow && v !== null) {
 			win = v;
 		}
 	}
