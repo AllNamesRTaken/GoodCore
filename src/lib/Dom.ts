@@ -25,8 +25,12 @@ export function toArray<T>(a: ArrayLike<T>): T[] {
 export function create(html: string, attr?: any): HTMLElement {
 	// tslint:disable-next-line:prefer-const
 	let result: HTMLElement, keys: string[], i: number, k: number, styles: any, styleKeys: string[];
-	DomState._el!.innerHTML = html;
-	result = DomState._el!.children[0] as HTMLElement;
+	if (/^a-zA-Z$/.test(html)) {
+		result = Global.window!.document.createElement(html);
+	} else {
+		DomState._el!.innerHTML = html;
+		result = DomState._el!.children[0] as HTMLElement;
+	}
 	setAttr(result, attr);
 	clear(DomState._el!);
 	//unsafe cast
@@ -60,8 +64,12 @@ export function setAttr(_el: HTMLElement | String, attr: any) {
 						el.style.setProperty(styleKeys[k], style[0], style[1]);
 					}
 				}
-			} else if (keys[i] === "classes" && attr[keys[i]] !== undefined && attr[keys[i]].join) {
-				el.setAttribute("className", (attr[keys[i]] as string[]).join(" "));
+			} else if ((keys[i] === "classes" || keys[i] === "class") && attr[keys[i]] !== undefined) {
+				if (attr[keys[i]].join) {
+					el.setAttribute("className", attr[keys[i]].join(" "));
+				} else {
+					el.setAttribute("className", attr[keys[i]]);
+				}
 			} else {
 				el.setAttribute(keys[i], attr[keys[i]]);
 			}
@@ -91,7 +99,7 @@ export function get(id: string): HTMLElement {
 			default:
 				result = DomState._document!.body;
 				break;
-	}
+		}
 	}
 	return result;
 }
@@ -108,7 +116,7 @@ export function children(root: HTMLElement, selector?: string) {
 export function findParent(root: HTMLElement, selector: string): HTMLElement | null {
 	let result = root.parentElement;
 	while (result) {
-		if ( is(selector, result) ) {
+		if (is(selector, result)) {
 			break;
 		}
 		result = result.parentElement;

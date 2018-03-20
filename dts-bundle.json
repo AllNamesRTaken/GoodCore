@@ -1,4 +1,0 @@
-{
-    "main": "./dist/lib/index.d.ts",
-    "headerPath": "./typings/custom.d.ts"
-}
