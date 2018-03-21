@@ -34,7 +34,7 @@ const rootPatterns = [{
   
     return function libraryExternals(context, request, callback) {
   
-      if (request.startsWith('goodcore/')) {
+      if (request.startsWith('goodcore')) {
         return callback(null, {
           root: rootForRequest(request),
           commonjs: request,
