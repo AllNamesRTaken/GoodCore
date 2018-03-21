@@ -16,13 +16,13 @@ const rootPatterns = [{
     root: ['goodcore', '']
   }];
   
-  function rootForRequest(path: string) {
-    const match = rootPatterns.find((pattern: any, index: number, obj: any) => !!path.match(pattern.regex));
+  function rootForRequest(path) {
+    const match = rootPatterns.find((pattern, index, obj) => !!path.match(pattern.regex));
   
     if (match) {
       let m = path.match(match.regex);
-      if (m!.length > 1) {
-        match.root[match.root.length - 1] = m![m!.length - 1];
+      if (m.length > 1) {
+        match.root[match.root.length - 1] = m[m.length - 1];
       }
       return [...match.root];
     }
@@ -30,9 +30,9 @@ const rootPatterns = [{
     return 'goodcore';
   }
   
-  function goodcoreExternalsFactory() {
+  function libraryExternalsFactory() {
   
-    return function goodcoreExternals(context: any, request: string, callback: Function) {
+    return function libraryExternals(context, request, callback) {
   
       if (request.startsWith('goodcore/')) {
         return callback(null, {
@@ -48,4 +48,4 @@ const rootPatterns = [{
     };
   
   }
-  module.exports = goodcoreExternalsFactory;
+  module.exports = libraryExternalsFactory;
