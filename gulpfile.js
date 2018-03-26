@@ -23,7 +23,7 @@ gulp.task("modifyBundle", function(cb) {
     cb();
 });
 gulp.task("package", ["bump"], function() {
-    return gulp.src("./package.json")
+    return gulp.src(["./package.json", "./README.md"])
         .pipe(gulp.dest("dist/lib"));
 });
 gulp.task("copyDTS", () => {
