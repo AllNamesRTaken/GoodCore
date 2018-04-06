@@ -99,7 +99,7 @@
     "type": "git",
     "url": "git://github.com/allnamesrtaken/goodcore.git"
   },
-  "homepage": "https://github.com/allnamesrtaken/goodcore#readme"
+  "homepage": "https://github.com/allnamesrtaken/goodcore#readme",
   "keywords": [
     "Typescript",
     "Javascript"
