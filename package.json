@@ -92,10 +92,14 @@
     "webpack-dev-server": "^3.1.1",
     "webpack-node-externals": "^1.6.0"
   },
+  "bugs": {
+    "url": "https://github.com/allnamesrtaken/goodcore/issues"
+  },
   "repository": {
     "type": "git",
     "url": "git://github.com/allnamesrtaken/goodcore.git"
   },
+  "homepage": "https://github.com/allnamesrtaken/goodcore#readme"
   "keywords": [
     "Typescript",
     "Javascript"

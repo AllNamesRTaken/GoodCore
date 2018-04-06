@@ -1,7 +1,10 @@
+# GoodCore
+
+[![version](https://img.shields.io/npm/v/goodcore.svg)](https://github.com/AllNamesRTaken/GoodCore)
+[![downloads](https://img.shields.io/npm/dt/goodcore.svg)](https://github.com/AllNamesRTaken/GoodCore)
 [![Build Status](https://travis-ci.org/AllNamesRTaken/GoodCore.svg?branch=master)](https://travis-ci.org/AllNamesRTaken/GoodCore)
 [![Coverage Status](https://coveralls.io/repos/github/AllNamesRTaken/GoodCore/badge.svg?branch=master)](https://coveralls.io/github/AllNamesRTaken/GoodCore?branch=master)
 
-# GoodCore
 Good Core typescript library with utility functions and effective data structures for use with both Node and browser.
 
 It brings:
