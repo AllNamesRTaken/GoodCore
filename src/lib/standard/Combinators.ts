@@ -16,8 +16,8 @@ export function after<S>(decoration: (name: string, ...args: any[]) => void) {
 	return function(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
 		const orgFn = descriptor.value;
 		descriptor.value = function(...args: any[]) {
-			const result = orgFn.apply(this, [orgFn.name].concat(args));
-			decoration.apply(this, args);
+			const result = orgFn.apply(this, args);
+			decoration.apply(this, [orgFn.name].concat(args));
 			return result;
 		};
 		return descriptor;

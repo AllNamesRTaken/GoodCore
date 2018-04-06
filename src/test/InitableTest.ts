@@ -17,6 +17,19 @@ describe("Initable",
 				console.log(JSON.stringify(new Person()), JSON.stringify(sam));
 				sam.age.should.equal(17);
 			});
+		it("Initable works as function wrapper around Object",
+			function(){
+				class Person extends Initable(Object) {
+					public name: string = "";
+					public age: number = 0;
+					public superPower: string | null = null;
+				}
+				let sam = new Person();
+				
+				sam.init({age: 17, name: "Sam", superPower: "badassery"});
+				console.log(JSON.stringify(new Person()), JSON.stringify(sam));
+				sam.age.should.equal(17);
+			});
 		it("Initable works as function wrapper around named class",
 			function(){
 				class Human {

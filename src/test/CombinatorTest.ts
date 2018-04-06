@@ -25,8 +25,9 @@ describe("Combinators",
 			function(){
 				class Person {
 					public anxiety: number = 0;
-					@after(function() { 
+					@after(function(name: string) { 
 						this.anxiety++;
+						name.should.equal("fret");
 					})
 					public fret(...args: any[]) {
 						this.anxiety.should.equal(0);
