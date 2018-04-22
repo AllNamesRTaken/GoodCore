@@ -48,7 +48,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		let result: T | undefined;
 		return isNotNullOrUndefined(this._index) ? this._index![key] : undefined;
 	}
-	public set(pos: number, v: T): List<T> {
+	public set(pos: number, v: T): this {
 		if (pos >= 0 && pos < this.length) {
 			this._array[pos | 0] = v;
 			if (this._indexer !== null) {
@@ -84,7 +84,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 			this.forEach((el) => this._index![this._indexer!(el)] = el);
 		}
 	}
-	public truncate(size: number = 0): List<T> {
+	public truncate(size: number = 0): this {
 		if (size < 0) {
 			let arr = this._array;
 			let len = arr.length;
@@ -99,7 +99,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		this._reindex();
 		return this;
 	}
-	public fill(size: number, populator: ((i: number) => T) | T): List<T> {
+	public fill(size: number, populator: ((i: number) => T) | T): this {
 		size = Math.max(0, size || 0);
 		if (isFunction(populator)) {
 			this._array = create(size, populator as (i: number) => T);
@@ -111,21 +111,21 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		this._reindex();
 		return this;
 	}
-	public clear(): List<T> {
+	public clear(): this {
 		this._array.length = 0;
 		if (this._index !== null) {
 			wipe(this._index);
 		}
 		return this;
 	}
-	public add(v: T): List<T> {
+	public add(v: T): this {
 		this._array.push(v);
 		if (this._indexer !== null) {
 			this._index![this._indexer!(v)] = v;
 		}
 		return this;
 	}
-	public insertAt(pos: number, v: T): List<T> {
+	public insertAt(pos: number, v: T): this {
 		insertAt(this._array, pos, v);
 		if (this._indexer !== null) {
 			this._index![this._indexer!(v)] = v;
@@ -152,11 +152,11 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		}
 		return result;
 	}
-	public concat(v: T[] | List<T>): List<T> {
+	public concat(v: T[] | this): this {
 		let arr: T[];
 		let arr2: T[] = v instanceof List ? v.values : v;
 		arr = concat(this._array, arr2);
-		return this.create(arr);
+		return this.create(arr) as this;
 	}
 	private index(arr: T[]): void {
 		if (this._indexer !== null) {
@@ -170,34 +170,34 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 			delete this._index![this._indexer!(el)];
 		}
 	}
-	public append(v: T[] | List<T>): List<T> {
+	public append(v: T[] | this): this {
 		let arr2: T[] = v instanceof List ? v.values : v;
 		append(this._array, arr2);
 		this.index(arr2);
 		return this;
 	}
-	public copy(src: List<T> | T[]): List<T> {
+	public copy(src: this | T[]): this {
 		let arr2: T[] = src instanceof List ? src.values : src;
 		deepCopyInto(arr2, this._array);
 		this.index(arr2);
 		return this;
 	}
-	public shallowCopy(src: List<T> | T[]): List<T> {
+	public shallowCopy(src: this | T[]): this {
 		let arr2: T[] = src instanceof List ? src.values : src;
 		shallowCopyInto(arr2, this._array);
 		this.index(arr2);
 		return this;
 	}
-	public clone(): List<T> {
+	public clone(): this {
 		const arr = deepCopy(this._array);
 		let result = this.create(arr);
 		if (this._indexer !== null) {
 			result._indexer = this._indexer;
 			result._index = clone(this._index);
 		}
-		return result;
+		return result as this;
 	}
-	public remove(v: T): List<T> {
+	public remove(v: T): this {
 		remove(this._array, v);
 		this.unindexEl(v);
 		return this;
@@ -212,25 +212,25 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		this.unindexEl(result);
 		return result;
 	}
-	public forEach(fn: (el: T, i: number) => any, startIndex: number = 0): List<T> {
+	public forEach(fn: (el: T, i: number) => any, startIndex: number = 0): this {
 		forEach(this._array, fn, startIndex);
 		return this;
 	}
-	public forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T> {
+	public forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): this {
 		forSome(this._array, filter, fn);
 		return this;
 	}
-	public until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): List<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): List<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean, fn?: ((el: T, i: number) => void) | number, startIndex?: number): List<T> {
+	public until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): this;
+	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): this;
+	public until(fnOrTest: (el: T, i: number) => boolean, fn?: ((el: T, i: number) => void) | number, startIndex?: number): this {
 		until(this._array, fnOrTest as any, fn as any, startIndex);
 		return this;
 	}
-	public reverseForEach(fn: (el: T, i: number) => any): List<T> {
+	public reverseForEach(fn: (el: T, i: number) => any): this {
 		reverseForEach(this._array, fn);
 		return this;
 	}
-	public reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): List<T> {
+	public reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): this {
 		reverseUntil(this._array, fnOrTest as any, fn as any);
 		return this;
 	}
@@ -262,7 +262,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		}
 		return result;
 	}
-	public reverse(): List<T> {
+	public reverse(): this {
 		reverse(this._array);
 		return this;
 	}
@@ -282,39 +282,39 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	public last(): T | undefined {
 		return this.length === 0 ? undefined : this.get(this.length - 1 );
 	}
-	public filter(fn: (el: T, i: number) => boolean): List<T> {
-		return this.create(filter(this._array, fn));
+	public filter(fn: (el: T, i: number) => boolean): this {
+		return this.create(filter(this._array, fn)) as this;
 	}
-	public select(fn: (el: T, i: number) => boolean): List<T> {
-		return this.create(filter(this._array, fn));
+	public select(fn: (el: T, i: number) => boolean): this {
+		return this.create(filter(this._array, fn)) as this;
 	}
-	public selectInto(src: List<T> | T[], fn: (el: T, i: number) => boolean): List<T> {
+	public selectInto(src: this | T[], fn: (el: T, i: number) => boolean): this {
 		let arr = src instanceof List ? src.values : src;
 		filterInto<T>(arr, this._array, fn);
 		this.index(arr);
 		return this;
 	}
-	public head(count: number = 1): List<T> {
+	public head(count: number = 1): this {
 		count = Math.max(0, count);
-		return this.create(slice(this._array, 0, count));
+		return this.create(slice(this._array, 0, count)) as this;
 	}
-	public tail(count: number = 1): List<T> {
+	public tail(count: number = 1): this {
 		count = Math.min(this._array.length, count);
-		return this.create(slice(this._array, Math.max(0, this._array.length - count)));		
+		return this.create(slice(this._array, Math.max(0, this._array.length - count))) as this;		
 	}
-	public splice(pos: number = 0, remove: number = Infinity, insert: T[] | List<T> = []): List<T> {
-		splice(this._array, pos, remove, isArray(insert) ? insert as T[] : (insert as List<T>).values);
+	public splice(pos: number = 0, remove: number = Infinity, insert: T[] | this = []): this {
+		splice(this._array, pos, remove, isArray(insert) ? insert as T[] : (insert as this).values);
 		this._reindex();
 		return this;
 	}
-	public orderBy(fn: (a: T, b: T) => number): List<T> {
+	public orderBy(fn: (a: T, b: T) => number): this {
 		this._array.sort(fn);
 		return this;
 	}
 	public map<S>(fn: (el: T, i: number) => S): List<S> {
 		return this.create<S>(map<T, S>(this._array, fn));
 	}
-	public mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): List<T> {
+	public mapInto<S>(src: List<S> | S[], fn: (el: S, i: number) => T): this {
 		let arr = src instanceof List ? src.values : src;
 		mapInto<S, T>(arr, this._array, fn);
 		this._reindex();
@@ -332,12 +332,12 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	public reverseReduceUntil<U>(fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U {
 		return reverseReduceUntil(this._array, fn, test, start) as U;
 	}
-	public equals(b: List<T>): boolean {
+	public equals(b: this): boolean {
 		const result = equals(this._array, b.values);
 		return result;
 	}
 	// Index is slower when less than 100
-	public same(b: List<T>): boolean {
+	public same(b: this): boolean {
 		let a = this;
 		let count = 0;
 		if (a.length === b.length) {
@@ -349,10 +349,10 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		}
 		return count === a.length;
 	}
-	public intersect(b: List<T>): List<T> {
+	public intersect(b: this): this {
 		let result = this.create();
-		let long: List<T>;
-		let short: List<T>;
+		let long: this;
+		let short: this;
 		result.indexer = this.indexer;
 		if (this.length < b.length) {
 			short = this, long = b;
@@ -372,12 +372,12 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 				}
 			});			
 		}
-		return result;
+		return result as this;
 	}
-	public union(b: List<T>): List<T> {
+	public union(b: this): this {
 		let result = this.create();
-		let long: List<T>;
-		let short: List<T>;
+		let long: this;
+		let short: this;
 		result.indexer = this.indexer;
 		if (this.length < b.length) {
 			short = this, long = b;
@@ -399,13 +399,13 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 				}
 			});			
 		}
-		return result;
+		return result as this;
 	}
-	public subtract(b: List<T>): List<T> {
+	public subtract(b: this): this {
 		let result = this.create();
 		result.indexer = this.indexer;
 		result = this.select((el) => !b.contains(el));
-		return result;
+		return result as this;
 	}
 	public zip<U, V>(list: List<U>, fn: (t: T, u: U) => V = (t: T, u: U) => [t, u] as any): List<V> {
 		let result: List<V> = this.create<V>();
@@ -453,7 +453,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	public serialize(): T[] {
 		return this.values.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
-	public deserialize(array: any[], ...types: Array<Constructor<any>>): List<T> {
+	public deserialize(array: any[], ...types: Array<Constructor<any>>): this {
 		deserialize(array, this._array, ...types);
 		return this;
 	}

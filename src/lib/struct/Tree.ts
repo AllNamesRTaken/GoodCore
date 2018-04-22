@@ -8,8 +8,8 @@ import { Stack } from "./Stack";
 
 export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
 	public id: string | number = "";
-	public parent: Tree<T> | null = null;
-	public children: List<Tree<T>> | null = null;
+	public parent: this | null = null;
+	public children: List<this> | null = null;
 	public data: T | null = null;
 	public virtual: boolean = false;
 	public static fromObject<T>(obj: any): Tree<T> {
@@ -77,23 +77,23 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 	constructor(id?: string | number) {
 		this.id = isNullOrUndefined(id) ? newUUID() : id!;
 	}
-	public get root(): Tree<T> {
-		let root = this as Tree<T>;
+	public get root(): this {
+		let root = this;
 		while (root.parent) {
-			root = root.parent as Tree<T>;
+			root = root.parent;
 		}
 		return root;
 	}
 
-	protected create<S = T>(...args: any[]): Tree<S> {
+	protected create<S = T>(...args: any[]): this {
 		return new ((this as any).constructor)(...args);
 	}
 	public init(obj: Partial<Tree<T>>, mapping?: any): this {
 		setProperties(this, obj);
 		return this;
 	}
-	public insertAt(pos: number, data: T|Tree<T>, id?: string | number): Tree<T> {
-		let node: Tree<T>;
+	public insertAt(pos: number, data: T|this, id?: string | number): this {
+		let node: this;
 		if (this.children === null || this.children.count <= pos) {
 			node = this.add(data);
 		} else {
@@ -107,13 +107,13 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		}
 		return node;
 	}
-	public add(data: T|Tree<T>, id?: string | number): Tree<T> {
-		let node: Tree<T>;
+	public add(data: T|this, id?: string | number): this {
+		let node: this;
 		if (this.children === null) {
-			this.children = new List<Tree<T>>();
+			this.children = new List<this>();
 		}
 		if (isSameClass(data, this)) {
-			node = data as Tree<T>;
+			node = data as this;
 			node.parent = this;
 			this.children.add(node);
 		} else {
@@ -127,7 +127,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 			this.parent.children!.remove(this);
 		}
 	}
-	public prune(): Tree<T> {
+	public prune(): this {
 		if (this.children !== null) {
 			this.children
 				.forEach(function(el: Tree<T>, i: number) {
@@ -138,24 +138,24 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		this.children = null;
 		return this;
 	}
-	public cut(): Tree<T> {
+	public cut(): this {
 		this.remove();
 		this.parent = null;
 		return this;
 	}
-	public forEach(fn: (el: Tree<T>, i: number) => void, _i: number = 0): Tree<T> {
+	public forEach(fn: (el: this, i: number) => void, _i: number = 0): this {
 		fn(this, _i);
 		if(this.children) {
 			this.children.forEach((child) => child.forEach(fn));
 		}
 		return this;
 	}
-	public reduce(fn?: (acc: any, cur: Tree<T> | null) => any, start?: any): any {
-		const stack = new Stack<Tree<T>>();
+	public reduce(fn?: (acc: any, cur: this | null) => any, start?: any): any {
+		const stack = new Stack<this>();
 		let acc: any = start;
 		if (!fn) { fn = (acc, cur) => (acc.push({id: cur!.id, parent: cur!.parent ? cur!.parent!.id : null, data: cur!.data }), acc); }
 		if (start === undefined) { acc = [] as any; }
-		let cur: Tree<T> | undefined;
+		let cur: this | undefined;
 		let i: number;
 		stack.push(this);
 		while (cur = stack.pop()) {
@@ -167,7 +167,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		}
 		return acc;
 	}
-	public clone(): Tree<T> {
+	public clone(): this {
 		const result = this.create();
 		result.id = this.id;
 		result.children = this.children === null ? null : this.children.clone();
@@ -177,13 +177,13 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		result.data = this.data === null || this.data === undefined ? this.data : clone(this.data);
 		return result;
 	}
-	protected duplicateNode(): Tree<T> {
+	protected duplicateNode(): this {
 		const result = this.create();
 		result.id = this.id;
 		result.data = this.data;
 		return result;
 	}
-	public filter(condition: (node: Tree<T>) => boolean, parent: Tree<T> | null = null): Tree<T> | null {
+	public filter(condition: (node: this) => boolean, parent: this | null = null): this | null {
 		let node: Tree<T> | null = null;
 		if (condition(this)) {
 			node = this.duplicateNode();
@@ -198,11 +198,11 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 						});
 			}
 		}
-		return node;
+		return node as this;
 	}
-	public select(condition?: (node: Tree<T>) => boolean, acc: List<Tree<T>> = new List<Tree<T>>()): List<Tree<T>> {
+	public select(condition?: (node: this) => boolean, acc: List<this> = new List<this>()): List<this> {
 		const result = acc;
-		const children = this.children as List<Tree<T>>;
+		const children = this.children as List<this>;
 		if (condition === undefined || condition(this)) {
 			result.add(this);
 		}
@@ -213,8 +213,8 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		}
 		return result;
 	}
-	public find(condition: (node: Tree<T>) => boolean): Tree<T> | null {
-		let result: Tree<T> | null = null;
+	public find(condition: (node: this) => boolean): this | null {
+		let result: this | null = null;
 		const children = this.children;
 		if (children !== null) {
 			let i = -1;
@@ -225,7 +225,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 					result = val[i];
 					break;
 				} else {
-					result = val[i].children !== null ? (val[i] as Tree<T>).find(condition) : null;
+					result = val[i].children !== null ? (val[i] as this).find(condition) : null;
 					if (result !== null) {
 						break;
 					}
@@ -236,14 +236,14 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 	}
 	public depth(): number {
 		let result = 0;
-		let node = this as Tree<T>;
+		let node = this;
 		while (node.parent) {
 			node = node.parent;
 			++result;
 		}
 		return result;
 	}
-	public sort(comparer: (a: Tree<T>, b: Tree<T>) => number): Tree<T> {
+	public sort(comparer: (a: this, b: this) => number): this {
 		if (this.children !== null) {
 			this.children.orderBy(comparer);
 			this.children.forEach((el) => el.sort(comparer));

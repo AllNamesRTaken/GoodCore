@@ -13,7 +13,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		this._isDirty = false;
 	}
 
-	protected create<S = T>(): Dictionary<S> {
+	protected create<S = T>(): this {
 		return new ((this as any).constructor)();
 	}
 	public has(key: number|string): boolean {
@@ -25,7 +25,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 	public get(key: number|string): T | undefined {
 		return this._lookup[key];
 	}
-	public set(key: number|string, value: T): Dictionary<T> {
+	public set(key: number|string, value: T): this {
 		this._isDirty = this._isDirty || this.has(key);
 		if (value !== undefined) {
 			this._lookup[key] = value;
@@ -35,14 +35,14 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		}
 		return this;
 	}
-	public delete(key: number|string): Dictionary<T> {
+	public delete(key: number|string): this {
 		if (this.has(key)) {
 			delete this._lookup[key];
 			this._isDirty = true;
 		}
 		return this;
 	}
-	public clear(): Dictionary<T> {
+	public clear(): this {
 		wipe(this._lookup);
 		this._list.length = 0;
 		return this;
@@ -79,7 +79,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		}
 		this._isDirty = false;
 	}
-	public clone(): Dictionary<T> {
+	public clone(): this {
 		let result = this.create<T>();
 		result._isDirty = true;
 		result._lookup = clone(this._lookup);
@@ -97,7 +97,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		});
 		return obj;
 	}
-	public deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T> {
+	public deserialize(obj: any, ...types: Array<Constructor<any>>): this {
 		let [T, ...passthroughT] = types;
 		this.clear();
 		if (isNotUndefined(T)) {

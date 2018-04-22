@@ -18,29 +18,29 @@ export class Vec2 implements IVec2 {
 		this.x = x;
 		this.y = y;
 	}
-	protected create(x: number = 0, y: number = 0): Vec2 {
+	protected create(x: number = 0, y: number = 0): this {
 		return new ((this as any).constructor)(x, y);
 	}
-	public set(src: IVec2): Vec2 {
+	public set(src: IVec2): this {
 		this.x = src.x;
 		this.y = src.y;
 		return this;
 	}
-	public clone(out?: Vec2): Vec2 {
+	public clone(out?: this): this {
 		const result = out ? out.set(this) :this.create(this.x, this.y);
 		return result;
 	}
-	public toInt(): Vec2 {
+	public toInt(): this {
 		this.x |= 0;
 		this.y |= 0;
 		return this;
 	}
-	public ceil(): Vec2 {
+	public ceil(): this {
 		this.x = Math.ceil(this.x);
 		this.y = Math.ceil(this.y);
 		return this;
 	}
-	public toDecimal(): Vec2 {
+	public toDecimal(): this {
 		this.x += Vec2Const.EPSILON;
 		this.y += Vec2Const.EPSILON;
 		return this;
@@ -51,7 +51,7 @@ export class Vec2 implements IVec2 {
 
 	public horizontalAngle(): number { return Math.atan2(this.y, this.x); }
 
-	public rotate(angle: number): Vec2 {
+	public rotate(angle: number): this {
 		const rot = rotationRad(angle);
 		const nx = (this.x * rot[0]) - (this.y * rot[1]);
 		const ny = (this.x * rot[1]) + (this.y * rot[0]);
@@ -62,10 +62,10 @@ export class Vec2 implements IVec2 {
 		return this;
 	}
 
-	public rotateAround(center: IVec2, angle: number): Vec2 {
+	public rotateAround(center: IVec2, angle: number): this {
 		return this.subtract(center).rotate(angle).add(center);
 	}
-	public normalize(): Vec2 {
+	public normalize(): this {
 		const len = this.length();
 
 		if (len === 0) {
@@ -78,31 +78,31 @@ export class Vec2 implements IVec2 {
 		return this;
 	}
 
-	public scale(vectorB: IVec2): Vec2 {
+	public scale(vectorB: IVec2): this {
 		this.x = this.x * vectorB.x;
 		this.y = this.y * vectorB.y;
 		return this;
 	}
 
-	public relate(vectorB: IVec2): Vec2 {
+	public relate(vectorB: IVec2): this {
 		this.x = this.x / vectorB.x;
 		this.y = this.y / vectorB.y;
 		return this;
 	}
 
-	public multiply(scalar: number): Vec2 {
+	public multiply(scalar: number): this {
 		this.x = this.x * scalar;
 		this.y = this.y * scalar;
 		return this;
 	}
 
-	public add(vectorB: IVec2): Vec2 {
+	public add(vectorB: IVec2): this {
 		this.x = this.x + vectorB.x;
 		this.y = this.y + vectorB.y;
 		return this;
 	}
 
-	public subtract(vectorB: IVec2): Vec2 {
+	public subtract(vectorB: IVec2): this {
 		this.x = this.x - vectorB.x;
 		this.y = this.y - vectorB.y;
 		return this;
@@ -121,7 +121,7 @@ export class Vec2 implements IVec2 {
 		return Math.abs(this.x - target.x) < Vec2Const.EPSILON && Math.abs(this.y - target.y) < Vec2Const.EPSILON;
 	}
 
-	public getNormal(isNormalized?: boolean): Vec2 {
+	public getNormal(isNormalized?: boolean): this {
 		const result = this.clone();
 		if (!isNormalized) {
 			result.set(this).normalize();
@@ -136,7 +136,7 @@ export class Vec2 implements IVec2 {
 
 	public cross(vectorB: IVec2): number { return ((this.x * vectorB.y) - (this.y * vectorB.x)); }
 
-	public projectOnto(vectorB: IVec2): Vec2 {
+	public projectOnto(vectorB: IVec2): this {
 		const coeff = ((this.x * vectorB.x) + (this.y * vectorB.y)) / ((vectorB.x * vectorB.x) + (vectorB.y * vectorB.y));
 		this.x = coeff * vectorB.x;
 		this.y = coeff * vectorB.y;
@@ -148,22 +148,22 @@ export class Vec2 implements IVec2 {
 	public angle = this.horizontalAngle;
 	public direction = this.horizontalAngle;
 
-	public rotateBy(rotation: number): Vec2 {
+	public rotateBy(rotation: number): this {
 		const angle = -this.horizontalAngle() + rotation;
 
 		return this.rotate(angle);
 	}
-	public max(v: IVec2): Vec2 {
+	public max(v: IVec2): this {
 		this.x = Math.max(this.x, v.x);
 		this.y = Math.max(this.y, v.y);
 		return this;
 	}
-	public min(v: IVec2): Vec2 {
+	public min(v: IVec2): this {
 		this.x = Math.min(this.x, v.x);
 		this.y = Math.min(this.y, v.y);
 		return this;
 	}
-	public zero(): Vec2 {
+	public zero(): this {
 		this.x = 0;
 		this.y = 0;
 		return this;

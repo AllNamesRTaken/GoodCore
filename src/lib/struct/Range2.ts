@@ -15,19 +15,19 @@ export class Range2 implements IRange2 {
 		this.pos = new Vec2(x, y);
 		this.size = new Vec2(w, h);
 	}
-	protected create(x: number = 0, y: number = 0, w: number = 0, h: number = 0): Range2 {
+	protected create(x: number = 0, y: number = 0, w: number = 0, h: number = 0): this {
 		return new ((this as any).constructor)(x, y, w, h);
 	}
-	public set(src: IRange2): Range2 {
+	public set(src: IRange2): this {
 		this.pos.set(src.pos);
 		this.size.set(src.size);
 		return this;
 	}
-	public clone(out?: Range2): Range2 {
+	public clone(out?: this): this {
 		const result = out ? out.set(this) : this.create(this.pos.x, this.pos.y, this.size.x, this.size.y);
 		return result;
 	}
-	public fromRect(rect: IRect): Range2 {
+	public fromRect(rect: IRect): this {
 		let start = rect.start;
 		let stop = rect.stop;
 		this.pos.x = start.x;
@@ -36,7 +36,7 @@ export class Range2 implements IRange2 {
 		this.size.y = stop.y + (rect.endInclusive ? (stop.y < start.y ? -1 : 1) : 0) - start.y;
 		return this;
 	}
-	public scale(factor: IVec2, keepCenter: boolean = true): Range2 {
+	public scale(factor: IVec2, keepCenter: boolean = true): this {
 		let org: Vec2 | null = null;
 		if (keepCenter) {
 			org = this.size.clone();
@@ -47,26 +47,26 @@ export class Range2 implements IRange2 {
 		}
 		return this;
 	}
-	public translate(system: IVec2): Range2 {
+	public translate(system: IVec2): this {
 		this.pos.scale(system);
 		this.size.scale(system);
 		return this;
 	}
-	public move(system: IVec2): Range2 {
+	public move(system: IVec2): this {
 		this.pos.add(system);
 		return this;
 	}
-	public toInt(): Range2 {
+	public toInt(): this {
 		this.pos.toInt();
 		this.size.toInt();
 		return this;
 	}
-	public toDecimal(): Range2 {
+	public toDecimal(): this {
 		this.pos.toDecimal();
 		this.size.toDecimal();
 		return this;
 	}
-	public contains(target: Range2): boolean {
+	public contains(target: this): boolean {
 		return this.pos.x <= target.pos.x &&
 			this.pos.y <= target.pos.y &&
 			this.pos.x + this.size.x >= target.pos.x + target.size.x &&
@@ -114,7 +114,7 @@ export class Range2 implements IRange2 {
 	public equals(range: IRange2): boolean {
 		return this.pos.equals(range.pos) && this.size.equals(range.size);
 	}
-	public zero(): Range2 {
+	public zero(): this {
 		this.pos.zero();
 		this.size.zero();
 		return this;

@@ -76,14 +76,14 @@ export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, 
 		const result = new List<T>();
 		return new List(this.values);
 	}
-	public clear(): Stack<T> {
+	public clear(): this {
 		this._pos = 0;
 		this._array.length = this.DEFAULT_SIZE;
 		return this;
 	}
-	public clone(): Stack<T> {
+	public clone(): this {
 		const arr = deepCopy(this._array);
-		let result = this.create(this.DEFAULT_SIZE);
+		let result = this.create(this.DEFAULT_SIZE) as this;
 		result._array = arr;
 		result._limit = this._limit;
 		result._pos = this._pos;
@@ -101,7 +101,7 @@ export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, 
 	public serialize(): T[] {
 		return slice(this.values, 0, this._pos).map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
-	public deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T> {
+	public deserialize(array: any[], ...types: Array<Constructor<any>>): this {
 		deserialize(array, this._array, ...types);
 		this._pos = array.length;
 		return this;

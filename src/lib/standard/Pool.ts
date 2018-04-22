@@ -15,9 +15,9 @@ export class Pool<T extends IPoolable> implements IPool<IPoolable> {
 	constructor(cls: ICtor<T>, growthStep: number = 10) {
 		this._cls = cls;
 		this._growthStep = growthStep;
-		this.create();
+		this.createNewInstances();
 	}
-	private create() {
+	private createNewInstances() {
 		let i = 0;
 		for (; i < this._growthStep; i++) {
 			this._pool.push(new this._cls() as T);
@@ -28,7 +28,7 @@ export class Pool<T extends IPoolable> implements IPool<IPoolable> {
 	public get(): T {
 		let result: T;
 		if (this._pool.length === 0) {
-			this.create();
+			this.createNewInstances();
 		}
 		result = this._pool.pop()!;
 		--this._available;

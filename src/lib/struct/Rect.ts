@@ -17,19 +17,19 @@ export class Rect implements IRect {
 		this.stop = new Vec2(x2, y2);
 		this.endInclusive = endInclusive;
 	}
-	protected create(x1: number = 0, y1: number = 0, x2: number = 0, y2: number = 0, endInclusive: boolean = false): Rect {
+	protected create(x1: number = 0, y1: number = 0, x2: number = 0, y2: number = 0, endInclusive: boolean = false): this {
 		return new ((this as any).constructor)(x1, y1, x2, y2, endInclusive);
 	}
-	public set(src: IRect): Rect {
+	public set(src: IRect): this {
 		this.start.set(src.start);
 		this.stop.set(src.stop);
 		return this;
 	}
-	public clone(out?: Rect): Rect {
+	public clone(out?: this): this {
 		const result = out ? out.set(this) : this.create(this.start.x, this.start.y, this.stop.x, this.stop.y);
 		return result;
 	}
-	public fromRange2(range: IRange2, endInclusive: boolean = false): Rect {
+	public fromRange2(range: IRange2, endInclusive: boolean = false): this {
 		this.start.x = range.pos.x,
 		this.start.y = range.pos.y,
 		this.stop.x = range.pos.x - (endInclusive ? (range.size.x < 0 ? -1 : 1) : 0) + range.size.x,
@@ -37,7 +37,7 @@ export class Rect implements IRect {
 		this.endInclusive = endInclusive;
 		return this;
 	}
-	public scale(factor: IVec2, keepCenter: boolean = true): Rect {
+	public scale(factor: IVec2, keepCenter: boolean = true): this {
 		const ow = this.stop.x - this.start.x;
 		const oh = this.stop.y - this.start.y;
 		let w = ow;
@@ -52,12 +52,7 @@ export class Rect implements IRect {
 		this.stop.y = this.start.y + h;
 		return this;
 	}
-	// public translate(system: IVec2): Rect {
-	// 	this.start.scale(system);
-	// 	this.stop.scale(system);
-	// 	return this;
-	// }
-	public translate(system: IVec2): Rect {
+	public translate(system: IVec2): this {
 		this.start.scale(system);
 		this.stop.scale(system);
 		return this;
@@ -65,12 +60,12 @@ export class Rect implements IRect {
 	public equals(rect: IRect): boolean {
 		return this.start.equals(rect.start) && this.stop.equals(rect.stop);
 	}
-	public toInt(): Rect {
+	public toInt(): this {
 		this.start.toInt();
 		this.stop.toInt();
 		return this;
 	}
-	public toDecimal(): Rect {
+	public toDecimal(): this {
 		this.start.toDecimal();
 		this.stop.toDecimal();
 		return this;
@@ -80,7 +75,7 @@ export class Rect implements IRect {
 		const y = this.stop.y - this.start.y;
 		return x * y;
 	}
-	public move(vec: IVec2): Rect {
+	public move(vec: IVec2): this {
 		this.start.add(vec);
 		this.stop.add(vec);
 		return this;
@@ -101,7 +96,7 @@ export class Rect implements IRect {
 		return this.start.x <= x && this.stop.x >= x &&
 			this.start.y <= y && this.stop.y >= y; 
 	}
-	public zero(): Rect {
+	public zero(): this {
 		this.start.zero();
 		this.stop.zero();
 		return this;

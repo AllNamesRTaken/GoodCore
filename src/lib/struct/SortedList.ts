@@ -66,20 +66,20 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	public sort() {
 		this._list.orderBy(this._cmp);
 	}
-	public truncate(size: number = 0): SortedList<T> {
+	public truncate(size: number = 0): this {
 		this._list.truncate(size);
 		return this;
 	}
-	public fill(size: number, populator: ((i: number) => T) | T): SortedList<T> {
+	public fill(size: number, populator: ((i: number) => T) | T): this {
 		this._list.fill(size, populator);
 		this.sort();
 		return this;
 	}
-	public clear(): SortedList<T> {
+	public clear(): this {
 		this._list.clear();
 		return this;
 	}
-	public add(v: T): SortedList<T> {
+	public add(v: T): this {
 		let index = this.getInsertIndex(v);
 		this._list.insertAt(index, v);
 		return this;
@@ -90,7 +90,7 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	public shift(): T | undefined {
 		return this._list.shift();
 	}
-	public bulkAdd(v: T[] | List<T> | SortedList<T>): SortedList<T> {
+	public bulkAdd(v: T[] | List<T> | SortedList<T>): this {
 		if (v instanceof List || v instanceof SortedList) {
 			this._list.append(v.values);
 		} else {
@@ -99,7 +99,7 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 		this.sort();
 		return this;
 	}
-	public copy(src: SortedList<T> | List<T> | T[]): SortedList<T> {
+	public copy(src: SortedList<T> | List<T> | T[]): this {
 		if (src instanceof List || src instanceof SortedList) {
 			this._list.copy(src.values);
 		} else {
@@ -108,10 +108,10 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 		this.sort();
 		return this;
 	}
-	public clone(): SortedList<T> {
-		return this.create(this._cmp, this._list.clone());
+	public clone(): this {
+		return this.create(this._cmp, this._list.clone()) as this;
 	}
-	public remove(v: T): SortedList<T> {
+	public remove(v: T): this {
 		let index = this.indexOf(v);
 		if (index !== -1) {
 			this._list.removeAt(index);
@@ -124,25 +124,25 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	public removeFirst(fn: (el: T) => boolean): T {
 		return this._list.removeFirst(fn);
 	}
-	public forEach(fn: (el: T, i: number) => any, startIndex: number = 0): SortedList<T> {
+	public forEach(fn: (el: T, i: number) => any, startIndex: number = 0): this {
 		this._list.forEach(fn, startIndex);
 		return this;
 	}
-	public forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T> {
+	public forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): this {
 		this._list.forSome(filter, fn);
 		return this;
 	}
-	public until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): SortedList<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): SortedList<T>;
-	public until(fnOrTest: (el: T, i: number) => boolean, fn?: ((el: T, i: number) => void) | number, startIndex?: number): SortedList<T> {
+	public until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): this;
+	public until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): this;
+	public until(fnOrTest: (el: T, i: number) => boolean, fn?: ((el: T, i: number) => void) | number, startIndex?: number): this {
 		this._list.until(fnOrTest as any, fn as any, startIndex);
 		return this;
 	}
-	public reverseForEach(fn: (el: T, i: number) => any): SortedList<T> {
+	public reverseForEach(fn: (el: T, i: number) => any): this {
 		this._list.reverseForEach(fn);
 		return this;
 	}
-	public reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): SortedList<T> {
+	public reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): this {
 		this._list.reverseUntil(fnOrTest as any, fn as any);
 		return this;
 	}
@@ -176,13 +176,13 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	public last(): T | undefined {
 		return this._list.last();
 	}
-	public filter(fn: (el: T, i: number) => boolean): SortedList<T> {
-		return this.create(this._cmp, this._list.filter(fn));
+	public filter(fn: (el: T, i: number) => boolean): this {
+		return this.create(this._cmp, this._list.filter(fn)) as this;
 	}
-	public select(fn: (el: T, i: number) => boolean): SortedList<T> {
-		return this.create(this._cmp, this._list.filter(fn));
+	public select(fn: (el: T, i: number) => boolean): this {
+		return this.create(this._cmp, this._list.filter(fn)) as this;
 	}
-	public selectInto(src: SortedList<T> | List<T> | T[], fn: (el: T, i: number) => boolean): SortedList<T> {
+	public selectInto(src: SortedList<T> | List<T> | T[], fn: (el: T, i: number) => boolean): this {
 		if (src instanceof List || src instanceof SortedList) {
 			this._list.selectInto(src.values, fn);
 		} else {
@@ -191,16 +191,16 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 		this.sort();
 		return this;
 	}
-	public head(count: number = 1): SortedList<T> {
-		return this.create(this.comparer, this._list.head(count));
+	public head(count: number = 1): this {
+		return this.create(this.comparer, this._list.head(count)) as this;
 	}
-	public tail(count: number = 1): SortedList<T> {
-		return this.create(this.comparer, this._list.tail(count));
+	public tail(count: number = 1): this {
+		return this.create(this.comparer, this._list.tail(count)) as this;
 	}
 	public map<S>(fn: (el: T, i: number) => S): List<S> {
 		return this._list.map(fn);
 	}
-	public mapInto<S>(src: SortedList<S> | List<S> | S[], fn: (el: S, i: number) => T): SortedList<T> {
+	public mapInto<S>(src: SortedList<S> | List<S> | S[], fn: (el: S, i: number) => T): this {
 		if (src instanceof List || src instanceof SortedList) {
 			this._list.mapInto(src.values, fn);
 		} else {
@@ -228,8 +228,8 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	public same(b: List<T> | SortedList<T>): boolean {
 		return this.equals(b);
 	}
-	public intersect(b: List<T> | SortedList<T>): SortedList<T> {
-		let result = this.create(this.comparer);		
+	public intersect(b: List<T> | SortedList<T>): this {
+		let result = this.create(this.comparer) as this;		
 		let long: List<T> | SortedList<T>;
 		let short: List<T> | SortedList<T>;
 		if (this.length > 0 && b.length > 0) {
@@ -265,8 +265,8 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 		}
 		return result;
 	}
-	public union(b: List<T> | SortedList<T>): SortedList<T> {
-		let result: SortedList<T>;
+	public union(b: List<T> | SortedList<T>): this {
+		let result: this;
 		let long: List<T> | SortedList<T>;
 		let short: List<T> | SortedList<T>;
 
@@ -277,7 +277,7 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 				long = this, short = b;
 			}
 			if (b instanceof SortedList && this.comparer === b.comparer) {
-				result = this.create(this.comparer, long.values);
+				result = this.create(this.comparer, long.values) as this;
 				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)!) - 1;
 				let lastPos = (long as SortedList<T>).getInsertIndex(short.last()!) - 1;
 				let i = -1;
@@ -299,17 +299,17 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 					}
 				}
 			} else if (long instanceof SortedList || (long instanceof List && long.indexer !== null)) {
-				result = this.create(this.comparer, long.values);
+				result = this.create(this.comparer, long.values) as this;
 				short.forEach((el) => {
 					if (!long.contains(el)) {
 						result.add(el);
 					}
 				});
 			} else {
-				result = this.create(this.comparer, (short as SortedList<T>).toList().union(long) );
+				result = this.create(this.comparer, (short as SortedList<T>).toList().union(long) ) as this;
 			}
 		} else {
-			result = this.create(this.comparer);
+			result = this.create(this.comparer) as this;
 		}
 		return result;
 	}
@@ -322,7 +322,7 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	public serialize(): T[] {
 		return this.values.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
-	public deserialize(array: any[], ...types: Array<Constructor<any>>): SortedList<T> {
+	public deserialize(array: any[], ...types: Array<Constructor<any>>): this {
 		this._list.deserialize(array, ...types);
 		this.sort();
 		return this;
