@@ -165,30 +165,39 @@ export const DEFAULT_DURATION = 100;
 export interface IDebounceOptions {
     leading: boolean;
 }
-export interface IDebouncedFunction extends Function{
-	clear?: () => void;
+export interface IDebouncedFunction<T> {
+	(...args: any[]): T
+	resetTimer?: () => void;
 }
-export function debounce<T extends Function>(method: T, duration:number = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction {
-    let timeoutHandle: any = null;
+export function debounce<S extends any, T extends (...args: any[])=>S|void>(method: T, duration:number = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction<S> {
+	let timeoutHandle: any = null;
+	let leading = isNotUndefined(options) && isNotUndefined(options!.leading);
+	let executed = false;
+	let result: S;
 
-    let wrapper: IDebouncedFunction = function (...args: any[]) {
+    let wrapper: IDebouncedFunction<S> = function (...args: any[]) {
         if(timeoutHandle === null) {
-            if (isNotUndefined(options) && isNotUndefined(options!.leading)) {
-                method.apply(this, args);
-            }    
+            if (leading) {
+				executed = true;
+                result = method.apply(this, args);
+            }
         }
-        wrapper.clear!()
+        wrapper.resetTimer!()
 
         timeoutHandle = setTimeout(() => {
-            timeoutHandle = null
-            method.apply(this, args)
-        }, duration)
+			timeoutHandle = null;
+            if (!executed) {
+				method.apply(this, args);
+			}
+			executed = false;
+		}, duration)
+		return result;
     }
 
-    wrapper.clear = function () {
+    wrapper.resetTimer = function () {
         if (timeoutHandle) {
-            clearTimeout(timeoutHandle)
-            timeoutHandle = null
+            clearTimeout(timeoutHandle);
+			timeoutHandle = null;
         }
     }
 

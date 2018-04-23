@@ -14,7 +14,7 @@ export function debounced<S>(duration?: number, options?: Partial<IDebounceOptio
                 Object.defineProperty(this, key, {
                     configurable: true,
                     enumerable: descriptor.enumerable,
-                    value: debounce(descriptor.value, duration)
+                    value: debounce(descriptor.value, duration, options)
                 })
 
                 return this[key]

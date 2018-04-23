@@ -24,5 +24,26 @@ describe("Decorators",
                     done();
                 }, 20);
             });
+        it("debounced on async with leading should return same promise",
+            async function () {
+                class Foo {
+                    value = 0;
+                    @debounced(20, {leading: true})
+                    async setFoo() {
+                        return ++this.value;
+                    }
+                }
+                let foo1 = new Foo();
+                let val: number = 0;
+                val = await foo1.setFoo();
+                val.should.equal(1);
+                val = await foo1.setFoo();
+                val.should.equal(1);
+                setTimeout( async () => {
+                    val = await foo1.setFoo();
+                    val.should.equal(2);
+                }, 20)
+                return true;
+            });
     }
 );

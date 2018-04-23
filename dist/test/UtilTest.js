@@ -156,16 +156,17 @@ describe("Util", function () {
             done();
         }, 20);
     });
-    it("debounce with leading executes once immediately", function (done) {
+    it("debounce with leading executes once immediately and returns value", function (done) {
         let value = 0;
         let plus1 = Util.debounce(function inc() {
-            ++value;
+            return ++value;
         }, 20, { leading: true });
-        plus1();
-        plus1();
-        plus1();
+        plus1().should.equal(1);
+        plus1().should.equal(1);
+        plus1().should.equal(1);
         value.should.equal(1);
         setTimeout(() => {
+            plus1().should.equal(2);
             value.should.equal(2);
             done();
         }, 20);
