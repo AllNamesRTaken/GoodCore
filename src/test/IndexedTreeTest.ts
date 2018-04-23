@@ -74,7 +74,7 @@ describe("IndexedTree",
 			function () {
 				const tree = this.tree as IndexedTree<string>;
 				tree.count.should.equal(6);
-				const filtered = tree.filter((node) => node.children !== null);
+				const filtered = tree.filter((node) => node.children !== null)!;
 				filtered.children!.get(0)!.data!.should.equal("c2");
 				filtered.children!.get(0)!.children!.count.should.equal(0);
 				tree.count.should.equal(6);
