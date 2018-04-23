@@ -27,7 +27,8 @@ export function toArray<T>(arr: ArrayLike<T>): T[];
 interface IDebounceOptions {
     leading: boolean;
 }
-interface IDebouncedFunction extends Function{
-	clear?: () => void;
+export interface IDebouncedFunction<T> {
+	(...args: any[]): T
+	resetTimer?: () => void;
 }
-export function debounce<T extends Function>(method: T, duration?: number, options?: Partial<IDebounceOptions>): IDebouncedFunction;
+export function debounce<S extends any, T extends (...args: any[])=>S|void>(method: T, duration?:number, options?: Partial<IDebounceOptions>): IDebouncedFunction<S>;

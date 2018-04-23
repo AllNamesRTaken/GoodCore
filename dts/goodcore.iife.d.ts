@@ -113,10 +113,11 @@ interface IRect {
 	stop: IVec2;
 }
 interface IDebounceOptions {
-	leading: boolean;
+    leading: boolean;
 }
-interface IDebouncedFunction extends Function{
-	clear?: () => void;
+interface IDebouncedFunction<T> {
+	(...args: any[]): T
+	resetTimer?: () => void;
 }
 
 declare namespace goodcore {
@@ -572,7 +573,7 @@ declare namespace goodcore {
 		export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(objOrClass: U, fnName: string, proxyFn: (originalFn: (...args: any[]) => S | V, ...args: any[]) => void): void;
 		export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void;
 		export function toArray<T>(arr: ArrayLike<T>): T[];
-		export function debounce<T extends Function>(method: T, duration: number, options?: Partial<IDebounceOptions>): IDebouncedFunction;
+		export function debounce<S extends any, T extends (...args: any[])=>S|void>(method: T, duration?:number, options?: Partial<IDebounceOptions>): IDebouncedFunction<S>;
 	}
 
 	export namespace Test {
@@ -677,6 +678,10 @@ declare namespace goodcore {
 		endInclusive?: boolean;
 	}
 	export namespace Decorators {
-		export function debounced<S>(duration: number | undefined, options?: Partial<IDebounceOptions>);
+		export function debounced<S>(duration: number | undefined, options?: Partial<IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+			configurable: boolean;
+			enumerable: boolean | undefined;
+			get: () => any;
+		};		
 	}
 }
