@@ -179,7 +179,7 @@ describe("Util",
 				output.endsWith("1");
 				console.log = log;
 			});
-			it("debounce debounces function",
+		it("debounce debounces function",
 			function (done) {
 				let value = 0;
 				let plus1 = Util.debounce(function inc() {
@@ -198,7 +198,7 @@ describe("Util",
 				let value = 0;
 				let plus1 = Util.debounce(function inc() {
 					return ++value;
-				}, 20, {leading: true});
+				}, 20, { leading: true });
 				plus1()!.should.equal(1);
 				plus1()!.should.equal(1);
 				plus1()!.should.equal(1);
@@ -208,6 +208,22 @@ describe("Util",
 					value.should.equal(2);
 					done();
 				}, 20)
+			});
+		it("debounce without leading returns and resolves promise",
+			function (done) {
+				let value = 0;
+				let plus1 = Util.debounce(function inc(): number {
+					return ++value;
+				}, 20);
+				let result = (plus1() as Promise<number>);
+				result.then((v) => v.should.equal(1));
+				value.should.equal(0);
+				(plus1() as Promise<number>).then((v) => v.should.equal(1));
+				value.should.equal(0);
+				result.then(()=>{
+					value.should.equal(1);
+					done();
+				});
 			});
 	}
 );

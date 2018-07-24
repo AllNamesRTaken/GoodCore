@@ -30,6 +30,20 @@ describe("Test",
 			function () {
 				Test.hasConsole().should.be.true;
 			});
+		it("isObject identifies Objects correctly",
+			function () {
+				const obj1 = {}, obj2 = [], obj3 = new class{}(), obj4 = new Number(2), obj5 = new String("foo");
+				Test.isObject({}).should.be.true;
+				Test.isObject([]).should.be.true;
+				Test.isObject(new class{}()).should.be.true;
+				Test.isObject(new Number(2)).should.be.true;
+				Test.isObject(new String("foo")).should.be.true;
+				Test.isObject(undefined).should.be.false;
+				Test.isObject(null).should.be.false;
+				Test.isObject("").should.be.false;
+				Test.isObject(1).should.be.false;
+				Test.isObject(true).should.be.false;
+			});
 		it("isArray identifies arrays correctly",
 			function () {
 				Test.isArray({}).should.be.false;

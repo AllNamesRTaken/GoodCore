@@ -1,5 +1,5 @@
 import { Global } from "./Global";
-import { hasConsole, hasWindow, isNotUndefined } from "./Test";
+import { hasConsole, hasWindow, isNotUndefined, isNotNullOrUndefined } from "./Test";
 import { Timer } from "./Timer";
 
 export interface IObjectWithFunctions<T extends Object | void> {
@@ -166,14 +166,22 @@ export interface IDebounceOptions {
     leading: boolean;
 }
 export interface IDebouncedFunction<T> {
-	(...args: any[]): T
+	(...args: any[]): T | Promise<T>
 	resetTimer?: () => void;
 }
-export function debounce<S extends any, T extends (...args: any[])=>S|void>(method: T, duration:number = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction<S> {
+export function debounce<S, T extends (...args: any[])=>S|void>(method: T, duration:number = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction<S> {
 	let timeoutHandle: any = null;
 	let leading = isNotUndefined(options) && isNotUndefined(options!.leading);
 	let executed = false;
-	let result: S;
+	let result: S | Promise<S>;
+	let resolve: (value?: S | PromiseLike<S> | undefined) => void;
+	let reject: (value?: S | PromiseLike<S> | undefined) => void;
+	if (!leading) {
+		result = new Promise<S>((_resolve, _reject) => {
+			resolve = _resolve;
+			reject = _reject;
+		});
+	}
 
     let wrapper: IDebouncedFunction<S> = function (...args: any[]) {
         if(timeoutHandle === null) {
@@ -187,7 +195,14 @@ export function debounce<S extends any, T extends (...args: any[])=>S|void>(meth
         timeoutHandle = setTimeout(() => {
 			timeoutHandle = null;
             if (!executed) {
-				method.apply(this, args);
+				let value: Promise<S> | S = method.apply(this, args);
+				if ( isNotNullOrUndefined(value) && (value as Promise<S>).hasOwnProperty("then") ) {
+					(value as Promise<S>).then( (v) => {
+						resolve(v);
+					})
+				} else {
+					resolve(value);
+				}
 			}
 			executed = false;
 		}, duration)

@@ -3,6 +3,7 @@ import {expect} from "chai";
 import * as MocData from "../lib/MocData";
 import * as Obj from "../lib/Obj";
 import { proxyFn } from "../lib/Util";
+import { forEach } from "../lib/Arr";
 should();
 
 describe("Obj",
@@ -168,6 +169,69 @@ describe("Obj",
 				copy.should.deep.equal(this.obj1);
 				copy.should.not.equal(this.obj1);
 				copy.b.should.equal(this.obj1.b);
+			});
+		it("forEach loops over all keys",
+			function() {
+				const obj = {a: 1, b: "2", c: false, d:"never this"};
+				let result:any = {}
+				Obj.forEach(obj, (value: any, key: string) => {
+					result[key] = value;
+					if(value === false) return false;
+				});
+				result.a.should.equal(obj.a);
+				result.b.should.equal(obj.b);
+				result.c.should.equal(obj.c);
+				(result.d === undefined).should.be.true;
+
+			});
+		it("Transform returns object with correct prototype and properties",
+			function() {
+				class Iter {
+					a = 1; 
+					b = "2";
+					c = "string";
+				}
+				const iteratee = new Iter();
+				let result = Obj.transform(iteratee, (result: any, value: any, key: string) => {
+					result[key] = !isNaN(parseInt(value)) ? parseInt(value) : value;
+				});
+				result.a.should.equal(1);
+				result.b.should.equal(2);
+				result.c.should.equal("string");
+				Obj.isSameClass(result, iteratee).should.be.true;
+
+				let result2 = Obj.transform(iteratee, (result: any, value: any, key: string) => {
+					result[key] = !isNaN(parseInt(value)) ? parseInt(value) : value;
+				}, {});
+				result2.a.should.equal(1);
+				result2.b.should.equal(2);
+				result2.c.should.equal("string");
+				Obj.isSameClass(result2, iteratee).should.be.false;
+			});
+		it("Difference returns object with correct properties",
+			function() {
+				const iteratee = {a:1, b: "2"};
+				const base = {a:4, b: "2", c: false};
+				let result = Obj.difference(iteratee, base);
+				result.a.should.equal(1);
+				result.b.should.equal("2");
+				result.hasOwnProperty("b").should.be.false;
+				((result as any).c === undefined).should.be.true;
+			});
+		it("Difference returns object with correct prototype",
+			function() {
+				class Iter {
+					a = 1; 
+					b = "2";
+				}
+				const iteratee = new Iter();
+				const base = {a:4, b: "2", c: false};
+				let result = Obj.difference(iteratee, base);
+				result.a.should.equal(1);
+				result.b.should.equal("2");
+				result.hasOwnProperty("b").should.be.false;
+				((result as any).c === undefined).should.be.true;
+				Obj.isSameClass(result, iteratee).should.be.true;
 			});
 	}
 );

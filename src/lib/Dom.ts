@@ -11,6 +11,9 @@ class DomState {
 	public static _window: Window = Global.window!;
 	public static _document: Document | undefined = Global.window ? Global.window.document : undefined;
 	public static _el: Element | undefined = Global.window ? Global.window.document.createElement("div") : undefined;
+	public static _parser: DOMParser | undefined = Global.window ? new DOMParser() : undefined;
+	public static _template: HTMLTemplateElement | undefined = Global.window ? Global.window.document.createElement('template') : undefined;
+	public static _fragment: DocumentFragment | undefined = Global.window ? Global.window.document.createDocumentFragment() : undefined;
 }
 
 export function init(win: Window) {
@@ -25,14 +28,30 @@ export function toArray<T>(a: ArrayLike<T>): T[] {
 export function create(html: string, attr?: any): HTMLElement {
 	// tslint:disable-next-line:prefer-const
 	let result: HTMLElement, keys: string[], i: number, k: number, styles: any, styleKeys: string[];
+	let usesTemplate = DomState._template && DomState._template!.content && true;
+	let usesParser = DomState._parser && true;
 	if (/^a-zA-Z$/.test(html)) {
 		result = Global.window!.document.createElement(html);
 	} else {
-		DomState._el!.innerHTML = html;
-		result = DomState._el!.children[0] as HTMLElement;
+		if (usesTemplate) {
+			let template = DomState._template!;
+			template.innerHTML = html;
+			result = template.content.firstChild as HTMLElement;
+			clear(template.content);
+		} else if (usesParser) {
+			let parser = DomState._parser!;
+			let doc = parser.parseFromString(html, "text/xml"),
+			fragment = DomState._fragment!;
+			fragment.appendChild( doc.documentElement );
+			result = fragment.firstChild as HTMLElement;
+			clear(fragment);
+		} else {
+			DomState._el!.innerHTML = html;
+			result = DomState._el!.firstChild as HTMLElement;
+			clear(DomState._el!);
+		}
 	}
 	setAttr(result, attr);
-	clear(DomState._el!);
 	//unsafe cast
 	return result;
 }
@@ -86,10 +105,10 @@ export function replace(src: HTMLElement, target: HTMLElement): HTMLElement {
 	}
 	return result;
 }
-export function clear(element: Element) {
-	let i = element.children.length;
+export function clear(element: Node) {
+	let i = element.childNodes.length;
 	while (i--) {
-		element.removeChild(element.children[i]);
+		element.removeChild(element.childNodes[i]);
 	}
 }
 export function get(id: string): HTMLElement {

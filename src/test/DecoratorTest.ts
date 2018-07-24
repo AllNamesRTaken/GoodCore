@@ -28,7 +28,7 @@ describe("Decorators",
             async function () {
                 class Foo {
                     value = 0;
-                    @debounced(20, {leading: true})
+                    @debounced(20, { leading: true })
                     async setFoo() {
                         return ++this.value;
                     }
@@ -39,10 +39,33 @@ describe("Decorators",
                 val.should.equal(1);
                 val = await foo1.setFoo();
                 val.should.equal(1);
-                setTimeout( async () => {
+                setTimeout(async () => {
                     val = await foo1.setFoo();
                     val.should.equal(2);
                 }, 20)
+                return true;
+            });
+        it("debounced on async without leading should return same promise",
+            async function () {
+                class Foo {
+                    value = 0;
+                    @debounced(20)
+                    async setFoo() {
+                        return ++this.value;
+                    }
+                }
+                let foo1 = new Foo();
+                let val: number = 0;
+                foo1.setFoo();
+                val.should.equal(0);
+                val = await foo1.setFoo();
+                val.should.equal(1);
+                let result = foo1.setFoo();
+                setTimeout(async () => {
+                    val = await result;
+                    val.should.equal(2);
+                }, 20)
+                await result;
                 return true;
             });
     }

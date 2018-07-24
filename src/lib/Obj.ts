@@ -1,4 +1,5 @@
 import { areNotNullOrUndefined, isArray, isFunction, isNullOrUndefined } from "./Test";
+import { isObject } from "util";
 
 export function destroy(obj: any): void {
 	if (obj.constructor.prototype.destroy !== undefined) {
@@ -222,4 +223,35 @@ export function setProperties(target: any, values: any, mapping?: any): void {
 			target[key] = values[keys[i]];
 		}
 	}
+}
+export function forEach<T extends {[index: string]: any}>(target: T, fn: (value: any, key?: string) => boolean | void): void {
+	const keys = Object.keys(target);
+	let key: string;
+	let value: any;
+	let i = -1;
+	const len = keys.length;
+	let run = true;
+	while (run && ++i < len) {
+		key = keys[i];
+		run = false !== fn(target[key], key);
+	}
+}
+export function transform<T extends {[index: string]: any}, S = T>(target: T, fn: (result: S, value: any, key: string) => boolean | void, accumulator?: S): S  {
+	if (accumulator === undefined) {
+		accumulator = Object.create(target);
+	}
+	forEach(target, (value: any, key: string) => {
+		return fn(accumulator!, value, key);
+	});
+	return accumulator!;
+}
+export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S) {
+	function changes(target: T, base: S) {
+		return transform(target, function(result, value: any, key: string) {
+			if (isDifferent(value, base[key])) {
+				result[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
+			}
+		});
+	}
+	return changes(target, base);
 }

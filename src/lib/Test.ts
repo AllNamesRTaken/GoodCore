@@ -6,6 +6,9 @@ export function hasWindow(): boolean {
 export function hasConsole(): boolean {
 	return this.hasWindow() && Global.window!.console !== undefined || typeof (console) === "function";
 }
+export function isObject(it: any): boolean {
+	return it !== null && typeof it === "object";
+}
 export function isArray(it: any): boolean {
 	return Array.isArray ? Array.isArray(it) : Object.prototype.toString.call(it) === "[object Array]";
 }
