@@ -1,5 +1,6 @@
 export function hasWindow(): boolean;
 export function hasConsole(): boolean;
+export function isObject(it: any): boolean;
 export function isArray(it: any): boolean;
 export function isElement(target: any): boolean;
 export function isFunction(it: any): boolean;

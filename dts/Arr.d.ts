@@ -10,6 +10,7 @@
     export function indexOfElement(src: any[], el: any): number;
     export function remove(arr: any[], el: any): void;
     export function indexOf(src: any[], fn: (el: any) => boolean): number;
+    export function find<T>(src: T[], fn: (el: any) => boolean): T | undefined;
     export function removeOneByFn(arr: any[], fn: (el: any) => boolean): void;
     export function shallowCopy<T>(src: T[]): T[];
     export function shallowCopyInto<T>(src: T[], target: T[]): void;

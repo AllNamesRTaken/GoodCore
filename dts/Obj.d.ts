@@ -11,3 +11,6 @@ export function clone<T>(obj: T): T;
 export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
 export function mixin(target: any, exclude: any, ...sources: any[]): any;
 export function setProperties(target: any, values: any, mapping?: any): void;
+export function forEach<T extends {[index: string]: any}>(target: T, fn: (value: any, key?: string) => boolean | void): void;
+export function transform<T extends {[index: string]: any}, S = T>(target: T, fn: (result: S, value: any, key: string) => boolean | void, accumulator?: S): S;
+export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S;

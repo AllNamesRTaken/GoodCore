@@ -126,6 +126,14 @@ export function indexOf(src: any[], fn: (el: any) => boolean): number {
 	}
 	return -1;
 }
+export function find<T>(src: T[], fn: (el: any) => boolean): T | undefined {
+	let i = indexOf(src, fn);
+	let result: T | undefined = undefined;
+	if (i !== -1) {
+		result = src[i];
+	}
+	return result;
+} 
 export function removeOneByFn(arr: any[], fn: (el: any) => boolean): void {
 	const start = indexOf(arr, fn);
 	removeAt(arr, start);

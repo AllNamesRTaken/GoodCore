@@ -1,5 +1,4 @@
-import { areNotNullOrUndefined, isArray, isFunction, isNullOrUndefined } from "./Test";
-import { isObject } from "util";
+import { areNotNullOrUndefined, isArray, isFunction, isNullOrUndefined, isObject } from "./Test";
 
 export function destroy(obj: any): void {
 	if (obj.constructor.prototype.destroy !== undefined) {
@@ -245,8 +244,8 @@ export function transform<T extends {[index: string]: any}, S = T>(target: T, fn
 	});
 	return accumulator!;
 }
-export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S) {
-	function changes(target: T, base: S) {
+export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S {
+	function changes<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S {
 		return transform(target, function(result, value: any, key: string) {
 			if (isDifferent(value, base[key])) {
 				result[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;

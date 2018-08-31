@@ -79,6 +79,11 @@ describe("Arrays",
 				Arr.indexOf(this.arr1, (el) => el === 17).should.equal(-1);
 				Arr.indexOf(null!, (el) => true).should.equal(-1);
 			});
+		it("find return correct element or undefined",
+			function() {
+				Arr.find(this.arr1, (el) => el === 7)!.should.equal(7);
+				(Arr.find(this.arr1, (el) => el === 77) === undefined).should.be.true;
+			});
 		it("Filter returns correct array",
 			function() {
 				const copy = Arr.filter(this.arr1, (el, i) => i > 1);
