@@ -32,7 +32,8 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		let result = new Tree<T>();
 		// create map
 		let mapResolver = (key: string) => {
-			return !mapcfg || typeof((mapcfg as any)[key]) === "undefined" ? (el: S) => (el as any)[key] :
+			return !mapcfg || typeof((mapcfg as any)[key]) === "undefined" ? 
+			( key === "id" ? newUUID() : (el: S) => (el as any)[key] ):
 				typeof((mapcfg as any)[key]) === "string" ? (el: S) => (el as any)[(mapcfg as any)[key]] : 
 				(mapcfg as any)[key];
 			};
@@ -44,7 +45,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		// create node lookup
 		let list = new List<S>(nodes);
 		let lookup: Dictionary<Array<Tree<T>>> = new Dictionary();
-		let nodeList = list.map((el) => new ctor().init({id: map.id(el), data: map.data(el)}));
+		let nodeList = list.map((el) => new ctor("").init({id: map.id(el), data: map.data(el)}));
 		nodeList.forEach((node, i) => {
 			if (!lookup.has(node.id)) {
 				lookup.set(node.id, []);
