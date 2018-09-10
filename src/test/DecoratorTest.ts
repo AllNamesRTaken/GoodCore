@@ -1,5 +1,5 @@
 import { should } from "chai";
-import { debounced } from "../lib/Decorators";
+import { debounced, once } from "../lib/Decorators";
 should();
 
 describe("Decorators",
@@ -68,5 +68,19 @@ describe("Decorators",
                 await result;
                 return true;
             });
+        it("once returns first value",
+			function(){
+				class Person {
+					public anxiety: number = 0;
+					@once
+					public fret(...args: any[]) {
+						return ++this.anxiety;
+					}
+				}
+				let sam = new Person();
+				sam.fret(1, 2, 3);
+				sam.fret(1, 2, 3);
+				sam.anxiety.should.equal(1);
+			});
     }
 );

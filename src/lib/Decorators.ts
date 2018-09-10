@@ -22,3 +22,16 @@ export function debounced<S>(duration?: number, options?: Partial<IDebounceOptio
         }
     }
 }
+export function once<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+	const orgFn = descriptor.value;
+	let result: any;
+	let first = true;
+	descriptor.value = function(...args: any[]) {
+		if (first) {
+			result = orgFn.apply(this, args);
+			first = false;
+		}
+		return result;
+	};
+	return descriptor;
+}

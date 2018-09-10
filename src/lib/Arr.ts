@@ -1,5 +1,6 @@
 import { clone, setProperties } from "./Obj";
-import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined } from "./Test";
+import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env } from "./Test";
+import { Test } from "mocha";
 
 class ArrayState {
 	public static _int: number;
@@ -37,14 +38,24 @@ export function concat(...arrs: any[]): any[] {
 	return result;
 }
 export function slice<T>(src: T[], from: number = 0, count: number = Infinity): T[] {
-	let len = Math.min(isNullOrUndefined(src) ? 0 : src.length - from, count);
-	if (len < 0) {
-		len = 0;
-	}
-	let i = -1;
-	const result = new Array(len);
-	while (++i < len) {
-		result[i] = src[i + from];
+	let result: T[];
+	if(isNotNullOrUndefined(src)) {
+		let len = Math.min( src.length - from, count);
+		if(Env.hasFastNativeArrays()) {
+			result = src.slice(from, from + count);
+		} else {
+			let len = Math.min( src.length - from, count);
+			if (len <= 0) {
+				len = 0;
+			}
+			result = new Array(len);
+			let i = -1;
+			while (++i < len) {
+				result[i] = src[i + from];
+			}
+		}
+	} else {
+		result = [];
 	}
 	return result;
 }
@@ -57,27 +68,33 @@ export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, 
 	pos = Math.min(pos, srcLen);
 	remove = Math.max(0, remove);
 	remove = Math.min(remove, srcLen - pos);
-	let insertLen = insert.length;
-	let newLen = srcLen - remove + insertLen;
-	let delta = remove - insertLen;
-	if (delta < 0) {
-		src.length = newLen;		
-		let i = newLen;
-		while (--i >= pos + remove) {
-			src[i] = src[i + delta];
-		}
-	}
 
-	let i = pos - 1;
-	while (++i < pos + insertLen) {
-		src[i] = insert[i - pos];
-	}
-	if ( delta > 0) {
-		--i;
-		while (++i < srcLen - delta) {
-			src[i] = src[i + delta];
+	// natives are still slower on node 10.9
+	if(Env.hasFastNativeArrays() && (insert.length !== remove || pos + insert.length >= src.length)) {
+		src.splice.bind(src, pos, remove).apply(src, insert);
+	} else {
+		let insertLen = insert.length;
+		let newLen = srcLen - remove + insertLen;
+		let delta = remove - insertLen;
+		if (delta < 0) {
+			src.length = newLen;		
+			let i = newLen;
+			while (--i >= pos + remove) {
+				src[i] = src[i + delta];
+			}
 		}
-		src.length = newLen;
+
+		let i = pos - 1;
+		while (++i < pos + insertLen) {
+			src[i] = insert[i - pos];
+		}
+		if ( delta > 0) {
+			--i;
+			while (++i < srcLen - delta) {
+				src[i] = src[i + delta];
+			}
+			src.length = newLen;
+		}
 	}
 }
 export function append<T>(arr: T[], values: T[]): void {
@@ -91,26 +108,39 @@ export function append<T>(arr: T[], values: T[]): void {
 }
 export function removeAt(arr: any[], index: number): any {
 	let result;
-	let len = isNullOrUndefined(arr) ? 0 : arr.length;
-	if (index >= 0 && index < len) {
-		let i = index;
-		result = arr[index];
-		while (++i < len) {
-			arr[i - 1] = arr[i];
+	if(isNotNullOrUndefined(arr)) {
+		// natives are still slower on node 10.9
+		if(Env.hasFastNativeArrays()) {
+			result = arr.splice(index, 1)[0];
+		} else {
+			let len = arr.length;
+			index = Math.max(0, index);
+			index = Math.min(index, len);
+			let i = index;
+			// result = arr[index];
+			while (++i < len) {
+				arr[i - 1] = arr[i];
+			}
+			arr.length -= 1;
 		}
-		arr.length -= 1;
 	}
-	return result;
+	// return result;
 }
 export function indexOfElement(src: any[], el: any): number {
 	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
-	while (++i < len) {
-		if (src[i] === el) {
-			return i;
+	if(isNotNullOrUndefined(src)) {
+		if(Env.hasFastNativeArrays()) {
+			i = src.indexOf(el);
+		} else {
+			const len = isNullOrUndefined(src) ? 0 : src.length;
+			while (++i < len) {
+				if (src[i] === el) {
+					break;
+				}
+			}
 		}
 	}
-	return -1;
+	return i;
 }
 export function remove(arr: any[], el: any): void {
 	const start = indexOfElement(arr, el);
@@ -140,10 +170,19 @@ export function removeOneByFn(arr: any[], fn: (el: any) => boolean): void {
 }
 export function shallowCopy<T>(src: T[]): T[] {
 	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
-	const result = new Array(len);
-	while (++i < len) {
-		result[i] = src[i];
+	let result: T[];
+	if(isNotNullOrUndefined(src)) {
+		if(Env.hasFastNativeArrays()) {
+			result = src.slice();
+		} else {
+			const len = src.length;
+			result = new Array(len);
+			while (++i < len) {
+				result[i] = src[i];
+			}
+		}
+	} else {
+		result = [];
 	}
 	return result;
 }
@@ -193,15 +232,21 @@ export function deepFill<T>(src: T[], target: T[], at: number = 0): void {
 	}
 }
 export function filter<T>(src: T[], fn: (el: T, i: number) => boolean): T[] {
-	const result: T[] = [];
-	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
-	while (++i < len) {
-		const el = src[i];
-		if (fn(el, i) === true) {
-			result.push(el);
+	let result: T[];
+	// natives are still slower on node 10.9
+	// if(Env.hasFastNativeArrays()) {
+	// 	result = isNullOrUndefined(src) ? [] : src.filter(fn);
+	// } else {
+		result = [];
+		let i = -1;
+		const len = isNullOrUndefined(src) ? 0 : src.length;
+		while (++i < len) {
+			const el = src[i];
+			if (fn(el, i) === true) {
+				result.push(el);
+			}
 		}
-	}
+	// }
 	return result;
 }
 export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void {
@@ -223,12 +268,18 @@ export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => b
 	target.length = j;
 }
 export function map<S, T>(src: S[], fn: (el: S, i: number) => T): T[] {
-	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
-	const result = new Array<T>(len);
-	while (++i < len) {
-		result[i] = fn(src[i], i);
-	}
+	let result: Array<T>;
+	// native still seem slower on node
+	// if(Env.hasFastNativeArrays()) {
+	// 	result = isNullOrUndefined(src) ? [] : src.map(fn);
+	// } else {
+		let i = -1;
+		const len = isNullOrUndefined(src) ? 0 : src.length;
+		result = new Array<T>(len);
+		while (++i < len) {
+			result[i] = fn(src[i], i);
+		}
+	// }
 	return result;
 }
 export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T): void {

@@ -1,8 +1,56 @@
 import { Global } from "./Global";
+import { once } from "./Decorators";
 
 export function hasWindow(): boolean {
 	return Global.window !== null;
 }
+
+export class Env {
+	public static forceNotNative: boolean = false;
+	@once
+	public static isNode(): boolean {
+		return !hasWindow() || typeof module !== 'undefined' && module.exports !== undefined;
+	}
+	@once
+	public static isOpera(): boolean {
+		return hasWindow() && Global.window!.navigator.userAgent.match(/(?:^opera.+?version|opr)\/(\d+)/) !== null;
+	}
+	@once
+	public static isFirefox(): boolean {
+		return hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/(?:firefox|fxios)\/(\d+)/) !== null;
+	}
+	@once
+	public static isSafari(): boolean {
+		return hasWindow() && Global.window!.navigator.userAgent.match(/version\/(\d+).+?safari/) !== null;
+	}
+	@once
+	public static isIE(): boolean {
+		return hasWindow() && Global.window!.navigator.userAgent.match(/(?:msie |trident.+?; rv:)(\d+)/) !== null;
+	}
+	@once
+	public static isEdge(): boolean {
+		return hasWindow() && Global.window!.navigator.userAgent.match(/edge\/(\d+)/) !== null;
+	}
+	@once
+	public static isChrome(): boolean {
+		return hasWindow() 
+			&& ((/google inc/.test(Global.window!.navigator.vendor.toLowerCase()) ? Global.window!.navigator.userAgent.toLowerCase().match(/(?:chrome|crios)\/(\d+)/) : null) !== null) 
+			&& !this.isOpera();
+	}
+	@once
+	public static isBlink(): boolean {
+		return hasWindow() && (this.isChrome || this.isOpera) && !!((Global.window as any).CSS);
+	}
+	public static hasFastNativeArrays(): boolean {
+		// Node 10+, Chrome (modern) and FF (modern) has some very fast array operations
+		return !this.forceNotNative && this._hasFastNativeArrays();
+	}
+	@once
+	private static _hasFastNativeArrays(): boolean {
+		return this.isNode() || this.isChrome() || this.isFirefox();
+	}
+}
+
 export function hasConsole(): boolean {
 	return this.hasWindow() && Global.window!.console !== undefined || typeof (console) === "function";
 }

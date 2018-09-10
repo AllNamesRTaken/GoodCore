@@ -4,6 +4,7 @@ export enum MocDataType {
 	LinearFloat = 2,
 	RandomFloat = 3
 }
+const LARGEST_INT = 2147483647;
 export const VALID_CHARS = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
 export function randomString(length: number = 25): string {
@@ -13,18 +14,18 @@ export function randomString(length: number = 25): string {
 	}
 	return result;
 }
-export function randomInt(): number {
-	return this.randomNumber() | 0;
+export function randomInt(min: number = 0, max: number = LARGEST_INT): number {
+	return this.randomNumber(min, max) | 0;
 }
-export function randomNumber(): number {
-	return Math.random() * 2147483647;
+export function randomNumber(min: number = 0, max: number = LARGEST_INT): number {
+	return (Math.random() * (max - min)) + min;
 }
-export function numericArray(length: number, type: MocDataType = MocDataType.LinearInt): number[] {
+export function numericArray(length: number, type: MocDataType = MocDataType.LinearInt, min: number = 0, max: number = LARGEST_INT): number[] {
 	const result: number[] = new Array(length);
 	switch (type) {
 		case MocDataType.RandomInt:
 			for (let i = 0; i < length; i += 1) {
-				result[i] = this.randomInt();
+				result[i] = this.randomInt(min, max);
 			}
 			break;
 		case MocDataType.LinearFloat:
@@ -34,7 +35,7 @@ export function numericArray(length: number, type: MocDataType = MocDataType.Lin
 			break;
 		case MocDataType.RandomFloat:
 			for (let i = 0; i < length; i += 1) {
-				result[i] = this.randomNumber();
+				result[i] = this.randomNumber(min, max);
 			}
 			break;
 		default:

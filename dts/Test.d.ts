@@ -1,4 +1,14 @@
 export function hasWindow(): boolean;
+export class Env {
+	public static isOpera(): boolean;
+	public static isFirefox(): boolean;
+	public static isSafari(): boolean;
+	public static isIE(): boolean;
+	public static isEdge(): boolean;
+	public static isChrome(): boolean;
+	public static isBlink(): boolean;
+    public static hasFastNativeArrays(): boolean;
+}
 export function hasConsole(): boolean;
 export function isObject(it: any): boolean;
 export function isArray(it: any): boolean;

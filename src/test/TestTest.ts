@@ -17,6 +17,10 @@ describe("Test",
 			function () {
 				Test.hasWindow().should.be.false;
 			});
+		it("hasFastNativeArrays should be true in node",
+			function () {
+				Test.Env.hasFastNativeArrays().should.be.true;
+			});
 		it("hasConsole returns false when no window is available",
 			function () {
 				Test.hasConsole().should.be.false;
@@ -29,6 +33,16 @@ describe("Test",
 		it("hasConsole returns true when window is available",
 			function () {
 				Test.hasConsole().should.be.true;
+			});
+		it("All is<browser> should be false in node",
+			function () {
+				Test.Env.isBlink().should.be.false;
+				Test.Env.isChrome().should.be.false;
+				Test.Env.isEdge().should.be.false;
+				Test.Env.isFirefox().should.be.false;
+				Test.Env.isIE().should.be.false;
+				Test.Env.isOpera().should.be.false;
+				Test.Env.isSafari().should.be.false;
 			});
 		it("isObject identifies Objects correctly",
 			function () {

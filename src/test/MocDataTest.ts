@@ -26,11 +26,20 @@ describe("MocData",
 				const val = MocData.randomInt();
 				(typeof(val)).should.equal("number");
 				val.should.equal(val | 0);
+
+				const val2 = MocData.randomInt(10, 20);
+				(typeof(val2)).should.equal("number");
+				val2.should.equal(val2 | 0);
+				(val2 >= 10 && val2 < 20).should.be.true;
 			});
 		it("RandomNumber returns number",
 			function() {
 				const val = MocData.randomNumber();
 				(typeof(val)).should.equal("number");
+
+				const val2 = MocData.randomNumber(10, 20);
+				(typeof(val2)).should.equal("number");
+				(val2 >= 10 && val2 < 20).should.be.true;
 			});
 		it("RandomString returns string of correct length",
 			function() {
