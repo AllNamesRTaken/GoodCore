@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
+<!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
+<!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
+<!--[if gt IE 8]><!-->
+<html class="no-js">
+<!--<![endif]-->
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>GoodCore Benchmarks</title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="dist/lib/goodcore.bundle.js"></script>
+    <script src="node_modules/lodash/lodash.js"></script>
+    <script src="node_modules/platform/platform.js"></script>
+    <script src="node_modules/benchmark/benchmark.js"></script>
+    <script></script>
+</head>
+
+<body>
+    <button onclick="runTests();"> RunTests </button>
+    <div id="output" style="white-space: pre-wrap"></div>
+    <!--[if lt IE 7]>
+            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+        <![endif]-->
+    <script async defer>
+        let output = document.getElementById("output");
+        goodcore.Util.pipeOut(function() {
+            output.textContent += arguments.join("\n");
+        });
+    </script>
+    <script async defer>
+        const SIZE = 10000;
+        let intArray10k = goodcore.MocData.numericArray(SIZE, goodcore.MocData.MocDataType.RandomInt, 0, 100000);
+        let intArray100 = goodcore.MocData.numericArray(100, goodcore.MocData.MocDataType.RandomInt, 0, 100000);
+        intArray10k[SIZE / 2 - 1] = -1;
+        let workset;
+        function complete(suite) {
+            console.log('Fastest is ' + suite.filter('fastest').map('name') + "\n");
+        }
+        function cycle(event) {
+            console.log("\t" + String(event.target) + "\n");
+        }
+        let dump;
+        let ArrBench = [
+            new Benchmark.Suite()
+                .add('Array::indexOf', function () {
+                    dump = intArray10k.indexOf(-1);
+                })
+                .add('Arr.indexOfElement', function () {
+                    dump = goodcore.Arr.indexOfElement(intArray10k, -1);
+                })
+                .add('Arr.indexOfElement (no native)', function () {
+                    goodcore.Test.Env.forceNotNative = true;
+                    dump = goodcore.Arr.indexOfElement(intArray10k, -1);
+                    goodcore.Test.Env.forceNotNative = false;
+                })
+                .add('_.indexOf', function () {
+                    dump = _.indexOf(intArray10k, -1);
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                }),
+            new Benchmark.Suite()
+                .add('Array::slice', function () {
+                    dump = intArray10k.slice();
+                })
+                .add('Arr.slice', function () {
+                    dump = goodcore.Arr.slice(intArray10k);
+                })
+                .add('Arr.shallowCopy', function () {
+                    dump = goodcore.Arr.shallowCopy(intArray10k);
+                })
+                .add('Arr.slice (no native)', function () {
+                    goodcore.Test.Env.forceNotNative = true;
+                    dump = goodcore.Arr.slice(intArray10k);
+                    goodcore.Test.Env.forceNotNative = false;
+                })
+                .add('Arr.shallowCopy (no native)', function () {
+                    goodcore.Test.Env.forceNotNative = true;
+                    dump = goodcore.Arr.shallowCopy(intArray10k);
+                    goodcore.Test.Env.forceNotNative = false;
+                })
+                .add('_.slice', function () {
+                    dump = _.slice(intArray10k);
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                }),
+            new Benchmark.Suite()
+                .add('Array::reverse', function () {
+                    dump = intArray10k.reverse();
+                })
+                .add('Arr.reverse', function () {
+                    dump = goodcore.Arr.reverse(intArray10k);
+                })
+                .add('_.reverse', function () {
+                    dump = _.reverse(intArray10k);
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                }),
+            new Benchmark.Suite()
+                .add('Array::filter', function () {
+                    dump = intArray10k.filter((el, i) => el > 50000);
+                })
+                .add('Arr.filter', function () {
+                    dump = goodcore.Arr.filter(intArray10k, (el, i) => el > 50000);
+                })
+                .add('_.filter', function () {
+                    dump = _.filter(intArray10k, (el, i) => el > 50000);
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                }),
+            new Benchmark.Suite()
+                .add('Array::forEach', function () {
+                    dump = intArray10k.forEach((el, i) => void (0));
+                })
+                .add('Arr.forEach', function () {
+                    dump = goodcore.Arr.forEach(intArray10k, (el, i) => void (0));
+                })
+                .add('_.forEach', function () {
+                    dump = _.forEach(intArray10k, (el, i) => void (0));
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                }),
+            new Benchmark.Suite()
+                .add('Array::map', function () {
+                    dump = intArray10k.map((el, i) => el + 1);
+                })
+                .add('Arr.map', function () {
+                    dump = goodcore.Arr.map(intArray10k, (el, i) => el + 1);
+                })
+                .add('_.map', function () {
+                    dump = _.map(intArray10k, (el, i) => el + 1);
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                }),
+            new Benchmark.Suite()
+                .add('Array::reduce', function () {
+                    dump = intArray10k.reduce((agg, cur) => agg + cur, 0);
+                })
+                .add('Arr.reduce', function () {
+                    dump = goodcore.Arr.reduce(intArray10k, (agg, cur) => agg + cur, 0);
+                })
+                .add('_.reduce', function () {
+                    dump = _.reduce(intArray10k, (agg, cur) => agg + cur, 0);
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                }),
+            new Benchmark.Suite()
+                .add('Array::splice', function () {
+                    workset.splice(SIZE / 2, 100, ...intArray100);
+                })
+                .add('Arr.splice', function () {
+                    goodcore.Arr.splice(workset, SIZE / 2, 100, intArray100);
+                })
+                .add('Arr.splice (no native)', function () {
+                    goodcore.Test.Env.forceNotNative = true;
+                    goodcore.Arr.splice(workset, SIZE / 2, 100, intArray100);
+                    goodcore.Test.Env.forceNotNative = false;
+                })
+                .on('start', function (event) {
+                    workset = intArray10k.slice();
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                    if (workset.length !== SIZE) {
+                        console.log(workset.length);
+                    }
+                }),
+            new Benchmark.Suite()
+                .add('Array::splice(1)', function () {
+                    workset.splice(SIZE / 2, 1);
+                    workset.push(1);
+                })
+                .add('Arr.removeAt', function () {
+                    goodcore.Arr.removeAt(workset, SIZE / 2);
+                    workset.push(1);
+                })
+                .add('Arr.removeAt (no native)', function () {
+                    goodcore.Test.Env.forceNotNative = true;
+                    goodcore.Arr.removeAt(workset, SIZE / 2);
+                    workset.push(1);
+                    goodcore.Test.Env.forceNotNative = false;
+                })
+                .on('start', function (event) {
+                    workset = intArray10k.slice();
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                    if (workset.length !== SIZE) {
+                        console.log(workset.length);
+                    }
+                }),
+            new Benchmark.Suite()
+                .add('Array::find', function () {
+                    dump = intArray10k.find((el) => el === -1);
+                })
+                .add('Arr.find', function () {
+                    dump = goodcore.Arr.find(intArray10k, (el) => el === -1);
+                })
+                .add('_.find', function () {
+                    dump = _.find(intArray10k, (el) => el === -1);
+                })
+                .on('cycle', function (event) {
+                    cycle(event);
+                })
+                .on('complete', function () {
+                    complete(this);
+                }),
+        ];
+        function runTests() {
+            function promisify(fn) { 
+                return function() {
+                    return new Promise((resolve, reject) => {
+                        fn.apply(this, arguments); 
+                        resolve();
+                    });
+                }
+            }
+            let runAsync = promisify((el) => el.run({ 'async': false }));
+            function forEachP(arr) {
+                let i = -1;
+                function run() {
+                    i++;
+                    if(arr[i]) {
+                        runAsync(arr[i]).then(() => setTimeout(run));
+                    }
+                }
+                run();
+            }
+            forEachP(ArrBench);
+        }
+    </script>
+</body>
+
+</html>

@@ -47,12 +47,12 @@ export class Env {
 	}
 	@once
 	private static _hasFastNativeArrays(): boolean {
-		return this.isNode() || this.isChrome() || this.isFirefox();
+		return !this.isIE();
 	}
 }
 
 export function hasConsole(): boolean {
-	return this.hasWindow() && Global.window!.console !== undefined || typeof (console) === "function";
+	return hasWindow() && Global.window!.console !== undefined || typeof (console) === "function";
 }
 export function isObject(it: any): boolean {
 	return it !== null && typeof it === "object";

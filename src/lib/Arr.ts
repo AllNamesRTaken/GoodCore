@@ -124,7 +124,7 @@ export function removeAt(arr: any[], index: number): any {
 			arr.length -= 1;
 		}
 	}
-	// return result;
+	return result;
 }
 export function indexOfElement(src: any[], el: any): number {
 	let i = -1;

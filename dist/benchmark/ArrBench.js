@@ -1,34 +1,52 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const Benchmark = require("benchmark");
-const lib_1 = require("../lib");
-const MocData_1 = require("../lib/MocData");
-const _ = require("lodash");
-const chalk_1 = require("chalk");
-const SIZE = 10000;
-let intArray10k = lib_1.MocData.numericArray(SIZE, MocData_1.MocDataType.RandomInt, 0, 100000);
-let intArray100 = lib_1.MocData.numericArray(100, MocData_1.MocDataType.RandomInt, 0, 100000);
+var __read = (this && this.__read) || function (o, n) {
+    var m = typeof Symbol === "function" && o[Symbol.iterator];
+    if (!m) return o;
+    var i = m.call(o), r, ar = [], e;
+    try {
+        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
+    }
+    catch (error) { e = { error: error }; }
+    finally {
+        try {
+            if (r && !r.done && (m = i["return"])) m.call(i);
+        }
+        finally { if (e) throw e.error; }
+    }
+    return ar;
+};
+var __spread = (this && this.__spread) || function () {
+    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
+    return ar;
+};
+import * as Benchmark from "benchmark";
+import { MocData, Arr, Test } from "../lib";
+import { MocDataType } from "../lib/MocData";
+import * as _ from "lodash";
+import chalk from "chalk";
+var SIZE = 10000;
+var intArray10k = MocData.numericArray(SIZE, MocDataType.RandomInt, 0, 100000);
+var intArray100 = MocData.numericArray(100, MocDataType.RandomInt, 0, 100000);
 intArray10k[SIZE / 2 - 1] = -1;
-let workset;
+var workset;
 function complete(suite) {
-    console.log(chalk_1.default.green('Fastest is ' + suite.filter('fastest').map('name') + "\n"));
+    console.log(chalk.green('Fastest is ' + suite.filter('fastest').map('name') + "\n"));
 }
 function cycle(event) {
-    console.log(chalk_1.default.grey("\t" + String(event.target)));
+    console.log(chalk.grey("\t" + String(event.target)));
 }
-let dump;
-exports.suites = [
+var dump;
+export var suites = [
     new Benchmark.Suite()
         .add('Array::indexOf', function () {
         dump = intArray10k.indexOf(-1);
     })
         .add('Arr.indexOfElement', function () {
-        dump = lib_1.Arr.indexOfElement(intArray10k, -1);
+        dump = Arr.indexOfElement(intArray10k, -1);
     })
         .add('Arr.indexOfElement (no native)', function () {
-        lib_1.Test.Env.forceNotNative = true;
-        dump = lib_1.Arr.indexOfElement(intArray10k, -1);
-        lib_1.Test.Env.forceNotNative = false;
+        Test.Env.forceNotNative = true;
+        dump = Arr.indexOfElement(intArray10k, -1);
+        Test.Env.forceNotNative = false;
     })
         .add('_.indexOf', function () {
         dump = _.indexOf(intArray10k, -1);
@@ -44,20 +62,20 @@ exports.suites = [
         dump = intArray10k.slice();
     })
         .add('Arr.slice', function () {
-        dump = lib_1.Arr.slice(intArray10k);
+        dump = Arr.slice(intArray10k);
     })
         .add('Arr.shallowCopy', function () {
-        dump = lib_1.Arr.shallowCopy(intArray10k);
+        dump = Arr.shallowCopy(intArray10k);
     })
         .add('Arr.slice (no native)', function () {
-        lib_1.Test.Env.forceNotNative = true;
-        dump = lib_1.Arr.slice(intArray10k);
-        lib_1.Test.Env.forceNotNative = false;
+        Test.Env.forceNotNative = true;
+        dump = Arr.slice(intArray10k);
+        Test.Env.forceNotNative = false;
     })
         .add('Arr.shallowCopy (no native)', function () {
-        lib_1.Test.Env.forceNotNative = true;
-        dump = lib_1.Arr.shallowCopy(intArray10k);
-        lib_1.Test.Env.forceNotNative = false;
+        Test.Env.forceNotNative = true;
+        dump = Arr.shallowCopy(intArray10k);
+        Test.Env.forceNotNative = false;
     })
         .add('_.slice', function () {
         dump = _.slice(intArray10k);
@@ -73,7 +91,7 @@ exports.suites = [
         dump = intArray10k.reverse();
     })
         .add('Arr.reverse', function () {
-        dump = lib_1.Arr.reverse(intArray10k);
+        dump = Arr.reverse(intArray10k);
     })
         .add('_.reverse', function () {
         dump = _.reverse(intArray10k);
@@ -86,13 +104,13 @@ exports.suites = [
     }),
     new Benchmark.Suite()
         .add('Array::filter', function () {
-        dump = intArray10k.filter((el, i) => el > 50000);
+        dump = intArray10k.filter(function (el, i) { return el > 50000; });
     })
         .add('Arr.filter', function () {
-        dump = lib_1.Arr.filter(intArray10k, (el, i) => el > 50000);
+        dump = Arr.filter(intArray10k, function (el, i) { return el > 50000; });
     })
         .add('_.filter', function () {
-        dump = _.filter(intArray10k, (el, i) => el > 50000);
+        dump = _.filter(intArray10k, function (el, i) { return el > 50000; });
     })
         .on('cycle', function (event) {
         cycle(event);
@@ -102,13 +120,13 @@ exports.suites = [
     }),
     new Benchmark.Suite()
         .add('Array::forEach', function () {
-        dump = intArray10k.forEach((el, i) => void (0));
+        dump = intArray10k.forEach(function (el, i) { return void (0); });
     })
         .add('Arr.forEach', function () {
-        dump = lib_1.Arr.forEach(intArray10k, (el, i) => void (0));
+        dump = Arr.forEach(intArray10k, function (el, i) { return void (0); });
     })
         .add('_.forEach', function () {
-        dump = _.forEach(intArray10k, (el, i) => void (0));
+        dump = _.forEach(intArray10k, function (el, i) { return void (0); });
     })
         .on('cycle', function (event) {
         cycle(event);
@@ -118,13 +136,13 @@ exports.suites = [
     }),
     new Benchmark.Suite()
         .add('Array::map', function () {
-        dump = intArray10k.map((el, i) => el + 1);
+        dump = intArray10k.map(function (el, i) { return el + 1; });
     })
         .add('Arr.map', function () {
-        dump = lib_1.Arr.map(intArray10k, (el, i) => el + 1);
+        dump = Arr.map(intArray10k, function (el, i) { return el + 1; });
     })
         .add('_.map', function () {
-        dump = _.map(intArray10k, (el, i) => el + 1);
+        dump = _.map(intArray10k, function (el, i) { return el + 1; });
     })
         .on('cycle', function (event) {
         cycle(event);
@@ -134,13 +152,13 @@ exports.suites = [
     }),
     new Benchmark.Suite()
         .add('Array::reduce', function () {
-        dump = intArray10k.reduce((agg, cur) => agg + cur, 0);
+        dump = intArray10k.reduce(function (agg, cur) { return agg + cur; }, 0);
     })
         .add('Arr.reduce', function () {
-        dump = lib_1.Arr.reduce(intArray10k, (agg, cur) => agg + cur, 0);
+        dump = Arr.reduce(intArray10k, function (agg, cur) { return agg + cur; }, 0);
     })
         .add('_.reduce', function () {
-        dump = _.reduce(intArray10k, (agg, cur) => agg + cur, 0);
+        dump = _.reduce(intArray10k, function (agg, cur) { return agg + cur; }, 0);
     })
         .on('cycle', function (event) {
         cycle(event);
@@ -150,15 +168,15 @@ exports.suites = [
     }),
     new Benchmark.Suite()
         .add('Array::splice', function () {
-        workset.splice(SIZE / 2, 100, ...intArray100);
+        workset.splice.apply(workset, __spread([SIZE / 2, 100], intArray100));
     })
         .add('Arr.splice', function () {
-        lib_1.Arr.splice(workset, SIZE / 2, 100, intArray100);
+        Arr.splice(workset, SIZE / 2, 100, intArray100);
     })
         .add('Arr.splice (no native)', function () {
-        lib_1.Test.Env.forceNotNative = true;
-        lib_1.Arr.splice(workset, SIZE / 2, 100, intArray100);
-        lib_1.Test.Env.forceNotNative = false;
+        Test.Env.forceNotNative = true;
+        Arr.splice(workset, SIZE / 2, 100, intArray100);
+        Test.Env.forceNotNative = false;
     })
         .on('start', function (event) {
         workset = intArray10k.slice();
@@ -178,14 +196,14 @@ exports.suites = [
         workset.push(1);
     })
         .add('Arr.removeAt', function () {
-        lib_1.Arr.removeAt(workset, SIZE / 2);
+        Arr.removeAt(workset, SIZE / 2);
         workset.push(1);
     })
         .add('Arr.removeAt (no native)', function () {
-        lib_1.Test.Env.forceNotNative = true;
-        lib_1.Arr.removeAt(workset, SIZE / 2);
+        Test.Env.forceNotNative = true;
+        Arr.removeAt(workset, SIZE / 2);
         workset.push(1);
-        lib_1.Test.Env.forceNotNative = false;
+        Test.Env.forceNotNative = false;
     })
         .on('start', function (event) {
         workset = intArray10k.slice();
@@ -201,13 +219,13 @@ exports.suites = [
     }),
     new Benchmark.Suite()
         .add('Array::find', function () {
-        dump = intArray10k.find((el) => el === -1);
+        dump = intArray10k.find(function (el) { return el === -1; });
     })
         .add('Arr.find', function () {
-        dump = lib_1.Arr.find(intArray10k, (el) => el === -1);
+        dump = Arr.find(intArray10k, function (el) { return el === -1; });
     })
         .add('_.find', function () {
-        dump = _.find(intArray10k, (el) => el === -1);
+        dump = _.find(intArray10k, function (el) { return el === -1; });
     })
         .on('cycle', function (event) {
         cycle(event);
