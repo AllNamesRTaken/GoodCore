@@ -92,17 +92,17 @@ export function pipeOut(
 ) {
 	if (hasConsole()) {
 		proxyFn(
-			Global.window!.console as any,
+			Global.global.console as any,
 			"log",
 			function (superfn, ...args: any[]) { superfn(...args); log(...args); }
 		);
 		proxyFn(
-			Global.window!.console as any,
+			Global.global.console as any,
 			"warn",
 			function (superfn, ...args: any[]) { superfn(...args); warn(...args); }
 		);
 		proxyFn(
-			Global.window!.console as any,
+			Global.global.console as any,
 			"error",
 			function (superfn, ...args: any[]) { superfn(...args); error(...args); }
 		);

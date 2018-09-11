@@ -14,12 +14,18 @@ export class _Global {
 	private _window: Window | null = win;
 	private _nativeWindow: boolean = nativeWindow;
 
+    public get global(): NodeJS.Global | Window {
+        if( this.hasNativeWindow ) {
+            return this.window!;
+        } 
+        return global;
+    }
 	public get window(): Window|null {
 		return this._window;
 	}
 	public set window(v: Window|null) {
 		this._window = v;
-		if (this.hasNativeWindow && v !== null) {
+		if (!this.hasNativeWindow && v !== null) {
 			win = v;
 		}
 	}
