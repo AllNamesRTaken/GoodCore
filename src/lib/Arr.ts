@@ -347,9 +347,9 @@ export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: 
 		}
 	}
 }
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, startIndex?: number): void;
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): void;
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn?: ((el: T, i: number) => void) | number, startIndex?: number): void {
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, startIndex?: number): void;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn: (el: T, i: number) => void, startIndex?: number): void;
+export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn?: ((el: T, i: number) => void) | number, startIndex?: number): void {
 	let isCombined = isUndefined(fn) || isNumber(fn);
 	startIndex = isCombined ? fn as number : startIndex;
 	let i = isUndefined(startIndex) || startIndex! < 0 ? -1 : startIndex! - 1;

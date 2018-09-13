@@ -184,6 +184,20 @@ describe("Obj",
 				(result.d === undefined).should.be.true;
 
 			});
+		it("forEach handles arrays",
+			function() {
+				const obj = [10, 20, 30, null];
+				let result:any = {}
+				Obj.forEach(obj, (value: any, key: string|number) => {
+					if(value === null) return false;
+					result[key] = value;
+				});
+				result["0"].should.equal(10);
+				result["1"].should.equal(20);
+				result["2"].should.equal(30);
+				(result["3"] === undefined).should.be.true;
+
+			});
 		it("Transform returns object with correct prototype and properties",
 			function() {
 				class Iter {

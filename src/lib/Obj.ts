@@ -1,4 +1,5 @@
 import { areNotNullOrUndefined, isArray, isFunction, isNullOrUndefined, isObject } from "./Test";
+import { until as arrUntil } from "./Arr";
 
 export function destroy(obj: any): void {
 	if (obj.constructor.prototype.destroy !== undefined) {
@@ -209,12 +210,10 @@ export function mixin(target: any = {}, exclude: any, ...sources: any[]): any {
 export function setProperties(target: any, values: any, mapping?: any): void {
 	const keys = Object.keys(values);
 	let key: string;
-	let value: any;
 	let i = -1;
 	const len = keys.length;
 	while (++i < len) {
 		key = keys[i];
-		value = values[key];
 		if (mapping && key in mapping) {
 			key = mapping[key];
 		}
@@ -223,23 +222,26 @@ export function setProperties(target: any, values: any, mapping?: any): void {
 		}
 	}
 }
-export function forEach<T extends {[index: string]: any}>(target: T, fn: (value: any, key?: string) => boolean | void): void {
-	const keys = Object.keys(target);
-	let key: string;
-	let value: any;
-	let i = -1;
-	const len = keys.length;
-	let run = true;
-	while (run && ++i < len) {
-		key = keys[i];
-		run = false !== fn(target[key], key);
+export function forEach<T extends {[index: string]: any}, U = any>(target: T | Array<U>, fn: (value: any, key?: string|number) => boolean | void): void {
+	if(isArray(target)) {
+		arrUntil(target as Array<U>, fn);
+	} else {
+		const keys = Object.keys(target);
+		let key: string;
+		let i = -1;
+		const len = keys.length;
+		let run = true;
+		while (run && ++i < len) {
+			key = keys[i];
+			run = false !== fn((target as T)[key], key);
+		}
 	}
 }
-export function transform<T extends {[index: string]: any}, S = T>(target: T, fn: (result: S, value: any, key: string) => boolean | void, accumulator?: S): S  {
+export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S  {
 	if (accumulator === undefined) {
 		accumulator = Object.create(target);
 	}
-	forEach(target, (value: any, key: string) => {
+	forEach(target, (value: any, key: string | number) => {
 		return fn(accumulator!, value, key);
 	});
 	return accumulator!;
