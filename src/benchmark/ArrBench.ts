@@ -27,9 +27,9 @@ export const suites = [
         dump = Arr.indexOfElement(intArray10k, -1);
     })
     .add('Arr.indexOfElement (no native)', function () {
-        Test.Env.forceNotNative = true;
+        Test.Env.useNative = false;
         dump = Arr.indexOfElement(intArray10k, -1);
-        Test.Env.forceNotNative = false;
+        Test.Env.useNative = undefined;
     })
     .add('_.indexOf', function () {
         dump = _.indexOf(intArray10k, -1);
@@ -53,14 +53,14 @@ export const suites = [
         dump = Arr.shallowCopy(intArray10k);
     })
     .add('Arr.slice (no native)', function () {
-        Test.Env.forceNotNative = true;
+        Test.Env.useNative = false;
         dump = Arr.slice(intArray10k);
-        Test.Env.forceNotNative = false;
+        Test.Env.useNative = undefined;
     })
     .add('Arr.shallowCopy (no native)', function () {
-        Test.Env.forceNotNative = true;
+        Test.Env.useNative = false;
         dump = Arr.shallowCopy(intArray10k);
-        Test.Env.forceNotNative = false;
+        Test.Env.useNative = undefined;
     })
     .add('_.slice', function () {
         dump = _.slice(intArray10k);
@@ -171,9 +171,9 @@ export const suites = [
         Arr.splice(workset, SIZE / 2, 100, intArray100);
     })
     .add('Arr.splice (no native)', function () {
-        Test.Env.forceNotNative = true;
+        Test.Env.useNative = false;
         Arr.splice(workset, SIZE / 2, 100, intArray100);
-        Test.Env.forceNotNative = false;
+        Test.Env.useNative = undefined;
     })
     .on('start', function (event: any) {
         workset = intArray10k.slice();
@@ -198,10 +198,10 @@ export const suites = [
         workset.push(1);
     })
     .add('Arr.removeAt (no native)', function () {
-        Test.Env.forceNotNative = true;
+        Test.Env.useNative = false;
         Arr.removeAt(workset, SIZE / 2);
         workset.push(1);
-        Test.Env.forceNotNative = false;
+        Test.Env.useNative = undefined;
     })
     .on('start', function (event: any) {
         workset = intArray10k.slice();

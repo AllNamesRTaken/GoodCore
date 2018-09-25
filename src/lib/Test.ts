@@ -6,7 +6,7 @@ export function hasWindow(): boolean {
 }
 
 export class Env {
-	public static forceNotNative: boolean = false;
+	public static useNative?: boolean = undefined;
 	@once
 	public static isNode(): boolean {
 		return !hasWindow() || typeof module !== 'undefined' && module.exports !== undefined;
@@ -43,7 +43,7 @@ export class Env {
 	}
 	public static hasFastNativeArrays(): boolean {
 		// Node 10+, Chrome (modern) and FF (modern) has some very fast array operations
-		return !this.forceNotNative && this._hasFastNativeArrays();
+		return this.useNative === undefined ? this._hasFastNativeArrays() : this.useNative!;
 	}
 	@once
 	private static _hasFastNativeArrays(): boolean {

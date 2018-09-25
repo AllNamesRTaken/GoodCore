@@ -3,6 +3,7 @@ import * as Arr from "../lib/Arr";
 import * as MocData from "../lib/MocData";
 import { Vec2 } from "../lib/struct/Vec2";
 import { assert } from "../lib/Util";
+import { Test } from "../lib";
 should();
 
 describe("Arrays",
@@ -29,6 +30,14 @@ describe("Arrays",
 				const copy = Arr.shallowCopy(arr);
 				copy[1].should.equal(arr[1]);
 				Arr.shallowCopy(null!).should.deep.equal([]);
+
+				Test.Env.useNative = false;
+
+				const copy2 = Arr.shallowCopy(arr);
+				copy2[1].should.equal(arr[1]);
+				Arr.shallowCopy(null!).should.deep.equal([]);
+
+				Test.Env.useNative = undefined;
 			});
 		it("Append appends two arrays into the first",
 			function() {
@@ -78,6 +87,14 @@ describe("Arrays",
 				Arr.indexOf(this.arr1, (el) => el === 7).should.equal(2);
 				Arr.indexOf(this.arr1, (el) => el === 17).should.equal(-1);
 				Arr.indexOf(null!, (el) => true).should.equal(-1);
+
+				Test.Env.useNative = false;
+
+				Arr.indexOf(this.arr1, (el) => el === 7).should.equal(2);
+				Arr.indexOf(this.arr1, (el) => el === 17).should.equal(-1);
+				Arr.indexOf(null!, (el) => true).should.equal(-1);
+
+				Test.Env.useNative = undefined;
 			});
 		it("find return correct element or undefined",
 			function() {
@@ -142,6 +159,12 @@ describe("Arrays",
 				Arr.indexOfElement(this.arr1, 7).should.equal(2);
 				Arr.indexOfElement(this.arr1, 17).should.equal(-1);
 				Arr.indexOfElement(null!, 17).should.equal(-1);
+
+				Test.Env.useNative = false;
+				Arr.indexOfElement(this.arr1, 7).should.equal(2);
+				Arr.indexOfElement(this.arr1, 17).should.equal(-1);
+				Arr.indexOfElement(null!, 17).should.equal(-1);
+				Test.Env.useNative = undefined;
 			});
 		it("Map el and i are correct",
 			function() {
@@ -195,6 +218,15 @@ describe("Arrays",
 				Arr.removeAt(arr, 2).should.equal(3);
 				arr.should.deep.equal([1, 2, 4]);
 				(Arr.removeAt(null!, 2) === undefined).should.be.true;
+
+				Test.Env.useNative = false;
+
+				const arr2 = [1, 2, 3, 4];
+				Arr.removeAt(arr2, 2).should.equal(3);
+				arr2.should.deep.equal([1, 2, 4]);
+				(Arr.removeAt(null!, 2) === undefined).should.be.true;
+
+				Test.Env.useNative = undefined;
 			});
 		it("Remove removes correct element",
 			function() {
@@ -242,6 +274,12 @@ describe("Arrays",
 				Arr.slice(this.arr1, 1, 2).should.deep.equal([4, 7]);
 				Arr.slice(this.arr1, 10, 2).should.deep.equal([]);
 				Arr.slice(null!, 0, 2).should.deep.equal([]);
+
+				Test.Env.useNative = false;
+				Arr.slice(this.arr1, 1, 2).should.deep.equal([4, 7]);
+				Arr.slice(this.arr1, 10, 2).should.deep.equal([]);
+				Arr.slice(null!, 0, 2).should.deep.equal([]);
+				Test.Env.useNative = undefined;
 			});
 		it("Splice does splice",
 			function() {
@@ -283,6 +321,52 @@ describe("Arrays",
 				} catch (err) {
 					(err as Error).message.indexOf("Unable to splice").should.equal(0);
 				}
+			});
+		it("Splice without native does splice",
+			function() {
+				Test.Env.useNative = false;
+
+				let arr1 = [1, 4, 7, 2];
+
+				Arr.splice(arr1, -1, -1);
+				arr1.should.deep.equal([1, 4, 7, 2]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, -1);
+				arr1.should.deep.equal([]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1);
+				arr1.should.deep.equal([]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 100);
+				arr1.should.deep.equal([1, 4, 7, 2]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 1, 2);
+				arr1.should.deep.equal([1, 2]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 1, 2, [3, 4]);
+				arr1.should.deep.equal([1, 3, 4, 2]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 1, 100, [3, 4]);
+				arr1.should.deep.equal([1, 3, 4]);
+
+				arr1 = [1, 4, 7, 2];
+				Arr.splice(arr1, 1, 1, [3, 4]);
+				arr1.should.deep.equal([1, 3, 4, 7, 2]);
+
+				arr1 = null!;
+				try {
+					Arr.splice(arr1, 1, 1, [3, 4]);
+				} catch (err) {
+					(err as Error).message.indexOf("Unable to splice").should.equal(0);
+				}
+
+				Test.Env.useNative = undefined;
 			});
 		it("ForSome works like Filtered ForEach",
 			function() {

@@ -44,12 +44,12 @@ describe("IndexedTree",
 				tree = IndexedTree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true) as IndexedTree<string>;
 				tree.virtual.should.be.true;
 				tree.children!.get(0)!.id.should.equal("-");
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 			});
 		it("Count returns the correct number of nodes",
 			function () {
 				const tree = this.tree as IndexedTree<string>;
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 			});
 		it("Indexer can be set and read",
 			function () {
@@ -73,12 +73,12 @@ describe("IndexedTree",
 		it("Filter returns filtered tree",
 			function () {
 				const tree = this.tree as IndexedTree<string>;
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 				const filtered = tree.filter((node) => node.children !== null)!;
 				filtered.children!.get(0)!.data!.should.equal("c2");
-				filtered.children!.get(0)!.children!.count.should.equal(0);
-				tree.count.should.equal(6);
-				filtered.count.should.equal(2);
+				filtered.children!.get(0)!.childCount.should.equal(0);
+				tree._count.should.equal(6);
+				filtered._count.should.equal(2);
 			});
 		it("Contains is true if node exists otherwise false",
 			function () {
@@ -92,7 +92,7 @@ describe("IndexedTree",
 			function () {
 				const tree = this.tree as IndexedTree<string>;
 				tree.select((node) => node.children === null).count.should.equal(4);
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 			});
 		it("Empty select returns all nodes",
 			function () {
@@ -102,21 +102,21 @@ describe("IndexedTree",
 		it("Add and Remove does add and remove, and modify index",
 			function () {
 				const tree = this.tree as IndexedTree<string>;
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 				tree.add("c4", "c4");
-				tree.count.should.equal(7);
+				tree._count.should.equal(7);
 				const c4 = tree.find((node) => node.data === "c4");
 				c4!.data!.should.equal("c4");
 				tree.contains("c4").should.be.true;
 				(c4 as IndexedTree<string>).remove();
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 				tree.contains("c4").should.be.false;
 				let node = new IndexedTree<string>("treenode").init({ data: "treenode" }) as IndexedTree<string>;
 				tree.add(node);
 				const treenode = tree.get("treenode");
 				treenode!.data!.should.equal("treenode");
 				(treenode as IndexedTree<string>).remove();
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 			});
 		it("Add and AddTo with subtrees and reindexing",
 			function () {
@@ -135,26 +135,26 @@ describe("IndexedTree",
 				tree.contains("c6").should.be.true;
 				subtree.remove();
 				tree.contains("c6").should.be.false;
-				tree.count.should.equal(6);
-				subtree.count.should.equal(4);
+				tree._count.should.equal(6);
+				subtree._count.should.equal(4);
 
 				let wIndex = new IndexedTree<string>("wIndex", tree.indexer, tree.index);
 				tree.add(wIndex);
 				wIndex.add(subtree);
-				tree.count.should.equal(11);
+				tree._count.should.equal(11);
 				tree.contains("c6").should.be.true;
 				subtree.remove();
 				wIndex.remove();
 				tree.contains("c6").should.be.false;
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 
 				tree.add(subtree, undefined, false);
 				tree.contains("c6").should.be.false;
 				tree.reIndex();
 				tree.contains("c6").should.be.true;
-				tree.count.should.equal(10);
+				tree._count.should.equal(10);
 				subtree.remove();
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 			});
 		it("AddTo adds to a node by id",
 			function () {
@@ -165,7 +165,7 @@ describe("IndexedTree",
 				tree.children!.get(2)!.children!.get(0)!.data!.should.equal("new node");
 				(tree.addTo("no such parent", "data") === undefined).should.be.true;
 				newNode.remove();
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 			});
 		it("Get gets by id",
 			function () {
@@ -181,12 +181,12 @@ describe("IndexedTree",
 				orgc2t2!.should.not.equal(c2t2);
 				const clone = tree.clone();
 				(clone.children!.get(1)!.parent === clone).should.be.true;
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 			});
 		it("Reduce performs depth first reduction",
 			function () {
 				const tree = this.tree as IndexedTree<string>;
-				tree.count.should.equal(6);
+				tree._count.should.equal(6);
 				tree.reduce((acc, cur) => acc += "," + cur!.data, "").should.equal(",root,c3,c2,c2-1,c2-2,c1");
 			});
 		it("Reduce without parameters returns node list",
@@ -213,7 +213,7 @@ describe("IndexedTree",
 				const tree = (this.tree as IndexedTree<string>).clone() as IndexedTree<string>;
 				tree.children!.get(1)!.prune();
 				(tree.children!.get(1)!.children === null).should.be.true;
-				tree.count.should.equal(4);
+				tree._count.should.equal(4);
 			});
 		it("Cut returns a node without its parent",
 			function () {
@@ -222,8 +222,8 @@ describe("IndexedTree",
 				tree.children!.get(1)!.id.should.equal("c1");
 				(child.parent === null).should.be.true;
 				child.id.should.equal("c2");
-				tree.count.should.equal(3);
-				child.count.should.equal(3);
+				tree._count.should.equal(3);
+				child._count.should.equal(3);
 
 			});
 		it("Depth returns correct depth",

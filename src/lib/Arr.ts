@@ -117,6 +117,7 @@ export function removeAt(arr: any[], index: number): any {
 			index = Math.max(0, index);
 			index = Math.min(index, len);
 			let i = index;
+			result = arr[i];
 			// result = arr[index];
 			while (++i < len) {
 				arr[i - 1] = arr[i];
@@ -127,20 +128,22 @@ export function removeAt(arr: any[], index: number): any {
 	return result;
 }
 export function indexOfElement(src: any[], el: any): number {
-	let i = -1;
+	let result = -1;
 	if(isNotNullOrUndefined(src)) {
 		if(Env.hasFastNativeArrays()) {
-			i = src.indexOf(el);
+			result = src.indexOf(el);
 		} else {
 			const len = isNullOrUndefined(src) ? 0 : src.length;
+			let i = -1;
 			while (++i < len) {
 				if (src[i] === el) {
+					result = i;
 					break;
 				}
 			}
 		}
 	}
-	return i;
+	return result;
 }
 export function remove(arr: any[], el: any): void {
 	const start = indexOfElement(arr, el);

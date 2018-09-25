@@ -395,11 +395,22 @@ declare namespace goodcore {
 	}
 
 	export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
-		id: string;
-		parent: Tree<T> | null;
-		children: List<Tree<T>> | null;
-		data: T | null;
-		virtual: boolean;
+		public id: string;
+		public parent: Tree<T> | null;
+		public children: List<Tree<T>> | null;
+		public data: T | null;
+		public virtual: boolean;
+		public isDirty: boolean;
+		public size: number;
+		public leafCount: number;
+		public childCount: number;
+		public weight: number;
+	
+		protected _virtual: boolean;
+		protected _size: number;
+		protected _leafCount: number;
+		protected _weight;
+		
 		root: Tree<T>;
 		static fromObject<T>(obj: any): Tree<T>;
 		static fromNodeList<S, T>(nodes: S[], mapcfg?: {
@@ -409,20 +420,26 @@ declare namespace goodcore {
 		}, virtualRoot?: boolean): Tree<T>;
 		constructor(id?: string | number);
 		protected create<S = T>(...args: any[]): Tree<S>;
-		init(obj: Partial<Tree<T>>, mapping?: any): this;
-		insertAt(pos: number, data: T, id?: string | number): void;
-		add(data: T | Tree<T>, id?: string | number): void;
-		remove(): void;
-		prune(): Tree<T>;
-		reduce(fn?: (acc: any, cur: Tree<T> | null) => any, start?: any): any;
-		clone(): Tree<T>;
-		filter(condition: (node: Tree<T>) => boolean): Tree<T>;
-		select(condition?: (node: Tree<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
-		find(condition: (node: Tree<T>) => boolean): Tree<T> | null;
-		depth(): number;
-		sort(comparer: (a: Tree<T>, b: Tree<T>) => number): Tree<T>;
-		serialize(): T[];		
-		toJSON(): any;
+		protected markAsDirty(): void;
+		public reCalculateSize(): this;
+		public collect<S = any>(fn: (cur: this, i: number, collected: List<S>, isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
+		public init(obj: Partial<Tree<T>>, mapping?: any): this;
+		public insertAt(pos: number, data: T, id?: string | number): void;
+		public add(data: T | Tree<T>, id?: string | number): void;
+		public remove(): void;
+		public prune(): Tree<T>;
+		public cut(): Tree<T>;
+		public forEach(fn: (el: Tree<T>, i: number) => void, _i?: number): Tree<T>;
+		public reduce<S>(fn?: (acc: S, cur: this | null) => S, start?: S): S;
+		public clone(): Tree<T>;
+		public filter(condition: (node: Tree<T>) => boolean): Tree<T>;
+		public select(condition?: (node: Tree<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
+		public find(condition: number | ((node: this) => boolean)): this | null;
+		protected _findBySize(pos: number): this | null;
+		public depth(): number;
+		public sort(comparer: (a: Tree<T>, b: Tree<T>) => number): Tree<T>;
+		public serialize(): T[];		
+		public toJSON(): any;
 	}
 
 	export class IndexedTree<T> extends Tree<T> {
@@ -500,6 +517,7 @@ declare namespace goodcore {
 		export function indexOfElement(src: any[], el: any): number;
 		export function remove(arr: any[], el: any): void;
 		export function indexOf(src: any[], fn: (el: any) => boolean): number;
+		export function find<T>(src: T[], fn: (el: any) => boolean): T | undefined;
 		export function removeOneByFn(arr: any[], fn: (el: any) => boolean): void;
 		export function shallowCopy<T>(src: T[]): T[];
 		export function shallowCopyInto<T>(src: T[], target: T[]): void;
@@ -546,6 +564,9 @@ declare namespace goodcore {
 		export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
 		export function mixin(target: any, exclude: any, ...sources: any[]): any;
 		export function setProperties(target: any, values: any, mapping?: any): void;
+		export function forEach<T extends {[index: string]: any}, U = any>(target: T | Array<U>, fn: (value: any, key?: string|number) => boolean | void): void;
+		export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
+		export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S;
 	}
 	export interface IObjectWithFunctions<T extends Object | void> {
 		[key: string]: (...args: any[]) => T;
@@ -577,6 +598,17 @@ declare namespace goodcore {
 	}
 
 	export namespace Test {
+		export class Env {
+			public static useNative?: boolean;
+			public static isOpera(): boolean;
+			public static isFirefox(): boolean;
+			public static isSafari(): boolean;
+			public static isIE(): boolean;
+			public static isEdge(): boolean;
+			public static isChrome(): boolean;
+			public static isBlink(): boolean;
+			public static hasFastNativeArrays(): boolean;
+		}
 		export function hasWindow(): boolean;
 		export function hasConsole(): boolean;
 		export function isArray(it: any): boolean;

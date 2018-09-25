@@ -41,7 +41,7 @@ export class IndexedTree<T> extends Tree<T> {
 			this.reIndex();
 		}
 	}
-	public get count(): number {
+	public get _count(): number {
 		return this.index.count;
 	}
 	public reIndex(): this {

@@ -1,5 +1,6 @@
 export function hasWindow(): boolean;
 export class Env {
+	public static useNative?: boolean;
 	public static isOpera(): boolean;
 	public static isFirefox(): boolean;
 	public static isSafari(): boolean;
