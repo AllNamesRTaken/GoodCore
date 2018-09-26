@@ -6,7 +6,7 @@ should();
 describe("IndexedTree",
 	function () {
 		const asc = (a: Tree<string>, b: Tree<string>) => a.data! < b.data! ? -1 : a.data! > b.data! ? 1 : 0;
-		const desc = (a: Tree<string>, b: Tree<string>) => a.data! < b.data! ? 1 : a.data! > b.data! ? -1 : 0
+		const desc = (a: Tree<string>, b: Tree<string>) => a.data! < b.data! ? 1 : a.data! > b.data! ? -1 : 0;
 		before(function () {
 			this.tree = IndexedTree.fromObject<string>({
 				id: "root",
@@ -32,7 +32,7 @@ describe("IndexedTree",
 			});
 		it("Tree.fromNodeList returns correct tree in case with single root",
 			function () {
-				let nodeList: any[] = [
+				let nodeList = [
 					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
 					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
 					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
@@ -55,11 +55,11 @@ describe("IndexedTree",
 			function () {
 				const tree = new IndexedTree<string>("root");
 				tree.contains("root").should.be.true;
-				let indexer = (node: IndexedTree<string>) => node.id + "foo";
-				tree.indexer = indexer
+				let indexer = (node: IndexedTree<string>) => `${node.id}foo`;
+				tree.indexer = indexer;
 				tree.contains("rootfoo").should.be.true;
 				(tree.indexer === indexer).should.be.true;
-				tree.add("foo","foo", false);
+				tree.add("foo", "foo", false);
 				tree.indexer = indexer;
 				tree.contains("foofoo").should.be.false;
 				tree.reIndex();
@@ -85,7 +85,7 @@ describe("IndexedTree",
 				const tree = this.tree as IndexedTree<string>;
 				tree.contains("c2-2").should.be.true;
 				tree.contains("c2-3").should.be.false;
-				let c1 = new IndexedTree<string>("c1")
+				let c1 = new IndexedTree<string>("c1");
 				tree.contains(c1)!.should.be.true;
 			});
 		it("Select returns a list of matching nodes",
@@ -187,7 +187,7 @@ describe("IndexedTree",
 			function () {
 				const tree = this.tree as IndexedTree<string>;
 				tree._count.should.equal(6);
-				tree.reduce((acc, cur) => acc += "," + cur!.data, "").should.equal(",root,c3,c2,c2-1,c2-2,c1");
+				tree.reduce((acc, cur) => acc += `,${cur!.data}`, "").should.equal(",root,c3,c2,c2-1,c2-2,c1");
 			});
 		it("Reduce without parameters returns node list",
 			function () {

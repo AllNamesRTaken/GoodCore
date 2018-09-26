@@ -26,8 +26,8 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<Li
     shallowCopy(src: List<T> | T[]): List<T>;
     clone(): List<T>;
     remove(v: T): List<T>;
-    removeFirst(fn: (el: T) => boolean): T;
-    removeAt(n: number): T;
+    removeFirst(fn: (el: T) => boolean): T | undefined;
+    removeAt(n: number): T | undefined;
     forEach(fn: (el: T, i: number) => any, startIndex?: number): List<T>;
     forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T>;
     until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): List<T>;

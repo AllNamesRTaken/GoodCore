@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+        "deprecation": true,
         "one-variable-per-declaration": false,
 		"curly": true, 
         "ban-types": false, 
@@ -16,9 +17,7 @@
             "allow-leading-underscore",
 			"allow-trailing-underscore"
         ],
-        "max-classes-per-file": [
-            false
-        ],
+        "max-classes-per-file": {"severity": "off"},
         "no-trailing-whitespace": false,
         "trailing-comma": [
             false
@@ -45,16 +44,19 @@
         "comment-format": [
             false
         ],
-        "max-line-length": [
-            140
-        ],
+        "max-line-length": {"options": 
+            {
+                "limit": 140
+            }, 
+            "severity": "warn"
+        },
         "prefer-const": false,
 		"no-var-keyword": true,
 		"no-sparse-arrays": true,
 		"no-switch-case-fall-through": true,
 		"no-unused-new": true,
-		"no-unsafe-any": true,
-		"restrict-plus-operands": true,
+		"no-unsafe-any": {"severity": "warning"},
+		"restrict-plus-operands": {"severity": "error"},
 		"switch-default": true,
 		"triple-equals": true,
 		"linebreak-style": [true, "CRLF"],
@@ -65,7 +67,7 @@
 		"prefer-method-signature": true,
         "prefer-template": [true, "allow-single-concat"],
         "ordered-imports": [
-            true
+            false
         ],
 		"quotemark": [
 			true,

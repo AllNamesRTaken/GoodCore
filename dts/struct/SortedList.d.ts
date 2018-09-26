@@ -28,8 +28,8 @@ export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>
     copy(src: SortedList<T> | List<T> | T[]): SortedList<T>;
     clone(): SortedList<T>;
     remove(v: T): SortedList<T>;
-    removeAt(n: number): T;
-    removeFirst(fn: (el: T) => boolean): T;
+    removeAt(n: number): T | undefined;
+    removeFirst(fn: (el: T) => boolean): T | undefined;
     forEach(fn: (el: T, i: number) => any, startIndex?: number): SortedList<T>;
     forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
     until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): SortedList<T>;

@@ -12,5 +12,5 @@ export function Poolable<T extends { new(...args: any[]): {} }>(constructor: T):
 		public initPool(pool: Pool<this>): void {
 			this.__pool__ = pool;
 		}
-	}
+	};
 }

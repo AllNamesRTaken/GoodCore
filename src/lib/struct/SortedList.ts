@@ -118,10 +118,10 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 		}
 		return this;
 	}
-	public removeAt(n: number): T {
+	public removeAt(n: number): T | undefined {
 		return this._list.removeAt(n);
 	}
-	public removeFirst(fn: (el: T) => boolean): T {
+	public removeFirst(fn: (el: T) => boolean): T | undefined {
 		return this._list.removeFirst(fn);
 	}
 	public forEach(fn: (el: T, i: number) => any, startIndex: number = 0): this {

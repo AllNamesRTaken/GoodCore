@@ -124,7 +124,7 @@ describe("Dictionary",
 			function () {
 				class Revivable {
 					public value: number;
-					public deserialize(data: any): Revivable {
+					public deserialize(data: number): Revivable {
 						this.value = data + 1;
 						return this;
 					}

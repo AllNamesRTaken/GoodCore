@@ -15,7 +15,7 @@ export function randomString(length: number = 25): string {
 	return result;
 }
 export function randomInt(min: number = 0, max: number = LARGEST_INT): number {
-	return this.randomNumber(min, max) | 0;
+	return randomNumber(min, max) | 0;
 }
 export function randomNumber(min: number = 0, max: number = LARGEST_INT): number {
 	return (Math.random() * (max - min)) + min;
@@ -25,7 +25,7 @@ export function numericArray(length: number, type: MocDataType = MocDataType.Lin
 	switch (type) {
 		case MocDataType.RandomInt:
 			for (let i = 0; i < length; i += 1) {
-				result[i] = this.randomInt(min, max);
+				result[i] = randomInt(min, max);
 			}
 			break;
 		case MocDataType.LinearFloat:
@@ -35,7 +35,7 @@ export function numericArray(length: number, type: MocDataType = MocDataType.Lin
 			break;
 		case MocDataType.RandomFloat:
 			for (let i = 0; i < length; i += 1) {
-				result[i] = this.randomNumber(min, max);
+				result[i] = randomNumber(min, max);
 			}
 			break;
 		default:
@@ -50,7 +50,7 @@ export function stringArray(arrayLength: number, stringLength?: number): string[
 	const result = new Array(arrayLength);
 	let i = -1;
 	while (++i < arrayLength) {
-		result[i] = this.randomString(stringLength);
+		result[i] = randomString(stringLength);
 	}
 	return result;
 }

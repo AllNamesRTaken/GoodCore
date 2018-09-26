@@ -1,7 +1,5 @@
-import { deepCopy, deepCopyInto, mapInto, slice, deserialize } from "../Arr";
-import { position } from "../Dom";
-import { setProperties } from "../Obj";
-import { isFunction, isNotUndefined } from "../Test";
+import { deepCopy, slice, deserialize } from "../Arr";
+import { isFunction } from "../Test";
 import { List } from "./List";
 
 export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable<Stack<T>> {
@@ -95,7 +93,7 @@ export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, 
 			--this._pos;
 		}
 	}
-	public toJSON(): any {
+	public toJSON(): T[] {
 		return slice(this.values, 0, this._pos);
 	}
 	public serialize(): T[] {

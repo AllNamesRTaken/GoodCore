@@ -25,7 +25,12 @@
 			"es6",
             "es2015.promise",
 			"scripthost"
-        ]
+		],
+		"plugins": [
+			{
+				"name": "tslint-language-service"
+			}
+		]
     },
 	"include": [
 		"./src/**/*.ts",

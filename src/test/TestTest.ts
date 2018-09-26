@@ -27,7 +27,7 @@ describe("Test",
 			});
 		it("hasWindow returns true when window is available",
 			function () {
-				Global.window = this.win;
+				Global.window = this.win as Window;
 				Test.hasWindow().should.be.true;
 			});
 		it("hasConsole returns true when window is available",
@@ -46,11 +46,12 @@ describe("Test",
 			});
 		it("isObject identifies Objects correctly",
 			function () {
-				const obj1 = {}, obj2 = [], obj3 = new class{}(), obj4 = new Number(2), obj5 = new String("foo");
 				Test.isObject({}).should.be.true;
 				Test.isObject([]).should.be.true;
-				Test.isObject(new class{}()).should.be.true;
+				Test.isObject(new class {}()).should.be.true;
+				// tslint:disable-next-line:no-construct
 				Test.isObject(new Number(2)).should.be.true;
+				// tslint:disable-next-line:no-construct
 				Test.isObject(new String("foo")).should.be.true;
 				Test.isObject(undefined).should.be.false;
 				Test.isObject(null).should.be.false;
@@ -159,6 +160,18 @@ describe("Test",
 				Test.isNotNullOrUndefined(0).should.be.true;
 				Test.isNotNullOrUndefined(null).should.be.false;
 				Test.isNotNullOrUndefined(undefined).should.be.false;
+			});
+		it("IsNull is true if any arg is null",
+			function () {
+				Test.isNull(0).should.be.false;
+				Test.isNull(null).should.be.true;
+				Test.isNull(undefined).should.be.false;
+			});
+		it("IsNotNull is true if no arg is null",
+			function () {
+				Test.isNotNull(0).should.be.true;
+				Test.isNotNull(null).should.be.false;
+				Test.isNotNull(undefined).should.be.true;
 			});
 		it("IsUndefined is true if any arg is undefined",
 			function () {

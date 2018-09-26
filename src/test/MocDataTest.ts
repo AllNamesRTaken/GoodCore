@@ -1,5 +1,4 @@
 import {should} from "chai";
-import {expect} from "chai";
 import * as MocData from "../lib/MocData";
 import * as Test from "../lib/Test";
 should();
@@ -7,7 +6,7 @@ should();
 describe("MocData",
 	function() {
 		it("NumericArray Generates linear and non linead int and float arrays",
-			function(){
+			function() {
 				const base = MocData.numericArray(1);
 				base.length.should.equal(1);
 				(typeof(base[0])).should.equal("number");

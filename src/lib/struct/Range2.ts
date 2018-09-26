@@ -1,7 +1,5 @@
-import * as Calc from "../Calc";
 import { IRange2 } from "./IRange2";
 import { IVec2 } from "./IVec2";
-import { Rect } from "./Rect";
 import { Vec2 } from "./Vec2";
 
 export class Range2 implements IRange2 {

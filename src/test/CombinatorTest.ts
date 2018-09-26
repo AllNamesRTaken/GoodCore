@@ -5,7 +5,7 @@ should();
 describe("Combinators",
 	function() {
 		it("before acts before",
-			function(){
+			function() {
 				class Person {
 					public anxiety: number = 0;
 					@before(function() { 
@@ -22,7 +22,7 @@ describe("Combinators",
 			});
 
 		it("after acts after",
-			function(){
+			function() {
 				class Person {
 					public anxiety: number = 0;
 					@after(function(name: string) { 
@@ -39,7 +39,7 @@ describe("Combinators",
 				sam.anxiety.should.equal(2);
 			});
 		it("around acts around",
-			function(){
+			function() {
 				class Person {
 					public anxiety: number = 0;
 					@around(function(callback) { 
@@ -57,7 +57,7 @@ describe("Combinators",
 				sam.anxiety.should.equal(3);
 			});
 		it("provided acts if provided",
-			function(){
+			function() {
 				class Person {
 					public anxiety: number = 0;
 					@provided(function(name: string) { 
@@ -74,7 +74,7 @@ describe("Combinators",
 				sam.anxiety.should.equal(1);
 			});
 		it("combination acts from outer to inner",
-			function(){
+			function() {
 				class Person {
 					public anxiety: number = 0;
 					@provided(function() { 

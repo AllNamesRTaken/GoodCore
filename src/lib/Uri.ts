@@ -8,7 +8,7 @@ export class Uri {
 	public protocol = "";
 	public origin = "";
 	public full = "";
-	public args: any = {};
+	public args: Indexable<any> = {};
 
 	constructor() {
 		this.init();

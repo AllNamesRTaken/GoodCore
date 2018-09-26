@@ -33,20 +33,20 @@ interface IInitable<T> {
 interface IBasicList<T> {
 	[Symbol.iterator](): IterableIterator<T>;
 	next(value?: any): IteratorResult<T>;
-	values: Array<T>;
+	values: T[];
 	get(pos: number): T;
 	count: number;
 	clear(): IBasicList<T>;
 	add(v: T): IBasicList<T> | undefined;
 	pop(): T | undefined;
 	shift(): T | undefined;
-	copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
+	copy(src: IBasicList<T> | T[]): IBasicList<T>;
 	clone(): IBasicList<T>;	
 	truncate(size?: number): IBasicList<T>
 	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
 	remove(v: T): IBasicList<T>;
-	removeFirst(fn: (el: T) => boolean): T;
-	removeAt(n: number): T;
+	removeFirst(fn: (el: T) => boolean): T | undefined;
+	removeAt(n: number): T | undefined;
 	forEach(fn: (el: T, i?: number) => any, startIndex?: number): IBasicList<T>;
 	forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
 	until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): IBasicList<T>;
@@ -62,7 +62,7 @@ interface IBasicList<T> {
 	some(fn: (el: T) => boolean): boolean
 	all(fn: (el: T) => boolean): boolean
 	select(fn: (el: T) => boolean): IBasicList<T>;
-	selectInto(src: IBasicList<T> | Array<T>, fn: (el: T) => boolean): IBasicList<T>;
+	selectInto(src: IBasicList<T> | T[], fn: (el: T) => boolean): IBasicList<T>;
 	head(count?: number): IBasicList<T>;
 	tail(count?: number): IBasicList<T>;
 	map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
@@ -84,9 +84,9 @@ interface IList<T> extends IBasicList<T> {
 	set(pos: number, value: T): IList<T>;  
 	push(v: T): number;
 	splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
-	concat(v: Array<T> | IList<T>): IList<T>;
-	append(v: Array<T> | IList<T>): void;
-	shallowCopy(src: IList<T> | Array<T>): IList<T>;
+	concat(v: T[] | IList<T>): IList<T>;
+	append(v: T[] | IList<T>): void;
+	shallowCopy(src: IList<T> | T[]): IList<T>;
 	reverse(): IList<T>;
 	orderBy(fn: (a: T, b: T) => number): IList<T>;
 	subtract(b: IList<T>): IList<T>;
@@ -242,8 +242,8 @@ declare namespace goodcore {
 		shallowCopy(src: List<T> | T[]): List<T>;
 		clone(): List<T>;
 		remove(v: T): List<T>;
-		removeFirst(fn: (el: T) => boolean): T;
-		removeAt(n: number): T;
+		removeFirst(fn: (el: T) => boolean): T | undefined;
+		removeAt(n: number): T | undefined;
 		forEach(fn: (el: T, i: number) => any, startIndex?: number): List<T>;
 		forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): List<T>;
 		until(fnOrTest: (el: T, i: number) => void, startIndex?: number): List<T>;
@@ -312,8 +312,8 @@ declare namespace goodcore {
 		fill(size: number, populator: ((i: number) => T) | T): List<T>;
 		clone(): SortedList<T>;
 		remove(v: T): SortedList<T>;
-		removeAt(n: number): T;
-		removeFirst(fn: (el: T) => boolean): T;
+		removeAt(n: number): T | undefined;
+		removeFirst(fn: (el: T) => boolean): T | undefined;
 		forEach(fn: (el: T, i: number) => any, startIndex?: number): SortedList<T>;
 		forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): SortedList<T>;
 		until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): SortedList<T>;
@@ -422,6 +422,10 @@ declare namespace goodcore {
 		protected create<S = T>(...args: any[]): Tree<S>;
 		protected markAsDirty(): void;
 		public reCalculateSize(): this;
+		public aggregate<S = any>(fn: (cur: this, i: number, collected: List<S>, isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
+		/**
+		 * @deprecated Since version 1.9.2. Will be deleted in version 2.0. Use aggregate instead.
+		 */
 		public collect<S = any>(fn: (cur: this, i: number, collected: List<S>, isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
 		public init(obj: Partial<Tree<T>>, mapping?: any): this;
 		public insertAt(pos: number, data: T, id?: string | number): void;
@@ -513,12 +517,12 @@ declare namespace goodcore {
 		export function slice<T>(src: T[], from?: number, count?: number): T[];
 		export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void
 		export function append<T>(arr: T[], values: T[]): void;
-		export function removeAt(arr: any[], index: number): any;
+		export function removeAt<T>(arr: T[], index: number): T | undefined;
 		export function indexOfElement(src: any[], el: any): number;
 		export function remove(arr: any[], el: any): void;
 		export function indexOf(src: any[], fn: (el: any) => boolean): number;
 		export function find<T>(src: T[], fn: (el: any) => boolean): T | undefined;
-		export function removeOneByFn(arr: any[], fn: (el: any) => boolean): void;
+		export function removeOneByFn<T>(arr: T[], fn: (el: T) => boolean): void;
 		export function shallowCopy<T>(src: T[]): T[];
 		export function shallowCopyInto<T>(src: T[], target: T[]): void;
 		export function shallowFill<T>(src: T[], target: T[], at?: number): void;
@@ -623,6 +627,8 @@ declare namespace goodcore {
 		export function isNotNullOrUndefined(arg: any): boolean;
 		export function areUndefined(...args: any[]): boolean;
 		export function areNotUndefined(...args: any[]): boolean;
+		export function isNull(arg: any): boolean;
+		export function isNotNull(arg: any): boolean;
 		export function isUndefined(arg: any): boolean;
 		export function isNotUndefined(arg: any): boolean;
 	}

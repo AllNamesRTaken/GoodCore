@@ -3,14 +3,14 @@ import { shallowCopy, create, insertAt, concat, forEach, append, deepCopy, deepC
 	reverseUntil, some, all, reverse, indexOf, filterInto, slice, splice, filter, 
 	mapInto, reduce, reduceUntil, reverseReduce, reverseReduceUntil, deserialize } from "../Arr";
 import { clone, equals, setProperties, wipe } from "../Obj";
-import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow } from "../Test";
+import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow, isNotNull } from "../Test";
 
 if (hasWindow() && !(window as any).Symbol) {
 	(window as any).Symbol = { iterator: "iterator" };
 }
 export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
 	private _array: T[] = [];
-	private _index: {[key: string]: T} | null = Object.create(null);
+	private _index: {[key: string]: T} | null = Object.create(null) as Indexable<T>;
 	private _indexer: ((el: T) => any) | null = null;
 	private _pointer: number = 0;
 
@@ -165,9 +165,9 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 			});
 		}
 	}
-	private unindexEl(el: T): void {
-		if (this._indexer !== null) {
-			delete this._index![this._indexer!(el)];
+	private unindexEl(el: T | undefined): void {
+		if (isNotUndefined(el) && isNotNull(this._indexer)) {
+			delete this._index![this._indexer!(el!)];
 		}
 	}
 	public append(v: T[] | this): this {
@@ -202,12 +202,12 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		this.unindexEl(v);
 		return this;
 	}
-	public removeFirst(fn: (el: T) => boolean): T {
+	public removeFirst(fn: (el: T) => boolean): T | undefined {
 		let result = this.removeAt(this.indexOf(fn));
 		this.unindexEl(result);
 		return result;
 	}
-	public removeAt(n: number): T {
+	public removeAt(n: number): T | undefined {
 		let result = removeAt(this._array, n);
 		this.unindexEl(result);
 		return result;
@@ -417,7 +417,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		});
 		return result;
 	}
-	public unzip<U, V>(fn: (el: T) => [U, V] = (el: any) => [el[0], el[1]]): [List<U>, List<V>] {
+	public unzip<U, V>(fn: (el: T) => [U, V] = (el: any) => [(el as [U, V])[0], (el as [U, V])[1]]): [List<U>, List<V>] {
 		let result: [List<U>, List<V>] = [this.create<U>(), this.create<V>()];
 		this.forEach(function (el) {
 			let tuple = fn(el);
@@ -437,11 +437,11 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		} else {
 			while (++i < len) {
 				if (isArray(src[i])) {
-					this._flattenInner(src[i], maxDepth, depth, result);
+					this._flattenInner((src[i] as any[]), maxDepth, depth, result);
 				} else if (src[i] instanceof List) {
-					this._flattenInner(src[i].values, maxDepth, depth, result);
+					this._flattenInner((src[i] as List<any>).values, maxDepth, depth, result);
 				} else {
-					result.push(src[i]);
+					result.push((src[i] as any));
 				}
 			}
 		}

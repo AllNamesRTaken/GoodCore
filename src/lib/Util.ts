@@ -10,7 +10,7 @@ class LoggableCounter {
 	public name = "";
 	private _value = 0;
 	public log() {
-		console.log("Counter " + this.name + ": " + this.toString());
+		console.log(`Counter ${this.name}: ${this.toString()}`);
 	}
 	constructor(name: string = "") {
 		this.name = name;
@@ -23,16 +23,16 @@ class LoggableCounter {
 		this._value = 0;
 		return this;
 	}
-	valueOf(): number {
+	public valueOf(): number {
 		return this._value;
 	}
-	toString(): string {
+	public toString(): string {
 		return this._value.toString();
 	}
 }
 class UtilState {
-	public static _int: {[key: string]: number} = {"0": 0};
-	public static _counter: {[key: string]: LoggableCounter} = {"": new LoggableCounter("")};
+	public static _int: { [key: string]: number } = { 0: 0 };
+	public static _counter: { [key: string]: LoggableCounter } = { "": new LoggableCounter("") };
 }
 
 export function init(win?: Window) {
@@ -137,7 +137,7 @@ export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, 
 	objOrClass: U,
 	fnName: string,
 	proxyFn: (
-		originalFn: (...args: any[]) => S | V, 
+		originalFn: (...args: any[]) => S | V,
 		...args: any[]) => void
 ): void {
 	objOrClass = isNotUndefined(objOrClass.prototype) ? objOrClass.prototype : objOrClass;
@@ -163,14 +163,18 @@ export function toArray<T>(arr: ArrayLike<T>): T[] {
 }
 export const DEFAULT_DURATION = 100;
 export interface IDebounceOptions {
-    leading: boolean;
+	leading: boolean;
 }
 export interface IDebouncedFunction<T> {
-	(...args: any[]): T | Promise<T>
-	resetTimer?: () => void;
+	(...args: any[]): T | Promise<T>;
+	resetTimer?(): void;
 }
-export function debounce<S, T extends (...args: any[])=>S|void>(method: T, duration:number = DEFAULT_DURATION, options?: Partial<IDebounceOptions>): IDebouncedFunction<S> {
-	let timeoutHandle: any = null;
+export function debounce<S, T extends (...args: any[]) => S | void>(
+	method: T,
+	duration: number = DEFAULT_DURATION,
+	options?: Partial<IDebounceOptions>
+): IDebouncedFunction<S> {
+	let timeoutHandle: number | null = null;
 	let leading = isNotUndefined(options) && isNotUndefined(options!.leading);
 	let executed = false;
 	let result: S | Promise<S>;
@@ -183,38 +187,38 @@ export function debounce<S, T extends (...args: any[])=>S|void>(method: T, durat
 		});
 	}
 
-    let wrapper: IDebouncedFunction<S> = function (...args: any[]) {
-        if(timeoutHandle === null) {
-            if (leading) {
+	let wrapper: IDebouncedFunction<S> = function (...args: any[]) {
+		if (timeoutHandle === null) {
+			if (leading) {
 				executed = true;
-                result = method.apply(this, args);
-            }
-        }
-        wrapper.resetTimer!()
+				result = method.apply(this, args);
+			}
+		}
+		wrapper.resetTimer!();
 
-        timeoutHandle = setTimeout(() => {
+		timeoutHandle = setTimeout(() => {
 			timeoutHandle = null;
-            if (!executed) {
+			if (!executed) {
 				let value: Promise<S> | S = method.apply(this, args);
-				if ( isNotNullOrUndefined(value) && (value as Promise<S>).hasOwnProperty("then") ) {
-					(value as Promise<S>).then( (v) => {
+				if (isNotNullOrUndefined(value) && (value as Promise<S>).hasOwnProperty("then")) {
+					(value as Promise<S>).then((v) => {
 						resolve(v);
-					})
+					});
 				} else {
 					resolve(value);
 				}
 			}
 			executed = false;
-		}, duration)
+		}, duration) as any;
 		return result;
-    }
+	};
 
-    wrapper.resetTimer = function () {
-        if (timeoutHandle) {
-            clearTimeout(timeoutHandle);
+	wrapper.resetTimer = function () {
+		if (timeoutHandle) {
+			clearTimeout(timeoutHandle);
 			timeoutHandle = null;
-        }
-    }
+		}
+	};
 
-    return wrapper
+	return wrapper;
 }

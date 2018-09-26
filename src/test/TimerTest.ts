@@ -5,7 +5,7 @@ should();
 describe("Timer",
 	function() {
 		it("Test Start Stop Time over 100ms",
-			function(done){
+			function(done) {
 				Timer.start();
 				setTimeout(function() {
 					Timer.stop();

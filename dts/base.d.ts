@@ -30,14 +30,14 @@ interface IDeserializable<T> {
   deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IBasicList<T> {
-  values: Array<T>;
+  values: T[];
   get(pos: number): T | undefined;
   count: number;
   clear(): IBasicList<T>;
   add(v: T): IBasicList<T>;
   pop(): T | undefined;
   shift(): T | undefined;
-  copy(src: IBasicList<T> | Array<T>): IBasicList<T>;
+  copy(src: IBasicList<T> | T[]): IBasicList<T>;
   fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>
   clone(): IBasicList<T>;
   remove(v: T): IBasicList<T>;
@@ -58,7 +58,7 @@ interface IBasicList<T> {
   some(fn: (el: T) => boolean): boolean
   all(fn: (el: T) => boolean): boolean
   select(fn: (el: T) => boolean): IBasicList<T>;
-  selectInto(src: IBasicList<T> | Array<T>, fn: (el: T) => boolean): IBasicList<T>;
+  selectInto(src: IBasicList<T> | T[], fn: (el: T) => boolean): IBasicList<T>;
   map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
   mapInto(src: IBasicList<any> | Array<any>, fn: (el: any, i?: number) => any): IBasicList<T>;
   reduce(fn: (acc: any, cur: T) => any, start: any): any;
@@ -73,9 +73,9 @@ interface IList<T> extends IBasicList<T> {
   set(pos: number, value: T): IList<T>;
   push(v: T): number;
   splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
-  concat(v: Array<T> | IList<T>): IList<T>;
-  append(v: Array<T> | IList<T>): void;
-  shallowCopy(src: IList<T> | Array<T>): IList<T>;
+  concat(v: T[] | IList<T>): IList<T>;
+  append(v: T[] | IList<T>): void;
+  shallowCopy(src: IList<T> | T[]): IList<T>;
   reverse(): IList<T>;
   orderBy(fn: (a: T, b: T) => number): IList<T>;
   subtract(b: IList<T>): IList<T>;

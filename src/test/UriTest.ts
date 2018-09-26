@@ -12,7 +12,7 @@ describe("Uri",
 			dom.reconfigure({ url: "http://domain.com/path/page.html?arg1=1&arg2=2" });
 		});
 		it("Uri is populated",
-			function(){
+			function() {
 				let uri = new Uri();
 				Global.window = null;
 				uri.init();

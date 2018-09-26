@@ -151,7 +151,7 @@ describe("Obj",
 			function() {
 				const obj = {a: 0, b: 0};
 				const obj2 = {c: 6, d: 5};
-				Obj.setProperties(obj, this.obj1);
+				Obj.setProperties(obj, this.obj1 as any);
 				obj.should.deep.equal({a: 1, b: {c: 2}});
 				obj.b.should.equal(this.obj1.b);
 				Obj.setProperties(obj, obj2, {c: "a", d: "b"});
@@ -173,10 +173,10 @@ describe("Obj",
 		it("forEach loops over all keys",
 			function() {
 				const obj = {a: 1, b: "2", c: false, d:"never this"};
-				let result:any = {}
+				let result: Indexable<any> = {};
 				Obj.forEach(obj, (value: any, key: string) => {
 					result[key] = value;
-					if(value === false) return false;
+					if (value === false) { return false; }
 				});
 				result.a.should.equal(obj.a);
 				result.b.should.equal(obj.b);
@@ -187,9 +187,9 @@ describe("Obj",
 		it("forEach handles arrays",
 			function() {
 				const obj = [10, 20, 30, null];
-				let result:any = {}
+				let result: any = {};
 				Obj.forEach(obj, (value: any, key: string|number) => {
-					if(value === null) return false;
+					if (value === null) { return false; }
 					result[key] = value;
 				});
 				result["0"].should.equal(10);
@@ -201,13 +201,13 @@ describe("Obj",
 		it("Transform returns object with correct prototype and properties",
 			function() {
 				class Iter {
-					a = 1; 
-					b = "2";
-					c = "string";
+					public a = 1; 
+					public b = "2";
+					public c = "string";
 				}
 				const iteratee = new Iter();
-				let result = Obj.transform(iteratee, (result: any, value: any, key: string) => {
-					result[key] = !isNaN(parseInt(value)) ? parseInt(value) : value;
+				let result = Obj.transform<Indexable<any>>(iteratee, (result: any, value: any, key: string) => {
+					result[key] = !isNaN(parseInt(value, 10)) ? parseInt(value, 10) : value;
 				});
 				result.a.should.equal(1);
 				result.b.should.equal(2);
@@ -215,7 +215,7 @@ describe("Obj",
 				Obj.isSameClass(result, iteratee).should.be.true;
 
 				let result2 = Obj.transform(iteratee, (result: any, value: any, key: string) => {
-					result[key] = !isNaN(parseInt(value)) ? parseInt(value) : value;
+					result[key] = !isNaN(parseInt(value, 10)) ? parseInt(value, 10) : value;
 				}, {});
 				result2.a.should.equal(1);
 				result2.b.should.equal(2);
@@ -235,8 +235,8 @@ describe("Obj",
 		it("Difference returns object with correct prototype",
 			function() {
 				class Iter {
-					a = 1; 
-					b = "2";
+					public a = 1; 
+					public b = "2";
 				}
 				const iteratee = new Iter();
 				const base = {a:4, b: "2", c: false};

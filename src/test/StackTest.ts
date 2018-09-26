@@ -112,7 +112,7 @@ describe("Stack",
 			});
 		it("serialize works like a typed toJSON",
 			function () {
-				const stack = new Stack();
+				const stack = new Stack<number>();
 				stack.push(1);
 				stack.push(2);
 				stack.push(3);
@@ -139,7 +139,7 @@ describe("Stack",
 			function () {
 				class Revivable {
 					public foo: number;
-					public deserialize(data: any): Revivable {
+					public deserialize(data: number): Revivable {
 						this.foo = data + 1;
 						return this;
 					}

@@ -6,7 +6,7 @@ should();
 describe("Pool",
 	function() {
 		it("Get gets first free instance",
-			function(){
+			function() {
 				@Poolable
 				class Obj { public bar: number; }
 				const pool = new Pool(Obj as any);
@@ -20,7 +20,7 @@ describe("Pool",
 				third.should.equal(first);
 			});
 		it("Getting more than growthStep increases the pool by growthStep",
-			function(){
+			function() {
 				@Poolable
 				class Obj {}
 				const pool = new Pool(Obj as any, 2);

@@ -7,7 +7,7 @@ should();
 describe("Rect",
 	function() {
 		it("Clone returns a clone",
-			function(){
+			function() {
 				const r1 = new Rect(1, 1, 3, 4);
 				const r2 = r1.clone();
 				let r3 = new Rect();
@@ -31,50 +31,50 @@ describe("Rect",
 				r1.equals(new Rect(0, 0, 0, 0)).should.be.true;
 			});
 		it("Scale scales each dimension by the factors of a vector",
-			function(){
+			function() {
 				const r1 = new Rect(1, 1, 3, 4);
 				const r2 = r1.scale(new Vec2(2, 3), false);
 				r2.start.equals(new Vec2(1, 1)).should.be.true;
 				r2.stop.equals(new Vec2(5, 10)).should.be.true;
 			});
 		it("Scale can keep the center position by default",
-			function(){
+			function() {
 				const r1 = new Rect(1, 1, 3, 4);
 				const r2 = r1.scale(new Vec2(2, 3));
 				r2.start.equals(new Vec2(0, -2)).should.be.true;
 				r2.stop.equals(new Vec2(4, 7)).should.be.true;
 			});
 		it("ToInt floors each vector",
-			function(){
+			function() {
 				const r1 = new Rect(1.1, 1.2, 3.7, 4.8);
 				r1.toInt().equals(new Rect(1, 1, 3, 4)).should.be.true;
 			});
 		it("ToDecimal is decimal",
-			function(){
+			function() {
 				const r1 = new Rect(1, 1, 3, 4);
 				r1.toDecimal();
 				r1.equals(new Rect(1, 1, 3, 4)).should.be.false;
 				r1.toInt().equals(new Rect(1, 1, 3, 4)).should.be.true;
 			});
 		it("Translate moved the rectangle by a vector",
-			function(){
+			function() {
 				const r1 = new Rect(1, 1, 3, 4);
 				r1.translate(new Vec2(2, 3)).equals(new Rect(2, 3, 6, 12)).should.be.true;
 			});
 		it("FromRange returns the correct rect",
-			function(){
+			function() {
 				const r1 = new Range2(1, 1, 3, 4);
 				let rect1 = new Rect().fromRange2(r1);
 				rect1.start.equals(new Vec2(1, 1)).should.be.true;
 				rect1.stop.equals(new Vec2(4, 5)).should.be.true;
 			});
 
-			const r2 = new Range2(1, 1, -3, -4);
-			let rect2 = new Rect().fromRange2(r2, true);
-			rect2.start.equals(new Vec2(1, 1)).should.be.true;
-			rect2.stop.equals(new Vec2(-1, -2)).should.be.true;
+		const r2 = new Range2(1, 1, -3, -4);
+		let rect2 = new Rect().fromRange2(r2, true);
+		rect2.start.equals(new Vec2(1, 1)).should.be.true;
+		rect2.stop.equals(new Vec2(-1, -2)).should.be.true;
 		it("Area return the correct size of the rectangle",
-			function(){
+			function() {
 				const r1 = new Rect(1, 1, 3, 4);
 				r1.area().should.equal(6);
 			});
@@ -91,7 +91,7 @@ describe("Rect",
 				r2.equals(new Rect(1, 1, 3, 4)).should.be.true;
 			});
 		it("Contains is true if another rect is fully contained",
-			function(){
+			function() {
 				const r1 = new Rect(1, 1, 3, 4);
 				const inside = new Rect(1, 1, 3, 3);
 				const partially = new Rect(1, 1, 3, 5);
@@ -99,7 +99,7 @@ describe("Rect",
 				r1.contains(partially).should.be.false;
 			});
 		it("Intersect is true if another rect is partially contained",
-			function(){
+			function() {
 				const r1 = new Rect(1, 1, 3, 4);
 				const inside = new Rect(1, 1, 3, 3);
 				const partially = new Rect(1, 1, 3, 5);
@@ -109,14 +109,14 @@ describe("Rect",
 				r1.intersect(outside).should.be.false;
 			});
 		it("isZero checks if both vectors are zero",
-		function(){
+		function() {
 			const r1 = new Rect(0, 0, 3, 4);
 			r1.isZero.should.be.false;
 			const r2 = new Rect(0, 0, 0, 0);
 			r2.isZero.should.be.true;
 		});
 		it("Zero zeroes both vectors",
-		function(){
+		function() {
 			const r1 = new Rect(1, 1, 3, 4);
 			r1.zero();
 			r1.isZero.should.be.true;

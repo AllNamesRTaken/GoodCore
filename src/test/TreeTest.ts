@@ -1,6 +1,6 @@
 import { should } from "chai";
 import { Tree } from "../lib/struct/Tree";
-import { isNull } from "util";
+import { isNull } from "../lib/Test";
 should();
 
 describe("Tree",
@@ -27,17 +27,17 @@ describe("Tree",
 				tree.size.should.equal(6);
 				tree.leafCount.should.equal(4);
 			});
-		it("Collect does aggregate values",
+		it("Aggregate does aggregate values",
 			function () {
 				const tree = this.tree as Tree<string>;
-				let result = tree.collect((cur, i, collected) => {
+				let result = tree.aggregate<string>((cur, i, collected) => {
 					return [cur.data, ...collected.values].join(",");
 				});
 				result.should.equal("root,c1,c2,c2-1,c2-2,c3");
 			});
 		it("Tree.fromNodeList returns correct tree in case with single root",
 			function () {
-				let nodeList: any[] = [
+				let nodeList = [
 					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
 					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
 					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
@@ -54,7 +54,7 @@ describe("Tree",
 			});
 		it("Tree.fromNodeList returns correct tree in case with single root and duplicate IDs",
 			function () {
-				let nodeList: any[] = [
+				let nodeList = [
 					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
 					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
 					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
@@ -73,7 +73,7 @@ describe("Tree",
 			});
 		it("Tree.fromNodeList returns correct tree in case with multiple roots",
 			function () {
-				let nodeList: any[] = [
+				let nodeList = [
 					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
 					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
 					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
@@ -105,13 +105,13 @@ describe("Tree",
 		it("ForEach loops over all nodes and passes index in children",
 			function () {
 				const tree = this.tree as Tree<string>;
-				let iList: number[] = []
-				let dList: string[] = []
+				let iList: number[] = [];
+				let dList: string[] = [];
 				tree.forEach((el, i) => {
 					iList.push(i);
 					dList.push(el.data!);
 				});
-				iList.should.deep.equal([0,0,1,0,1,2]);
+				iList.should.deep.equal([0, 0, 1, 0, 1, 2]);
 				dList.should.deep.equal(["root", "c1", "c2", "c2-1", "c2-2", "c3"]);
 			});
 		it("Find finds the correct node",
@@ -211,7 +211,7 @@ describe("Tree",
 		it("Reduce performs depth first reduction",
 			function () {
 				const tree = this.tree as Tree<string>;
-				tree.reduce((acc, cur) => acc += "," + cur!.data, "").should.equal(",root,c1,c2,c2-1,c2-2,c3");
+				tree.reduce((acc, cur) => acc += "," + (cur!.data as string), "").should.equal(",root,c1,c2,c2-1,c2-2,c3");
 			});
 		it("Reduce without parameters returns node list",
 			function () {

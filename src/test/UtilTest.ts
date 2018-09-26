@@ -191,7 +191,7 @@ describe("Util",
 				setTimeout(() => {
 					value.should.equal(1);
 					done();
-				}, 20)
+				}, 20);
 			});
 		it("debounce with leading executes once immediately and returns value",
 			function (done) {
@@ -207,7 +207,7 @@ describe("Util",
 					plus1()!.should.equal(2);
 					value.should.equal(2);
 					done();
-				}, 20)
+				}, 20);
 			});
 		it("debounce without leading returns and resolves promise",
 			function (done) {
@@ -220,7 +220,7 @@ describe("Util",
 				value.should.equal(0);
 				(plus1() as Promise<number>).then((v) => v.should.equal(1));
 				value.should.equal(0);
-				result.then(()=>{
+				result.then(() => {
 					value.should.equal(1);
 					done();
 				});

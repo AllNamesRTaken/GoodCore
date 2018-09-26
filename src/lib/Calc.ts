@@ -28,7 +28,7 @@ export function rotationDeg(rotation: number): number[] {
 }
 export function rotationRad(rotation: number): number[] {
 	const deg = rotation * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;
-	return this.rotationDeg(deg / CalcConst.ROTATION_DEGREE_PRECISION);
+	return rotationDeg(deg / CalcConst.ROTATION_DEGREE_PRECISION);
 }
 export function closestRadianRotation(radian: number): number {
 	let deg = radian * CalcConst.DEGREE_FACTOR * CalcConst.ROTATION_DEGREE_PRECISION | 0;

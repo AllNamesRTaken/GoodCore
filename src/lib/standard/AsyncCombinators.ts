@@ -6,7 +6,7 @@ export let async: {
 	provided?<S>(async_predicate: (...args: any[]) => Promise<boolean>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
 } =
 function async<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
-	const orgFn = descriptor.value;
+	const orgFn = descriptor.value as Function;
 	descriptor.value = function(...args: any[]): Promise<any> {
 		let result = new Promise<any>((resolve, reject) => {
 			let value: any;
@@ -24,7 +24,7 @@ function async<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor
 
 async.before = function<S>(decoration: (name: string, ...args: any[]) => Promise<any>) {
 	return function(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
-		const orgFn = descriptor.value;
+		const orgFn = descriptor.value as Function;
 
 		descriptor.value = function(...args: any[]) {
 			let result = new Promise<any>( (resolve, reject) => {
@@ -53,7 +53,7 @@ async.before = function<S>(decoration: (name: string, ...args: any[]) => Promise
 
 async.after = function<S>(decoration: (value: any, reason: any, name: string, ...args: any[]) => Promise<any>) {
 	return function(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
-		const orgFn = descriptor.value;
+		const orgFn = descriptor.value as Function;
 
 		descriptor.value = function(...args: any[]) {
 			let result = new Promise<any>( (resolve, reject) => {
@@ -83,7 +83,7 @@ async.after = function<S>(decoration: (value: any, reason: any, name: string, ..
 
 async.provided = function<S>(async_predicate: (name: string, ...args: any[]) => Promise<boolean>) {
 	return function(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
-		const orgFn = descriptor.value;
+		const orgFn = descriptor.value as Function;
 
 		descriptor.value = function(...args: any[]) {
 			let result = new Promise<any>( (resolve, reject) => {

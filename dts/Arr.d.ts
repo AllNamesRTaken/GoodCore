@@ -6,12 +6,12 @@
     export function slice<T>(src: T[], from?: number, count?: number): T[];
     export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void;
     export function append<T>(arr: T[], values: T[]): void;
-    export function removeAt(arr: any[], index: number): any;
+    export function removeAt<T>(arr: T[], index: number): T | undefined;
     export function indexOfElement(src: any[], el: any): number;
     export function remove(arr: any[], el: any): void;
     export function indexOf(src: any[], fn: (el: any) => boolean): number;
     export function find<T>(src: T[], fn: (el: any) => boolean): T | undefined;
-    export function removeOneByFn(arr: any[], fn: (el: any) => boolean): void;
+    export function removeOneByFn<T>(arr: T[], fn: (el: T) => boolean): void;
     export function shallowCopy<T>(src: T[]): T[];
     export function shallowCopyInto<T>(src: T[], target: T[]): void;
     export function shallowFill<T>(src: T[], target: T[], at?: number): void;

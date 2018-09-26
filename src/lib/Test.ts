@@ -9,7 +9,7 @@ export class Env {
 	public static useNative?: boolean = undefined;
 	@once
 	public static isNode(): boolean {
-		return !hasWindow() || typeof module !== 'undefined' && module.exports !== undefined;
+		return !hasWindow() || typeof module !== "undefined" && module.exports !== undefined;
 	}
 	@once
 	public static isOpera(): boolean {
@@ -34,7 +34,9 @@ export class Env {
 	@once
 	public static isChrome(): boolean {
 		return hasWindow() 
-			&& ((/google inc/.test(Global.window!.navigator.vendor.toLowerCase()) ? Global.window!.navigator.userAgent.toLowerCase().match(/(?:chrome|crios)\/(\d+)/) : null) !== null) 
+			&& ((/google inc/.test(Global.window!.navigator.vendor.toLowerCase()) ? 
+			Global.window!.navigator.userAgent.toLowerCase().match(/(?:chrome|crios)\/(\d+)/) : 
+			null) !== null) 
 			&& !this.isOpera();
 	}
 	@once
@@ -61,19 +63,19 @@ export function isArray(it: any): boolean {
 	return Array.isArray ? Array.isArray(it) : Object.prototype.toString.call(it) === "[object Array]";
 }
 export function isElement(target: any): boolean {
-	return target !== undefined && target !== null && target.nodeType === 1 ? true : false;
+	return target !== undefined && target !== null && (target as Element).nodeType === 1 ? true : false;
 }
 export function isFunction(it: any): boolean {
 	return Object.prototype.toString.call(it) === "[object Function]";
 }
 export function isNumber(x: any): boolean {
-	return x === + x;
+	return x === + (x as number);
 }
 export function isInt(x: any): boolean {
 	return isNumber(x) && ((x as number) === ((x as number) | 0));
 }
 export function isString(x: any): boolean {
-	return isNotNullOrUndefined(x) && x.constructor === String;
+	return isNotNullOrUndefined(x) && (x as string).constructor === String;
 }
 export function areNullOrUndefined(...args: any[]): boolean {
 	const len = args.length;
@@ -88,6 +90,12 @@ export function areNullOrUndefined(...args: any[]): boolean {
 }
 export function areNotNullOrUndefined(...args: any[]): boolean {
 	return !areNullOrUndefined(...args);
+}
+export function isNull(arg: any): boolean {
+	return arg === null;
+}
+export function isNotNull(arg: any): boolean {
+	return arg !== null;
 }
 export function isNullOrUndefined(arg: any): boolean {
 	return arg === undefined || arg === null;

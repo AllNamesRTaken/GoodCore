@@ -1,14 +1,14 @@
 import { forEach } from "../Arr";
 import { clone, setProperties, wipe } from "../Obj";
-import { isFunction, isNotUndefined } from "../Test";
+import { isFunction, isNotUndefined, isNotNullOrUndefined } from "../Test";
 
 export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable<Dictionary<T>> {
-	private _lookup: any;
-	private _list: Array<T>;
+	private _lookup: {[key: string]: T};
+	private _list: T[];
 	private _isDirty: boolean;
 
 	constructor() {
-		this._lookup = Object.create(null);
+		this._lookup = Object.create(null) as {[key: string]: T};
 		this._list = new Array<T>();
 		this._isDirty = false;
 	}
@@ -90,15 +90,17 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		return this._lookup;
 	}
 	public serialize(): IObject {
-		let obj = Object.create(null);
+		let obj = Object.create(null) as Indexable<T>;
 		forEach(this.keys, (key) => {
-			let v = this.get(key);
-			obj[key] = isFunction((v as any).serialize) ? (v as any).serialize() : v;
+			let v = this.get(key)! as T;
+			obj[key] = isNotNullOrUndefined(v) && isFunction((v as any).serialize) ? (v as any).serialize() : v;
 		});
 		return obj;
 	}
-	public deserialize(obj: any, ...types: Array<Constructor<any>>): this {
-		let [T, ...passthroughT] = types;
+	public deserialize(obj: Indexable<any>, ...types: Array<Constructor<any>>): this {
+		let T: Constructor<any>;
+		let passthroughT: Array<Constructor<any>>;
+		[T, ...passthroughT] = types;
 		this.clear();
 		if (isNotUndefined(T)) {
 			if (isNotUndefined(T.prototype.deserialize)) {
@@ -107,7 +109,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 				}
 			} else {
 				for (let key of Object.keys(obj)) {
-					let newT = new T();
+					let newT = new T() as T;
 					setProperties(newT, obj[key]);
 					this.set(key, newT);
 				}

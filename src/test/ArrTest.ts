@@ -41,10 +41,10 @@ describe("Arrays",
 			});
 		it("Append appends two arrays into the first",
 			function() {
-				const copy = Arr.shallowCopy(this.arr1);
-				Arr.append(copy, this.arr2);
-				const len = this.arr1.length + this.arr2.length;
-				copy.length.should.equal(this.arr1.length + this.arr2.length);
+				const copy = Arr.shallowCopy(this.arr1 as number[]);
+				Arr.append(copy, this.arr2 as number[]);
+				const len = (this.arr1 as number[]).length + (this.arr2 as number[]).length;
+				copy.length.should.equal(len);
 				copy.should.deep.equal(this.arr1.concat(this.arr2));
 				let arr = [1];
 				Arr.append(arr, null!);
@@ -55,7 +55,7 @@ describe("Arrays",
 				const copy1 = Arr.deepCopy(this.arr1);
 				const copy2 = Arr.deepCopy(this.arr2);
 				const result = Arr.concat(copy1, copy2);
-				const len = this.arr1.length + this.arr2.length;
+				const len = (this.arr1 as number[]).length + (this.arr2 as number[]).length;
 				result.length.should.equal(len);
 				result.should.deep.equal(this.arr1.concat(this.arr2));
 				copy1.should.deep.equal(this.arr1);
@@ -73,9 +73,9 @@ describe("Arrays",
 			});
 		it("Deepfill works like deepcopy at a position",
 			function() {
-				const copy = Arr.shallowCopy(this.arr1);
-				Arr.deepFill(this.arr2, copy, 2);
-				const len = 2 + this.arr2.length;
+				const copy = Arr.shallowCopy(this.arr1 as number[]);
+				Arr.deepFill(this.arr2 as number[], copy, 2);
+				const len = 2 + (this.arr2 as number[]).length;
 				copy.length.should.equal(len);
 				copy.should.deep.equal([1, 4, 4, 8, 1, 9]);
 				let arr = [1, 2];
@@ -84,33 +84,33 @@ describe("Arrays",
 			});
 		it("IndexOf returns correct index",
 			function() {
-				Arr.indexOf(this.arr1, (el) => el === 7).should.equal(2);
-				Arr.indexOf(this.arr1, (el) => el === 17).should.equal(-1);
+				Arr.indexOf(this.arr1 as number[], (el) => el === 7).should.equal(2);
+				Arr.indexOf(this.arr1 as number[], (el) => el === 17).should.equal(-1);
 				Arr.indexOf(null!, (el) => true).should.equal(-1);
 
 				Test.Env.useNative = false;
 
-				Arr.indexOf(this.arr1, (el) => el === 7).should.equal(2);
-				Arr.indexOf(this.arr1, (el) => el === 17).should.equal(-1);
+				Arr.indexOf(this.arr1 as number[], (el) => el === 7).should.equal(2);
+				Arr.indexOf(this.arr1 as number[], (el) => el === 17).should.equal(-1);
 				Arr.indexOf(null!, (el) => true).should.equal(-1);
 
 				Test.Env.useNative = undefined;
 			});
 		it("find return correct element or undefined",
 			function() {
-				Arr.find(this.arr1, (el) => el === 7)!.should.equal(7);
-				(Arr.find(this.arr1, (el) => el === 77) === undefined).should.be.true;
+				Arr.find(this.arr1 as number[], (el) => el === 7)!.should.equal(7);
+				(Arr.find(this.arr1 as number[], (el) => el === 77) === undefined).should.be.true;
 			});
 		it("Filter returns correct array",
 			function() {
-				const copy = Arr.filter(this.arr1, (el, i) => i > 1);
+				const copy = Arr.filter(this.arr1 as number[], (el, i) => i > 1);
 				copy.should.deep.equal([7, 2]);
 				Arr.filter(null!, (el, i) => true).should.deep.equal([]);
 			});
 		it("FilterInto uses supplied array",
 			function() {
-				const copy = Arr.shallowCopy(this.arr1);
-				Arr.filterInto(this.arr2, copy, (el, i) => i > 1);
+				const copy = Arr.shallowCopy(this.arr1 as number[]);
+				Arr.filterInto(this.arr2 as number[], copy, (el, i) => i > 1);
 				copy.should.deep.equal([1, 9]);
 				Arr.filterInto(null!, copy, (el, i) => i > 1);
 				copy.should.deep.equal([]);
@@ -149,20 +149,20 @@ describe("Arrays",
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
 				Arr.reverseForEach(this.arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); });
-				arrEl.should.deep.equal(Arr.reverse(Arr.shallowCopy(this.arr1)));
+				arrEl.should.deep.equal(Arr.reverse(Arr.shallowCopy(this.arr1 as number[])));
 				arri.should.deep.equal([3, 2, 1, 0]);
 				Arr.reverseForEach(null! as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				arri.should.deep.equal([3, 2, 1, 0]);
 			});
 		it("IndexOfElement returns correct index",
 			function() {
-				Arr.indexOfElement(this.arr1, 7).should.equal(2);
-				Arr.indexOfElement(this.arr1, 17).should.equal(-1);
+				Arr.indexOfElement(this.arr1 as number[], 7).should.equal(2);
+				Arr.indexOfElement(this.arr1 as number[], 17).should.equal(-1);
 				Arr.indexOfElement(null!, 17).should.equal(-1);
 
 				Test.Env.useNative = false;
-				Arr.indexOfElement(this.arr1, 7).should.equal(2);
-				Arr.indexOfElement(this.arr1, 17).should.equal(-1);
+				Arr.indexOfElement(this.arr1 as number[], 7).should.equal(2);
+				Arr.indexOfElement(this.arr1 as number[], 17).should.equal(-1);
 				Arr.indexOfElement(null!, 17).should.equal(-1);
 				Test.Env.useNative = undefined;
 			});
@@ -200,7 +200,7 @@ describe("Arrays",
 			});
 		it("ReduceUntil works with from and to",
 		function() {
-			Arr.reduceUntil([9,2,3,7,5,6] as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0, 1, 4).should.equal(5);
+			Arr.reduceUntil([9, 2, 3, 7, 5, 6] as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0, 1, 4).should.equal(5);
 		});
 		it("ReverseReduce works on numbers",
 			function() {
@@ -215,14 +215,14 @@ describe("Arrays",
 		it("RemoveAt removes correct item",
 			function() {
 				const arr = [1, 2, 3, 4];
-				Arr.removeAt(arr, 2).should.equal(3);
+				Arr.removeAt(arr, 2)!.should.equal(3);
 				arr.should.deep.equal([1, 2, 4]);
 				(Arr.removeAt(null!, 2) === undefined).should.be.true;
 
 				Test.Env.useNative = false;
 
 				const arr2 = [1, 2, 3, 4];
-				Arr.removeAt(arr2, 2).should.equal(3);
+				Arr.removeAt(arr2, 2)!.should.equal(3);
 				arr2.should.deep.equal([1, 2, 4]);
 				(Arr.removeAt(null!, 2) === undefined).should.be.true;
 
@@ -476,8 +476,8 @@ describe("Arrays",
 		});
 		it("Zip zips 2 arrays",
 		function() {
-			Arr.zip([1,2,3], ["a", "b", "c"]).should.deep.equal([[1, "a"], [2, "b"], [3, "c"]]);
-			Arr.zip<number, string, string>([1,2,3], ["a", "b", "c"], (a, b, i) => b!.repeat(a!) )
+			Arr.zip([1, 2, 3], ["a", "b", "c"]).should.deep.equal([[1, "a"], [2, "b"], [3, "c"]]);
+			Arr.zip<number, string, string>([1, 2, 3], ["a", "b", "c"], (a, b, i) => b!.repeat(a!) )
 				.should.deep.equal([ "a", "bb", "ccc" ]);
 		});
 		it("Unzip unzips 1 array to a tuple of 2 arrays",
@@ -486,11 +486,11 @@ describe("Arrays",
 			Arr.unzip<number, string, string>(["f", "fo", "foo"], (u, i, out) => [u.length, u])
 				.should.deep.equal([ [1, 2, 3], ["f", "fo", "foo"] ]);
 		});
-		it("Deserialize revives Array<T>",
+		it("Deserialize revives T[]",
 		function () {
 			class Revivable {
 				public foo: number;
-				public deserialize(data: any): Revivable {
+				public deserialize(data: number): Revivable {
 					this.foo = data + 1;
 					return this;
 				}

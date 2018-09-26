@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.19.0",
+  "version": "0.19.2",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "goodcore.bundle.js",
   "module": "index.js",
@@ -91,6 +91,8 @@
     "rimraf": "^2.6.2",
     "source-map-support": "^0.5.9",
     "ts-loader": "^4.5.0",
+    "tslint": "^5.11.0",
+    "tslint-language-service": "^0.9.9",
     "typescript": "^3.0.1",
     "uglify-es": "^3.3.9",
     "webpack": "^4.17.2",

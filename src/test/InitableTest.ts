@@ -5,7 +5,7 @@ should();
 describe("Initable",
 	function() {
 		it("Initable works as function wrapper around anon class",
-			function(){
+			function() {
 				class Person extends Initable(class {
 					public name: string = "";
 					public age: number = 0;
@@ -18,7 +18,7 @@ describe("Initable",
 				sam.age.should.equal(17);
 			});
 		it("Initable works as function wrapper around Object",
-			function(){
+			function() {
 				class Person extends Initable(Object) {
 					public name: string = "";
 					public age: number = 0;
@@ -31,7 +31,7 @@ describe("Initable",
 				sam.age.should.equal(17);
 			});
 		it("Initable works as function wrapper around named class",
-			function(){
+			function() {
 				class Human {
 					public name: string = "";
 					public age: number = 0;
@@ -45,7 +45,7 @@ describe("Initable",
 				sam.age.should.equal(17);
 			});
 		it("Initable works as decorator",
-			function(){
+			function() {
 				@Initable
 				class Person {
 					public name: string = "";

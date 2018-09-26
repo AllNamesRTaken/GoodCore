@@ -9,13 +9,13 @@ describe("Vec2",
 
 		});
 		it("new should create correct sized vec2",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				v1.x.should.equal(2);
 				v1.y.should.equal(3);
 			});
 		it("Add adds correctly",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				const v2 = new Vec2(4, 5);
 				v1.add(v2);
@@ -23,7 +23,7 @@ describe("Vec2",
 				v1.y.should.equal(8);
 			});
 		it("Subtract subtracts correctly",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				const v2 = new Vec2(4, 5);
 				v1.subtract(v2);
@@ -31,7 +31,7 @@ describe("Vec2",
 				v1.y.should.equal(-2);
 			});
 		it("Scale multiplies each factor with the corresponding factor in the scale vector",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				const v2 = new Vec2(4, 5);
 				v1.scale(v2);
@@ -39,14 +39,14 @@ describe("Vec2",
 				v1.y.should.equal(15);
 			});
 		it("Multiply multiplies both factors with a scalar",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				v1.multiply(2);
 				v1.x.should.equal(4);
 				v1.y.should.equal(6);
 			});
 		it("Clone returns an exact clone",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				const v2 = v1.clone();
 				const v3 = new Vec2();
@@ -57,14 +57,14 @@ describe("Vec2",
 				v1.equals(v3).should.be.true;
 			});
 		it("Ceil performs ceiling on both factors",
-			function(){
+			function() {
 				const v1 = new Vec2(2.2, 3.8);
 				v1.ceil();
 				v1.x.should.equal(3);
 				v1.y.should.equal(4);
 			});
 		it("Equal compares 2 vectors",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				const v2 = new Vec2(2, 3);
 				const v3 = new Vec2(1, 1);
@@ -72,7 +72,7 @@ describe("Vec2",
 				v1.equals(v3).should.be.false;
 			});
 		it("Equal compares 2 vectors with Epislon fault tolerance",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				const v2 = new Vec2(2, 3 + Vec2Const.EPSILON);
 				const v3 = new Vec2(2, 3 + 2 * Vec2Const.EPSILON);
@@ -80,24 +80,24 @@ describe("Vec2",
 				v1.almostEquals(v3).should.be.false;
 			});
 		it("Invert inverts both factors",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 4);
 				v1.invert();
 				v1.x.should.equal(-2);
 				v1.y.should.equal(-4);
 			});
 		it("LengthSq = x^2 + y^2",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				v1.lengthSq().should.equal(2 * 2 + 3 * 3);
 			});
 		it("Length = sqrt(x^2 + y^2)",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				v1.length().should.equal(Math.sqrt(2 * 2 + 3 * 3));
 			});
 		it("Set sets each factor to that of another vector",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				const v2 = new Vec2(1, 2);
 				v1.set(v2);
@@ -105,14 +105,14 @@ describe("Vec2",
 				v1.y.should.equal(2);
 			});
 		it("Int makes it to an Int by flooring it",
-			function(){
+			function() {
 				const v1 = new Vec2(2.2, 3.8);
 				v1.toInt();
 				v1.x.should.equal(2);
 				v1.y.should.equal(3);
 			});
 		it("Decimal makes it to a decimal",
-			function(){
+			function() {
 				const v1 = new Vec2(2, 3);
 				v1.toDecimal();
 				((v1.x) | 0).should.not.equal(v1.x);
@@ -122,7 +122,7 @@ describe("Vec2",
 				v1.y.should.equal(3);
 			});
 		it("Relate divides each factor by the corresponding factor in another vector",
-			function(){
+			function() {
 				const v1 = new Vec2(4, 12);
 				const v2 = new Vec2(2, 4);
 				v1.relate(v2);

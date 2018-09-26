@@ -5,7 +5,7 @@ should();
 describe("AsyncCombinators",
 	function() {
 		it("before acts before",
-			function(done){
+			function(done) {
 				class Person {
 					public anxiety: number = 0;
 					@async.before!( function(): Promise<any> { 
@@ -44,7 +44,7 @@ describe("AsyncCombinators",
 				sam.anxiety.should.equal(0);				
 			});
 		it("after acts after",
-			function(done){
+			function(done) {
 				class Person {
 					public anxiety: number = 0;
 					@async.after!( function(value, reason): Promise<any> { 
@@ -81,7 +81,7 @@ describe("AsyncCombinators",
 				});
 			});
 		it("provided acts if provided",
-			function(done){
+			function(done) {
 				class Person {
 					public anxiety: number = 0;
 					@async.provided!(function(): Promise<any> { 

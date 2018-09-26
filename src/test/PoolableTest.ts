@@ -11,11 +11,11 @@ describe("Poolable",
 			function() {
 				@Poolable
 				class PoolableFoo implements IPoolable {
-					__pool__: IPool<IPoolable>;
-					release(): void {
+					public __pool__: IPool<IPoolable>;
+					public release(): void {
 						throw new Error("Method not implemented.");
 					}
-					initPool(pool: IPool<IPoolable>): void {
+					public initPool(pool: IPool<IPoolable>): void {
 						throw new Error("Method not implemented.");
 					}
 					public Foo = "foo";

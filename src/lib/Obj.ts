@@ -9,24 +9,24 @@ export function destroy(obj: any): void {
 	}
 }
 export function wipe(obj: any): void {
-	const keys = Object.keys(obj);
+	const keys = Object.keys(obj as Indexable<any>);
 	let i = -1;
 	const len = keys.length;
 	while (++i < len) {
-		delete obj[keys[i]];
+		delete (obj as Indexable<any>)[keys[i]];
 	}
 }
 export function setNull(obj: any): void {
 	if (obj.constructor.prototype.clear !== undefined) {
 		obj.clear();
 	} else {
-		const keys = Object.keys(obj);
+		const keys = Object.keys(obj as Indexable<any>);
 		let key = null;
 		let i = -1;
 		const len = keys.length;
 		while (++i < len) {
 			key = keys[i];
-			obj[key] = null;
+			(obj as Indexable<any>)[key] = null;
 		}
 	}
 }
@@ -85,18 +85,18 @@ export function isDifferent(a: any, b: any): boolean {
 	return !equals(a, b);
 }
 export function shallowCopy(obj: any): any {
-	const keys = Object.keys(obj);
-	const result: any = {};
+	const keys = Object.keys(obj as any);
+	const result: Indexable<any> = {};
 	let i = -1;
 	const len = keys.length;
 	while (++i < len) {
 		const key = keys[i];
 		result[key] = obj[key];
 	}
-	return result;
+	return result as any;
 }
 export function clone<T>(obj: T): T {
-	let result: any;
+	let result: T;
 	if (!(obj instanceof Object)) {
 		result = obj;
 	} else if (obj.constructor.prototype.clone !== undefined) {
@@ -105,10 +105,10 @@ export function clone<T>(obj: T): T {
 	} else if (isArray(obj)) {
 		//Array
 		let i = -1;
-		const len = (obj as any).length;
-		result = new Array(len);
+		const len: number = (obj as any).length as number;
+		result = new Array(len) as any;
 		while (++i < len) {
-			result[i] = (clone((obj as any)[i]));
+			(result as Indexable<any>)[i] = (clone((obj as any)[i]));
 		}
 	} else if (obj instanceof Date) {
 		return new Date(obj.getTime()) as any;
@@ -123,7 +123,7 @@ export function clone<T>(obj: T): T {
 		const len = keys.length;
 		while (++i < len) {
 			key = keys[i];
-			result[key] = clone((obj as any)[key]);
+			(result as Indexable<any>)[key] = clone((obj as any)[key]);
 		}
 	}
 	return result;
@@ -171,7 +171,7 @@ export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
 	}
 	return target;
 }
-export function mixin(target: any = {}, exclude: any, ...sources: any[]): any {
+export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): any {
 	const
 		result = target,
 		len = sources ? sources.length : 0;
@@ -207,7 +207,7 @@ export function mixin(target: any = {}, exclude: any, ...sources: any[]): any {
 	}
 	return result;
 }
-export function setProperties(target: any, values: any, mapping?: any): void {
+export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>): void {
 	const keys = Object.keys(values);
 	let key: string;
 	let i = -1;
@@ -222,9 +222,12 @@ export function setProperties(target: any, values: any, mapping?: any): void {
 		}
 	}
 }
-export function forEach<T extends {[index: string]: any}, U = any>(target: T | Array<U>, fn: (value: any, key?: string|number) => boolean | void): void {
-	if(isArray(target)) {
-		arrUntil(target as Array<U>, fn);
+export function forEach<T extends {[index: string]: any}, U = any>(
+	target: T | U[], 
+	fn: (value: any, key?: string|number) => boolean | void
+): void {
+	if (isArray(target)) {
+		arrUntil(target as U[], fn);
 	} else {
 		const keys = Object.keys(target);
 		let key: string;
@@ -237,7 +240,11 @@ export function forEach<T extends {[index: string]: any}, U = any>(target: T | A
 		}
 	}
 }
-export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S  {
+export function transform<T extends {[index: string]: any}, S = T, U = any>(
+	target: T | U[], 
+	fn: (result: S, value: any, key: string | number) => boolean | void, 
+	accumulator?: S
+): S  {
 	if (accumulator === undefined) {
 		accumulator = Object.create(target);
 	}

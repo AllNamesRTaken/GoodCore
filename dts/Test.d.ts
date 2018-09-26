@@ -24,5 +24,7 @@ export function isNullOrUndefined(arg: any): boolean;
 export function isNotNullOrUndefined(arg: any): boolean;
 export function areUndefined(...args: any[]): boolean;
 export function areNotUndefined(...args: any[]): boolean;
+export function isNull(arg: any): boolean;
+export function isNotNull(arg: any): boolean;
 export function isUndefined(arg: any): boolean;
 export function isNotUndefined(arg: any): boolean;

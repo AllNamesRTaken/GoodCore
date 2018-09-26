@@ -12,7 +12,7 @@ class DomState {
 	public static _document: Document | undefined = Global.window ? Global.window.document : undefined;
 	public static _el: Element | undefined = Global.window ? Global.window.document.createElement("div") : undefined;
 	public static _parser: DOMParser | undefined = Global.window ? new DOMParser() : undefined;
-	public static _template: HTMLTemplateElement | undefined = Global.window ? Global.window.document.createElement('template') : undefined;
+	public static _template: HTMLTemplateElement | undefined = Global.window ? Global.window.document.createElement("template") : undefined;
 	public static _fragment: DocumentFragment | undefined = Global.window ? Global.window.document.createDocumentFragment() : undefined;
 }
 
@@ -21,9 +21,6 @@ export function init(win: Window) {
 	DomState._window = Global.window;
 	DomState._document = DomState._window.document;
 	DomState._el = DomState._document.createElement("div");
-}
-export function toArray<T>(a: ArrayLike<T>): T[] {
-	return Array.prototype.slice.call(a);
 }
 export function create(html: string, attr?: any): HTMLElement {
 	// tslint:disable-next-line:prefer-const
@@ -61,19 +58,24 @@ export function outerHTML(el: HTMLElement): string {
 	clear(DomState._el!);
 	return result;
 }
-export function setAttr(_el: HTMLElement | String, attr: any) {
+export function setAttr(_el: HTMLElement | String, attr: Indexable<any>) {
 	let el: HTMLElement;
 	if (typeof (_el) === "string") {
 		el = get(_el);
 	} else {
 		el = _el as HTMLElement;
 	}
-	let keys: string[], i: number, k: number, styles: any, styleKeys: string[], style: any;
+	let keys: string[], 
+		i: number, 
+		k: number, 
+		styles: Indexable<Indexable<string | null>>, 
+		styleKeys: string[], 
+		style: Indexable<string | null>;
 	if (attr !== undefined && typeof (attr) === "object") {
 		keys = Object.keys(attr);
 		for (i = 0; i < keys.length; i++) {
 			if (keys[i] === "style") {
-				styles = attr[keys[i]];
+				styles = attr[keys[i]] as Indexable<Indexable<string | null>>;
 				styleKeys = Object.keys(styles);
 				for (k = 0; k < styleKeys.length; k++) {
 					style = styles[styleKeys[k]];
@@ -125,6 +127,9 @@ export function get(id: string): HTMLElement {
 export function find(selector: string): HTMLElement {
 	return DomState._document!.querySelector(selector) as HTMLElement;
 }
+function toArray<T>(arr: ArrayLike<T>): T[] {
+	return Array.prototype.slice.call(arr);
+}
 export function findAll(selector: string, root?: HTMLElement) {
 	return toArray((root || DomState._document!).querySelectorAll(selector));
 }
@@ -143,8 +148,8 @@ export function findParent(root: HTMLElement, selector: string): HTMLElement | n
 	return result;
 }
 export function position(el: HTMLElement, x: number, y: number): void {
-	el.style.top = y + "px";
-	el.style.left = x + "px";
+	el.style.top = `${y}px`;
+	el.style.left = `${x}px`;
 }
 export function is(selector: string, element: HTMLElement): boolean {
 	let result = false;
