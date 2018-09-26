@@ -3,8 +3,8 @@
 import { List } from "./List";
 export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
     public id: string;
-    public parent: Tree<T> | null;
-    public children: List<Tree<T>> | null;
+    public parent: this | null;
+    public children: List<this> | null;
     public data: T | null;
     public virtual: boolean;
     public isDirty: boolean;
@@ -18,7 +18,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 	protected _leafCount: number;
     protected _weight: number;
     
-    root: Tree<T>;
+    root: this;
     static fromObject<T>(obj: any): Tree<T>;
     static fromNodeList<S, T>(nodes: S[], mapcfg?: {
         id?: ((node: S) => string) | string;
@@ -34,21 +34,21 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
  * @deprecated Since version 1.9.2. Will be deleted in version 2.0. Use aggregate instead.
  */
     public collect<S = any>(fn: (cur: this, i: number, collected: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
-    public init(obj: Partial<Tree<T>>, mapping?: any): this;
+    public init(obj: Partial<this>, mapping?: any): this;
     public insertAt(pos: number, data: T, id?: string | number): void;
     public add(data: T | this, id?: string | number): this;
     public remove(): void;
-    public prune(): Tree<T>;
-    public cut(): Tree<T>;
-    public forEach(fn: (el: Tree<T>, i: number) => void, _i?: number): Tree<T>;
+    public prune(): this;
+    public cut(): this;
+    public forEach(fn: (el: this, i: number) => void, _i?: number): this;
     public reduce<S>(fn?: (acc: S, cur: this | null) => S, start?: S): S;
-    public clone(): Tree<T>;
-    public filter(condition: (node: Tree<T>) => boolean): Tree<T>;
-    public select(condition?: (node: Tree<T>) => boolean, acc?: List<Tree<T>>): List<Tree<T>>;
+    public clone(): this;
+    public filter(condition: (node: this) => boolean): this;
+    public select(condition?: (node: this) => boolean, acc?: List<this>): List<this>;
     public find(condition: number | ((node: this) => boolean)): this | null;
     protected _findBySize(pos: number): this | null;
     public depth(): number;
-    public sort(comparer: (a: Tree<T>, b: Tree<T>) => number): Tree<T>;
+    public sort(comparer: (a: this, b: this) => number): this;
     public serialize(): T[];		
     public toJSON(): any;
 }

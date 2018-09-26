@@ -24,5 +24,5 @@ export class IndexedTree<T> extends Tree<T> {
     reIndex(): void;
     clone(): this;
     prune(): this;
-    filter(condition: (node: Tree<T>) => boolean, parent?: Tree<T> | null): this;
+    filter(condition: (node: this) => boolean, parent?: this | null): this;
 }
