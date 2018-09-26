@@ -30,10 +30,10 @@ describe("Tree",
 		it("Aggregate does aggregate values",
 			function () {
 				const tree = this.tree as Tree<string>;
-				let result = tree.aggregate<string>((cur, i, collected) => {
-					return [cur.data, ...collected.values].join(",");
+				let result = tree.aggregate<string | null>((cur, i, collected) => {
+					return isNull(collected) ? cur.data : [cur.data, ...collected!].join(",");
 				});
-				result.should.equal("root,c1,c2,c2-1,c2-2,c3");
+				result!.should.equal("root,c1,c2,c2-1,c2-2,c3");
 			});
 		it("Tree.fromNodeList returns correct tree in case with single root",
 			function () {

@@ -205,10 +205,10 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		return this;
 	}
 	public reCalculateSize(): this {
-		this.aggregate<number[]>((cur, i, collected) => {
-			[cur._size, cur._leafCount] = collected.count === 0 ?
+		this.aggregate<number[]>((cur, i, agg) => {
+			[cur._size, cur._leafCount] = isNull(agg) || agg!.length === 0 ?
 				[cur._size, cur._leafCount] :
-				collected.reduce((acc, cur) => {
+				agg!.reduce((acc, cur) => {
 					return [acc[0] + cur[0], acc[1] + cur[1]];
 				}, [cur.weight, cur.children === null || cur.children.count === 0 ? 1 : 0]);
 			cur.isDirty = false;
@@ -218,17 +218,17 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		return this;
 	}
 	public aggregate<S = any>(
-		fn: (cur: this, i: number, collected: List<S>, isPruned: boolean) => S, 
+		fn: (cur: this, i: number, agg: S[] | null, isPruned: boolean) => S, 
 		prune?: (cur: this, i: number) => boolean, 
 		i: number = 0
 	): S {
 		let isPruned = isNotNullOrUndefined(prune) && prune!(this, i);
 		return fn(this, i,
 			isPruned || this.children === null ?
-				new List<S>() :
+				null :
 				this.children.map<S>(function (el, i) {
 					return el.aggregate(fn, prune, i);
-				}), isPruned);
+				}).values, isPruned);
 	}
 	public reduce<S>(fn?: (acc: S, cur: this | null) => S, start?: S): S {
 		const stack = new Stack<this>();

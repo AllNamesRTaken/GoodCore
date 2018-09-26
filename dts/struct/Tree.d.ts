@@ -16,7 +16,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
     protected _virtual: boolean;
     protected _size: number;
 	protected _leafCount: number;
-    protected _weight;
+    protected _weight: number;
     
     root: Tree<T>;
     static fromObject<T>(obj: any): Tree<T>;
@@ -29,14 +29,14 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
     protected create<S = T>(...args: any[]): Tree<S>;
     protected markAsDirty(): void;
     public reCalculateSize(): this;
-    public aggregate<S = any>(fn: (cur: this, i: number, collected: List<S>, isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
+    public aggregate<S = any>(fn: (cur: this, i: number, agg: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
 /**
  * @deprecated Since version 1.9.2. Will be deleted in version 2.0. Use aggregate instead.
  */
-    public collect<S = any>(fn: (cur: this, i: number, collected: List<S>, isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
+    public collect<S = any>(fn: (cur: this, i: number, collected: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
     public init(obj: Partial<Tree<T>>, mapping?: any): this;
     public insertAt(pos: number, data: T, id?: string | number): void;
-    public add(data: T | Tree<T>, id?: string | number): void;
+    public add(data: T | this, id?: string | number): this;
     public remove(): void;
     public prune(): Tree<T>;
     public cut(): Tree<T>;

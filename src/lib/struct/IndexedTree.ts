@@ -6,23 +6,23 @@ import { List } from "./List";
 import { map } from "../Arr";
 
 export class IndexedTree<T> extends Tree<T> {
-	private _indexer: (node: IndexedTree<T>) => string | number;
-	private _index: Dictionary<IndexedTree<T>> | undefined;
+	private _indexer: (node: this) => string | number;
+	private _index: Dictionary<this> | undefined;
 	constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Dictionary<IndexedTree<T>>) {
 		super(id);
 		this._indexer = indexer ? indexer : (node: IndexedTree<T>) => node.id;
-		this._index = index;
+		this._index = index as any;
 		if (index !== undefined) {
 			this._index!.set(this.id, this);
 		}
 	}
 	public get index(): Dictionary<this> {
 		if (this._index === undefined) {
-			let newIndex = new Dictionary<IndexedTree<T>>();
+			let newIndex = new Dictionary<this>();
 			this.forEach((node) => {
-				if ((node as IndexedTree<T>)._index !== newIndex) {
-					(node as IndexedTree<T>)._index = newIndex;
-					this._index!.set(this._indexer(node as IndexedTree<T>), node as IndexedTree<T>);
+				if ((node)._index !== newIndex) {
+					(node)._index = newIndex;
+					this._index!.set(this._indexer(node as this), node as this);
 				}
 			});
 		}
