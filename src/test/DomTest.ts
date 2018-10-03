@@ -13,6 +13,11 @@ describe("Dom",
 			this.html2 = "<div id=\"foo\"><div id=\"sub1\"></div><div id=\"sub2\"></div></div>";
 			Dom.init(win);
 		});
+		it("Create 'table' creates a table",
+			function() {
+				const el = Dom.create("table");
+				el.tagName.should.equal("TABLE");
+			});
 		it("Create creates dom elements and sets attributes",
 			function() {
 				const el = Dom.create(this.html1, {

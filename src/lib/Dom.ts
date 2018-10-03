@@ -27,7 +27,7 @@ export function create(html: string, attr?: any): HTMLElement {
 	let result: HTMLElement, keys: string[], i: number, k: number, styles: any, styleKeys: string[];
 	let usesTemplate = DomState._template && DomState._template!.content && true;
 	let usesParser = DomState._parser && true;
-	if (/^a-zA-Z$/.test(html)) {
+	if (/^[a-zA-Z]+$/.test(html)) {
 		result = Global.window!.document.createElement(html);
 	} else {
 		if (usesTemplate) {
