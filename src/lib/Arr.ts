@@ -108,7 +108,7 @@ export function append<T>(arr: T[], values: T[]): void {
 }
 export function removeAt<T>(arr: T[], index: number): T | undefined {
 	let result;
-	if (isNotNullOrUndefined(arr)) {
+	if (isNotNullOrUndefined(arr) && index >= 0) {
 		// natives are still slower on node 10.9
 		if (Env.hasFastNativeArrays()) {
 			result = arr.splice(index, 1)[0];

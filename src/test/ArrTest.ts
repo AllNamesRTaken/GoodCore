@@ -225,6 +225,7 @@ describe("Arrays",
 				Arr.removeAt(arr2, 2)!.should.equal(3);
 				arr2.should.deep.equal([1, 2, 4]);
 				(Arr.removeAt(null!, 2) === undefined).should.be.true;
+				(Arr.removeAt([1, 2, 3, 4], -1) === undefined).should.be.true;
 
 				Test.Env.useNative = undefined;
 			});

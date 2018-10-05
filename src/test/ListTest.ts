@@ -2,6 +2,7 @@ import { should } from "chai";
 import * as MocData from "../lib/MocData";
 import { List } from "../lib/struct/List";
 import { Vec2 } from "../lib/struct/Vec2";
+import { isUndefined } from "../lib/Test";
 
 should();
 
@@ -260,6 +261,7 @@ describe("List",
 				list1.removeFirst((el: number) => el === 4)!.should.equal(4);
 				list1.contains(4).should.be.false;
 				((list1 as any)._index[4] === undefined).should.be.true;
+				isUndefined(list1.removeFirst((el: number) => el === -999))!.should.be.true;
 			});
 		it("RemoveAt removes the element at a given position",
 			function () {
@@ -269,6 +271,7 @@ describe("List",
 				list1.removeAt(2)!.should.equal(7);
 				list1.contains(7).should.be.false;
 				((list1 as any)._index[7] === undefined).should.be.true;
+				isUndefined(list1.removeAt(-1))!.should.be.true;
 			});
 		it("Filter returns filtered new list",
 			function () {
