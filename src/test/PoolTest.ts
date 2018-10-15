@@ -9,7 +9,7 @@ describe("Pool",
 			function() {
 				@Poolable
 				class Obj { public bar: number; }
-				const pool = new Pool(Obj as any);
+				const pool = new Pool(Obj);
 				const first = pool.get();
 				first.should.be.instanceOf(Obj);
 				const second = pool.get();
@@ -23,7 +23,7 @@ describe("Pool",
 			function() {
 				@Poolable
 				class Obj {}
-				const pool = new Pool(Obj as any, 2);
+				const pool = new Pool(Obj, 2);
 				pool.size.should.equal(2);
 				pool.available.should.equal(2);
 				const first = pool.get();

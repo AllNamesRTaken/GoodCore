@@ -1,4 +1,4 @@
-export class Pool<T extends IPoolable> implements IPool<IPoolable> {
+export class Pool<T> {
 	private _pool: T[] = [];
 	private _growthStep: number;
 	private _cls: any;
@@ -25,15 +25,15 @@ export class Pool<T extends IPoolable> implements IPool<IPoolable> {
 		this._size += this._growthStep;
 		this._available += this._growthStep;
 	}
-	public get(): T {
+	public get(): T & IPoolable {
 		let result: T;
 		if (this._pool.length === 0) {
 			this.createNewInstances();
 		}
 		result = this._pool.pop()!;
 		--this._available;
-		result.initPool(this);
-		return result;
+		(result as any).initPool(this);
+		return (result as any) as T & IPoolable;
 	}
 	public release(obj: T): void {
 		this._pool.push(obj);
