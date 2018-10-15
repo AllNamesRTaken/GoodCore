@@ -10,3 +10,6 @@ export function debounced<S>(duration: number | undefined, options?: Partial<IDe
     enumerable: boolean | undefined;
     get: () => any;
 };
+export function once<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
+export function deprecated<S>(instead?: string, message?: string): 
+    (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
