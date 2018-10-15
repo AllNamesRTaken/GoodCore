@@ -672,11 +672,11 @@ declare namespace goodcore {
 		provided?<S>(async_predicate: (...args: any[]) => Promise<boolean>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
 	};
 
-	export class Pool<T extends IPoolable> implements IPool<IPoolable> {
+	export class Pool<T> {
 		readonly available: number;
 		readonly size: number;
 		constructor(cls: ICtor<T>, growthStep?: number);
-		get(): T;
+		get(): T && IPoolable;
 		release(obj: T): void;
 	}
 
@@ -722,6 +722,9 @@ declare namespace goodcore {
 			configurable: boolean;
 			enumerable: boolean | undefined;
 			get: () => any;
-		};		
+		};
+		export function once<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
+		export function deprecated<S>(instead?: string, message?: string): 
+    		(target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
 	}
 }

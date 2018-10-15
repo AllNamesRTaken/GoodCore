@@ -1,9 +1,9 @@
 /// <reference path="../base.d.ts" />
 
-export class Pool<T extends IPoolable> implements IPool<IPoolable> {
+export class Pool<T>{
     readonly available: number;
     readonly size: number;
     constructor(cls: ICtor<T>, growthStep?: number);
-    get(): T;
+    get(): T && IPoolable;
     release(obj: T): void;
 }
