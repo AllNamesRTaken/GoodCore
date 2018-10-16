@@ -1,5 +1,4 @@
-import { areNotNullOrUndefined, isArray, isFunction, isNullOrUndefined, isObject } from "./Test";
-import { until as arrUntil } from "./Arr";
+import { areNotNullOrUndefined, isArray, isFunction, isObject } from "./Test";
 
 export function destroy(obj: any): void {
 	if (obj.constructor.prototype.destroy !== undefined) {
@@ -227,7 +226,10 @@ export function forEach<T extends {[index: string]: any}, U = any>(
 	fn: (value: any, key?: string|number) => boolean | void
 ): void {
 	if (isArray(target)) {
-		arrUntil(target as U[], fn);
+		let i = - 1;
+		const len = target.length;
+		while (++i < len && false !== fn((target as U[])[i], i)) {
+		}
 	} else {
 		const keys = Object.keys(target);
 		let key: string;

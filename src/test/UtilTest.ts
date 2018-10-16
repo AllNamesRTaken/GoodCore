@@ -86,14 +86,20 @@ describe("Util",
 				}
 				let foo = new Foo();
 				foo.bar(1);
-				Util.proxyFn(foo, foo.bar.name, (org, ...args) => { proxyCalled++; org(...args); });
+				Util.proxyFn(foo, foo.bar.name, (org, ...args) => { 
+					proxyCalled++; 
+					org(...args); 
+				});
 				foo.bar(2);
 				barCalled.should.equal(3);
 				proxyCalled.should.equal(1);
 				let foo2 = new Foo();
 				foo2.bar(1);
 				proxyCalled.should.equal(1);
-				Util.proxyFn(Foo, Foo.prototype.bar.name, (org, ...args) => { proxyCalled++; org.call(this, ...args); });
+				Util.proxyFn(Foo, Foo.prototype.bar.name, (org, ...args) => { 
+					proxyCalled++; 
+					org.call(this, ...args); 
+				});
 				foo2.bar(2);
 				barCalled.should.equal(6);
 				proxyCalled.should.equal(2);

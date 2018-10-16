@@ -100,7 +100,7 @@ export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, 
 		return slice(this.values, 0, this._pos).map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
 	public deserialize(array: any[], ...types: Array<Constructor<any>>): this {
-		deserialize(array, this._array, ...types);
+		deserialize.apply(this, [array, this._array].concat(types));
 		this._pos = array.length;
 		return this;
 	}

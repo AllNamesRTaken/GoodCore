@@ -454,7 +454,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		return this.values.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
 	public deserialize(array: any[], ...types: Array<Constructor<any>>): this {
-		deserialize(array, this._array, ...types);
+		deserialize.apply(this, [array, this._array].concat(types));
 		return this;
 	}
 }

@@ -1,6 +1,5 @@
 import { clone, setProperties } from "./Obj";
 import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env } from "./Test";
-import { Test } from "mocha";
 
 class ArrayState {
 	public static _int: number;
@@ -475,17 +474,19 @@ export function unzip<S, T, U = [S, T]>(
 	return result;
 }
 export function deserialize<S, U>(array: any[], target: S[], ...types: Array<Constructor<any>>): void {
-	let T: Constructor<any>;
+	let T: Constructor<any> | undefined;
 	let passthroughT: Array<Constructor<any>>;
-	[T, ...passthroughT] = types;
+	T = types.shift();
+	passthroughT = types;
 	if (isNotUndefined(T)) {
-		if (isNotUndefined((T.prototype as any).deserialize)) {
+		if (isNotUndefined((T!.prototype as any).deserialize)) {
 			mapInto(array, target, (el) => {
-				return ((new T() as any).deserialize as Function)(el, ...passthroughT);
+				let t = (new T!() as any);
+				return (t.deserialize as Function).apply(t, [el].concat(passthroughT));
 			});
 		} else {
 			mapInto(array, target, (el, i) => {
-				let newT = new T();
+				let newT = new T!();
 				setProperties(newT, el);
 				return newT;
 			});

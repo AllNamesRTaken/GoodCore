@@ -5,7 +5,6 @@ import { newUUID } from "../Util";
 import { Dictionary } from "./Dictionary";
 import { List } from "./List";
 import { Stack } from "./Stack";
-import { deprecated } from "../Decorators";
 
 export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
 	public id: string | number = "";
@@ -132,8 +131,8 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 			}
 		}
 	}
-	protected create<S = T>(...args: any[]): this {
-		return new ((this as any).constructor)(...args);
+	protected create<S = T>(id?: string | number): this {
+		return new ((this as any).constructor)(id);
 	}
 	public init(obj: Partial<Tree<T>>, mapping?: any): this {
 		setProperties(this, obj);

@@ -1,5 +1,4 @@
 import { Global } from "./Global";
-import { once } from "./Decorators";
 
 export function hasWindow(): boolean {
 	return Global.window !== null;
@@ -7,49 +6,57 @@ export function hasWindow(): boolean {
 
 export class Env {
 	public static useNative?: boolean = undefined;
-	@once
+	private static _isNode: boolean;
 	public static isNode(): boolean {
-		return !hasWindow() || typeof module !== "undefined" && module.exports !== undefined;
+		this._isNode = this._isNode || (!hasWindow() || typeof module !== "undefined" && module.exports !== undefined);
+		return this._isNode;
 	}
-	@once
+	private static _isOpera: boolean;
 	public static isOpera(): boolean {
-		return hasWindow() && Global.window!.navigator.userAgent.match(/(?:^opera.+?version|opr)\/(\d+)/) !== null;
+		this._isOpera = this._isOpera || (hasWindow() && Global.window!.navigator.userAgent.match(/(?:^opera.+?version|opr)\/(\d+)/) !== null);
+		return this._isOpera;
 	}
-	@once
+	private static _isFirefox: boolean;
 	public static isFirefox(): boolean {
-		return hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/(?:firefox|fxios)\/(\d+)/) !== null;
+		this._isFirefox = this._isFirefox || (hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/(?:firefox|fxios)\/(\d+)/) !== null);
+		return this._isFirefox;
 	}
-	@once
+	private static _isSafari: boolean;
 	public static isSafari(): boolean {
-		return hasWindow() && Global.window!.navigator.userAgent.match(/version\/(\d+).+?safari/) !== null;
+		this._isSafari = this._isSafari || ( hasWindow() && Global.window!.navigator.userAgent.match(/version\/(\d+).+?safari/) !== null );
+		return this._isSafari;
 	}
-	@once
+	private static _isIE: boolean;
 	public static isIE(): boolean {
-		return hasWindow() && Global.window!.navigator.userAgent.match(/(?:msie |trident.+?; rv:)(\d+)/) !== null;
+		this._isIE = this._isIE || ( hasWindow() && Global.window!.navigator.userAgent.match(/(?:msie |trident.+?; rv:)(\d+)/) !== null );
+		return this._isIE;
 	}
-	@once
+	private static _isEdge: boolean;
 	public static isEdge(): boolean {
-		return hasWindow() && Global.window!.navigator.userAgent.match(/edge\/(\d+)/) !== null;
+		this._isEdge = this._isEdge || ( hasWindow() && Global.window!.navigator.userAgent.match(/edge\/(\d+)/) !== null );
+		return this._isEdge;
 	}
-	@once
+	private static _isChrome: boolean;
 	public static isChrome(): boolean {
-		return hasWindow() 
+		this._isChrome = this._isChrome || ( hasWindow() 
 			&& ((/google inc/.test(Global.window!.navigator.vendor.toLowerCase()) ? 
 			Global.window!.navigator.userAgent.toLowerCase().match(/(?:chrome|crios)\/(\d+)/) : 
 			null) !== null) 
-			&& !this.isOpera();
+			&& !this.isOpera() );
+		return this._isChrome;
 	}
-	@once
+	private static _isBlink: boolean;
 	public static isBlink(): boolean {
-		return hasWindow() && (this.isChrome || this.isOpera) && !!((Global.window as any).CSS);
+		this._isBlink = this._isBlink || (hasWindow() && (this.isChrome || this.isOpera) && !!((Global.window as any).CSS));
+		return this._isBlink
 	}
 	public static hasFastNativeArrays(): boolean {
 		// Node 10+, Chrome (modern) and FF (modern) has some very fast array operations
 		return this.useNative === undefined ? this._hasFastNativeArrays() : this.useNative!;
 	}
-	@once
+	private static __hasFastNativeArrays: boolean;
 	private static _hasFastNativeArrays(): boolean {
-		return !this.isIE();
+		return this.__hasFastNativeArrays = this.__hasFastNativeArrays || !this.isIE();
 	}
 }
 
@@ -89,7 +96,7 @@ export function areNullOrUndefined(...args: any[]): boolean {
 	return result;
 }
 export function areNotNullOrUndefined(...args: any[]): boolean {
-	return !areNullOrUndefined(...args);
+	return !areNullOrUndefined.apply(this, Array.prototype.slice.apply(arguments));;
 }
 export function isNull(arg: any): boolean {
 	return arg === null;
@@ -115,7 +122,7 @@ export function areUndefined(...args: any[]): boolean {
 	return result;
 }
 export function areNotUndefined(...args: any[]): boolean {
-	return !areUndefined(...args);
+	return !areUndefined.apply(this, Array.prototype.slice.apply(arguments));
 }
 export function isUndefined(arg: any): boolean {
 	return arg === undefined;

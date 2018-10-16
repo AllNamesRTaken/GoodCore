@@ -94,17 +94,26 @@ export function pipeOut(
 		proxyFn(
 			Global.global.console as any,
 			"log",
-			function (superfn, ...args: any[]) { superfn(...args); log(...args); }
+			function (superfn, ...args: any[]) { 
+				superfn.apply(this, args); 
+				log.apply(this, args); 
+			}
 		);
 		proxyFn(
 			Global.global.console as any,
 			"warn",
-			function (superfn, ...args: any[]) { superfn(...args); warn(...args); }
+			function (superfn, ...args: any[]) { 
+				superfn.apply(this, args); 
+				warn.apply(this, args); 
+			}
 		);
 		proxyFn(
 			Global.global.console as any,
 			"error",
-			function (superfn, ...args: any[]) { superfn(...args); error(...args); }
+			function (superfn, ...args: any[]) { 
+				superfn.apply(this, args); 
+				error.apply(this, args); 
+			}
 		);
 	} else {
 		const console = {

@@ -1,41 +1,21 @@
-var __read = (this && this.__read) || function (o, n) {
-    var m = typeof Symbol === "function" && o[Symbol.iterator];
-    if (!m) return o;
-    var i = m.call(o), r, ar = [], e;
-    try {
-        while ((n === void 0 || n-- > 0) && !(r = i.next()).done) ar.push(r.value);
-    }
-    catch (error) { e = { error: error }; }
-    finally {
-        try {
-            if (r && !r.done && (m = i["return"])) m.call(i);
-        }
-        finally { if (e) throw e.error; }
-    }
-    return ar;
-};
-var __spread = (this && this.__spread) || function () {
-    for (var ar = [], i = 0; i < arguments.length; i++) ar = ar.concat(__read(arguments[i]));
-    return ar;
-};
 import * as Benchmark from "benchmark";
 import { MocData, Arr, Test } from "../lib";
 import { MocDataType } from "../lib/MocData";
 import * as _ from "lodash";
 import chalk from "chalk";
-var SIZE = 10000;
-var intArray10k = MocData.numericArray(SIZE, MocDataType.RandomInt, 0, 100000);
-var intArray100 = MocData.numericArray(100, MocDataType.RandomInt, 0, 100000);
+const SIZE = 10000;
+let intArray10k = MocData.numericArray(SIZE, MocDataType.RandomInt, 0, 100000);
+let intArray100 = MocData.numericArray(100, MocDataType.RandomInt, 0, 100000);
 intArray10k[SIZE / 2 - 1] = -1;
-var workset;
+let workset;
 function complete(suite) {
     console.log(chalk.green("Fastest is " + suite.filter("fastest").map("name") + "\n"));
 }
 function cycle(event) {
     console.log(chalk.grey("\t" + String(event.target)));
 }
-var dump;
-export var suites = [
+let dump;
+export const suites = [
     new Benchmark.Suite()
         .add("Array::indexOf", function () {
         dump = intArray10k.indexOf(-1);
@@ -104,13 +84,13 @@ export var suites = [
     }),
     new Benchmark.Suite()
         .add("Array::filter", function () {
-        dump = intArray10k.filter(function (el, i) { return el > 50000; });
+        dump = intArray10k.filter((el, i) => el > 50000);
     })
         .add("Arr.filter", function () {
-        dump = Arr.filter(intArray10k, function (el, i) { return el > 50000; });
+        dump = Arr.filter(intArray10k, (el, i) => el > 50000);
     })
         .add("_.filter", function () {
-        dump = _.filter(intArray10k, function (el, i) { return el > 50000; });
+        dump = _.filter(intArray10k, (el, i) => el > 50000);
     })
         .on("cycle", function (event) {
         cycle(event);
@@ -120,13 +100,13 @@ export var suites = [
     }),
     new Benchmark.Suite()
         .add("Array::forEach", function () {
-        dump = intArray10k.forEach(function (el, i) { return void (0); });
+        dump = intArray10k.forEach((el, i) => void (0));
     })
         .add("Arr.forEach", function () {
-        dump = Arr.forEach(intArray10k, function (el, i) { return void (0); });
+        dump = Arr.forEach(intArray10k, (el, i) => void (0));
     })
         .add("_.forEach", function () {
-        dump = _.forEach(intArray10k, function (el, i) { return void (0); });
+        dump = _.forEach(intArray10k, (el, i) => void (0));
     })
         .on("cycle", function (event) {
         cycle(event);
@@ -136,13 +116,13 @@ export var suites = [
     }),
     new Benchmark.Suite()
         .add("Array::map", function () {
-        dump = intArray10k.map(function (el, i) { return el + 1; });
+        dump = intArray10k.map((el, i) => el + 1);
     })
         .add("Arr.map", function () {
-        dump = Arr.map(intArray10k, function (el, i) { return el + 1; });
+        dump = Arr.map(intArray10k, (el, i) => el + 1);
     })
         .add("_.map", function () {
-        dump = _.map(intArray10k, function (el, i) { return el + 1; });
+        dump = _.map(intArray10k, (el, i) => el + 1);
     })
         .on("cycle", function (event) {
         cycle(event);
@@ -152,13 +132,13 @@ export var suites = [
     }),
     new Benchmark.Suite()
         .add("Array::reduce", function () {
-        dump = intArray10k.reduce(function (agg, cur) { return agg + cur; }, 0);
+        dump = intArray10k.reduce((agg, cur) => agg + cur, 0);
     })
         .add("Arr.reduce", function () {
-        dump = Arr.reduce(intArray10k, function (agg, cur) { return agg + cur; }, 0);
+        dump = Arr.reduce(intArray10k, (agg, cur) => agg + cur, 0);
     })
         .add("_.reduce", function () {
-        dump = _.reduce(intArray10k, function (agg, cur) { return agg + cur; }, 0);
+        dump = _.reduce(intArray10k, (agg, cur) => agg + cur, 0);
     })
         .on("cycle", function (event) {
         cycle(event);
@@ -168,7 +148,7 @@ export var suites = [
     }),
     new Benchmark.Suite()
         .add("Array::splice", function () {
-        workset.splice.apply(workset, __spread([SIZE / 2, 100], intArray100));
+        workset.splice(SIZE / 2, 100, ...intArray100);
     })
         .add("Arr.splice", function () {
         Arr.splice(workset, SIZE / 2, 100, intArray100);
@@ -219,13 +199,13 @@ export var suites = [
     }),
     new Benchmark.Suite()
         .add("Array::find", function () {
-        dump = intArray10k.find(function (el) { return el === -1; });
+        dump = intArray10k.find((el) => el === -1);
     })
         .add("Arr.find", function () {
-        dump = Arr.find(intArray10k, function (el) { return el === -1; });
+        dump = Arr.find(intArray10k, (el) => el === -1);
     })
         .add("_.find", function () {
-        dump = _.find(intArray10k, function (el) { return el === -1; });
+        dump = _.find(intArray10k, (el) => el === -1);
     })
         .on("cycle", function (event) {
         cycle(event);

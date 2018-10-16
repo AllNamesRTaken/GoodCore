@@ -323,7 +323,7 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 		return this.values.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
 	public deserialize(array: any[], ...types: Array<Constructor<any>>): this {
-		this._list.deserialize(array, ...types);
+		this._list.deserialize.apply(this._list, [array].concat(types));
 		this.sort();
 		return this;
 	}

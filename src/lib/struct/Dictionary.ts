@@ -98,18 +98,21 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		return obj;
 	}
 	public deserialize(obj: Indexable<any>, ...types: Array<Constructor<any>>): this {
-		let T: Constructor<any>;
+		let T: Constructor<any> | undefined;
 		let passthroughT: Array<Constructor<any>>;
-		[T, ...passthroughT] = types;
+		T = types.shift();
+		passthroughT = types;
+		// [T, ...passthroughT] = types;
 		this.clear();
 		if (isNotUndefined(T)) {
-			if (isNotUndefined(T.prototype.deserialize)) {
+			if (isNotUndefined(T!.prototype.deserialize)) {
 				for (let key of Object.keys(obj)) {
-					this.set(key, (new T()).deserialize(obj[key], ...passthroughT));
+					let t = (new T!());
+					this.set(key, t.deserialize.apply(t, [obj[key]].concat(passthroughT)));
 				}
 			} else {
 				for (let key of Object.keys(obj)) {
-					let newT = new T() as T;
+					let newT = new T!() as T;
 					setProperties(newT, obj[key]);
 					this.set(key, newT);
 				}

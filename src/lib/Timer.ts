@@ -2,16 +2,13 @@ class TimerState {
 	public static _last: number;
 	public static _start: number;
 	public static _time: number;
-
-	public static _hasPerformance = typeof(performance) !== "undefined";
-
 }
 export class Timer {
 	public static get time(): number {
 		return TimerState._time;
 	}
 	public static now(): number {
-		if (TimerState._hasPerformance) {
+		if (typeof(performance) !== "undefined") {
 			return performance.now();
 		} else {
 			const hrTime = process.hrtime();

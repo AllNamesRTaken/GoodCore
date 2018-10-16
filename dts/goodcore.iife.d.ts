@@ -10,7 +10,7 @@ interface IInstance<T> extends IObject {
 constructor?: ICtor<T>;
 }
 interface IPool<T extends IPoolable> {
-	get(): T;
+	get(): T & IPoolable;
 	release(obj: T): void;
 }
 interface IPoolable {
@@ -676,7 +676,7 @@ declare namespace goodcore {
 		readonly available: number;
 		readonly size: number;
 		constructor(cls: ICtor<T>, growthStep?: number);
-		get(): T && IPoolable;
+		get(): T & IPoolable;
 		release(obj: T): void;
 	}
 
