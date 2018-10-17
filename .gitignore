@@ -1,5 +1,3 @@
-dist/
-distES/
 node_modules/
 temp/
 coverage/
