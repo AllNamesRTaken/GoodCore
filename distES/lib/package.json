@@ -1,11 +1,11 @@
 {
-  "name": "goodcore",
+  "name": "goodcorees",
   "version": "0.20.5",
-  "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
-  "main": "goodcore.bundle.js",
+  "description": "ES2015 version of goodcore",
+  "main": "index.js",
   "module": "index.js",
   "typings": "goodcore.d.ts",
-  "unpkg": "goodcore.bundle.js",
+  "unpkg": "index.js",
   "files": [
     "*"
   ],
@@ -21,7 +21,7 @@
     "run_test": "mocha ./dist/test/*Test.js",
     "coveralls": "istanbul cover ./node_modules/mocha/bin/_mocha --report lcovonly -- -R spec ./dist/test/*.js && cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js && rm -rf ./coverage",
     "cover": "npm run test && istanbul cover ./node_modules/mocha/bin/_mocha -- ./dist/test/*.js",
-    "deploy": "gulp package && npm publish dist/lib",
+    "deploy": "gulp package && npm publish dist/lib && gulp copyReadmeES && gulp packageES && npm publish distES/lib",
     "deploy-es": "gulp copyReadmeES && gulp packageES && npm publish distES/lib",
     "deploy-all": "npm run deploy && npm run deploy-es"
   },
