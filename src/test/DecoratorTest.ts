@@ -1,5 +1,7 @@
 import { should } from "chai";
-import { debounced, once } from "../lib/Decorators";
+import { debounced, once, asserts } from "../lib/Decorators";
+import { assert, AssertError } from "../lib/Util";
+import { isNumber } from "../lib/Test";
 should();
 
 describe("Decorators",
@@ -80,6 +82,50 @@ describe("Decorators",
 				let sam = new Person();
 				sam.fret(1, 2, 3);
 				sam.fret(1, 2, 3);
+				sam.anxiety.should.equal(1);
+			});
+		it("assert decorated function throws",
+			function () {
+				class Person {
+					public anxiety: number = 0;
+					@asserts((howMuch: number) => {
+						assert(isNumber(howMuch), "nowMuch is not a number");
+						assert(howMuch > 0, "howMuch > 0");
+					})
+					public fret(howMuch: number) {
+						return this.anxiety += howMuch;
+					}
+				}
+				let sam = new Person();
+				sam.fret(1);
+				sam.anxiety.should.equal(1);
+				try {
+					sam.fret(-1);
+				} catch (err) {
+					(err instanceof AssertError).should.be.true;
+					err.message.should.contain("howMuch > 0");
+				}
+				sam.anxiety.should.equal(1);
+			});
+		it("assert with result returns result",
+			function () {
+				class Person {
+					public anxiety: number = 0;
+					@asserts((howMuch: number) => {
+						assert(isNumber(howMuch));
+					}, (err: AssertError) => -10)
+					@asserts((howMuch: number) => {
+						assert(howMuch > 0, "howMuch > 0");
+					}, -999)
+					public fret(howMuch: number) {
+						return this.anxiety += howMuch;
+					}
+				}
+				let sam = new Person();
+				sam.fret(1);
+				sam.anxiety.should.equal(1);
+				sam.fret(-1).should.equal(-999);
+				sam.fret("foo" as any).should.equal(-10);
 				sam.anxiety.should.equal(1);
 			});
 	}

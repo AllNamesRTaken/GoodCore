@@ -128,19 +128,20 @@ export function pipeOut(
 		(Global.window as any).console = console;
 	}
 }
-export function assert(assertion: boolean, message: string, isDebug: boolean = true): boolean {
-	let result = true;
+export class AssertError extends Error {
+	constructor(m: string) {
+		super(m);
+		Object.setPrototypeOf(this, AssertError.prototype);
+	}
+}
+export function assert(assertion: boolean, message: string = "", noThrow: boolean = false) {
 	if (!assertion) {
-		if (hasConsole) {
-			result = false;
+		if (noThrow) {
 			console.error("Assertion failed: " + message);
-		}
-		if (isDebug) {
-			callDebugger();
-			//throw errorMessage;
+		} else {
+			throw new AssertError(message);
 		}
 	}
-	return result;
 }
 export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(
 	objOrClass: U,

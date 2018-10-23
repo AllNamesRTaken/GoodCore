@@ -1,5 +1,5 @@
-import { isNotUndefined, isNotNullOrUndefined } from "./Test";
-import { IDebounceOptions, debounce } from "./Util";
+import { isNotNullOrUndefined, isNotUndefined, isFunction } from "./Test";
+import { IDebounceOptions, debounce, AssertError } from "./Util";
 
 export function debounced<S>(duration?: number, options?: Partial<IDebounceOptions>): 
 <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
@@ -40,8 +40,10 @@ export function once<S>(target: S, propertyKey: string, descriptor: PropertyDesc
 export function deprecated<S>(instead?: string, message?: string) {
 	return function (target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
 		const orgFn = descriptor.value as Function;
-		let localMessage = isNotUndefined(message) ? message!.replace("{name}", propertyKey).replace("{instead}", instead || "") :
-			"Function {name} is deprecated".replace("{name}", propertyKey) + 
+		const className = (target as Object).constructor.name;
+		let localMessage = isNotNullOrUndefined(message) ? 
+			message!.replace("{class}", className).replace("{name}", propertyKey).replace("{instead}", instead || "") :
+			"Function {class}::{name} is deprecated".replace("{class}", className).replace("{name}", propertyKey) + 
 			(isNotNullOrUndefined(instead) ? " please use {instead} instead".replace("{instead}", instead!) : "");
 
 		let warned = false;
@@ -58,5 +60,30 @@ export function deprecated<S>(instead?: string, message?: string) {
 
 		return descriptor;
 
+	};
+}
+
+export function asserts<S>(assertFn: Function, result?: any) {
+	return function (target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+		const orgFn = descriptor.value as Function;
+		const className = (target as Object).constructor.name;
+		const fnName = propertyKey;
+
+		descriptor.value = function (...args: any[]) {
+			try {
+				assertFn(...args);
+			} catch (assertError) {
+				if (isNotUndefined(result)) {
+					return isFunction(result) ? 
+						result(assertError) : 
+						result;
+				} else {
+					throw new AssertError(`Assertion failed in ${className}::${fnName}: ${assertError.message}`);
+				}
+			}
+			return orgFn.apply(this, args);
+		};
+
+		return descriptor;
 	};
 }

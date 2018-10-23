@@ -17,7 +17,6 @@ describe("Arrays",
 			});
 		it("DeepCopy copies values correctly",
 			function() {
-				assert(false, "this works");
 				const arr = this.arr1;
 				const copy = Arr.deepCopy(arr);
 				Arr.deepCopy(null!).should.deep.equal([]);

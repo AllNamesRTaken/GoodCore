@@ -1,9 +1,7 @@
 import { should } from "chai";
 import { JSDOM } from "jsdom";
 import { Global } from "../lib/Global";
-import * as MocData from "../lib/MocData";
 import * as Test from "../lib/Test";
-import { Timer } from "../lib/Timer";
 import * as Util from "../lib/Util";
 
 should();
@@ -23,7 +21,18 @@ describe("Util",
 				Global.window!.should.equal("foo");
 				Global.window = org;
 			});
-		it("Assert writes to console.error and PipeOut catches it.",
+		it("Assert throws.",
+			function () {
+				try {
+					Util.assert(false, "message");
+				} catch (err) {
+					(err instanceof Util.AssertError).should.be.true;
+					err.message.should.equal("message");
+				}
+				Util.assert(true, "message");
+				true.should.be.true;
+			});
+		it("SoftAssert writes to console.error and PipeOut catches it.",
 			function () {
 				const log: any[] = [];
 				const warn: any[] = [];
@@ -45,13 +54,13 @@ describe("Util",
 						error.push.apply(error, args);
 					}
 				);
-				Util.assert(true, "true is true");
+				Util.assert(true, "true is true", true);
 				error.length.should.equal(0);
-				Util.assert(false, "true is true");
+				Util.assert(false, "true is true", true);
 				error.length.should.equal(1);
 				error[0].should.contain("true is true");
 				console.log("logged");
-				log[0].should.contain("logged");
+				log[0].should.contain("logged");0
 				console.warn("warned");
 				warn[0].should.contain("warned");
 				//cannot console.log here since that is overridden by Mocha
