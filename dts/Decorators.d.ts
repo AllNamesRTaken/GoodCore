@@ -13,3 +13,5 @@ export function debounced<S>(duration: number | undefined, options?: Partial<IDe
 export function once<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
 export function deprecated<S>(instead?: string, message?: string): 
     (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+export function asserts<S>(assertFn: Function, result?: any):
+	(target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;

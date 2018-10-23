@@ -20,7 +20,8 @@ export function newUUID(): string;
 export function newInt(): number;
 export function callDebugger(): void;
 export function pipeOut(log: (...args: any[]) => void, warn: (...args: any[]) => void, error: (...args: any[]) => void): void;
-export function assert(assertion: boolean, message: string, isDebug?: boolean): boolean;
+export class AssertError extends Error {}
+export function assert(assertion: boolean, message?: string, noThrow?: boolean): boolean;
 export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(objOrClass: U, fnName: string, proxyFn: (originalFn: (...args: any[]) => S | V, ...args: any[]) => void): void;
 export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void;
 export function toArray<T>(arr: ArrayLike<T>): T[];
