@@ -1,4 +1,5 @@
 export const Global: {
-    window: Window;
+    window: Window | null;
     hasNativeWindow: boolean;
+    global: NodeJS.Global | Window;
 };

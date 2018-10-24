@@ -71,7 +71,7 @@ export function asserts<S>(assertFn: Function, result?: any) {
 
 		descriptor.value = function (...args: any[]) {
 			try {
-				assertFn(...args);
+				assertFn.apply(this, args);
 			} catch (assertError) {
 				if (isNotUndefined(result)) {
 					return isFunction(result) ? 

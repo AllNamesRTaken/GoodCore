@@ -124,10 +124,11 @@ interface IDebouncedFunction<T> {
 
 declare namespace goodcore {
 	export const Global: {
-		window: Window;
+		window: Window | null;
 		hasNativeWindow: boolean;
+		global: NodeJS.Global | Window;
 	};
-	export class Vec2Const {
+ 	export class Vec2Const {
 		static EPSILON: number;
 		static IDENTITY: IVec2;
 		static X_DIM: IVec2;

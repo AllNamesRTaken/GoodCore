@@ -88,7 +88,8 @@ describe("Decorators",
 			function () {
 				class Person {
 					public anxiety: number = 0;
-					@asserts((howMuch: number) => {
+					@asserts(function(howMuch: number) {
+						assert(howMuch + (this.anxiety as number) < 10, "anxiety has to be below 10");
 						assert(isNumber(howMuch), "nowMuch is not a number");
 						assert(howMuch > 0, "howMuch > 0");
 					})
@@ -104,6 +105,12 @@ describe("Decorators",
 				} catch (err) {
 					(err instanceof AssertError).should.be.true;
 					err.message.should.contain("howMuch > 0");
+				}
+				try {
+					sam.fret(20);
+				} catch (err) {
+					(err instanceof AssertError).should.be.true;
+					err.message.should.contain("anxiety has to be below 10");
 				}
 				sam.anxiety.should.equal(1);
 			});
