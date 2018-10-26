@@ -10,7 +10,7 @@ if (hasWindow() && !(window as any).Symbol) {
 }
 export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
 	private _array: T[] = [];
-	private _index: {[key: string]: T} | null = Object.create(null) as Indexable<T>;
+	private _index: {[key: string]: T} | null = null;
 	private _indexer: ((el: T) => any) | null = null;
 	private _pointer: number = 0;
 

@@ -1,4 +1,5 @@
 import { Global } from "./Global";
+import { isNullOrUndefined } from "./Test";
 
 export enum Sides {
 	Top,
@@ -22,7 +23,7 @@ export function init(win: Window) {
 	DomState._document = DomState._window.document;
 	DomState._el = DomState._document.createElement("div");
 }
-export function create(html: string, attr?: any): HTMLElement {
+export function create(html: string, attr?: Indexable<any>): HTMLElement {
 	// tslint:disable-next-line:prefer-const
 	let result: HTMLElement, keys: string[], i: number, k: number, styles: any, styleKeys: string[];
 	let usesTemplate = DomState._template && DomState._template!.content && true;
@@ -58,7 +59,7 @@ export function outerHTML(el: HTMLElement): string {
 	clear(DomState._el!);
 	return result;
 }
-export function setAttr(_el: HTMLElement | String, attr: Indexable<any>) {
+export function setAttr(_el: HTMLElement | String, attr?: Indexable<any>) {
 	let el: HTMLElement;
 	if (typeof (_el) === "string") {
 		el = get(_el);
@@ -85,11 +86,11 @@ export function setAttr(_el: HTMLElement | String, attr: Indexable<any>) {
 						el.style.setProperty(styleKeys[k], style[0], style[1]);
 					}
 				}
-			} else if ((keys[i] === "classes" || keys[i] === "class") && attr[keys[i]] !== undefined) {
+			} else if ((keys[i] === "classes" || keys[i] === "class" || keys[i] === "className") && attr[keys[i]] !== undefined) {
 				if (attr[keys[i]].join) {
-					el.setAttribute("className", attr[keys[i]].join(" "));
+					el.className = attr[keys[i]].join(" ");
 				} else {
-					el.setAttribute("className", attr[keys[i]]);
+					el.className = attr[keys[i]];
 				}
 			} else {
 				el.setAttribute(keys[i], attr[keys[i]]);
@@ -98,7 +99,7 @@ export function setAttr(_el: HTMLElement | String, attr: Indexable<any>) {
 	}
 }
 export function remove(element: Element): HTMLElement | null {
-	return element.parentNode === undefined ? null : element.parentNode!.removeChild(element) as HTMLElement;
+	return isNullOrUndefined(element.parentNode) ? null : element.parentNode!.removeChild(element) as HTMLElement;
 }
 export function replace(src: HTMLElement, target: HTMLElement): HTMLElement {
 	let result: HTMLElement = target;

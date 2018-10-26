@@ -1,6 +1,6 @@
 import { map } from "../Arr";
 import { clone, isClassOf, isSameClass,  setProperties } from "../Obj";
-import { Initable } from "../standard/mixins/Initable";
+import { Initable } from "../mixins/Initable";
 import { Dictionary } from "../struct/Dictionary";
 import { List } from "../struct/List";
 import { SortedList } from "../struct/SortedList";

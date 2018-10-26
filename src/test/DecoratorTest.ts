@@ -1,7 +1,8 @@
 import { should } from "chai";
-import { debounced, once, asserts } from "../lib/Decorators";
-import { assert, AssertError } from "../lib/Util";
+import { debounced, once, asserts, deprecated } from "../lib/Decorators";
+import { assert, AssertError, pipeOut } from "../lib/Util";
 import { isNumber } from "../lib/Test";
+import { isSameClass } from "../lib/Obj";
 should();
 
 describe("Decorators",
@@ -83,6 +84,29 @@ describe("Decorators",
 				sam.fret(1, 2, 3);
 				sam.fret(1, 2, 3);
 				sam.anxiety.should.equal(1);
+			});
+		it("deprecate warns on first use",
+			function () {
+				class Person {
+					@deprecated()
+					public dep1() {
+					}
+					@deprecated("nonDep")
+					public dep2() {
+					}
+					@deprecated("nonDep", "please change {class}.{name} into {instead}")
+					public dep3() {
+					}
+				}
+				let warning = "";
+				pipeOut(null, (message: string) => warning = message);
+				let sam = new Person();
+				sam.dep1();
+				warning.should.equal("Function Person::dep1 is deprecated");
+				sam.dep2();
+				warning.should.equal("Function Person::dep2 is deprecated please use nonDep instead");
+				sam.dep3();
+				warning.should.equal("please change Person.dep3 into nonDep");
 			});
 		it("assert decorated function throws",
 			function () {

@@ -4,8 +4,8 @@ import * as Dom from "./Dom";
 import { Global } from "./Global";
 import * as MocData from "./MocData";
 import * as Obj from "./Obj";
-import { Initable } from "./standard/mixins/Initable";
-import { Poolable } from "./standard/mixins/Poolable";
+import { Initable } from "./mixins/Initable";
+import { Poolable } from "./mixins/Poolable";
 import { Pool } from "./standard/Pool";
 import { Dictionary } from "./struct/Dictionary";
 import { IRange2 } from "./struct/IRange2";
@@ -22,6 +22,7 @@ import * as Test from "./Test";
 import { Timer } from "./Timer";
 import { Uri } from "./Uri";
 import * as Util from "./Util";
+import { Decorators } from ".";
 export function integrate(alias?: string | object) {
 	let stringAlias = false;
 	let objectAlias = false;
@@ -29,6 +30,7 @@ export function integrate(alias?: string | object) {
 		{name: "Arr", object: Arr},
 		{name: "Calc", object: Calc},
 		{name: "Dom", object: Dom},
+		{name: "Decorators", object: Decorators},
 		{name: "MocData", object: MocData},
 		{name: "Obj", object: Obj},
 		{name: "Initable", object: Initable},

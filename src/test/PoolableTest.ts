@@ -1,5 +1,5 @@
 import { should } from "chai";
-import { Poolable } from "../lib/standard/mixins/Poolable";
+import { Poolable } from "../lib/mixins/Poolable";
 import { Pool } from "../lib/standard/Pool";
 should();
 

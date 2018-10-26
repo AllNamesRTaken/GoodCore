@@ -5,9 +5,9 @@ interface Indexable<T> {
 }
 interface IObject {
 	[key: string]: any;
-  }
+}
 interface IInstance<T> extends IObject {
-constructor?: ICtor<T>;
+	constructor?: ICtor<T>;
 }
 interface IPool<T extends IPoolable> {
 	get(): T & IPoolable;
@@ -19,8 +19,8 @@ interface IPoolable {
 	initPool(pool: IPool<IPoolable>): void;
 }
 interface ISerializable<T> {
-  toJSON(): any;
-  serialize(): T
+	toJSON(): any;
+	serialize(): T
 }
 interface IRevivable<T> {
 	revive(data: any, ...types: Array<Constructor<any>>): T;
@@ -43,7 +43,7 @@ interface IBasicList<T> {
 	pop(): T | undefined;
 	shift(): T | undefined;
 	copy(src: IBasicList<T> | T[]): IBasicList<T>;
-	clone(): IBasicList<T>;	
+	clone(): IBasicList<T>;
 	truncate(size?: number): IBasicList<T>
 	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
 	remove(v: T): IBasicList<T>;
@@ -53,7 +53,7 @@ interface IBasicList<T> {
 	forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
 	until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): IBasicList<T>;
 	until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number, startIndex?: number) => void): IBasicList<T>;
-	reverseForEach(fn: (el: T, i: number) => any): IBasicList<T> 
+	reverseForEach(fn: (el: T, i: number) => any): IBasicList<T>
 	reverseUntil(fnOrTest: (el: T, i: number) => boolean): IBasicList<T>;
 	reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): IBasicList<T>;
 	first(fn?: (el: T) => boolean): T | undefined;
@@ -72,9 +72,9 @@ interface IBasicList<T> {
 	reduce(fn: (acc: any, cur: T) => any, start: any): any;
 	reverseReduce(fn: (acc: any, cur: T) => any, start: any): any;
 	equals(b: IBasicList<T>): boolean;
-	  same(b: IBasicList<T>): boolean;
-	  intersect(b: IBasicList<T>): IBasicList<T>;
-	  union(b: IBasicList<T>): IBasicList<T>;
+	same(b: IBasicList<T>): boolean;
+	intersect(b: IBasicList<T>): IBasicList<T>;
+	union(b: IBasicList<T>): IBasicList<T>;
 	// zip<U, V>(list: IBasicList<U>, fn: (t: T, u: U) => V): IBasicList<V>;
 	// unzip<U, V>(fn: (el: T) => [U, V]): [IBasicList<U>, IBasicList<V>];
 	// flatten<U>(maxDepth?: number): IBasicList<U>
@@ -83,7 +83,7 @@ interface IBasicList<T> {
 }
 interface IList<T> extends IBasicList<T> {
 	getByIndex(key: number | string): T | undefined;
-	set(pos: number, value: T): IList<T>;  
+	set(pos: number, value: T): IList<T>;
 	push(v: T): number;
 	splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
 	concat(v: T[] | IList<T>): IList<T>;
@@ -115,7 +115,7 @@ interface IRect {
 	stop: IVec2;
 }
 interface IDebounceOptions {
-    leading: boolean;
+	leading: boolean;
 }
 interface IDebouncedFunction<T> {
 	(...args: any[]): T
@@ -128,7 +128,7 @@ declare namespace goodcore {
 		hasNativeWindow: boolean;
 		global: NodeJS.Global | Window;
 	};
- 	export class Vec2Const {
+	export class Vec2Const {
 		static EPSILON: number;
 		static IDENTITY: IVec2;
 		static X_DIM: IVec2;
@@ -286,7 +286,7 @@ declare namespace goodcore {
 		serialize(): T[];
 		revive(array: any[], ...types: Array<Constructor<any>>): List<T>;
 		deserialize(array: any[], ...types: Array<Constructor<any>>): List<T>;
-		}
+	}
 
 	export class Comparer {
 		static StringAsc: (a: string, b: string) => 1 | -1 | 0;
@@ -353,7 +353,7 @@ declare namespace goodcore {
 		revive(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
 		deserialize(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
 	}
-	
+
 	export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
 		constructor();
 		protected create<S = T>(): Dictionary<S>;
@@ -408,12 +408,12 @@ declare namespace goodcore {
 		public leafCount: number;
 		public childCount: number;
 		public weight: number;
-	
+
 		protected _virtual: boolean;
 		protected _size: number;
 		protected _leafCount: number;
 		protected _weight: number;
-		
+
 		root: this;
 		static fromObject<T>(obj: any): Tree<T>;
 		static fromNodeList<S, T>(nodes: S[], mapcfg?: {
@@ -426,9 +426,9 @@ declare namespace goodcore {
 		protected markAsDirty(): void;
 		public reCalculateSize(): this;
 		public aggregate<S = any>(fn: (cur: this, i: number, agg: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
-	/**
-	 * @deprecated Since version 1.9.2. Will be deleted in version 2.0. Use aggregate instead.
-	 */
+		/**
+		 * @deprecated Since version 1.9.2. Will be deleted in version 2.0. Use aggregate instead.
+		 */
 		public collect<S = any>(fn: (cur: this, i: number, collected: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
 		public init(obj: Partial<this>, mapping?: any): this;
 		public insertAt(pos: number, data: T, id?: string | number): void;
@@ -445,9 +445,9 @@ declare namespace goodcore {
 		protected _findBySize(pos: number): this | null;
 		public depth(): number;
 		public sort(comparer: (a: this, b: this) => number): this;
-		public serialize(): T[];		
+		public serialize(): T[];
 		public toJSON(): any;
-	}	
+	}
 
 	export class IndexedTree<T> extends Tree<T> {
 		init(obj: Partial<this>, mapping?: any): this;
@@ -456,14 +456,14 @@ declare namespace goodcore {
 		count: number;
 		static fromObject<T>(obj: any, indexer?: (node: IndexedTree<T>) => string | number): Tree<T>;
 		static fromNodeList<S, T>(nodes: S[], mapcfg?: {
-			id?: ((node: S) => string | number)|string | number, 
-			parent?: ((node: S) => string | number)|string | number, 
-			data?: ((node: S) => any)|string
+			id?: ((node: S) => string | number) | string | number,
+			parent?: ((node: S) => string | number) | string | number,
+			data?: ((node: S) => any) | string
 		}, virtualRoot?: boolean): Tree<T>;
 		constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Dictionary<Tree<T>>);
 		protected create<S = T>(...args: any[]): Tree<S>;
 		insertAt(pos: number, data: T, id?: string | number, updateIndex?: boolean): void;
-		addTo(parentId: string | number, data: T| this, id?: string | number, updateIndex?: boolean): this | undefined;
+		addTo(parentId: string | number, data: T | this, id?: string | number, updateIndex?: boolean): this | undefined;
 		add(data: T | this, id?: string | number, updateIndex?: boolean): this;
 		contains(node: this | string | number): boolean
 		get(id: string | number): this | undefined;
@@ -472,7 +472,7 @@ declare namespace goodcore {
 		clone(): this;
 		prune(): this;
 		filter(condition: (node: this) => boolean, parent?: this | null): this;
-	}	
+	}
 
 	export class CalcConst {
 		static ROTATION_DEGREE_PRECISION: number;
@@ -552,8 +552,8 @@ declare namespace goodcore {
 		export function insertAt<T>(src: T[], pos: number, v: T): void;
 		export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
 		export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[];
-		export function zip<S, T, U = [S|undefined, T|undefined]>(a: S[], b: T[], fn?: (a: S|undefined, b: T|undefined, i?: number) => U ): U[];
-		export function unzip<S, T, U = [S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
+		export function zip<S, T, U =[S | undefined, T | undefined]>(a: S[], b: T[], fn?: (a: S | undefined, b: T | undefined, i?: number) => U): U[];
+		export function unzip<S, T, U =[S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
 		export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
 	}
 
@@ -571,9 +571,9 @@ declare namespace goodcore {
 		export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
 		export function mixin(target: any, exclude: any, ...sources: any[]): any;
 		export function setProperties(target: any, values: any, mapping?: any): void;
-		export function forEach<T extends {[index: string]: any}, U = any>(target: T | Array<U>, fn: (value: any, key?: string|number) => boolean | void): void;
-		export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
-		export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S;
+		export function forEach<T extends { [index: string]: any }, U = any>(target: T | Array<U>, fn: (value: any, key?: string | number) => boolean | void): void;
+		export function transform<T extends { [index: string]: any }, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
+		export function difference<T extends { [index: string]: any }, S extends { [index: string]: any } = T>(target: T, base: S): S;
 	}
 	export interface IObjectWithFunctions<T extends Object | void> {
 		[key: string]: (...args: any[]) => T;
@@ -596,13 +596,17 @@ declare namespace goodcore {
 		export function newUUID(): string;
 		export function newInt(): number;
 		export function callDebugger(): void;
-		export function pipeOut(log: (...args: any[]) => void, warn: (...args: any[]) => void, error: (...args: any[]) => void): void;
-		export class AssertError extends Error {}
+		export function pipeOut(
+			log?: ((...args: any[]) => void) | null,
+			warn?: ((...args: any[]) => void) | null,
+			error?: ((...args: any[]) => void) | null
+		): void;
+		export class AssertError extends Error { }
 		export function assert(assertion: boolean, message?: string, noThrow?: boolean): boolean;
 		export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(objOrClass: U, fnName: string, proxyFn: (originalFn: (...args: any[]) => S | V, ...args: any[]) => void): void;
 		export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void;
 		export function toArray<T>(arr: ArrayLike<T>): T[];
-		export function debounce<S extends any, T extends (...args: any[])=>S|void>(method: T, duration?:number, options?: Partial<IDebounceOptions>): IDebouncedFunction<S>;
+		export function debounce<S extends any, T extends (...args: any[]) => S | void>(method: T, duration?: number, options?: Partial<IDebounceOptions>): IDebouncedFunction<S>;
 	}
 
 	export namespace Test {
@@ -725,9 +729,19 @@ declare namespace goodcore {
 			get: () => any;
 		};
 		export function once<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
-		export function deprecated<S>(instead?: string, message?: string): 
-    		(target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+		export function deprecated<S>(instead?: string, message?: string):
+			(target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
 		export function asserts<S>(assertFn: Function, result?: any):
 			(target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+		export function before<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+		export function after<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+		export function around<S>(decoration: (callback: Function, name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+		export function provided<S>(condition: (name: string, ...args: any[]) => boolean): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+		export let async: {
+			<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
+			before?<S>(decoration: (name: string, ...args: any[]) => Promise<any>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+			after?<S>(decoration: (name: string, ...args: any[]) => Promise<any>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+			provided?<S>(async_predicate: (...args: any[]) => Promise<boolean>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+		};
 	}
 }

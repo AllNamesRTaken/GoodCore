@@ -81,51 +81,42 @@ export function counter(key: number | string = ""): LoggableCounter {
 export function count(key: number | string = ""): LoggableCounter {
 	return counter(key).inc();
 }
-export function callDebugger(): void {
-	// tslint:disable-next-line:no-debugger
-	debugger;
-}
 export function pipeOut(
-	log: (...args: any[]) => void,
-	warn: (...args: any[]) => void,
-	error: (...args: any[]) => void
+	log?: ((...args: any[]) => void) | null,
+	warn?: ((...args: any[]) => void) | null,
+	error?: ((...args: any[]) => void) | null
 ) {
 	if (hasConsole()) {
-		proxyFn(
-			Global.global.console as any,
-			"log",
-			function (superfn, ...args: any[]) { 
-				superfn.apply(this, args); 
-				log.apply(this, args); 
-			}
-		);
-		proxyFn(
-			Global.global.console as any,
-			"warn",
-			function (superfn, ...args: any[]) { 
-				superfn.apply(this, args); 
-				warn.apply(this, args); 
-			}
-		);
-		proxyFn(
-			Global.global.console as any,
-			"error",
-			function (superfn, ...args: any[]) { 
-				superfn.apply(this, args); 
-				error.apply(this, args); 
-			}
-		);
-	} else {
-		const console = {
-			log,
-			warn,
-			error
-		};
-		if (!(hasWindow())) {
-			Global.window = {
-			} as any;
+		if (isNotNullOrUndefined(log)) {
+			proxyFn(
+				Global.global.console as any,
+				"log",
+				function (superfn, ...args: any[]) {
+					superfn.apply(this, args);
+					log!.apply(this, args);
+				}
+			);
 		}
-		(Global.window as any).console = console;
+		if (isNotNullOrUndefined(warn)) {
+			proxyFn(
+				Global.global.console as any,
+				"warn",
+				function (superfn, ...args: any[]) {
+					superfn.apply(this, args);
+					warn!.apply(this, args);
+				}
+			);
+		}
+		if (isNotNullOrUndefined(error)) {
+			proxyFn(
+				Global.global.console as any,
+				"error",
+				function (superfn, ...args: any[]) {
+					superfn.apply(this, args);
+					error!.apply(this, args);
+				}
+			);
+		}
 	}
 }
 export class AssertError extends Error {

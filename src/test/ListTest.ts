@@ -2,7 +2,7 @@ import { should } from "chai";
 import * as MocData from "../lib/MocData";
 import { List } from "../lib/struct/List";
 import { Vec2 } from "../lib/struct/Vec2";
-import { isUndefined } from "../lib/Test";
+import { isUndefined, isNotNullOrUndefined } from "../lib/Test";
 
 should();
 
@@ -23,6 +23,16 @@ describe("List",
 				this.list3 = new List(new List([{ a: 1 }, { a: 2 }] as any[]));
 				this.indexed = new List();
 				this.indexed.indexer = (el: number) => el;
+			});
+		it("setting indexer to null sets index to null",
+			function () {
+				const list = this.list1 as List<number>;
+				(list.indexer === null).should.be.true;
+				((list as any)._index === null).should.be.true;
+				list.indexer = (el) => el - 1;
+				(isNotNullOrUndefined((list as any)._index)).should.be.true;
+				list.indexer = null;
+				((list as any)._index === null).should.be.true;
 			});
 		it("Copy copies values correctly into target",
 			function () {

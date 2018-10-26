@@ -1,5 +1,5 @@
 import {should} from "chai";
-import { Initable } from "../lib/standard/mixins/Initable";
+import { Initable } from "../lib/mixins/Initable";
 should();
 
 describe("Initable",

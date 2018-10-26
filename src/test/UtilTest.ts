@@ -142,9 +142,12 @@ describe("Util",
 		it("NewInt starts at 0 and increases",
 			function () {
 				const s = Util.newInt();
+				s.should.equal(0);
 				(typeof (s)).should.equal("number");
 				Util.newInt().should.equal(s + 1);
 				Util.newInt().should.equal(s + 2);
+				const keyed = Util.newInt("somekey");
+				keyed.should.equal(0);
 			});
 		it("NewUUID is unique even when called fast",
 			function () {

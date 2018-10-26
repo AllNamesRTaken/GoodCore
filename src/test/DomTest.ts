@@ -42,6 +42,9 @@ describe("Dom",
 				const chld = Dom.children(el, "#sub2");
 				chld.length.should.equal(1);
 				chld[0].id.should.equal("sub2");
+				const chld2 = Dom.children(el);
+				chld2.length.should.equal(2);
+				chld2[0].id.should.equal("sub1");
 			});
 		it("Find finds the right element",
 			function() {
@@ -99,6 +102,20 @@ describe("Dom",
 				const el = Dom.create(this.html2);
 				Dom.outerHTML(el).should.equal(this.html2);
 			});
+		it("setAttr sets the attributes on correct object",
+			function() {
+				const el = Dom.create(this.html2);
+				this.document.body.appendChild(el);
+				Dom.setAttr("foo", {someAttr: "someValue"});
+				el.getAttribute("someAttr")!.should.equal("someValue");
+				Dom.setAttr(el, {style: {color: ["red", "important"]}});
+				el.style.getPropertyPriority("color").should.equal("important");
+				Dom.setAttr(el, {class: "hey ho"});
+				el.className!.should.equal("hey ho");
+				Dom.setAttr(el, {class: ["kun", "lun"]});
+				el.className!.should.equal("kun lun");
+				el.parentNode!.removeChild(el);
+			});		
 		it("Position sets style top and left",
 			function() {
 				const el = Dom.create(this.html2);
@@ -111,8 +128,9 @@ describe("Dom",
 				const el = Dom.create(this.html2);
 				this.document.body.appendChild(el);
 				el.parentNode!.should.not.be.null;
-				Dom.remove(el);
+				Dom.remove(el)!.should.equal(el);
 				(el.parentNode === null).should.be.true;
+				(Dom.remove(el) === null).should.be.true;
 			});
 		it("Replace replaces an element with another",
 			function() {

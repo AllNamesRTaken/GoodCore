@@ -61,7 +61,7 @@ export class Env {
 }
 
 export function hasConsole(): boolean {
-	return hasWindow() && Global.window!.console !== undefined || typeof (console) === "function";
+	return Global.global.console !== undefined || typeof (console) === "function";
 }
 export function isObject(it: any): boolean {
 	return it !== null && typeof it === "object";

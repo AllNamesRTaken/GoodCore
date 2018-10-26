@@ -1,6 +1,8 @@
 import { should } from "chai";
 import { IndexedTree } from "../lib/struct/IndexedTree";
 import { Tree } from "../lib/struct/Tree";
+import { Dictionary } from "../lib";
+import { isNotUndefined } from "../lib/Test";
 should();
 
 describe("IndexedTree",
@@ -64,6 +66,16 @@ describe("IndexedTree",
 				tree.contains("foofoo").should.be.false;
 				tree.reIndex();
 				tree.contains("foofoo").should.be.true;
+			});
+		it("index can be read but not set",
+			function () {
+				const tree = this.tree as IndexedTree<string>;
+				tree.index.get("root")!.should.equal(tree);
+				try {
+					tree.index = new Dictionary<IndexedTree<string>>();
+				} catch (err) {
+					isNotUndefined(err).should.be.true;
+				}
 			});
 		it("Find finds the correct node",
 			function () {

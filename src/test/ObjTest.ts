@@ -123,6 +123,14 @@ describe("Obj",
 				Obj.mixin({foo: "bar", a: 10}, null, this.obj1).should.deep.equal({foo: "bar", a: 1, b: {c: 2}, d: [3, 4, 5]});
 				Obj.mixin({foo: "bar", a: 10}, {a: true}, this.obj1).should.deep.equal({foo: "bar", a: 10, b: {c: 2}, d: [3, 4, 5]});
 			});
+		it("Mixin handles functions",
+			function () {
+				Obj.mixin({ foo: "bar", a: 10 }, null, function someFn() {}).should.deep.equal({ foo: "bar", a: 10 });
+			});
+		it("Mixin ignores undefined",
+			function () {
+				Obj.mixin({ foo: "bar", a: 10 }, null, undefined as any, {b: 20}).should.deep.equal({ foo: "bar", a: 10, b: 20 });
+			});
 		it("destroy nulls object properties or calls destroy() on object",
 			function() {
 				let obj = new Able();

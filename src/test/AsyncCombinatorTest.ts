@@ -1,5 +1,5 @@
 import {should} from "chai";
-import { async } from "../lib/standard/AsyncCombinators";
+import { async } from "../lib/Decorators";
 should();
 
 describe("AsyncCombinators",

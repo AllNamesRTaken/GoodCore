@@ -1,5 +1,5 @@
 import {should} from "chai";
-import { after, around, before, provided } from "../lib/standard/Combinators";
+import { after, around, before, provided } from "../lib/Decorators";
 should();
 
 describe("Combinators",

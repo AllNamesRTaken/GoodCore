@@ -13,6 +13,10 @@ describe("Test",
 			this.win = win;
 			Global.window = null;
 		});
+		it("Env.isNode should be true",
+			function () {
+				Test.Env.isNode().should.be.true;
+			});
 		it("hasWindow returns false when no window is available",
 			function () {
 				Test.hasWindow().should.be.false;
@@ -21,9 +25,9 @@ describe("Test",
 			function () {
 				Test.Env.hasFastNativeArrays().should.be.true;
 			});
-		it("hasConsole returns false when no window is available",
+		it("hasConsole returns true if console is available available",
 			function () {
-				Test.hasConsole().should.be.false;
+				Test.hasConsole().should.be.true;
 			});
 		it("hasWindow returns true when window is available",
 			function () {
