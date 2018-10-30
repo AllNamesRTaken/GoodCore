@@ -1,5 +1,5 @@
 import { clone, setProperties } from "./Obj";
-import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env } from "./Test";
+import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction } from "./Test";
 
 class ArrayState {
 	public static _int: number;
@@ -441,17 +441,70 @@ export function create<T>(length: number, populator: (i?: number, arr?: T[]) => 
 	}
 	return arr;
 }
-export function zip<S, T, U = [S|undefined, T|undefined]>(
+type zipFn<S, T, U, V = undefined, W = undefined> = (i: number, a: S, b: T, c?: V, d?: W) => U;
+export function zip<S, T, U = [S, T], V = undefined, W = undefined>(
 	a: S[], 
 	b: T[], 
-	fn: (a: S|undefined, b: T|undefined, i?: number) => U = (a: S|undefined, b: T|undefined): U => [a, b] as any 
+	fn?: zipFn<S, T, U, V, W>,
+	c?: undefined, 
+	d?: undefined, 
+): U[];
+export function zip<S, T, V, U = [S, T, V], W = undefined>(
+	a: S[], 
+	b: T[], 
+	c: V[], 
+	fn?: zipFn<S, T, U, V, W>,
+	d?: undefined, 
+): U[];
+export function zip<S, T, V, W, U = [S, T, V, W]>(
+	a: S[], 
+	b: T[], 
+	c: V[], 
+	d: W[], 
+	fn?: zipFn<S, T, U, V, W>,
+): U[]; 
+export function zip<S, T, V = undefined, W = undefined, U = [S, T] | [S, T, V] | [S, T, V, W]>(
+	a: S[], 
+	b: T[], 
+	x?: zipFn<S, T, U, V, W> | V[], 
+	y?: zipFn<S, T, U, V, W> | W[], 
+	z?: zipFn<S, T, U, V, W>,
 ): U[] {
+	let c: V[] | undefined;
+	let d: W[] | undefined;
+	let defaultZipFn = (i: number, a: S, b: T): U => [a, b] as any;
+	let fn: zipFn<S, T, U, V, W> = 
+		isNotUndefined(x) ? 
+			isFunction(x) ? 
+				x! as zipFn<S, T, U, V, W> : 
+				(c = x as V[], isNotUndefined(y) ? 
+					isFunction(y) ? 
+						y! as zipFn<S, T, U, V, W> :
+						(d = y as W[], isNotUndefined(z) ?
+							z! :
+							defaultZipFn 
+						) :
+					defaultZipFn
+				) :
+		defaultZipFn;
 	let i = -1;
-	let max = Math.max(a.length, b.length);
+	let hasC = isNotUndefined(c);
+	let hasD = isNotUndefined(d);
+	let max = Math.min(a.length, b.length, hasC ? c!.length : Number.POSITIVE_INFINITY, hasD ? d!.length : Number.POSITIVE_INFINITY);
 	let u: U;
 	let result: U[] = [];
-	while (++i < max && (u = fn(a[i], b[i], i)) !== undefined) {
-		result.push(u);
+	if (hasC && hasD) {
+			while (++i < max && (u = fn(i, a[i], b[i], c![i], d![i] )) !== undefined) {
+			result.push(u);
+		}
+	} else if (hasC) {
+		while (++i < max && (u = fn(i, a[i], b[i], c![i] )) !== undefined) {
+			result.push(u);
+		}
+	} else {
+		while (++i < max && (u = fn(i, a[i], b[i] )) !== undefined) {
+			result.push(u);
+		}
 	}
 	return result;
 }

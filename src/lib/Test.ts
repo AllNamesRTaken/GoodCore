@@ -48,7 +48,7 @@ export class Env {
 	private static _isBlink: boolean;
 	public static isBlink(): boolean {
 		this._isBlink = this._isBlink || (hasWindow() && (this.isChrome || this.isOpera) && !!((Global.window as any).CSS));
-		return this._isBlink
+		return this._isBlink;
 	}
 	public static hasFastNativeArrays(): boolean {
 		// Node 10+, Chrome (modern) and FF (modern) has some very fast array operations
@@ -96,7 +96,7 @@ export function areNullOrUndefined(...args: any[]): boolean {
 	return result;
 }
 export function areNotNullOrUndefined(...args: any[]): boolean {
-	return !areNullOrUndefined.apply(this, Array.prototype.slice.apply(arguments));;
+	return !areNullOrUndefined.apply(this, Array.prototype.slice.apply(arguments));
 }
 export function isNull(arg: any): boolean {
 	return arg === null;

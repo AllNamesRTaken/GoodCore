@@ -477,7 +477,7 @@ describe("Arrays",
 		it("Zip zips 2 arrays",
 		function() {
 			Arr.zip([1, 2, 3], ["a", "b", "c"]).should.deep.equal([[1, "a"], [2, "b"], [3, "c"]]);
-			Arr.zip<number, string, string>([1, 2, 3], ["a", "b", "c"], (a, b, i) => b!.repeat(a!) )
+			Arr.zip<number, string, string>([1, 2, 3], ["a", "b", "c"], (i, a, b) => b.toString().repeat(a!) )
 				.should.deep.equal([ "a", "bb", "ccc" ]);
 		});
 		it("Unzip unzips 1 array to a tuple of 2 arrays",
