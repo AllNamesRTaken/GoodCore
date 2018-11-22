@@ -28,6 +28,7 @@ export function create(html: string, attr?: Indexable<any>): HTMLElement {
 	let result: HTMLElement, keys: string[], i: number, k: number, styles: any, styleKeys: string[];
 	let usesTemplate = DomState._template && DomState._template!.content && true;
 	let usesParser = DomState._parser && true;
+	html = html.trim();
 	if (/^[a-zA-Z]+$/.test(html)) {
 		result = Global.window!.document.createElement(html);
 	} else {
@@ -60,7 +61,7 @@ export function outerHTML(el: HTMLElement): string {
 	return result;
 }
 export function setAttr(_el: HTMLElement | String, attr?: Indexable<any>) {
-	let el: HTMLElement;
+	let el: HTMLElement | null;
 	if (typeof (_el) === "string") {
 		el = get(_el);
 	} else {
@@ -72,7 +73,7 @@ export function setAttr(_el: HTMLElement | String, attr?: Indexable<any>) {
 		styles: Indexable<Indexable<string | null>>, 
 		styleKeys: string[], 
 		style: Indexable<string | null>;
-	if (attr !== undefined && typeof (attr) === "object") {
+	if (el !== null && attr !== undefined && typeof (attr) === "object") {
 		keys = Object.keys(attr);
 		for (i = 0; i < keys.length; i++) {
 			if (keys[i] === "style") {
@@ -114,19 +115,21 @@ export function clear(element: Node) {
 		element.removeChild(element.childNodes[i]);
 	}
 }
-export function get(id: string): HTMLElement {
+export function get(id: string): HTMLElement | null {
 	let result = DomState._document!.getElementById(id) as HTMLElement;
 	if (result === null) {
 		switch (id) {
-			default:
+			case "body":
 				result = DomState._document!.body;
+				break;
+			default:
 				break;
 		}
 	}
 	return result;
 }
-export function find(selector: string): HTMLElement {
-	return DomState._document!.querySelector(selector) as HTMLElement;
+export function find(selector: string, root?: HTMLElement): HTMLElement {
+	return (root || DomState._document)!.querySelector(selector) as HTMLElement;
 }
 function toArray<T>(arr: ArrayLike<T>): T[] {
 	return Array.prototype.slice.call(arr);

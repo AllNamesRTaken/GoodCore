@@ -13,6 +13,11 @@ describe("Dom",
 			this.html2 = "<div id=\"foo\"><div id=\"sub1\"></div><div id=\"sub2\"></div></div>";
 			Dom.init(win);
 		});
+		it("Create html with space trims space",
+		function() {
+			const el = Dom.create(" <div> ");
+			el.tagName.should.equal("DIV");
+		});
 		it("Create 'table' creates a table",
 			function() {
 				const el = Dom.create("table");
@@ -50,8 +55,12 @@ describe("Dom",
 			function() {
 				const el = Dom.create(this.html2);
 				this.document.body.appendChild(el);
-				const chld = Dom.find("#sub1");
+				let chld = Dom.find("#sub1");
 				chld.id.should.equal("sub1");
+				chld = Dom.find("#sub1", this.document.body);
+				chld.id.should.equal("sub1");
+				chld = Dom.find("#sub1", chld);
+				(chld === null).should.be.true;
 				el.parentNode!.removeChild(el);
 			});
 		it("FindAll finds right elements",
@@ -77,9 +86,10 @@ describe("Dom",
 			function() {
 				const el = Dom.create(this.html2);
 				this.document.body.appendChild(el);
-				const chld = Dom.get("sub2");
+				const chld = Dom.get("sub2")!;
 				chld.id.should.equal("sub2");
-				Dom.get("body").tagName.should.equal("BODY");
+				Dom.get("body")!.tagName.should.equal("BODY");
+				(Dom.get("notvalid") === null).should.be.true;
 				el.parentNode!.removeChild(el);
 			});
 		it("Is matches element with selector",
