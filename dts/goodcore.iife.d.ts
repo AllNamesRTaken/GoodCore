@@ -36,7 +36,7 @@ interface IBasicList<T> {
 	[Symbol.iterator](): IterableIterator<T>;
 	next(value?: any): IteratorResult<T>;
 	values: T[];
-	get(pos: number): T;
+	get(pos: number): T | undefined;
 	count: number;
 	clear(): IBasicList<T>;
 	add(v: T): IBasicList<T> | undefined;
@@ -44,40 +44,36 @@ interface IBasicList<T> {
 	shift(): T | undefined;
 	copy(src: IBasicList<T> | T[]): IBasicList<T>;
 	clone(): IBasicList<T>;
-	truncate(size?: number): IBasicList<T>
+	truncate(size?: number): IBasicList<T>;
 	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
 	remove(v: T): IBasicList<T>;
 	removeFirst(fn: (el: T) => boolean): T | undefined;
 	removeAt(n: number): T | undefined;
 	forEach(fn: (el: T, i?: number) => any, startIndex?: number): IBasicList<T>;
-	forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>
+	forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>;
 	until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): IBasicList<T>;
 	until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number, startIndex?: number) => void): IBasicList<T>;
-	reverseForEach(fn: (el: T, i: number) => any): IBasicList<T>
-	reverseUntil(fnOrTest: (el: T, i: number) => boolean): IBasicList<T>;
-	reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): IBasicList<T>;
+	reverseForEach(fn: (el: T, i: number) => any): IBasicList<T>;
+	reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): IBasicList<T>;
 	first(fn?: (el: T) => boolean): T | undefined;
 	find(fn: (el: T) => boolean): T | undefined;
 	last(): T | undefined;
 	indexOf(v: T | ((el: T) => boolean)): number;
 	contains(v: T | ((el: T) => boolean)): boolean;
-	some(fn: (el: T) => boolean): boolean
-	all(fn: (el: T) => boolean): boolean
+	some(fn: (el: T) => boolean): boolean;
+	all(fn: (el: T) => boolean): boolean;
 	select(fn: (el: T) => boolean): IBasicList<T>;
 	selectInto(src: IBasicList<T> | T[], fn: (el: T) => boolean): IBasicList<T>;
 	head(count?: number): IBasicList<T>;
 	tail(count?: number): IBasicList<T>;
 	map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
-	mapInto(src: IBasicList<any> | Array<any>, fn: (el: any, i?: number) => any): IBasicList<T>;
+	mapInto(src: IBasicList<any> | any[], fn: (el: any, i?: number) => any): IBasicList<T>;
 	reduce(fn: (acc: any, cur: T) => any, start: any): any;
 	reverseReduce(fn: (acc: any, cur: T) => any, start: any): any;
 	equals(b: IBasicList<T>): boolean;
 	same(b: IBasicList<T>): boolean;
 	intersect(b: IBasicList<T>): IBasicList<T>;
 	union(b: IBasicList<T>): IBasicList<T>;
-	// zip<U, V>(list: IBasicList<U>, fn: (t: T, u: U) => V): IBasicList<V>;
-	// unzip<U, V>(fn: (el: T) => [U, V]): [IBasicList<U>, IBasicList<V>];
-	// flatten<U>(maxDepth?: number): IBasicList<U>
 	toJSON(): any;
 	serialize(): T[];
 }

@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.20.10",
+  "version": "0.20.11",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "goodcore.bundle.js",
   "module": "index.js",
@@ -15,6 +15,7 @@
     "dev": "npm run clean && tsc -p tsconfig.app.json && webpack --env.MODE=development && gulp modifyBundle && gulp copyDTS && gulp copyWebpackExternalsFn",
     "build": "npm run clean && tsc -p tsconfig.app.json && webpack --env.MODE=production && gulp modifyBundle && gulp copyDTS && gulp copyWebpackExternalsFn",
     "build-es": "tsc -p tsconfig.es6.json && gulp copyDTSES",
+    "build-all": "npm run build && npm run build-es",
     "bench": "tsc -p tsconfig.bench.json && node ./dist/benchmark/index.js",
     "test": "npm run clean && tsc -p tsconfig.test.json && npm run run_test",
     "testcoverage": "npm run clean && tsc -p tsconfig-test.json && npm run coveralls",

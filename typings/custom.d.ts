@@ -33,16 +33,19 @@ interface IDeserializable<T> {
 	deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IBasicList<T> {
+	[Symbol.iterator](): IterableIterator<T>;
+	next(value?: any): IteratorResult<T>;
 	values: T[];
 	get(pos: number): T | undefined;
 	count: number;
 	clear(): IBasicList<T>;
-	add(v: T): IBasicList<T>;
+	add(v: T): IBasicList<T> | undefined;
 	pop(): T | undefined;
 	shift(): T | undefined;
 	copy(src: IBasicList<T> | T[]): IBasicList<T>;
-	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
 	clone(): IBasicList<T>;
+	truncate(size?: number): IBasicList<T>;
+	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
 	remove(v: T): IBasicList<T>;
 	removeFirst(fn: (el: T) => boolean): T | undefined;
 	removeAt(n: number): T | undefined;
@@ -61,6 +64,8 @@ interface IBasicList<T> {
 	all(fn: (el: T) => boolean): boolean;
 	select(fn: (el: T) => boolean): IBasicList<T>;
 	selectInto(src: IBasicList<T> | T[], fn: (el: T) => boolean): IBasicList<T>;
+	head(count?: number): IBasicList<T>;
+	tail(count?: number): IBasicList<T>;
 	map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
 	mapInto(src: IBasicList<any> | any[], fn: (el: any, i?: number) => any): IBasicList<T>;
 	reduce(fn: (acc: any, cur: T) => any, start: any): any;
@@ -69,6 +74,8 @@ interface IBasicList<T> {
 	same(b: IBasicList<T>): boolean;
 	intersect(b: IBasicList<T>): IBasicList<T>;
 	union(b: IBasicList<T>): IBasicList<T>;
+	toJSON(): any;
+	serialize(): T[];
 }
 interface IList<T> extends IBasicList<T> {
 	getByIndex(key: number | string): T | undefined;
