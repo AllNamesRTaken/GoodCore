@@ -8,9 +8,6 @@ import { Initable } from "./mixins/Initable";
 import { Poolable } from "./mixins/Poolable";
 import { Pool } from "./standard/Pool";
 import { Dictionary } from "./struct/Dictionary";
-import { IRange2 } from "./struct/IRange2";
-import { IRect } from "./struct/IRect";
-import { IVec2 } from "./struct/IVec2";
 import { KeyValuePair } from "./struct/KeyValuePair";
 import { List } from "./struct/List";
 import { Range2 } from "./struct/Range2";
@@ -22,7 +19,8 @@ import * as Test from "./Test";
 import { Timer } from "./Timer";
 import { Uri } from "./Uri";
 import * as Util from "./Util";
-import { Decorators } from ".";
+import * as Decorators from "./Decorators";
+
 export function integrate(alias?: string | object) {
 	let stringAlias = false;
 	let objectAlias = false;

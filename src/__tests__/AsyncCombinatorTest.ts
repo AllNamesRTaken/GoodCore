@@ -1,16 +1,14 @@
-import {should} from "chai";
 import { async } from "../lib/Decorators";
-should();
 
 describe("AsyncCombinators",
-	function() {
-		it("before acts before",
-			function(done) {
+	() => {
+		test("before acts before",
+			function (done) {
 				class Person {
 					public anxiety: number = 0;
-					@async.before!( function(): Promise<any> { 
-						return new Promise<any>( (resolve, reject) => {
-							setTimeout( () => {
+					@async.before!(function (): Promise<any> {
+						return new Promise<any>((resolve, reject) => {
+							setTimeout(() => {
 								this.anxiety++;
 								resolve();
 							});
@@ -18,11 +16,11 @@ describe("AsyncCombinators",
 					})
 					@async
 					public fret(...args: any[]) {
-						this.anxiety.should.equal(1);
+						expect(this.anxiety).toBe(1);
 						this.anxiety++;
 					}
-					@async.before!( function(): Promise<any> { 
-						return new Promise<any>( (resolve, reject) => {
+					@async.before!(function (): Promise<any> {
+						return new Promise<any>((resolve, reject) => {
 							reject();
 						});
 					})
@@ -33,23 +31,23 @@ describe("AsyncCombinators",
 				}
 				let sam = new Person();
 				(sam.fret(1) as any).then(() => {
-					sam.anxiety.should.equal(2);
+					expect(sam.anxiety).toBe(2);
 				});
 				(sam.error(1) as any)
-				.then(() => {
-				})
-				.catch((reason: Error) => {
-					done();
-				});
-				sam.anxiety.should.equal(0);				
+					.then(() => {
+					})
+					.catch((reason: Error) => {
+						done();
+					});
+				expect(sam.anxiety).toBe(0);
 			});
-		it("after acts after",
-			function(done) {
+		test("after acts after",
+			function (done) {
 				class Person {
 					public anxiety: number = 0;
-					@async.after!( function(value, reason): Promise<any> { 
-						return new Promise<any>( (resolve, reject) => {
-							setTimeout( () => {
+					@async.after!(function (value, reason): Promise<any> {
+						return new Promise<any>((resolve, reject) => {
+							setTimeout(() => {
 								this.anxiety++;
 								resolve();
 							});
@@ -58,10 +56,10 @@ describe("AsyncCombinators",
 					@async
 					public fret(...args: any[]) {
 						this.anxiety++;
-						this.anxiety.should.equal(1);
+						expect(this.anxiety).toBe(1);
 					}
-					@async.after!( function(_: any, reason: Error ): Promise<any> { 
-						return new Promise<any>( (resolve, reject) => {
+					@async.after!(function (_: any, reason: Error): Promise<any> {
+						return new Promise<any>((resolve, reject) => {
 							reject(reason);
 						});
 					})
@@ -72,21 +70,21 @@ describe("AsyncCombinators",
 				}
 				let sam = new Person();
 				(sam.fret(1) as any).then(() => {
-					sam.anxiety.should.equal(2);
+					expect(sam.anxiety).toBe(2);
 				});
 				(sam.error(1) as any).then(() => {
 				})
-				.catch( (reason: Error) => {
-					done();
-				});
+					.catch((reason: Error) => {
+						done();
+					});
 			});
-		it("provided acts if provided",
-			function(done) {
+		test("provided acts if provided",
+			function (done) {
 				class Person {
 					public anxiety: number = 0;
-					@async.provided!(function(): Promise<any> { 
-						return new Promise<any>( (resolve, reject) => {
-							setTimeout( () => {
+					@async.provided!(function (): Promise<any> {
+						return new Promise<any>((resolve, reject) => {
+							setTimeout(() => {
 								resolve(this.anxiety === 0);
 							});
 						});
@@ -95,9 +93,9 @@ describe("AsyncCombinators",
 					public fret(...args: any[]) {
 						this.anxiety++;
 					}
-					@async.provided!(function(name: string, ok: boolean): Promise<any> { 
-						return new Promise<any>( (resolve, reject) => {
-							setTimeout( () => {
+					@async.provided!(function (name: string, ok: boolean): Promise<any> {
+						return new Promise<any>((resolve, reject) => {
+							setTimeout(() => {
 								if (ok) {
 									resolve(true);
 								} else {
@@ -113,16 +111,16 @@ describe("AsyncCombinators",
 				}
 				let sam = new Person();
 				(sam.fret(1) as any).then(() => {
-					sam.anxiety.should.equal(1);
+					expect(sam.anxiety).toBe(1);
 					(sam.fret(1) as any).then(() => {
-					}).catch( (reason: any) => {
-						sam.anxiety.should.equal(1);
+					}).catch((reason: any) => {
+						expect(sam.anxiety).toBe(1);
 					});
 				});
 				(sam.error(true) as any).catch((reason: Error) => {
-					reason.message.should.equal("reason");
+					expect(reason.message).toBe("reason");
 					(sam.error(false) as any).catch((reason: string) => {
-						reason.should.equal("reject");
+						expect(reason).toBe("reject");
 						done();
 					});
 				});

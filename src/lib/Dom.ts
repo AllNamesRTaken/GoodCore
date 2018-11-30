@@ -39,9 +39,9 @@ export function create(html: string, attr?: Indexable<any>): HTMLElement {
 			clear(template.content);
 		} else if (usesParser) {
 			let parser = DomState._parser!;
-			let doc = parser.parseFromString(html, "text/xml"),
+			let doc = parser.parseFromString(html, "text/html"),
 			fragment = DomState._fragment!;
-			fragment.appendChild( doc.documentElement );
+			fragment.appendChild( doc.documentElement as Node);
 			result = fragment.firstChild as HTMLElement;
 			clear(fragment);
 		} else {
@@ -60,7 +60,7 @@ export function outerHTML(el: HTMLElement): string {
 	clear(DomState._el!);
 	return result;
 }
-export function setAttr(_el: HTMLElement | String, attr?: Indexable<any>) {
+export function setAttr(_el: HTMLElement | Node | String, attr?: Indexable<any>) {
 	let el: HTMLElement | null;
 	if (typeof (_el) === "string") {
 		el = get(_el);
@@ -99,8 +99,8 @@ export function setAttr(_el: HTMLElement | String, attr?: Indexable<any>) {
 		}
 	}
 }
-export function remove(element: Element): HTMLElement | null {
-	return isNullOrUndefined(element.parentNode) ? null : element.parentNode!.removeChild(element) as HTMLElement;
+export function remove(element: Element | Node): Element | Node | null {
+	return isNullOrUndefined(element.parentNode) ? null : element.parentNode!.removeChild(element) as Element | Node;
 }
 export function replace(src: HTMLElement, target: HTMLElement): HTMLElement {
 	let result: HTMLElement = target;
@@ -128,20 +128,20 @@ export function get(id: string): HTMLElement | null {
 	}
 	return result;
 }
-export function find(selector: string, root?: HTMLElement): HTMLElement {
-	return (root || DomState._document)!.querySelector(selector) as HTMLElement;
+export function find(selector: string, root?: Element): Element | null {
+	return (root || DomState._document)!.querySelector(selector) as Element | null;
 }
 function toArray<T>(arr: ArrayLike<T>): T[] {
 	return Array.prototype.slice.call(arr);
 }
-export function findAll(selector: string, root?: HTMLElement) {
+export function findAll(selector: string, root?: HTMLElement): Element[] {
 	return toArray((root || DomState._document!).querySelectorAll(selector));
 }
-export function children(root: HTMLElement, selector?: string) {
+export function children(root: Element, selector?: string): Element[] {
 	const children = toArray((root || DomState._document).children);
-	return selector === undefined ? children : children.filter(is.bind(this, selector));
+	return selector === undefined ? children : children.filter((el) => is(selector, el));
 }
-export function findParent(root: HTMLElement, selector: string): HTMLElement | null {
+export function findParent(root: Element, selector: string): HTMLElement | null {
 	let result = root.parentElement;
 	while (result) {
 		if (is(selector, result)) {
@@ -155,12 +155,12 @@ export function position(el: HTMLElement, x: number, y: number): void {
 	el.style.top = `${y}px`;
 	el.style.left = `${x}px`;
 }
-export function is(selector: string, element: HTMLElement): boolean {
+export function is(selector: string, element: Element): boolean {
 	let result = false;
 	if (element.matches) {
 		result = element.matches(selector);
-	} else if (element.msMatchesSelector) {
-		result = element.msMatchesSelector(selector);
+	} else if ((element as any).msMatchesSelector) {
+		result = ((element as any).msMatchesSelector)(selector);
 	} else if (element.webkitMatchesSelector) {
 		result = element.webkitMatchesSelector(selector);
 	} else {

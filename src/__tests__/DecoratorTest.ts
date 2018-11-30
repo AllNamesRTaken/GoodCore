@@ -1,13 +1,10 @@
-import { should } from "chai";
 import { debounced, once, asserts, deprecated } from "../lib/Decorators";
 import { assert, AssertError, pipeOut } from "../lib/Util";
 import { isNumber } from "../lib/Test";
-import { isSameClass } from "../lib/Obj";
-should();
 
 describe("Decorators",
-	function () {
-		it("debounced should debounce the instance function",
+	() => {
+		test("debounced should debounce the instance function",
 			function (done) {
 				class Foo {
 					public value = 0;
@@ -22,13 +19,13 @@ describe("Decorators",
 				foo1.setFoo();
 				foo2.setFoo();
 				setTimeout(() => {
-					foo1.value.should.equal(1);
-					foo2.value.should.equal(1);
+					expect(foo1.value).toBe(1);
+					expect(foo2.value).toBe(1);
 					done();
 				}, 20);
 			});
-		it("debounced on async with leading should return same promise",
-			async function () {
+		test("debounced on async with leading should return same promise",
+			async () => {
 				class Foo {
 					public value = 0;
 					@debounced(20, { leading: true })
@@ -39,17 +36,17 @@ describe("Decorators",
 				let foo1 = new Foo();
 				let val: number = 0;
 				val = await foo1.setFoo();
-				val.should.equal(1);
+				expect(val).toBe(1);
 				val = await foo1.setFoo();
-				val.should.equal(1);
+				expect(val).toBe(1);
 				setTimeout(async () => {
 					val = await foo1.setFoo();
-					val.should.equal(2);
+					expect(val).toBe(2);
 				}, 20);
 				return true;
 			});
-		it("debounced on async without leading should return same promise",
-			async function () {
+		test("debounced on async without leading should return same promise",
+			async () => {
 				class Foo {
 					public value = 0;
 					@debounced(20)
@@ -60,19 +57,19 @@ describe("Decorators",
 				let foo1 = new Foo();
 				let val: number = 0;
 				foo1.setFoo();
-				val.should.equal(0);
+				expect(val).toBe(0);
 				val = await foo1.setFoo();
-				val.should.equal(1);
+				expect(val).toBe(1);
 				let result = foo1.setFoo();
 				setTimeout(async () => {
 					val = await result;
-					val.should.equal(2);
+					expect(val).toBe(2);
 				}, 20);
 				await result;
 				return true;
 			});
-		it("once returns first value",
-			function () {
+		test("once returns first value",
+			() => {
 				class Person {
 					public anxiety: number = 0;
 					@once
@@ -83,10 +80,10 @@ describe("Decorators",
 				let sam = new Person();
 				sam.fret(1, 2, 3);
 				sam.fret(1, 2, 3);
-				sam.anxiety.should.equal(1);
+				expect(sam.anxiety).toBe(1);
 			});
-		it("deprecate warns on first use",
-			function () {
+		test("deprecate warns on first use",
+			() => {
 				class Person {
 					@deprecated()
 					public dep1() {
@@ -102,14 +99,14 @@ describe("Decorators",
 				pipeOut(null, (message: string) => warning = message);
 				let sam = new Person();
 				sam.dep1();
-				warning.should.equal("Function Person::dep1 is deprecated");
+				expect(warning).toBe("Function Person::dep1 is deprecated");
 				sam.dep2();
-				warning.should.equal("Function Person::dep2 is deprecated please use nonDep instead");
+				expect(warning).toBe("Function Person::dep2 is deprecated please use nonDep instead");
 				sam.dep3();
-				warning.should.equal("please change Person.dep3 into nonDep");
+				expect(warning).toBe("please change Person.dep3 into nonDep");
 			});
-		it("assert decorated function throws",
-			function () {
+		test("assert decorated function throws",
+			() => {
 				class Person {
 					public anxiety: number = 0;
 					@asserts(function(howMuch: number) {
@@ -123,23 +120,23 @@ describe("Decorators",
 				}
 				let sam = new Person();
 				sam.fret(1);
-				sam.anxiety.should.equal(1);
+				expect(sam.anxiety).toBe(1);
 				try {
 					sam.fret(-1);
 				} catch (err) {
-					(err instanceof AssertError).should.be.true;
-					err.message.should.contain("howMuch > 0");
+					expect((err instanceof AssertError)).toBe(true);
+					expect(err.message).toContain("howMuch > 0");
 				}
 				try {
 					sam.fret(20);
 				} catch (err) {
-					(err instanceof AssertError).should.be.true;
-					err.message.should.contain("anxiety has to be below 10");
+					expect((err instanceof AssertError)).toBe(true);
+					expect(err.message).toContain("anxiety has to be below 10");
 				}
-				sam.anxiety.should.equal(1);
+				expect(sam.anxiety).toBe(1);
 			});
-		it("assert with result returns result",
-			function () {
+		test("assert with result returns result",
+			() => {
 				class Person {
 					public anxiety: number = 0;
 					@asserts((howMuch: number) => {
@@ -154,10 +151,10 @@ describe("Decorators",
 				}
 				let sam = new Person();
 				sam.fret(1);
-				sam.anxiety.should.equal(1);
-				sam.fret(-1).should.equal(-999);
-				sam.fret("foo" as any).should.equal(-10);
-				sam.anxiety.should.equal(1);
+				expect(sam.anxiety).toBe(1);
+				expect(sam.fret(-1)).toBe(-999);
+				expect(sam.fret("foo" as any)).toBe(-10);
+				expect(sam.anxiety).toBe(1);
 			});
 	}
 );

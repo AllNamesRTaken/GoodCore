@@ -1,13 +1,9 @@
-import {should} from "chai";
 import { Graph, GraphNode } from "../../lib/wip/Graph";
-import { notDeepEqual } from "assert";
-
-should();
 
 describe("Graph",
-	function() {
-		it("builds a graph",
-			function() {
+	() => {
+		test("builds a graph",
+			() => {
 				let graph = new Graph<{value?: number}>();
 				graph.fromNodeList([
 					{id: 0, nodeType: "red", data: {}, neighbours: ["1", "2"], costs: [10, 20], edgeTypes: ["down", "down"]},
@@ -15,15 +11,15 @@ describe("Graph",
 					{id: 2, nodeType: "blue", data: {}, neighbours: ["0", "3"], costs: [20, 10], edgeTypes: ["up", "down"]},
 					{id: 3, nodeType: "green", data: {value: 2}, neighbours: ["1", "2"], costs: 10, edgeTypes: ["up", "up"]},
 				]);
-				graph.get(0)!.neighbours.length.should.equal(2);
-				graph.size.should.equal(4);
-				graph.get(2)!.nodeType!.should.equal("blue");
-				graph.get(2)!.costs.get(0)!.should.equal("20");
-				graph.get(2)!.edgeTypes.get(1)!.should.equal("down");
-				graph.get(3)!.data!.value!.should.equal(2);
+				expect(graph.get(0)!.neighbours.length).toBe(2);
+				expect(graph.size).toBe(4);
+				expect(graph.get(2)!.nodeType!).toBe("blue");
+				expect(graph.get(2)!.costs.get(0)!).toBe("20");
+				expect(graph.get(2)!.edgeTypes.get(1)!).toBe("down");
+				expect(graph.get(3)!.data!.value!).toBe(2);
 			});
-		it("traverse goes through all nodes",
-			function() {
+		test("traverse goes through all nodes",
+			() => {
 				let graph = new Graph<{value?: number}>();
 				graph.fromNodeList([
 					{id: 0, nodeType: "red", data: {}, neighbours: ["1", "2"], costs: [10, 20], edgeTypes: ["down", "down"]},

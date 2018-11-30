@@ -1,9 +1,6 @@
 var gulp = require("gulp");
-var debug = require("gulp-debug");
 var sequence = require("gulp-sequence");
-var replace = require('gulp-replace');
 var fs = require("fs");
-var chalk = require("chalk");
 var rename = require("gulp-rename");
 
 var config = require("./build/buildConfig.js");

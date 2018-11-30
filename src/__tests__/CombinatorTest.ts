@@ -1,45 +1,43 @@
-import {should} from "chai";
 import { after, around, before, provided } from "../lib/Decorators";
-should();
 
 describe("Combinators",
-	function() {
-		it("before acts before",
-			function() {
+	() => {
+		test("before acts before",
+			() => {
 				class Person {
 					public anxiety: number = 0;
 					@before(function() { 
 						this.anxiety++;
 					})
 					public fret(...args: any[]) {
-						this.anxiety.should.equal(1);
+						expect(this.anxiety).toBe(1);
 						this.anxiety++;
 					}
 				}
 				let sam = new Person();
 				sam.fret(1, 2, 3);
-				sam.anxiety.should.equal(2);
+				expect(sam.anxiety).toBe(2);
 			});
 
-		it("after acts after",
-			function() {
+		test("after acts after",
+			() => {
 				class Person {
 					public anxiety: number = 0;
 					@after(function(name: string) { 
 						this.anxiety++;
-						name.should.equal("fret");
+						expect(name).toBe("fret");
 					})
 					public fret(...args: any[]) {
-						this.anxiety.should.equal(0);
+						expect(this.anxiety).toBe(0);
 						this.anxiety++;
 					}
 				}
 				let sam = new Person();
 				sam.fret(1, 2, 3);
-				sam.anxiety.should.equal(2);
+				expect(sam.anxiety).toBe(2);
 			});
-		it("around acts around",
-			function() {
+		test("around acts around",
+			() => {
 				class Person {
 					public anxiety: number = 0;
 					@around(function(callback) { 
@@ -48,16 +46,16 @@ describe("Combinators",
 						this.anxiety++;
 					})
 					public fret(...args: any[]) {
-						this.anxiety.should.equal(1);
+						expect(this.anxiety).toBe(1);
 						this.anxiety++;
 					}
 				}
 				let sam = new Person();
 				sam.fret(1, 2, 3);
-				sam.anxiety.should.equal(3);
+				expect(sam.anxiety).toBe(3);
 			});
-		it("provided acts if provided",
-			function() {
+		test("provided acts if provided",
+			() => {
 				class Person {
 					public anxiety: number = 0;
 					@provided(function(name: string) { 
@@ -69,12 +67,12 @@ describe("Combinators",
 				}
 				let sam = new Person();
 				sam.fret(1, 2, 3);
-				sam.anxiety.should.equal(1);
+				expect(sam.anxiety).toBe(1);
 				sam.fret(1, 2, 3);
-				sam.anxiety.should.equal(1);
+				expect(sam.anxiety).toBe(1);
 			});
-		it("combination acts from outer to inner",
-			function() {
+		test("combination acts from outer to inner",
+			() => {
 				class Person {
 					public anxiety: number = 0;
 					@provided(function() { 
@@ -89,9 +87,9 @@ describe("Combinators",
 				}
 				let sam = new Person();
 				sam.fret(1, 2, 3);
-				sam.anxiety.should.equal(2);
+				expect(sam.anxiety).toBe(2);
 				sam.fret(1, 2, 3);
-				sam.anxiety.should.equal(2);
+				expect(sam.anxiety).toBe(2);
 			});
 			
 	}

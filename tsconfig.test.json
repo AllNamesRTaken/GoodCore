@@ -23,9 +23,6 @@
             "es2015.promise",
 			"scripthost"
 		],
-		"types": [
-			"node"
-		]
     },
 	"include": [
 		"./src/**/*.ts",

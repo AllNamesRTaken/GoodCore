@@ -227,7 +227,7 @@ export function forEach<T extends {[index: string]: any}, U = any>(
 ): void {
 	if (isArray(target)) {
 		let i = - 1;
-		const len = target.length;
+		const len = (target as U[]).length;
 		while (++i < len && false !== fn((target as U[])[i], i)) {
 		}
 	} else {

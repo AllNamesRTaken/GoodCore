@@ -1,11 +1,9 @@
-import {should} from "chai";
 import { Initable } from "../lib/mixins/Initable";
-should();
 
 describe("Initable",
-	function() {
-		it("Initable works as function wrapper around anon class",
-			function() {
+	() => {
+		test("Initable works as function wrapper around anon class",
+			() => {
 				class Person extends Initable(class {
 					public name: string = "";
 					public age: number = 0;
@@ -15,10 +13,10 @@ describe("Initable",
 				
 				sam.init({age: 17, name: "Sam", superPower: "badassery"});
 				console.log(JSON.stringify(new Person()), JSON.stringify(sam));
-				sam.age.should.equal(17);
+				expect(sam.age).toBe(17);
 			});
-		it("Initable works as function wrapper around Object",
-			function() {
+		test("Initable works as function wrapper around Object",
+			() => {
 				class Person extends Initable(Object) {
 					public name: string = "";
 					public age: number = 0;
@@ -28,10 +26,10 @@ describe("Initable",
 				
 				sam.init({age: 17, name: "Sam", superPower: "badassery"});
 				console.log(JSON.stringify(new Person()), JSON.stringify(sam));
-				sam.age.should.equal(17);
+				expect(sam.age).toBe(17);
 			});
-		it("Initable works as function wrapper around named class",
-			function() {
+		test("Initable works as function wrapper around named class",
+			() => {
 				class Human {
 					public name: string = "";
 					public age: number = 0;
@@ -42,10 +40,10 @@ describe("Initable",
 				
 				sam.init({age: 17, name: "Sam", superPower: "badassery"});
 				console.log(JSON.stringify(new Person()), JSON.stringify(sam));
-				sam.age.should.equal(17);
+				expect(sam.age).toBe(17);
 			});
-		it("Initable works as decorator",
-			function() {
+		test("Initable works as decorator",
+			() => {
 				@Initable
 				class Person {
 					public name: string = "";
@@ -56,7 +54,7 @@ describe("Initable",
 				
 				(sam as any).init({age: 17, name: "Sam", superPower: "badassery"});
 				console.log(JSON.stringify(new Person()), JSON.stringify(sam));
-				sam.age.should.equal(17);
+				expect(sam.age).toBe(17);
 			});
 	}
 );
