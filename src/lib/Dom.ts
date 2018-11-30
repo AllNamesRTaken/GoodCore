@@ -109,7 +109,7 @@ export function replace(src: HTMLElement, target: HTMLElement): HTMLElement {
 	}
 	return result;
 }
-export function clear(element: Node) {
+export function clear(element: Element | Node) {
 	let i = element.childNodes.length;
 	while (i--) {
 		element.removeChild(element.childNodes[i]);
