@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.22.2",
+  "version": "0.22.5",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "goodcore.bundle.min.js",
   "module": "index.js",
@@ -12,8 +12,9 @@
   "scripts": {
     "install_tools": "npm install && typings install",
     "clean": "rimraf ./dist",
-    "dev": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp fixES3Promises && gulp copyDTS && gulp copyWebpackExternalsFn",
-    "build": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp fixES3Promises && gulp copyDTS && gulp copyWebpackExternalsFn",
+    "fixEnumsDestroyMap": "node fixEnums.js",
+    "dev": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp copyDTS && gulp copyWebpackExternalsFn",
+    "build": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp copyDTS && gulp copyWebpackExternalsFn",
     "build-es": "tsc -p tsconfig.es6.json && gulp copyDTSES",
     "build-all": "npm run build && npm run build-es",
     "bench": "tsc -p tsconfig.bench.json && node ./dist/benchmark/index.js",
@@ -29,6 +30,11 @@
   "devDependencies": {
     "@babel/cli": "^7.1.5",
     "@babel/core": "^7.1.6",
+    "@babel/plugin-external-helpers": "^7.0.0",
+    "@babel/plugin-transform-member-expression-literals": "^7.0.0",
+    "@babel/plugin-transform-property-literals": "^7.0.0",
+    "@babel/plugin-transform-property-mutators": "^7.1.0",
+    "@babel/plugin-transform-reserved-words": "^7.0.0",
     "@babel/preset-env": "^7.1.6",
     "@types/benchmark": "^1.0.31",
     "@types/jest": "^23.3.10",
