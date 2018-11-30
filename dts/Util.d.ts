@@ -13,6 +13,7 @@ export class LoggableCounter {
 }
 export function counter(key?: number | string): LoggableCounter;
 export function count(key?: number | string): LoggableCounter;
+export function once<T extends (...args: any[]) => S, S = void>(fn: T): T;
 export function init(win?: Window): void;
 export function getFunctionName(fn: Function): string;
 export function getFunctionCode(fn: Function): string;

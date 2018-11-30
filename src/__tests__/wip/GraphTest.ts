@@ -11,12 +11,12 @@ describe("Graph",
 					{id: 2, nodeType: "blue", data: {}, neighbours: ["0", "3"], costs: [20, 10], edgeTypes: ["up", "down"]},
 					{id: 3, nodeType: "green", data: {value: 2}, neighbours: ["1", "2"], costs: 10, edgeTypes: ["up", "up"]},
 				]);
-				expect(graph.get(0)!.neighbours.length).toBe(2);
+				expect(graph.findById(0)!.neighbours.length).toBe(2);
 				expect(graph.size).toBe(4);
-				expect(graph.get(2)!.nodeType!).toBe("blue");
-				expect(graph.get(2)!.costs.get(0)!).toBe("20");
-				expect(graph.get(2)!.edgeTypes.get(1)!).toBe("down");
-				expect(graph.get(3)!.data!.value!).toBe(2);
+				expect(graph.findById(2)!.nodeType!).toBe("blue");
+				expect(graph.findById(2)!.costs.read(0)!).toBe("20");
+				expect(graph.findById(2)!.edgeTypes.read(1)!).toBe("down");
+				expect(graph.findById(3)!.data!.value!).toBe(2);
 			});
 		test("traverse goes through all nodes",
 			() => {

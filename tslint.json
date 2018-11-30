@@ -5,6 +5,7 @@
     ],
     "jsRules": {},
     "rules": {
+        "no-reserved-keywords": true,
         "deprecation": true,
         "one-variable-per-declaration": false,
 		"curly": true, 
@@ -50,6 +51,7 @@
             }, 
             "severity": "warn"
         },
+        "prefer-for-of": false,
         "prefer-const": false,
 		"no-var-keyword": true,
 		"no-sparse-arrays": true,
@@ -79,5 +81,5 @@
 			"always"
 		]
     },
-    "rulesDirectory": []
+    "rulesDirectory": ["tslint-microsoft-contrib"]
 }

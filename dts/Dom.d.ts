@@ -13,6 +13,7 @@ export function remove(element: Element | Node): Element | Node | null;
 export function replace(src: HTMLElement, target: HTMLElement): HTMLElement;
 export function clear(element: Element | Node): void;
 export function get(id: string): HTMLElement | null;
+export function byId(id: string): HTMLElement | null;
 export function find(selector: string): Element | null;
 export function findAll(selector: string, root?: HTMLElement): Element[];
 export function children(root: HTMLElement, selector?: string): Element[];

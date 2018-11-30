@@ -4,6 +4,7 @@ import { shallowCopy, create, insertAt, concat, forEach, append, deepCopy, deepC
 	mapInto, reduce, reduceUntil, reverseReduce, reverseReduceUntil, deserialize } from "../Arr";
 import { clone, equals, setProperties, wipe } from "../Obj";
 import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow, isNotNull } from "../Test";
+import { once } from "../Util";
 
 if (hasWindow() && !(window as any).Symbol) {
 	(window as any).Symbol = { iterator: "iterator" };
@@ -41,14 +42,28 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	public get values(): T[] {
 		return this._array;
 	}
+	// tslint:disable-next-line:no-reserved-keywords
 	public get(pos: number): T | undefined {
+		once(() => {
+			console.warn("Function List::get(id) is deprecated please use List::read instead. get is a reserved word.");
+		});
+		return this.read(pos);
+	}
+	public read(pos: number): T | undefined {
 		return this._array[pos];
 	}
 	public getByIndex(key: number | string): T | undefined {
 		let result: T | undefined;
 		return isNotNullOrUndefined(this._index) ? this._index![key] : undefined;
 	}
+	// tslint:disable-next-line:no-reserved-keywords
 	public set(pos: number, v: T): this {
+		once(() => {
+			console.warn("Function List::get(id) is deprecated please use List::write instead. get is a reserved word.");
+		});
+		return this.write(pos, v);
+	}
+	public write(pos: number, v: T): this {
 		if (pos >= 0 && pos < this.length) {
 			this._array[pos | 0] = v;
 			if (this._indexer !== null) {
@@ -274,13 +289,13 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		} else {
 			index = indexOf(this._array, fn);
 		}
-		return index === -1 ? undefined : this.get(index);
+		return index === -1 ? undefined : this.read(index);
 	}
 	public find(fn: (el: T) => boolean): T | undefined {
 		return this.first(fn);
 	}
 	public last(): T | undefined {
-		return this.length === 0 ? undefined : this.get(this.length - 1 );
+		return this.length === 0 ? undefined : this.read(this.length - 1 );
 	}
 	public filter(fn: (el: T, i: number) => boolean): this {
 		return this.create(filter(this._array, fn)) as this;
@@ -351,23 +366,23 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	}
 	public intersect(b: this): this {
 		let result = this.create();
-		let long: this;
-		let short: this;
+		let _long: this;
+		let _short: this;
 		result.indexer = this.indexer;
 		if (this.length < b.length) {
-			short = this, long = b;
+			_short = this, _long = b;
 		} else {
-			long = this, short = b;
+			_long = this, _short = b;
 		}
-		if (long.indexer !== null) {
-			short.forEach((el) => {
-				if (long.contains(el)) {
+		if (_long.indexer !== null) {
+			_short.forEach((el) => {
+				if (_long.contains(el)) {
 					result.push(el);
 				}
 			});
 		} else {
-			long.forEach((el) => {
-				if (short.contains(el)) {
+			_long.forEach((el) => {
+				if (_short.contains(el)) {
 					result.push(el);
 				}
 			});			
@@ -376,25 +391,25 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	}
 	public union(b: this): this {
 		let result = this.create();
-		let long: this;
-		let short: this;
+		let _long: this;
+		let _short: this;
 		result.indexer = this.indexer;
 		if (this.length < b.length) {
-			short = this, long = b;
+			_short = this, _long = b;
 		} else {
-			long = this, short = b;
+			_long = this, _short = b;
 		}
-		if (long.indexer !== null) {
-			result = long.clone();
-			short.forEach((el) => {
-				if (!long.contains(el)) {
+		if (_long.indexer !== null) {
+			result = _long.clone();
+			_short.forEach((el) => {
+				if (!_long.contains(el)) {
 					result.push(el);
 				}
 			});
 		} else {
-			result = short.clone();
-			long.forEach((el) => {
-				if (!short.contains(el)) {
+			result = _short.clone();
+			_long.forEach((el) => {
+				if (!_short.contains(el)) {
 					result.push(el);
 				}
 			});			
@@ -413,7 +428,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		this.until(function (el: T, i: number) {
 			return i >= length;
 		}, function (el: T, i: number) {
-			result.push(fn(el, list.get(i)!));
+			result.push(fn(el, list.read(i)!));
 		});
 		return result;
 	}

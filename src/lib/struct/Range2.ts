@@ -1,6 +1,7 @@
 import { IRange2 } from "./IRange2";
 import { IVec2 } from "./IVec2";
 import { Vec2 } from "./Vec2";
+import { once } from "../Util";
 
 export class Range2 implements IRange2 {
 	public pos: Vec2;
@@ -16,13 +17,20 @@ export class Range2 implements IRange2 {
 	protected create(x: number = 0, y: number = 0, w: number = 0, h: number = 0): this {
 		return new ((this as any).constructor)(x, y, w, h);
 	}
+	// tslint:disable-next-line:no-reserved-keywords
 	public set(src: IRange2): this {
-		this.pos.set(src.pos);
-		this.size.set(src.size);
+		once(() => {
+			console.warn("Function Range2::set is deprecated please use Range2::copy instead. get is a reserved word.");
+		});
+		return this.copy(src);
+	}
+	public copy(src: IRange2): this {
+		this.pos.copy(src.pos);
+		this.size.copy(src.size);
 		return this;
 	}
 	public clone(out?: this): this {
-		const result = out ? out.set(this) : this.create(this.pos.x, this.pos.y, this.size.x, this.size.y);
+		const result = out ? out.copy(this) : this.create(this.pos.x, this.pos.y, this.size.x, this.size.y);
 		return result;
 	}
 	public fromRect(rect: IRect): this {

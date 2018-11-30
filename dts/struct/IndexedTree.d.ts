@@ -20,6 +20,7 @@ export class IndexedTree<T> extends Tree<T> {
     add(data: T | this, id?: string | number, updateIndex?: boolean): this;
     contains(node: this | string | number): boolean
     get(id: string | number): this | undefined;
+    lookup(id: string | number): this | undefined;
     cut(): this;
     reIndex(): void;
     clone(): this;

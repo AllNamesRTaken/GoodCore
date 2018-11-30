@@ -37,6 +37,7 @@ interface IBasicList<T> {
 	next(value?: any): IteratorResult<T>;
 	values: T[];
 	get(pos: number): T | undefined;
+    read(pos: number): T | undefined;
 	count: number;
 	clear(): IBasicList<T>;
 	add(v: T): IBasicList<T> | undefined;
@@ -122,7 +123,7 @@ declare namespace goodcore {
 	export const Global: {
 		window: Window | null;
 		hasNativeWindow: boolean;
-		global: NodeJS.Global | Window;
+		global: Window; // has to exclude Node since this is browser only
 	};
 	export class Vec2Const {
 		static EPSILON: number;
@@ -137,6 +138,7 @@ declare namespace goodcore {
 		constructor(x?: number, y?: number);
 		protected create(x?: number, y?: number): Vec2;
 		set(src: IVec2): Vec2;
+		copy(src: IVec2): Vec2;
 		clone(out?: Vec2): Vec2;
 		toInt(): Vec2;
 		ceil(): Vec2;
@@ -175,6 +177,7 @@ declare namespace goodcore {
 		constructor(x?: number, y?: number, w?: number, h?: number);
 		protected create(x?: number, y?: number, w?: number, h?: number): Range2;
 		set(src: IRange2): Range2;
+		copy(src: IRange2): Range2;
 		clone(out?: Range2): Range2;
 		toRect(endInclusive?: boolean, out?: Rect): Rect;
 		scale(factor: IVec2, keepCenter?: boolean): Range2;
@@ -199,6 +202,7 @@ declare namespace goodcore {
 		constructor(x1?: number, y1?: number, x2?: number, y2?: number, endInclusive?: boolean);
 		protected create(x1?: number, y1?: number, x2?: number, y2?: number, endInclusive?: boolean): Rect;
 		set(src: IRect): Rect;
+		copy(src: IRect): Rect;
 		clone(out?: Rect): Rect;
 		toRange2(out?: Range2): Range2;
 		scale(factor: IVec2, keepCenter?: boolean): Rect;
@@ -221,8 +225,10 @@ declare namespace goodcore {
 		protected create<S = T>(arr?: S[] | List<S>): List<S>;
 		readonly values: T[];
 		get(pos: number): T | undefined;
+		read(pos: number): T | undefined;
 		getByIndex(key: number | string): T | undefined;
 		set(pos: number, v: T): List<T>;
+		write(pos: number, v: T): List<T>;
 		readonly count: number;
 		readonly length: number;
 		indexer: ((el: T) => any) | null;
@@ -297,6 +303,7 @@ declare namespace goodcore {
 		protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
 		readonly values: T[];
 		get(pos: number): T | undefined;
+		read(pos: number): T | undefined;
 		readonly count: number;
 		readonly length: number;
 		comparer: (a: T, b: T) => number;
@@ -463,6 +470,7 @@ declare namespace goodcore {
 		add(data: T | this, id?: string | number, updateIndex?: boolean): this;
 		contains(node: this | string | number): boolean
 		get(id: string | number): this | undefined;
+		lookup(id: string | number): this | undefined;
 		cut(): this;
 		reIndex(): void;
 		clone(): this;
@@ -500,6 +508,7 @@ declare namespace goodcore {
 		export function replace(src: HTMLElement, target: HTMLElement): HTMLElement;
 		export function clear(element: Element | Node): void;
 		export function get(id: string): HTMLElement | null;
+		export function byId(id: string): HTMLElement | null;
 		export function find(selector: string): Element | null;
 		export function findAll(selector: string, root?: HTMLElement): Element[];
 		export function children(root: HTMLElement, selector?: string): Element[];
@@ -513,7 +522,7 @@ declare namespace goodcore {
 		export function flatten<T>(src: any[]): T[];
 		export function reverse<T>(array: T[]): T[];
 		export function concat(...arrs: any[]): any[];
-		export function slice<T>(src: T[], from?: number, count?: number): T[];
+		export function slice<T>(src: T[], pos?: number, count?: number): T[];
 		export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void
 		export function append<T>(arr: T[], values: T[]): void;
 		export function removeAt<T>(arr: T[], index: number): T | undefined;
@@ -532,8 +541,8 @@ declare namespace goodcore {
 		export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void;
 		export function map<S, T>(src: S[], fn: (el: S, i: number) => T): T[];
 		export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T): void;
-		export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, from?: number, to?: number): U;
-		export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T, from?: number, to?: number) => boolean, start: U): U;
+		export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, pos?: number, to?: number): U;
+		export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T, pos?: number, to?: number) => boolean, start: U): U;
 		export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U;
 		export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
 		export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex?: number): void;
@@ -586,6 +595,7 @@ declare namespace goodcore {
 		}
 		export function counter(key?: number | string): LoggableCounter;
 		export function count(key?: number | string): LoggableCounter;
+		export function once<T extends (...args: any[]) => S, S = void>(fn: T): T;
 		export function init(win?: Window): void;
 		export function getFunctionName(fn: Function): string;
 		export function getFunctionCode(fn: Function): string;
@@ -658,8 +668,8 @@ declare namespace goodcore {
 		init(): void;
 	}
 
-	export function Poolable<T extends { new(...args: any[]): {} }>(constructor: T): T & Constructor<IPoolable>
-	export function Initable<T extends { new(...args: any[]): {} }>(constructor: T): T & Constructor<IInitable<T>>
+	export function Poolable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IPoolable>
+	export function Initable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IInitable<T>>
 
 	export function before<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
 	export function after<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
@@ -694,7 +704,7 @@ declare namespace goodcore {
 		export function randomString(length?: number): string;
 		export function randomInt(): number;
 		export function randomNumber(): number;
-		export function numericArray(length: number, type?: MocDataType): number[];
+		export function numericArray(length: number, dataType?: MocDataType): number[];
 		export function stringArray(arrayLength: number, stringLength?: number): string[];
 	}
 

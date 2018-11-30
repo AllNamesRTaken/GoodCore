@@ -8,5 +8,5 @@ export const VALID_CHARS = " ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxy
 export function randomString(length?: number): string;
 export function randomInt(min?: number, max?: number): number;
 export function randomNumber(min?: number, max?: number): number;
-export function numericArray(length: number, type?: MocDataType, min?: number, max?: number): number[];
+export function numericArray(length: number, dataType?: MocDataType, min?: number, max?: number): number[];
 export function stringArray(arrayLength: number, stringLength?: number): string[];

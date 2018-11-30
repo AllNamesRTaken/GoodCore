@@ -35,6 +35,17 @@ class UtilState {
 	public static _counter: { [key: string]: LoggableCounter } = { "": new LoggableCounter("") };
 }
 
+export function once<T extends (...args: any[]) => S, S = void>(fn: T): T {
+	let result: S;
+	let first = true;
+	return function (...args: any[]): S {
+		if (first) {
+			result = fn.apply(this, args);
+			first = false;
+		}
+		return result;
+	} as T;
+}
 export function init(win?: Window) {
 	if (win !== undefined) {
 		Global.window = win;

@@ -8,6 +8,7 @@ export class Range2 implements IRange2 {
     constructor(x?: number, y?: number, w?: number, h?: number);
     protected create(x?: number, y?: number, w?: number, h?: number): Range2;
     set(src: IRange2): Range2;
+    copy(src: IRange2): Range2;
     clone(out?: Range2): Range2;
     fromRect(rect: IRect): Range2
     scale(factor: IVec2, keepCenter?: boolean): Range2;

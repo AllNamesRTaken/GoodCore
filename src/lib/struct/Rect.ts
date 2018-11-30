@@ -1,6 +1,7 @@
 import { IRect } from "./IRect";
 import { IVec2 } from "./IVec2";
 import { Vec2 } from "./Vec2";
+import { once } from "../Util";
 
 export class Rect implements IRect {
 	public start: Vec2;
@@ -18,13 +19,20 @@ export class Rect implements IRect {
 	protected create(x1: number = 0, y1: number = 0, x2: number = 0, y2: number = 0, endInclusive: boolean = false): this {
 		return new ((this as any).constructor)(x1, y1, x2, y2, endInclusive);
 	}
+	// tslint:disable-next-line:no-reserved-keywords
 	public set(src: IRect): this {
-		this.start.set(src.start);
-		this.stop.set(src.stop);
+		once(() => {
+			console.warn("Function Rect::set is deprecated please use Rect::copy instead. get is a reserved word.");
+		});
+		return this.copy(src);
+	}
+	public copy(src: IRect): this {
+		this.start.copy(src.start);
+		this.stop.copy(src.stop);
 		return this;
 	}
 	public clone(out?: this): this {
-		const result = out ? out.set(this) : this.create(this.start.x, this.start.y, this.stop.x, this.stop.y);
+		const result = out ? out.copy(this) : this.create(this.start.x, this.start.y, this.stop.x, this.stop.y);
 		return result;
 	}
 	public fromRange2(range: IRange2, endInclusive: boolean = false): this {

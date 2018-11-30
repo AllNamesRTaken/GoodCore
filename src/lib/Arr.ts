@@ -1,10 +1,6 @@
 import { clone, setProperties } from "./Obj";
 import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction } from "./Test";
 
-class ArrayState {
-	public static _int: number;
-}
-
 export function flatten<T>(src: any[]): T[] {
 	return flattenInner<T>(src);
 }
@@ -36,21 +32,21 @@ export function concat(...arrs: any[]): any[] {
 	const result = Array.prototype.concat.apply([], arrs) as any[];
 	return result;
 }
-export function slice<T>(src: T[], from: number = 0, count: number = Infinity): T[] {
+export function slice<T>(src: T[], pos: number = 0, count: number = Infinity): T[] {
 	let result: T[];
 	if (isNotNullOrUndefined(src)) {
-		let len = Math.min( src.length - from, count);
+		let len = Math.min( src.length - pos, count);
 		if (Env.hasFastNativeArrays()) {
-			result = src.slice(from, from + count);
+			result = src.slice(pos, pos + count);
 		} else {
-			let len = Math.min( src.length - from, count);
+			let len = Math.min( src.length - pos, count);
 			if (len <= 0) {
 				len = 0;
 			}
 			result = new Array(len);
 			let i = -1;
 			while (++i < len) {
-				result[i] = src[i + from];
+				result[i] = src[i + pos];
 			}
 		}
 	} else {
@@ -292,12 +288,12 @@ export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T
 		target[i] = fn(src[i], i);
 	}
 }
-export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, from?: number, to?: number): U {
+export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, pos?: number, to?: number): U {
 	let acc: U = start;
 	if (isNotNullOrUndefined(src)) {
-		from = Math.min(Math.max(0, isUndefined(from) ? 0 : from!), src.length - 1);
+		pos = Math.min(Math.max(0, isUndefined(pos) ? 0 : pos!), src.length - 1);
 		to = Math.min(Math.max(0, isUndefined(to) ? src.length - 1 : to!), src.length - 1);
-		let i = from - 1;
+		let i = pos - 1;
 		while (++i < to + 1) {
 			acc = fn(acc, src[i]);
 		}
@@ -309,14 +305,14 @@ export function reduceUntil<T, U>(
 	fn: (acc: U, cur: T) => U, 
 	test: (acc: U, cur: T) => boolean, 
 	start: U, 
-	from?: number, 
+	pos?: number, 
 	to?: number
 ): U {
 	let acc: U = start;
 	if (isNotNullOrUndefined(src)) {
-		from = Math.min(Math.max(0, isUndefined(from) ? 0 : from!), src.length - 1);
+		pos = Math.min(Math.max(0, isUndefined(pos) ? 0 : pos!), src.length - 1);
 		to = Math.min(Math.max(0, isUndefined(to) ? src.length - 1 : to!), src.length - 1);
-		let i = from - 1;
+		let i = pos - 1;
 		while (++i < to + 1 && !test(acc, src[i])) {
 			acc = fn(acc, src[i]);
 		}

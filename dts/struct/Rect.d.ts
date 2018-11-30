@@ -9,6 +9,7 @@ export class Rect implements IRect {
     constructor(x1?: number, y1?: number, x2?: number, y2?: number, endInclusive?: boolean);
     protected create(x1?: number, y1?: number, x2?: number, y2?: number, endInclusive?: boolean): Rect;
     set(src: IRect): Rect;
+    copy(src: IRect): Rect;
     clone(out?: Rect): Rect;
     fromRange2(range: IRange2, endInclusive?: boolean): Rect
     scale(factor: IVec2, keepCenter?: boolean): Rect;

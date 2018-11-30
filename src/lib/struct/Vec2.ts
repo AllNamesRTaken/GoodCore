@@ -1,5 +1,6 @@
 import { rotationRad } from "../Calc";
 import { IVec2 } from "./IVec2";
+import { once } from "../Util";
 
 export class Vec2Const {
 	public static EPSILON: number = 1e-8;
@@ -21,13 +22,20 @@ export class Vec2 implements IVec2 {
 	protected create(x: number = 0, y: number = 0): this {
 		return new ((this as any).constructor)(x, y);
 	}
+	// tslint:disable-next-line:no-reserved-keywords
 	public set(src: IVec2): this {
+		once(() => {
+			console.warn("Function Vec2::set is deprecated please use Vec2::copy instead. get is a reserved word.");
+		});
+		return this.copy(src);
+	}
+	public copy(src: IVec2): this {
 		this.x = src.x;
 		this.y = src.y;
 		return this;
 	}
 	public clone(out?: this): this {
-		const result = out ? out.set(this) :this.create(this.x, this.y);
+		const result = out ? out.copy(this) :this.create(this.x, this.y);
 		return result;
 	}
 	public toInt(): this {
@@ -124,7 +132,7 @@ export class Vec2 implements IVec2 {
 	public getNormal(isNormalized?: boolean): this {
 		const result = this.clone();
 		if (!isNormalized) {
-			result.set(this).normalize();
+			result.copy(this).normalize();
 		}
 		const temp = result.x;
 		result.x = result.y;

@@ -3,6 +3,7 @@ import { Dictionary } from "./Dictionary";
 import { isArray } from "../Test";
 import { List } from "./List";
 import { map } from "../Arr";
+import { once } from "../Util";
 
 export class IndexedTree<T> extends Tree<T> {
 	private _indexer: (node: this) => string | number;
@@ -12,7 +13,7 @@ export class IndexedTree<T> extends Tree<T> {
 		this._indexer = indexer ? indexer : (node: IndexedTree<T>) => node.id;
 		this._index = index as any;
 		if (index !== undefined) {
-			this._index!.set(this.id, this);
+			this._index!.add(this.id, this);
 		}
 	}
 	public get index(): Dictionary<this> {
@@ -21,7 +22,7 @@ export class IndexedTree<T> extends Tree<T> {
 			this.forEach((node) => {
 				if ((node)._index !== newIndex) {
 					(node)._index = newIndex;
-					this._index!.set(this._indexer(node as this), node as this);
+					this._index!.add(this._indexer(node as this), node as this);
 				}
 			});
 		}
@@ -47,15 +48,22 @@ export class IndexedTree<T> extends Tree<T> {
 		let root = this.root;
 		this.index.clear();
 		root.forEach((node: this) => {
-			this.index.set(this._indexer(node), node);
+			this.index.add(this._indexer(node), node);
 		});
 		return this;
 	}
+	// tslint:disable-next-line:no-reserved-keywords
 	public get(id: string | number): this | undefined {
-		return this.index.get(id);
+		once(() => {
+			console.warn("Function IndexedTree::get(id) is deprecated please use IndexedTree::lookup instead. get is a reserved word.");
+		});
+		return this.lookup(id);
+	}
+	public lookup(id: string | number): this | undefined {
+		return this.index.lookup(id);
 	}
 	public addTo(parentId: string | number, data: T | this, id?: string | number, updateIndex = true): this | undefined {
-		let parent = this.index.get(parentId);
+		let parent = this.index.lookup(parentId);
 		let node: this | undefined;
 		if (parent) {
 			node = parent.add(data, id, updateIndex);
@@ -69,12 +77,12 @@ export class IndexedTree<T> extends Tree<T> {
 			if (!hasSameIndex) {
 				node._index = this.index;
 			}
-			this.index.set(this._indexer(node), node);
+			this.index.add(this._indexer(node), node);
 			if (!hasSameIndex) {
 				node.forEach((el: this) => {
 					el._index = this._index;
 					el._indexer = this._indexer;
-					this.index.set(this._indexer(el), el);
+					this.index.add(this._indexer(el), el);
 				});
 			}
 		}
@@ -85,7 +93,7 @@ export class IndexedTree<T> extends Tree<T> {
 		super.remove();
 		this.forEach((node: this) => {
 			if (parent !== null) {
-				parent.index.delete(parent._indexer(node));
+				parent.index.remove(parent._indexer(node));
 			}
 			node._index = undefined;
 		});
@@ -94,11 +102,11 @@ export class IndexedTree<T> extends Tree<T> {
 	public insertAt(pos: number, data: T, id?: string | number, updateIndex = true): this {
 		const node = super.insertAt(pos, data, id);
 		if (updateIndex) {
-			this.index.set(this._indexer(node), node);
+			this.index.add(this._indexer(node), node);
 			node.forEach((el: this) => {
 				el._index = this._index;
 				el._indexer = this._indexer;
-				this.index.set(this._indexer(el), el);
+				this.index.add(this._indexer(el), el);
 			});
 		}
 		return node;
@@ -136,7 +144,7 @@ export class IndexedTree<T> extends Tree<T> {
 	public static fromObject<T>(obj: any, indexer?: (node: IndexedTree<T>) => string | number): Tree<T> {
 		const parent: IndexedTree<T> | null = (this instanceof IndexedTree) ? this : null;
 		const root = new IndexedTree<T>(obj.id, indexer, parent ? parent._index : undefined).init({ data: obj.data, parent: parent as Tree<T> }) as IndexedTree<T>;
-		root.index.set(root._indexer(root!), root);
+		root.index.add(root._indexer(root!), root);
 		if (obj.children !== undefined && isArray(obj.children)) {
 			root.children = new List<IndexedTree<T>>(map<any, IndexedTree<T>>(obj.children as Array<IndexedTree<T>>, (el, i) => IndexedTree.fromObject.call(root, el, indexer) as IndexedTree<T>));
 		}

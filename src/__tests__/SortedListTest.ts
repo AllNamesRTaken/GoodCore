@@ -51,7 +51,7 @@ describe("SortedList",
 			() => {
 				const list = (this.list1 as SortedList<number>).clone();
 				expect(list.truncate(2).length).toBe(2);
-				expect(list.get(1)!).toBe(2);
+				expect(list.read(1)!).toBe(2);
 			});
 		test("trucate with no size empties array",
 			() => {
@@ -67,7 +67,7 @@ describe("SortedList",
 			() => {
 				const list = (this.list1 as SortedList<number>).clone();
 				expect(list.truncate(-2).length).toBe(2);
-				expect(list.get(1)!).toBe(7);
+				expect(list.read(1)!).toBe(7);
 			});
 		test("Fill fills an array with new data",
 			() => {
@@ -82,7 +82,7 @@ describe("SortedList",
 				expect(list1.fill(3, (i) => i).values).toEqual([0, 1, 2]);
 				expect(list1.fill(3, (i) => 3 - i).values).toEqual([1, 2, 3]);
 				expect(list2.fill(2, obj).values).toEqual([{ a: 1 }, { a: 1 }]);
-				expect(list2.get(0)!).not.toBe(obj);
+				expect(list2.read(0)!).not.toBe(obj);
 			});
 		test("bulkAdd adds multiple values",
 			() => {
@@ -115,7 +115,7 @@ describe("SortedList",
 		test("Get gets the value at a given position in the list",
 			() => {
 				const list1 = this.list1 as SortedList<number>;
-				expect(list1.get(2)!).toBe(4);
+				expect(list1.read(2)!).toBe(4);
 			});
 		test("Count returns the lists length",
 			() => {
@@ -130,7 +130,7 @@ describe("SortedList",
 		test("Add pushes a value onto the SortedList and returns the list",
 			() => {
 				const list1 = this.list1.clone() as SortedList<number>;
-				expect(list1.add(42).get(4)!).toBe(42);
+				expect(list1.add(42).read(4)!).toBe(42);
 			});
 		test("Pop removes the last element in the list and returns it",
 			() => {
@@ -151,20 +151,20 @@ describe("SortedList",
 		test("Remove removes an element from the list",
 			() => {
 				const list1 = this.list1.clone() as SortedList<number>;
-				expect(list1.get(1)!).toBe(2);
+				expect(list1.read(1)!).toBe(2);
 				expect(list1.remove(4).contains(4)).toBe(false);
 			});
 		test("RemoveAt removes the element at a given position",
 			() => {
 				const list1 = this.list1.clone() as SortedList<number>;
-				expect(list1.get(2)!).toBe(4);
+				expect(list1.read(2)!).toBe(4);
 				expect(list1.removeAt(2)!).toBe(4);
 				expect(list1.contains(4)).toBe(false);
 			});
 		test("RemoveFirst removes the first element from the list matching a function",
 			() => {
 				const list1 = this.list1.clone() as SortedList<number>;
-				expect(list1.get(1)!).toBe(2);
+				expect(list1.read(1)!).toBe(2);
 				expect(list1.removeFirst((el: number) => el === 2)!).toBe(2);
 				expect(list1.contains(2)).toBe(false);
 			});

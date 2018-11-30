@@ -3,7 +3,7 @@
     export function flatten<T>(src: any[]): T[];
     export function reverse<T>(array: T[]): T[];
     export function concat(...arrs: any[]): any[];
-    export function slice<T>(src: T[], from?: number, count?: number): T[];
+    export function slice<T>(src: T[], pos?: number, count?: number): T[];
     export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void;
     export function append<T>(arr: T[], values: T[]): void;
     export function removeAt<T>(arr: T[], index: number): T | undefined;
@@ -22,8 +22,8 @@
     export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void;
     export function map<S, T>(src: S[], fn: (el: S, i: number) => T): T[];
     export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T): void;
-    export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, from?: number, to?: number): U;
-    export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U, from?: number, to?: number): U;
+    export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, pos?: number, to?: number): U;
+    export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U, pos?: number, to?: number): U;
     export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U;
     export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
     export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex?: number): void;

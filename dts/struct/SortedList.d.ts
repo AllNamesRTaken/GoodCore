@@ -14,6 +14,7 @@ export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>
     protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
     readonly values: T[];
     get(pos: number): T | undefined;
+    read(pos: number): T | undefined;
     readonly count: number;
     readonly length: number;
     comparer: (a: T, b: T) => number;

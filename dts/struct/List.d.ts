@@ -7,8 +7,10 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<Li
     protected create<S = T>(arr?: S[] | List<S>): List<S>;
     readonly values: T[];
     get(pos: number): T | undefined;
+    read(pos: number): T | undefined;
     getByIndex(key: number | string): T | undefined;
     set(pos: number, v: T): List<T>;
+    write(pos: number, v: T): List<T>;
     readonly count: number;
     readonly length: number;
     indexer: ((el: T) => any) | null;

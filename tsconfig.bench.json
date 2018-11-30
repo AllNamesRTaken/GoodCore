@@ -32,7 +32,7 @@
 		"./typings/**/*.d.ts"
 	],
 	"exclude": [
-		"./src/test/**/*.ts",
+		"./src/__test__/**/*.ts",
 		"./src/lib/wip/**/*.ts"
 	]
 }

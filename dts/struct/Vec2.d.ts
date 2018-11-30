@@ -13,6 +13,7 @@ export class Vec2 implements IVec2 {
     constructor(x?: number, y?: number);
     protected create(x?: number, y?: number): Vec2;
     set(src: IVec2): Vec2;
+    copy(src: IVec2): Vec2;
     clone(out?: Vec2): Vec2;
     toInt(): Vec2;
     ceil(): Vec2;

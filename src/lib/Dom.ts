@@ -1,5 +1,6 @@
 import { Global } from "./Global";
 import { isNullOrUndefined } from "./Test";
+import { once } from "./Util";
 
 export enum Sides {
 	Top,
@@ -63,7 +64,7 @@ export function outerHTML(el: HTMLElement): string {
 export function setAttr(_el: HTMLElement | Node | String, attr?: Indexable<any>) {
 	let el: HTMLElement | null;
 	if (typeof (_el) === "string") {
-		el = get(_el);
+		el = byId(_el);
 	} else {
 		el = _el as HTMLElement;
 	}
@@ -115,7 +116,14 @@ export function clear(element: Element | Node) {
 		element.removeChild(element.childNodes[i]);
 	}
 }
+// tslint:disable-next-line:no-reserved-keywords
 export function get(id: string): HTMLElement | null {
+	once(() => {
+		console.warn("Function Dom.get(id) is deprecated please use Dom.byId instead. get is a reserved word.");
+	});
+	return byId(id); 
+}
+export function byId(id: string): HTMLElement | null {
 	let result = DomState._document!.getElementById(id) as HTMLElement;
 	if (result === null) {
 		switch (id) {
@@ -177,7 +185,8 @@ export function is(selector: string, element: Element): boolean {
 }
 export function setStylesExplicitly(element: HTMLElement, ...styles: string[]) {
 	const comp = DomState._window.getComputedStyle(element);
-	for (const style of styles) {
+	for (let i = 0; i < styles.length; i++) {
+		let style = styles[i];
 		(element.style as any)[style] = (comp as any)[style];
 	}
 }

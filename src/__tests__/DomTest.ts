@@ -86,10 +86,10 @@ describe("Dom",
 			() => {
 				const el = Dom.create(html2);
 				document.body.appendChild(el as Node);
-				const chld = Dom.get("sub2")!;
+				const chld = Dom.byId("sub2")!;
 				expect(chld.id).toBe("sub2");
-				expect(Dom.get("body")!.tagName).toBe("BODY");
-				expect((Dom.get("notvalid") === null)).toBe(true);
+				expect(Dom.byId("body")!.tagName).toBe("BODY");
+				expect((Dom.byId("notvalid") === null)).toBe(true);
 				el.parentNode!.removeChild(el);
 			});
 		test("Is matches element with selector",

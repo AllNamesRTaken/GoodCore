@@ -51,7 +51,8 @@ export function integrate(alias?: string | object) {
 		(Global.window as any)[alias] = {};
 		stringAlias = true;
 	}
-	for (const stuff of list) {
+	for (let i = 0; i < list.length; i++) {
+		let stuff = list[i];
 		if (stringAlias) {
 			(Global.window as any)[alias as string][stuff.name] = stuff.object;
 		} else if (objectAlias) {

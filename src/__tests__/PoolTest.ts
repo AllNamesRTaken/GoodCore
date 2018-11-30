@@ -8,13 +8,13 @@ describe("Pool",
 				@Poolable
 				class Obj { public bar: number; }
 				const pool = new Pool(Obj);
-				const first = pool.get();
+				const first = pool.getInstance();
 				expect(first).toBeInstanceOf(Obj);
-				const second = pool.get();
+				const second = pool.getInstance();
 				expect(second).toBeInstanceOf(Obj);
 				expect(first).not.toBe(second);
 				first.release();
-				const third = pool.get();
+				const third = pool.getInstance();
 				expect(third).toBe(first);
 			});
 		test("Getting more than growthStep increases the pool by growthStep",
@@ -24,9 +24,9 @@ describe("Pool",
 				const pool = new Pool(Obj, 2);
 				expect(pool.size).toBe(2);
 				expect(pool.available).toBe(2);
-				const first = pool.get();
-				const second = pool.get();
-				const third = pool.get();
+				const first = pool.getInstance();
+				const second = pool.getInstance();
+				const third = pool.getInstance();
 				expect(pool.size).toBe(4);
 				expect(pool.available).toBe(1);
 				third.release();

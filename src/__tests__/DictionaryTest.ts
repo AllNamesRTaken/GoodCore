@@ -6,74 +6,74 @@ describe("Dictionary",
 		test("Get returns Set value or undefined",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				expect(d.get("key1")!).toBe("value1");
-				expect((d.get("key2") === undefined)).toBe(true);
-				d.set("key1", undefined!);
-				expect(d.get("key1")!).toBe("value1");
+				d.add("key1", "value1");
+				expect(d.lookup("key1")!).toBe("value1");
+				expect((d.lookup("key2") === undefined)).toBe(true);
+				d.add("key1", undefined!);
+				expect(d.lookup("key1")!).toBe("value1");
 			});
 		test("Values return array of values",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
+				d.add("key1", "value1");
+				d.add("key2", "value2");
 				expect(d.values).toEqual(["value1", "value2"]);
 			});
 		test("Keys return array of Keys",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
+				d.add("key1", "value1");
+				d.add("key2", "value2");
 				expect(d.keys).toEqual(["key1", "key2"]);
 			});
 		test("Clear empties the dictionary",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
+				d.add("key1", "value1");
+				d.add("key2", "value2");
 				expect(d.clear().values.length).toBe(0);
 			});
 		test("Has returns true if dictionary has key otherwise false",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
+				d.add("key1", "value1");
 				expect(d.has("key1")).toBe(true);
 				expect(d.has("key2")).toBe(false);
 			});
 		test("Contains returns true if dictionary has key otherwise false",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
+				d.add("key1", "value1");
 				expect(d.contains("key1")).toBe(true);
 				expect(d.contains("key2")).toBe(false);
 			});
 		test("Delete removes a value from the dictionary",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.delete("key1");
+				d.add("key1", "value1");
+				d.remove("key1");
 				expect(d.has("key1")).toBe(false);
 				expect(d.values).toEqual([]);
 			});
 		test("Count returns the corrent number of values",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
+				d.add("key1", "value1");
+				d.add("key2", "value2");
 				expect(d.count).toBe(2);
-				d.delete("key1");
+				d.remove("key1");
 				expect(d.count).toBe(1);
 			});
 		test("Should return undefined for object prototype functions ",
 			() => {
 				const d = new Dictionary<string>();
-				expect((d.get("toString") === undefined)).toBe(true);
+				expect((d.lookup("toString") === undefined)).toBe(true);
 			});
 		test("clone returns clone",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
+				d.add("key1", "value1");
+				d.add("key2", "value2");
 				let d2 = d.clone();
 				expect(d2.has("key1")).toBe(true);
 				expect(d2.has("key2")).toBe(true);
@@ -81,23 +81,23 @@ describe("Dictionary",
 		test("clone has a correct list",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
+				d.add("key1", "value1");
+				d.add("key2", "value2");
 				let d2 = d.clone();
 				expect(d2.values).toEqual(["value1", "value2"]);
 			});
 		test("ToJson formats Dict correct",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
+				d.add("key1", "value1");
+				d.add("key2", "value2");
 				expect(JSON.stringify(d)).toBe('{"key1":"value1","key2":"value2"}');
 			});
 		test("serialize works like a typed toJSON but deep",
 			() => {
 				const d = new Dictionary<string>();
-				d.set("key1", "value1");
-				d.set("key2", "value2");
+				d.add("key1", "value1");
+				d.add("key2", "value2");
 				expect(JSON.stringify(d.serialize())).toBe('{"key1":"value1","key2":"value2"}');
 
 				class Serializable {
@@ -112,8 +112,8 @@ describe("Dictionary",
 					}
 				}
 				const d2 = new Dictionary<Serializable>();
-				d2.set("key1", new Serializable(1, 2));
-				d2.set("key2", new Serializable(3, 4));
+				d2.add("key1", new Serializable(1, 2));
+				d2.add("key2", new Serializable(3, 4));
 				expect(JSON.stringify(d2.serialize())).toBe('{"key1":1,"key2":3}');
 			});
 		test("deserialize revives Dictionary<T>",

@@ -98,7 +98,7 @@ describe("Vec2",
 			() => {
 				const v1 = new Vec2(2, 3);
 				const v2 = new Vec2(1, 2);
-				v1.set(v2);
+				v1.copy(v2);
 				expect(v1.x).toBe(1);
 				expect(v1.y).toBe(2);
 			});

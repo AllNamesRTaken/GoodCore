@@ -1,3 +1,5 @@
+import { once } from "../Util";
+
 export class Pool<T> {
 	private _pool: T[] = [];
 	private _growthStep: number;
@@ -25,7 +27,15 @@ export class Pool<T> {
 		this._size += this._growthStep;
 		this._available += this._growthStep;
 	}
+
+	// tslint:disable-next-line:no-reserved-keywords
 	public get(): T & IPoolable {
+		once(() => {
+			console.warn("Function Pool.get(id) is deprecated please use Pool.byId instead. get is a reserved word.");
+		});
+		return this.getInstance();
+	}
+	public getInstance(): T & IPoolable {
 		let result: T;
 		if (this._pool.length === 0) {
 			this.createNewInstances();

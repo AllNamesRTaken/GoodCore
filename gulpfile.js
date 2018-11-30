@@ -20,6 +20,15 @@ gulp.task("modifyBundle", function(cb) {
     fs.writeFileSync(`./dist/lib/${package.name}.bundle.js`, bundle, { encoding: "utf8" });
     cb();
 });
+gulp.task("fixES3Promises", function(cb) {
+    var bundle = fs.readFileSync(`./dist/lib/${package.name}.bundle.js`, "utf8");
+    var bundle_min = fs.readFileSync(`./dist/lib/${package.name}.bundle.min.js`, "utf8");
+    var bundle = bundle.replace(/\.catch/g, "[\"catch\"]");
+    var bundle_min = bundle_min.replace(/\.catch/g, "[\"catch\"]");
+    fs.writeFileSync(`./dist/lib/${package.name}.bundle.js`, bundle, { encoding: "utf8" });
+    fs.writeFileSync(`./dist/lib/${package.name}.bundle.min.js`, bundle_min, { encoding: "utf8" });
+    cb();
+});
 gulp.task("package", ["bump"], function() {
     return gulp.src(["./package.json", "./README.md"])
         .pipe(gulp.dest("dist/lib"));

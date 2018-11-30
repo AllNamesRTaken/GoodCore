@@ -4,7 +4,7 @@ import { Dictionary } from "../struct/Dictionary";
 import { List } from "../struct/List";
 import { isArray, isNullOrUndefined, isNotUndefined, isNotNull } from "../Test";
 import { Util } from "..";
-import { assert } from "../Util";
+import { assert, once } from "../Util";
 import { zip, create } from "../Arr";
 
 @Initable
@@ -137,7 +137,14 @@ export class Graph<T> {
 	public get id(): string {
 		return this._id;
 	}
+	// tslint:disable-next-line:no-reserved-keywords
 	public get(id: number): GraphNode<T> | undefined {
+		once(() => {
+			console.warn("Function Graph::get is deprecated please use Graph::findById instead. get is a reserved word.");
+		});
+		return this.findById(id);
+	}
+	public findById(id: number): GraphNode<T> | undefined {
 		return this._nodes.find((el) => el.id === id);
 	}
 	public get defaultCost(): number | null {
@@ -190,7 +197,7 @@ export class Graph<T> {
 				nodeType: map.nodeType(el)
 			});
 			// map
-			lookup.set(this._nodeIndexer(node), node);
+			lookup.add(this._nodeIndexer(node), node);
 		});
 
 		// hook nodes together
@@ -202,8 +209,8 @@ export class Graph<T> {
 			for (let i = 0; i < neighbours.length; i++) {
 				let nid = neighbours[i];
 				if (lookup.contains(nid)) {
-					let elB = lookup.get(nid);
-					lookup.get(id)!.connect(
+					let elB = lookup.lookup(nid);
+					lookup.lookup(id)!.connect(
 						elB!,
 						isNullOrUndefined(costs) ?
 							undefined :
@@ -291,10 +298,10 @@ export class Graph<T> {
 			let pathIndexes = pathSelecorFn(node, prev, acc, traversed);
 			if (isNotNull(pathIndexes)) {
 				pathIndexes!.forEach((index) => {
-					queue.push([node, node.neighbours.get(index)!, clone(newAcc)]);
+					queue.push([node, node.neighbours.read(index)!, clone(newAcc)]);
 				});
 			} else {
-				result.set(`${-1},${node.id}`, newAcc);
+				result.add(`${-1},${node.id}`, newAcc);
 			}
 		}
 

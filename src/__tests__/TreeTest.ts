@@ -21,7 +21,7 @@ describe("Tree",
 		test("Tree.fromObject returns correct tree",
 			() => {
 				const tree = this.tree as Tree<string>;
-				expect(tree.children!.get(1)!.children!.get(1)!.data!).toBe("c2-2");
+				expect(tree.children!.read(1)!.children!.read(1)!.data!).toBe("c2-2");
 				expect(tree.size).toBe(6);
 				expect(tree.leafCount).toBe(4);
 			});
@@ -43,10 +43,10 @@ describe("Tree",
 					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] }
 				];
 				let tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
-				expect(tree.children!.get(0)!.children!.get(1)!.data!).toEqual({ category: "drama" });
+				expect(tree.children!.read(0)!.children!.read(1)!.data!).toEqual({ category: "drama" });
 				tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true);
 				expect(tree.virtual).toBe(true);
-				expect(tree.children!.get(0)!.id).toBe("-");
+				expect(tree.children!.read(0)!.id).toBe("-");
 				expect(tree.size).toBe(5);
 				expect(tree.leafCount).toBe(3);
 			});
@@ -61,11 +61,11 @@ describe("Tree",
 					{ uid: "0-1", parent: "1", category: "drama", children: ["0-1-0", "0-1-1"] }
 				];
 				let tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
-				expect(tree.children!.get(0)!.children!.get(1)!.data!).toEqual({ category: "drama" });
-				expect(tree.children!.get(1)!.children!.get(0)!.data!).toEqual({ category: "drama" });
+				expect(tree.children!.read(0)!.children!.read(1)!.data!).toEqual({ category: "drama" });
+				expect(tree.children!.read(1)!.children!.read(0)!.data!).toEqual({ category: "drama" });
 				tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true);
 				expect(tree.virtual).toBe(true);
-				expect(tree.children!.get(0)!.id).toBe("-");
+				expect(tree.children!.read(0)!.id).toBe("-");
 				expect(tree.size).toBe(6);
 				expect(tree.leafCount).toBe(3);
 			});
@@ -83,8 +83,8 @@ describe("Tree",
 				expect(tree.virtual).toBe(true);
 				expect(tree.size).toBe(6);
 				expect(tree.leafCount).toBe(4);
-				expect(tree.children!.get(0)!.id).toBe("-");
-				expect(tree.children!.get(1)!.id).toBe("foo");
+				expect(tree.children!.read(0)!.id).toBe("-");
+				expect(tree.children!.read(1)!.id).toBe("foo");
 				tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
 				expect(tree.virtual).toBe(false);
 				expect(tree.id).toBe("-");
@@ -92,7 +92,7 @@ describe("Tree",
 		test("Root returns root of tree",
 			() => {
 				const tree = this.tree as Tree<string>;
-				expect((tree.children!.get(1)!.children!.get(1)!.root === tree)).toBe(true);
+				expect((tree.children!.read(1)!.children!.read(1)!.root === tree)).toBe(true);
 			});
 		test("Nodes are initable",
 			() => {
@@ -140,8 +140,8 @@ describe("Tree",
 				const filtered = tree.filter((node) => node.children !== null);
 				expect(filtered!.size).toBe(2);
 				expect(filtered!.leafCount).toBe(1);
-				expect(filtered!.children!.get(0)!.data!).toBe("c2");
-				expect(isNull(filtered!.children!.get(0)!.children)).toBe(true);
+				expect(filtered!.children!.read(0)!.data!).toBe("c2");
+				expect(isNull(filtered!.children!.read(0)!.children)).toBe(true);
 				const filtered2 = tree.filter((node) => node.children !== null && node.childCount > 42);
 				expect((filtered2 === null)).toBe(true);
 			});
@@ -178,8 +178,8 @@ describe("Tree",
 			() => {
 				const tree = (this.tree as Tree<string>).clone();
 				const c2 = tree.find((node) => node.data === "c2")!;
-				c2.children!.get(0)!.remove();
-				c2.children!.get(0)!.remove();
+				c2.children!.read(0)!.remove();
+				c2.children!.read(0)!.remove();
 				expect(isNull(c2.children)).toBe(true);
 			});
 		test("leafCount is recalculated after Add",
@@ -225,21 +225,21 @@ describe("Tree",
 				tree.insertAt(1, "c1.5");
 				expect(tree!.size).toBe(7);
 				expect(tree!.leafCount).toBe(5);
-				expect(tree.children!.get(1)!.data!).toBe("c1.5");
-				expect(tree.children!.get(2)!.data!).toBe("c2");
-				tree.children!.get(1)!.remove();
+				expect(tree.children!.read(1)!.data!).toBe("c1.5");
+				expect(tree.children!.read(2)!.data!).toBe("c2");
+				tree.children!.read(1)!.remove();
 				tree.insertAt(100000, "c4");
-				expect(tree.children!.get(3)!.data!).toBe("c4");
-				tree.children!.get(3)!.remove();
+				expect(tree.children!.read(3)!.data!).toBe("c4");
+				tree.children!.read(3)!.remove();
 				tree.insertAt(2, new Tree<string>().init({ data: "c2.5" }));
-				expect(tree.children!.get(2)!.data!).toBe("c2.5");
-				tree.children!.get(2)!.remove();
+				expect(tree.children!.read(2)!.data!).toBe("c2.5");
+				tree.children!.read(2)!.remove();
 			});
 		test("Prune removes all children from a node",
 			() => {
 				const tree = (this.tree as Tree<string>).clone();
-				tree.children!.get(1)!.prune();
-				expect(isNull(tree.children!.get(1)!.children)).toBe(true);
+				tree.children!.read(1)!.prune();
+				expect(isNull(tree.children!.read(1)!.children)).toBe(true);
 				expect(tree!.size).toBe(4);
 				expect(tree!.leafCount).toBe(3);
 			});
@@ -247,15 +247,15 @@ describe("Tree",
 			() => {
 				const tree = (this.tree as Tree<string>).clone();
 				expect(tree.depth()).toBe(0);
-				expect(tree.children!.get(1)!.depth()).toBe(1);
-				expect(tree.children!.get(1)!.children!.get(0)!.depth()).toBe(2);
+				expect(tree.children!.read(1)!.depth()).toBe(1);
+				expect(tree.children!.read(1)!.children!.read(0)!.depth()).toBe(2);
 			});
 		test("Sort sorts all children recursivly",
 			() => {
 				const tree = (this.tree as Tree<string>).clone();
 				tree.sort((a, b) => (a.data! < b.data! ? 1 : a.data! > b.data! ? -1 : 0));
-				expect(tree.children!.get(0)!.data!).toBe("c3");
-				expect(tree.children!.get(1)!.children!.get(1)!.data!).toBe("c2-1");
+				expect(tree.children!.read(0)!.data!).toBe("c3");
+				expect(tree.children!.read(1)!.children!.read(1)!.data!).toBe("c2-1");
 			});
 		test("ToJson formats Tree correct",
 			() => {

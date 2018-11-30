@@ -20,9 +20,9 @@ export function randomInt(min: number = 0, max: number = LARGEST_INT): number {
 export function randomNumber(min: number = 0, max: number = LARGEST_INT): number {
 	return (Math.random() * (max - min)) + min;
 }
-export function numericArray(length: number, type: MocDataType = MocDataType.LinearInt, min: number = 0, max: number = LARGEST_INT): number[] {
+export function numericArray(length: number, dataType: MocDataType = MocDataType.LinearInt, min: number = 0, max: number = LARGEST_INT): number[] {
 	const result: number[] = new Array(length);
-	switch (type) {
+	switch (dataType) {
 		case MocDataType.RandomInt:
 			for (let i = 0; i < length; i += 1) {
 				result[i] = randomInt(min, max);

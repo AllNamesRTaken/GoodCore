@@ -1,7 +1,7 @@
 import { Pool } from "../standard/Pool";
 
-export function Poolable<T extends { new(...args: any[]): {} }>(constructor: T): T & Constructor<IPoolable> {
-	return class extends constructor implements IPoolable {
+export function Poolable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IPoolable> {
+	return class extends _constructor implements IPoolable {
 		constructor(...args: any[]) {
 			super(...args);
 		}

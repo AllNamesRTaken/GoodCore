@@ -15,6 +15,6 @@ module.exports = {
     ],
     preset: 'ts-jest',
     testMatch: [
-        '**/__tests__/*Test.+(ts|tsx|js)',
+        '**/src/__tests__/*Test.+(ts|tsx|js)',
     ],
 }

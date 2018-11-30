@@ -85,7 +85,7 @@ describe("Rect",
 			() => {
 				const r1 = new Rect(1, 1, 3, 4);
 				const r2 = new Rect(4, 5, 6, 7);
-				r2.set(r1);
+				r2.copy(r1);
 				expect(r2.equals(new Rect(1, 1, 3, 4))).toBe(true);
 			});
 		test("Contains is true if another rect is fully contained",

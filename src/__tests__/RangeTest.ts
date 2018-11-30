@@ -100,7 +100,7 @@ describe("Range2",
 			() => {
 				const r1 = new Range2(1, 1, 2, 3);
 				const r2 = new Range2(2, 3, 4, 5);
-				r1.set(r2);
+				r1.copy(r2);
 				expect(r1.equals(r2)).toBe(true);
 				expect(r1).not.toBe(r2);
 			});

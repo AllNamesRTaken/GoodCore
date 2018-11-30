@@ -36,7 +36,7 @@ interface IBasicList<T> {
 	[Symbol.iterator](): IterableIterator<T>;
 	next(value?: any): IteratorResult<T>;
 	values: T[];
-	get(pos: number): T | undefined;
+	read(pos: number): T | undefined;
 	count: number;
 	clear(): IBasicList<T>;
 	add(v: T): IBasicList<T> | undefined;
@@ -79,7 +79,7 @@ interface IBasicList<T> {
 }
 interface IList<T> extends IBasicList<T> {
 	getByIndex(key: number | string): T | undefined;
-	set(pos: number, value: T): IList<T>;
+	write(pos: number, value: T): IList<T>;
 	push(v: T): number;
 	splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
 	concat(v: T[] | IList<T>): IList<T>;

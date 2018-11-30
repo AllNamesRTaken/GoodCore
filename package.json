@@ -1,8 +1,8 @@
 {
   "name": "goodcore",
-  "version": "0.20.11",
+  "version": "0.22.2",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
-  "main": "goodcore.bundle.js",
+  "main": "goodcore.bundle.min.js",
   "module": "index.js",
   "typings": "goodcore.d.ts",
   "unpkg": "goodcore.bundle.js",
@@ -12,8 +12,8 @@
   "scripts": {
     "install_tools": "npm install && typings install",
     "clean": "rimraf ./dist",
-    "dev": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp modifyBundle && gulp copyDTS && gulp copyWebpackExternalsFn",
-    "build": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp modifyBundle && gulp copyDTS && gulp copyWebpackExternalsFn",
+    "dev": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp fixES3Promises && gulp copyDTS && gulp copyWebpackExternalsFn",
+    "build": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp fixES3Promises && gulp copyDTS && gulp copyWebpackExternalsFn",
     "build-es": "tsc -p tsconfig.es6.json && gulp copyDTSES",
     "build-all": "npm run build && npm run build-es",
     "bench": "tsc -p tsconfig.bench.json && node ./dist/benchmark/index.js",

@@ -65,7 +65,7 @@ describe("List",
 			() => {
 				const list = (this.list1 as List<number>).clone();
 				expect(list.truncate(2).length).toBe(2);
-				expect(list.get(1)!).toBe(4);
+				expect(list.read(1)!).toBe(4);
 			});
 		test("trucate with no size empties array",
 			() => {
@@ -81,7 +81,7 @@ describe("List",
 			() => {
 				const list = (this.list1 as List<number>).clone();
 				expect(list.truncate(-2).length).toBe(2);
-				expect(list.get(1)!).toBe(2);
+				expect(list.read(1)!).toBe(2);
 			});
 		test("Fill fills an array with new data", () => {
 			let list1 = new List([1, 4, 7, 2]);
@@ -93,7 +93,7 @@ describe("List",
 			expect(list1.fill(2, () => 1).values).toEqual([1, 1]);
 			expect(list1.fill(3, (i) => i).values).toEqual([0, 1, 2]);
 			expect(list2.fill(2, obj).values).toEqual([{ a: 1 }, { a: 1 }]);
-			expect(list2.get(0)!).not.toBe(obj);
+			expect(list2.read(0)!).not.toBe(obj);
 		});
 		test("Splice does splice",
 			() => {
@@ -169,7 +169,7 @@ describe("List",
 		test("Get gets the value at a given position in the list",
 			() => {
 				const list1 = this.list1 as List<number>;
-				expect(list1.get(2)!).toBe(7);
+				expect(list1.read(2)!).toBe(7);
 			});
 		test("getByIndex gets the value at a given index key in an indexed list",
 			() => {
@@ -184,15 +184,15 @@ describe("List",
 				const list1 = (this.list1 as List<number>).clone();
 				const list2 = (this.list1 as List<number>).clone();
 				list2.indexer = (el) => el;
-				expect(list1.set(2, 42).get(2)!).toBe(42);
+				expect(list1.write(2, 42).read(2)!).toBe(42);
 				let err: Error | undefined;
 				try {
-					list1.set(4, 42);
+					list1.write(4, 42);
 				} catch (error) {
 					err = error;
 				}
 				expect((err !== undefined)).toBe(true);
-				expect(list2.set(2, 42).get(2)!).toBe(42);
+				expect(list2.write(2, 42).read(2)!).toBe(42);
 			});
 		test("Count returns the lists length",
 			() => {
@@ -211,7 +211,7 @@ describe("List",
 			() => {
 				const list1 = this.list1.clone() as List<number>;
 				list1.indexer = (el) => el;
-				expect(list1.add(42).get(4)!).toBe(42);
+				expect(list1.add(42).read(4)!).toBe(42);
 				expect(list1.values).toEqual([1, 4, 7, 2, 42]);
 				expect((list1 as any)._index[42]).toBe(42);
 			});
@@ -256,7 +256,7 @@ describe("List",
 			() => {
 				const list1 = this.list1.clone() as List<number>;
 				list1.indexer = (el) => el;
-				expect(list1.get(1)!).toBe(4);
+				expect(list1.read(1)!).toBe(4);
 				expect(list1.remove(4).contains(4)).toBe(false);
 				expect(((list1 as any)._index[4] === undefined)).toBe(true);
 			});
@@ -264,7 +264,7 @@ describe("List",
 			() => {
 				const list1 = this.list1.clone() as List<number>;
 				list1.indexer = (el) => el;
-				expect(list1.get(1)!).toBe(4);
+				expect(list1.read(1)!).toBe(4);
 				expect(list1.removeFirst((el: number) => el === 4)!).toBe(4);
 				expect(list1.contains(4)).toBe(false);
 				expect(((list1 as any)._index[4] === undefined)).toBe(true);
@@ -274,7 +274,7 @@ describe("List",
 			() => {
 				const list1 = this.list1.clone() as List<number>;
 				list1.indexer = (el) => el;
-				expect(list1.get(2)!).toBe(7);
+				expect(list1.read(2)!).toBe(7);
 				expect(list1.removeAt(2)!).toBe(7);
 				expect(list1.contains(7)).toBe(false);
 				expect(((list1 as any)._index[7] === undefined)).toBe(true);

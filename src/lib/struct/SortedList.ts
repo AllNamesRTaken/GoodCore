@@ -2,6 +2,7 @@ import { binarySearch, shallowCopy } from "../Arr";
 import { equals, setProperties } from "../Obj";
 import { isFunction, isNotUndefined, hasWindow } from "../Test";
 import { List } from "./List";
+import { once } from "../Util";
 
 if (hasWindow() && !(window as any).Symbol) {
 	(window as any).Symbol = { iterator: "iterator" };
@@ -47,8 +48,15 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	public get values(): T[] {
 		return this._list.values;
 	}
+	// tslint:disable-next-line:no-reserved-keywords
 	public get(pos: number): T | undefined {
-		return this._list.get(pos);
+		once(() => {
+			console.warn("Function SortedList::get is deprecated please use SortedList::read instead. get is a reserved word.");
+		});
+		return this.read(pos);
+	}
+	public read(pos: number): T | undefined {
+		return this._list.read(pos);
 	}
 	public get count(): number {
 		return this._list.length;
@@ -230,62 +238,62 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 	}
 	public intersect(b: List<T> | SortedList<T>): this {
 		let result = this.create(this.comparer) as this;		
-		let long: List<T> | SortedList<T>;
-		let short: List<T> | SortedList<T>;
+		let _long: List<T> | SortedList<T>;
+		let _short: List<T> | SortedList<T>;
 		if (this.length > 0 && b.length > 0) {
 			if (this.length < b.length) {
-				short = this, long = b;
+				_short = this, _long = b;
 			} else {
-				long = this, short = b;
+				_long = this, _short = b;
 			}
 			if (b instanceof SortedList && this.comparer === b.comparer) {
-				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)!) - 1;
-				let lastPos = (long as SortedList<T>).getInsertIndex(short.last()!) - 1;
+				let longPos = (_long as SortedList<T>).getInsertIndex(_short.read(0)!) - 1;
+				let lastPos = (_long as SortedList<T>).getInsertIndex(_short.last()!) - 1;
 				let i = -1;
-				let shortLen = short.length;
+				let shortLen = _short.length;
 				while (longPos < lastPos && ++i < shortLen) {
-					let el = short.get(i)!;
+					let el = _short.read(i)!;
 					let aVsB;
-					while (++longPos < lastPos && (aVsB = this.comparer(long.get(longPos)!, el)) < 0 ) {
+					while (++longPos < lastPos && (aVsB = this.comparer(_long.read(longPos)!, el)) < 0 ) {
 						void(0);
 					}
 					if (longPos < lastPos && aVsB === 0) {
 						result.add(el);
 					}
 				}
-			} else if (long instanceof SortedList || (long instanceof List && long.indexer !== null)) {
-				short.forEach((el) => {
-					if (long.contains(el)) {
+			} else if (_long instanceof SortedList || (_long instanceof List && _long.indexer !== null)) {
+				_short.forEach((el) => {
+					if (_long.contains(el)) {
 						result.add(el);
 					}
 				});
 			} else {
-				result = result.bulkAdd((short as SortedList<T>).toList().intersect(long));
+				result = result.bulkAdd((_short as SortedList<T>).toList().intersect(_long));
 			}
 		}
 		return result;
 	}
 	public union(b: List<T> | SortedList<T>): this {
 		let result: this;
-		let long: List<T> | SortedList<T>;
-		let short: List<T> | SortedList<T>;
+		let _long: List<T> | SortedList<T>;
+		let _short: List<T> | SortedList<T>;
 
 		if (this.length > 0 || b.length > 0) {
 			if (this.length < b.length) {
-				short = this, long = b;
+				_short = this, _long = b;
 			} else {
-				long = this, short = b;
+				_long = this, _short = b;
 			}
 			if (b instanceof SortedList && this.comparer === b.comparer) {
-				result = this.create(this.comparer, long.values) as this;
-				let longPos = (long as SortedList<T>).getInsertIndex(short.get(0)!) - 1;
-				let lastPos = (long as SortedList<T>).getInsertIndex(short.last()!) - 1;
+				result = this.create(this.comparer, _long.values) as this;
+				let longPos = (_long as SortedList<T>).getInsertIndex(_short.read(0)!) - 1;
+				let lastPos = (_long as SortedList<T>).getInsertIndex(_short.last()!) - 1;
 				let i = -1;
-				let shortLen = short.length;
+				let shortLen = _short.length;
 				while (++i < shortLen && longPos < lastPos) {
-					let el = short.get(i)!;
+					let el = _short.read(i)!;
 					let aVsB = -1;
-					while (++longPos < lastPos && (aVsB = this.comparer(long.get(longPos)!, el)) < 0 ) {
+					while (++longPos < lastPos && (aVsB = this.comparer(_long.read(longPos)!, el)) < 0 ) {
 						void(0);
 					}
 					if ((aVsB > 0 && longPos < lastPos) || longPos === lastPos) {
@@ -295,18 +303,18 @@ export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T
 				if (i < shortLen) {
 					--i;
 					while (++i < shortLen) {
-						result.add(short.get(i)!);
+						result.add(_short.read(i)!);
 					}
 				}
-			} else if (long instanceof SortedList || (long instanceof List && long.indexer !== null)) {
-				result = this.create(this.comparer, long.values) as this;
-				short.forEach((el) => {
-					if (!long.contains(el)) {
+			} else if (_long instanceof SortedList || (_long instanceof List && _long.indexer !== null)) {
+				result = this.create(this.comparer, _long.values) as this;
+				_short.forEach((el) => {
+					if (!_long.contains(el)) {
 						result.add(el);
 					}
 				});
 			} else {
-				result = this.create(this.comparer, (short as SortedList<T>).toList().union(long) ) as this;
+				result = this.create(this.comparer, (_short as SortedList<T>).toList().union(_long) ) as this;
 			}
 		} else {
 			result = this.create(this.comparer) as this;

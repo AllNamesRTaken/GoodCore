@@ -55,9 +55,9 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		let nodeList = list.map((el) => new ctor("").init({ id: map.id(el), data: map.data(el), isDirty: true }));
 		nodeList.forEach((node, i) => {
 			if (!lookup.has(node.id)) {
-				lookup.set(node.id, []);
+				lookup.add(node.id, []);
 			}
-			lookup.get(node.id)!.push(node);
+			lookup.lookup(node.id)!.push(node);
 		});
 
 		// hook nodes together
@@ -65,9 +65,9 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		list.forEach((el, i) => {
 			let parentId: string = map.parent(el) as string;
 			if (lookup.contains(parentId)) {
-				lookup.get(parentId)!.forEach((p) => p.add(nodeList.get(i)!));
+				lookup.lookup(parentId)!.forEach((p) => p.add(nodeList.read(i)!));
 			} else {
-				rootNodes.add(nodeList.get(i)!);
+				rootNodes.add(nodeList.read(i)!);
 			}
 		});
 
@@ -240,7 +240,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 			acc = fn!(acc, cur);
 			i = (cur.children && cur.children.count) || 0;
 			while (i--) {
-				stack.push(cur.children!.get(i)!);
+				stack.push(cur.children!.read(i)!);
 			}
 		}
 		return acc;
@@ -310,7 +310,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 					++cur;
 					size += el.size;
 				});
-			result = this.children.get(cur)!._findBySize(pos - size);
+			result = this.children.read(cur)!._findBySize(pos - size);
 		}
 		return result;
 	}
@@ -346,7 +346,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		} else if (pos < 0 || pos >= this.leafCount) {
 			result = null;
 		} else if (this.leafCount === this.children!.count) {
-			return this.children!.get(pos)!;
+			return this.children!.read(pos)!;
 		} else {
 			let leaves = 0;
 			let cur: number = 0;
@@ -356,7 +356,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 					++cur;
 					leaves += el.leafCount;
 				});
-			result = this.children!.get(cur)!.getLeaf(pos - leaves);
+			result = this.children!.read(cur)!.getLeaf(pos - leaves);
 		}
 		return result;
 	}
