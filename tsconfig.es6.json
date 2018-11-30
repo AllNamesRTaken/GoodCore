@@ -31,7 +31,7 @@
 		"./typings/**/*.d.ts"
 	],
 	"exclude": [
-		"./src/__test__/**/*.ts",
+		"**/__tests__/**/*.ts",
 		"./src/lib/wip/**/*.ts"
 	]
 }

@@ -6,11 +6,12 @@ module.exports = function (api) {
             "@babel/preset-env",
             {
                 targets: "> 0.25%, not dead",
+                forceAllTransforms: true,
             }
         ]
     ];
     return {
         presets,
-        plugins: ["@babel/plugin-transform-reserved-words", "@babel/plugin-transform-property-literals", "@babel/plugin-transform-member-expression-literals", "@babel/plugin-transform-property-mutators"]
+        //plugins: ["@babel/plugin-transform-reserved-words", "@babel/plugin-transform-property-literals", "@babel/plugin-transform-member-expression-literals", "@babel/plugin-transform-property-mutators"]
     };
 }
