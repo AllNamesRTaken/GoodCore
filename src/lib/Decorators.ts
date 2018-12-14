@@ -87,6 +87,19 @@ export function asserts<S>(assertFn: Function, result?: any) {
 		return descriptor;
 	};
 }
+
+export function transform<S>(decoration: (name: string, ...args: any[]) => any[]) {
+	return function(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor {
+		const orgFn = descriptor.value as Function;
+		descriptor.value = function(...args: any[]) {
+			let newArgs = decoration.apply(this, [orgFn.name].concat(args));
+			const result = orgFn.apply(this, newArgs);
+			return result;
+		};
+		return descriptor;
+	};
+}
+
 // credit to https://github.com/raganwald/method-combinators/blob/master/doc/async-js.md#method-combinators-in-an-asynchronous-world
 
 export function before<S>(decoration: (name: string, ...args: any[]) => void) {

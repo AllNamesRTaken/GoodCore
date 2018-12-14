@@ -37,6 +37,27 @@
     export function insertAt<T>(src: T[], pos: number, v: T): void;
     export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
     export function create<T>(length: number, populator: (i?: number, arr?: T[]) => T): T[];
-    export function zip<S, T, U = [S|undefined, T|undefined]>(a: S[], b: T[], fn?: (a: S|undefined, b: T|undefined, i?: number) => U ): U[];
+    type zipFn<S, T, U, V = undefined, W = undefined> = (i: number, a: S, b: T, c?: V, d?: W) => U;
+    export function zip<S, T, U = [S, T], V = undefined, W = undefined>(
+        a: S[], 
+        b: T[], 
+        fn?: zipFn<S, T, U, V, W>,
+        c?: undefined, 
+        d?: undefined, 
+    ): U[];
+    export function zip<S, T, V, U = [S, T, V], W = undefined>(
+        a: S[], 
+        b: T[], 
+        c: V[], 
+        fn?: zipFn<S, T, U, V, W>,
+        d?: undefined, 
+    ): U[];
+    export function zip<S, T, V, W, U = [S, T, V, W]>(
+        a: S[], 
+        b: T[], 
+        c: V[], 
+        d: W[], 
+        fn?: zipFn<S, T, U, V, W>,
+    ): U[]; 
     export function unzip<S, T, U = [S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
     export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];

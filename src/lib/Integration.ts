@@ -22,8 +22,8 @@ import * as Util from "./Util";
 import * as Decorators from "./Decorators";
 
 export function integrate(alias?: string | object) {
-	let stringAlias = false;
-	let objectAlias = false;
+	let stringAlias = typeof alias === "string";
+	let objectAlias = typeof alias === "object";
 	let list = [
 		{name: "Arr", object: Arr},
 		{name: "Calc", object: Calc},
@@ -47,9 +47,8 @@ export function integrate(alias?: string | object) {
 		{name: "Uri", object: Uri},
 		{name: "Util", object: Util},
 	];
-	if (typeof(alias) === "string") {
-		(Global.window as any)[alias] = {};
-		stringAlias = true;
+	if (stringAlias) {
+		(Global.window as any)[alias as string] = (Global.window as any)[alias as string] || {};
 	}
 	for (let i = 0; i < list.length; i++) {
 		let stuff = list[i];
