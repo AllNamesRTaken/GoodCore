@@ -1,6 +1,6 @@
 import { Global } from "./Global";
 import { isNullOrUndefined } from "./Test";
-import { once } from "./Util";
+import { once, assert } from "./Util";
 
 export enum Sides {
 	Top,
@@ -36,24 +36,24 @@ export function create(html: string, attr?: Indexable<any>): HTMLElement {
 		if (usesTemplate) {
 			let template = DomState._template!;
 			template.innerHTML = html;
-			result = template.content.firstChild as HTMLElement;
+			assert(!!template.content.firstChild, "Dom.create was unable to parse html");
+			result = template.content.firstChild! as HTMLElement;
 			clear(template.content);
 		} else if (usesParser) {
 			let parser = DomState._parser!;
-			let doc = parser.parseFromString(html, "text/html"),
-			fragment = DomState._fragment!;
-			fragment.appendChild( doc.documentElement as Node);
-			result = fragment.firstChild as HTMLElement;
-			clear(fragment);
+			let doc = parser.parseFromString(html, "text/html");
+			assert(!!doc.body.firstChild, "Dom.create was unable to parse html");
+			result = doc.body.firstChild! as HTMLElement;
 		} else {
 			DomState._el!.innerHTML = html;
-			result = DomState._el!.firstChild as HTMLElement;
+			assert(!!DomState._el!.firstChild, "Dom.create was unable to parse html");			
+			result = DomState._el!.firstChild! as HTMLElement;
 			clear(DomState._el!);
 		}
 	}
-	setAttr(result, attr);
+	setAttr(result!, attr);
 	//unsafe cast
-	return result;
+	return result!;
 }
 export function outerHTML(el: HTMLElement): string {
 	DomState._el!.appendChild(el);
