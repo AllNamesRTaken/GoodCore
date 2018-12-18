@@ -24,7 +24,7 @@ export function init(win: Window) {
 	DomState._document = DomState._window.document;
 	DomState._el = DomState._document.createElement("div");
 }
-export function create(html: string, attr?: Indexable<any>): HTMLElement {
+export function create<T extends HTMLElement>(html: string, attr?: Indexable<any>): T {
 	// tslint:disable-next-line:prefer-const
 	let result: HTMLElement, keys: string[], i: number, k: number, styles: any, styleKeys: string[];
 	let usesTemplate = DomState._template && DomState._template!.content && true;
@@ -53,7 +53,7 @@ export function create(html: string, attr?: Indexable<any>): HTMLElement {
 	}
 	setAttr(result!, attr);
 	//unsafe cast
-	return result!;
+	return result! as T;
 }
 export function outerHTML(el: HTMLElement): string {
 	DomState._el!.appendChild(el);
@@ -117,14 +117,14 @@ export function clear(element: Element | Node) {
 	}
 }
 // tslint:disable-next-line:no-reserved-keywords
-export function get(id: string): HTMLElement | null {
+export function get<T extends HTMLElement>(id: string): T | null {
 	once(() => {
 		console.warn("Function Dom.get(id) is deprecated please use Dom.byId instead. get is a reserved word.");
 	});
-	return byId(id); 
+	return byId<T>(id); 
 }
-export function byId(id: string): HTMLElement | null {
-	let result = DomState._document!.getElementById(id) as HTMLElement;
+export function byId<T extends HTMLElement>(id: string): T | null {
+	let result = DomState._document!.getElementById(id);
 	if (result === null) {
 		switch (id) {
 			case "body":
@@ -134,22 +134,22 @@ export function byId(id: string): HTMLElement | null {
 				break;
 		}
 	}
-	return result;
+	return result as T;
 }
-export function find(selector: string, root?: Element): Element | null {
-	return (root || DomState._document)!.querySelector(selector) as Element | null;
+export function find<T extends HTMLElement>(selector: string, root?: Element): T | null {
+	return (root || DomState._document)!.querySelector(selector);
 }
 function toArray<T>(arr: ArrayLike<T>): T[] {
 	return Array.prototype.slice.call(arr);
 }
-export function findAll(selector: string, root?: HTMLElement): Element[] {
+export function findAll<T extends HTMLElement>(selector: string, root?: HTMLElement): T[] {
 	return toArray((root || DomState._document!).querySelectorAll(selector));
 }
 export function children(root: Element, selector?: string): Element[] {
 	const children = toArray((root || DomState._document).children);
 	return selector === undefined ? children : children.filter((el) => is(selector, el));
 }
-export function findParent(root: Element, selector: string): HTMLElement | null {
+export function findParent<T extends HTMLElement>(root: Element, selector: string): T | null {
 	let result = root.parentElement;
 	while (result) {
 		if (is(selector, result)) {
@@ -157,7 +157,7 @@ export function findParent(root: Element, selector: string): HTMLElement | null 
 		}
 		result = result.parentElement;
 	}
-	return result;
+	return result as T;
 }
 export function position(el: HTMLElement, x: number, y: number): void {
 	el.style.top = `${y}px`;

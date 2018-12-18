@@ -501,18 +501,18 @@ declare namespace goodcore {
 		}
 		export function init(win: Window): void;
 		export function toArray<T>(a: ArrayLike<T>): T[];
-		export function create(html: string, attr?: any): HTMLElement;
+		export function create<T extends HTMLElement>(html: string, attr?: any): T;
 		export function outerHTML(el: HTMLElement): string;
 		export function setAttr(_el: HTMLElement | Node | String, attr: any): void;
 		export function remove(element: Element | Node): Element | Node | null;
 		export function replace(src: HTMLElement, target: HTMLElement): HTMLElement;
 		export function clear(element: Element | Node): void;
-		export function get(id: string): HTMLElement | null;
-		export function byId(id: string): HTMLElement | null;
-		export function find(selector: string): Element | null;
-		export function findAll(selector: string, root?: HTMLElement): Element[];
+		export function get<T extends HTMLElement>(id: string): T | null;
+		export function byId<T extends HTMLElement>(id: string): T | null;
+		export function find<T extends HTMLElement>(selector: string, root?: Element): T | null;
+		export function findAll<T extends HTMLElement>(selector: string, root?: HTMLElement): T[];
 		export function children(root: HTMLElement, selector?: string): Element[];
-		export function findParent(root: Element, selector: string): HTMLElement | null;
+		export function findParent<T extends HTMLElement>(root: Element, selector: string): T | null;
 		export function position(el: HTMLElement, x: number, y: number): void;
 		export function is(selector: string, element: Element): boolean;
 		export function setStylesExplicitly(element: HTMLElement, ...styles: string[]): void;
@@ -691,18 +691,6 @@ declare namespace goodcore {
 
 	export function Poolable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IPoolable>
 	export function Initable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IInitable<T>>
-
-	export function before<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-	export function after<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-	export function around<S>(decoration: (callback: Function, name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-	export function provided<S>(condition: (name: string, ...args: any[]) => boolean): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-
-	export let async: {
-		<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
-		before?<S>(decoration: (name: string, ...args: any[]) => Promise<any>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-		after?<S>(decoration: (name: string, ...args: any[]) => Promise<any>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-		provided?<S>(async_predicate: (...args: any[]) => Promise<boolean>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
-	};
 
 	export class Pool<T> {
 		readonly available: number;
