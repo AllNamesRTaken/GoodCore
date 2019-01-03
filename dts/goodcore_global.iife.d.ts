@@ -1,124 +1,118 @@
 type Constructor<T> = new (...args: any[]) => T;
 interface ICtor<T> { new(...args: any[]): T }
 interface Indexable<T> {
-	[key: string]: T;
+    [key: string]: T;
 }
 interface IObject {
-	[key: string]: any;
+    [key: string]: any;
 }
 interface IInstance<T> extends IObject {
-	constructor?: ICtor<T>;
+    constructor?: ICtor<T>;
 }
+type ArgTypes<T> = T extends (...a: infer A) => unknown ? A : [];
+type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
 interface IPool<T extends IPoolable> {
-	get(): T & IPoolable;
-	release(obj: T): void;
+    get(): T & IPoolable;
+    release(obj: T): void;
 }
 interface IPoolable {
-	__pool__: IPool<IPoolable>;
-	release(): void;
-	initPool(pool: IPool<IPoolable>): void;
+    __pool__: IPool<IPoolable>;
+    release(): void;
+    initPool(pool: IPool<IPoolable>): void;
 }
 interface ISerializable<T> {
-	toJSON(): any;
-	serialize(): T
+    toJSON(): any;
+    serialize(): T
 }
 interface IRevivable<T> {
-	revive(data: any, ...types: Array<Constructor<any>>): T;
-	deserialize(array: any, ...types: Array<Constructor<any>>): T;
+    revive(data: any, ...types: Array<Constructor<any>>): T;
+    deserialize(array: any, ...types: Array<Constructor<any>>): T;
 }
 interface ICloneable<T> {
-	clone(): T;
+    clone(): T;
 }
 interface IInitable<T> {
-	init(obj: Partial<T> | Indexable<any>, mapping?: Indexable<string>): this;
+    init(obj: Partial<T> | Indexable<any>, mapping?: Indexable<string>): this;
 }
 interface IBasicList<T> {
-	[Symbol.iterator](): IterableIterator<T>;
-	next(value?: any): IteratorResult<T>;
-	values: T[];
-	get(pos: number): T | undefined;
+    [Symbol.iterator](): IterableIterator<T>;
+    next(value?: any): IteratorResult<T>;
+    values: T[];
+    get(pos: number): T | undefined;
     read(pos: number): T | undefined;
-	count: number;
-	clear(): IBasicList<T>;
-	add(v: T): IBasicList<T> | undefined;
-	pop(): T | undefined;
-	shift(): T | undefined;
-	copy(src: IBasicList<T> | T[]): IBasicList<T>;
-	clone(): IBasicList<T>;
-	truncate(size?: number): IBasicList<T>;
-	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
-	remove(v: T): IBasicList<T>;
-	removeFirst(fn: (el: T) => boolean): T | undefined;
-	removeAt(n: number): T | undefined;
-	forEach(fn: (el: T, i?: number) => any, startIndex?: number): IBasicList<T>;
-	forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>;
-	until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): IBasicList<T>;
-	until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number, startIndex?: number) => void): IBasicList<T>;
-	reverseForEach(fn: (el: T, i: number) => any): IBasicList<T>;
-	reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): IBasicList<T>;
-	first(fn?: (el: T) => boolean): T | undefined;
-	find(fn: (el: T) => boolean): T | undefined;
-	last(): T | undefined;
-	indexOf(v: T | ((el: T) => boolean)): number;
-	contains(v: T | ((el: T) => boolean)): boolean;
-	some(fn: (el: T) => boolean): boolean;
-	all(fn: (el: T) => boolean): boolean;
-	select(fn: (el: T) => boolean): IBasicList<T>;
-	selectInto(src: IBasicList<T> | T[], fn: (el: T) => boolean): IBasicList<T>;
-	head(count?: number): IBasicList<T>;
-	tail(count?: number): IBasicList<T>;
-	map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
-	mapInto(src: IBasicList<any> | any[], fn: (el: any, i?: number) => any): IBasicList<T>;
-	reduce(fn: (acc: any, cur: T) => any, start: any): any;
-	reverseReduce(fn: (acc: any, cur: T) => any, start: any): any;
-	equals(b: IBasicList<T>): boolean;
-	same(b: IBasicList<T>): boolean;
-	intersect(b: IBasicList<T>): IBasicList<T>;
-	union(b: IBasicList<T>): IBasicList<T>;
-	toJSON(): any;
-	serialize(): T[];
+    count: number;
+    clear(): IBasicList<T>;
+    add(v: T): IBasicList<T> | undefined;
+    pop(): T | undefined;
+    shift(): T | undefined;
+    copy(src: IBasicList<T> | T[]): IBasicList<T>;
+    clone(): IBasicList<T>;
+    truncate(size?: number): IBasicList<T>;
+    fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
+    remove(v: T): IBasicList<T>;
+    removeFirst(fn: (el: T) => boolean): T | undefined;
+    removeAt(n: number): T | undefined;
+    forEach(fn: (el: T, i?: number) => any, startIndex?: number): IBasicList<T>;
+    forSome(filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): IBasicList<T>;
+    until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): IBasicList<T>;
+    until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number, startIndex?: number) => void): IBasicList<T>;
+    reverseForEach(fn: (el: T, i: number) => any): IBasicList<T>;
+    reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): IBasicList<T>;
+    first(fn?: (el: T) => boolean): T | undefined;
+    find(fn: (el: T) => boolean): T | undefined;
+    last(): T | undefined;
+    indexOf(v: T | ((el: T) => boolean)): number;
+    contains(v: T | ((el: T) => boolean)): boolean;
+    some(fn: (el: T) => boolean): boolean;
+    all(fn: (el: T) => boolean): boolean;
+    select(fn: (el: T) => boolean): IBasicList<T>;
+    selectInto(src: IBasicList<T> | T[], fn: (el: T) => boolean): IBasicList<T>;
+    head(count?: number): IBasicList<T>;
+    tail(count?: number): IBasicList<T>;
+    map<S>(fn: (el: T, i?: number) => S): IBasicList<S>;
+    mapInto(src: IBasicList<any> | any[], fn: (el: any, i?: number) => any): IBasicList<T>;
+    reduce(fn: (acc: any, cur: T) => any, start: any): any;
+    reverseReduce(fn: (acc: any, cur: T) => any, start: any): any;
+    equals(b: IBasicList<T>): boolean;
+    same(b: IBasicList<T>): boolean;
+    intersect(b: IBasicList<T>): IBasicList<T>;
+    union(b: IBasicList<T>): IBasicList<T>;
+    toJSON(): any;
+    serialize(): T[];
 }
 interface IList<T> extends IBasicList<T> {
-	getByIndex(key: number | string): T | undefined;
-	set(pos: number, value: T): IList<T>;
-	push(v: T): number;
-	splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
-	concat(v: T[] | IList<T>): IList<T>;
-	append(v: T[] | IList<T>): void;
-	shallowCopy(src: IList<T> | T[]): IList<T>;
-	reverse(): IList<T>;
-	orderBy(fn: (a: T, b: T) => number): IList<T>;
-	subtract(b: IList<T>): IList<T>;
-	zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
-	unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
-	flatten<U>(maxDepth?: number): IList<U>
+    getByIndex(key: number | string): T | undefined;
+    set(pos: number, value: T): IList<T>;
+    push(v: T): number;
+    splice(pos?: number, remove?: number, insert?: T[] | IList<T>): IList<T>;
+    concat(v: T[] | IList<T>): IList<T>;
+    append(v: T[] | IList<T>): void;
+    shallowCopy(src: IList<T> | T[]): IList<T>;
+    reverse(): IList<T>;
+    orderBy(fn: (a: T, b: T) => number): IList<T>;
+    subtract(b: IList<T>): IList<T>;
+    zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
+    unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
+    flatten<U>(maxDepth?: number): IList<U>
 }
 interface ITreeNode<T> {
-	id: string;
-	parent: ITreeNode<T> | null;
-	children: IList<ITreeNode<T>> | null;
-	data: T | null;
+    id: string;
+    parent: ITreeNode<T> | null;
+    children: IList<ITreeNode<T>> | null;
+    data: T | null;
 }
 interface IVec2 {
-	x: number;
-	y: number;
+    x: number;
+    y: number;
 }
 interface IRange2 {
-	pos: IVec2;
-	size: IVec2;
+    pos: IVec2;
+    size: IVec2;
 }
 interface IRect {
-	start: IVec2;
-	stop: IVec2;
+    start: IVec2;
+    stop: IVec2;
 }
-interface IDebounceOptions {
-	leading: boolean;
-}
-interface IDebouncedFunction<T> {
-	(...args: any[]): T
-	resetTimer?: () => void;
-}
-
 declare const Global: {
     window: Window | null;
     hasNativeWindow: boolean;
@@ -557,27 +551,27 @@ declare namespace Arr {
     export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
     export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[];
     type zipFn<S, T, U, V = undefined, W = undefined> = (i: number, a: S, b: T, c?: V, d?: W) => U;
-    export function zip<S, T, U = [S, T], V = undefined, W = undefined>(
-        a: S[], 
-        b: T[], 
+    export function zip<S, T, U =[S, T], V = undefined, W = undefined>(
+        a: S[],
+        b: T[],
         fn?: zipFn<S, T, U, V, W>,
-        c?: undefined, 
-        d?: undefined, 
+        c?: undefined,
+        d?: undefined,
     ): U[];
-    export function zip<S, T, V, U = [S, T, V], W = undefined>(
-        a: S[], 
-        b: T[], 
-        c: V[], 
+    export function zip<S, T, V, U =[S, T, V], W = undefined>(
+        a: S[],
+        b: T[],
+        c: V[],
         fn?: zipFn<S, T, U, V, W>,
-        d?: undefined, 
+        d?: undefined,
     ): U[];
-    export function zip<S, T, V, W, U = [S, T, V, W]>(
-        a: S[], 
-        b: T[], 
-        c: V[], 
-        d: W[], 
+    export function zip<S, T, V, W, U =[S, T, V, W]>(
+        a: S[],
+        b: T[],
+        c: V[],
+        d: W[],
         fn?: zipFn<S, T, U, V, W>,
-    ): U[]; 
+    ): U[];
     export function unzip<S, T, U =[S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
     export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
 }
@@ -632,9 +626,37 @@ declare namespace Util {
     export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(objOrClass: U, fnName: string, proxyFn: (originalFn: (...args: any[]) => S | V, ...args: any[]) => void): void;
     export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void;
     export function toArray<T>(arr: ArrayLike<T>): T[];
-    export function debounce<S extends any, T extends (...args: any[]) => S | void>(method: T, duration?: number, options?: Partial<IDebounceOptions>): IDebouncedFunction<S>;
+    export interface IDebounceOptions {
+        leading: boolean;
+    }
+    type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ?
+        PromiseLike<S> :
+        T extends (...a: unknown[]) => infer R ?
+        U extends { leading: true } ?
+        R :
+        PromiseLike<R>
+        : never;
+    export interface IDebouncedFunction<T, U> {
+        (...args: ArgTypes<T>): DebounceResultType<T, U>;
+        resetTimer?(): void;
+    }
+    export function debounce<T extends (...args: any[]) => any, U extends Partial<IDebounceOptions>>(
+        method: T,
+        duration: number,
+        options?: U,
+    ): IDebouncedFunction<T, U>;
+    export interface IThrottleOptions {
+        trailing: boolean;
+    }
+    export interface IThrottledFunction<T> {
+        (...args: ArgTypes<T>): ResultType<T>;
+    }
+    export function throttle<T extends (...args: any[]) => any>(
+        method: T,
+        duration?: number,
+        options?: Partial<IThrottleOptions>
+    ): IThrottledFunction<T>;
 }
-
 declare namespace Test {
     export class Env {
         public static useNative?: boolean;
@@ -719,23 +741,13 @@ declare class KeyValuePair<S, T> {
     value: T;
 }
 
-declare interface IVec2 {
-    x: number;
-    y: number;
-}
-
-declare interface IRange2 {
-    pos: IVec2;
-    size: IVec2;
-}
-
-declare interface IRect {
-    start: IVec2;
-    stop: IVec2;
-    endInclusive?: boolean;
-}
 declare namespace Decorators {
-    export function debounced<S>(duration: number | undefined, options?: Partial<IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+    export function debounced<S>(duration: number | undefined, options?: Partial<Util.IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+        configurable: boolean;
+        enumerable: boolean | undefined;
+        get: () => any;
+    };
+    export function throttled<S>(duration?: number, options?: Partial<Util.IThrottleOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
         configurable: boolean;
         enumerable: boolean | undefined;
         get: () => any;

@@ -1,14 +1,10 @@
 import { isNotNullOrUndefined, isNotUndefined, isFunction } from "./Test";
-import { IDebounceOptions, debounce, AssertError } from "./Util";
+import { IDebounceOptions, debounce, AssertError, IThrottleOptions, throttle } from "./Util";
 
-export function debounced<S>(duration?: number, options?: Partial<IDebounceOptions>): 
-<S>(target: S, key: string, descriptor: PropertyDescriptor) => {
-	configurable: boolean;
-	enumerable: boolean | undefined;
-	get(): any;
-} {
+export function debounced<S>(duration?: number, options?: Partial<IDebounceOptions>) {
 	return function innerDecorator<S>(target: S, key: string, descriptor: PropertyDescriptor) {
 		return {
+			// this is needed to have a unique timer per object instance
 			configurable: true,
 			enumerable: descriptor.enumerable,
 			get: function getter() {
@@ -16,6 +12,24 @@ export function debounced<S>(duration?: number, options?: Partial<IDebounceOptio
 					configurable: true,
 					enumerable: descriptor.enumerable,
 					value: debounce(descriptor.value, duration, options)
+				});
+
+				return (this as any)[key];
+			}
+		};
+	};
+}
+export function throttled<S>(duration?: number, options?: Partial<IThrottleOptions>) {
+	return function innerDecorator<S>(target: S, key: string, descriptor: PropertyDescriptor) {
+		return {
+			// this is needed to have a unique timer per object instance
+			configurable: true,
+			enumerable: descriptor.enumerable,
+			get: function getter() {
+				Object.defineProperty(this, key, {
+					configurable: true,
+					enumerable: descriptor.enumerable,
+					value: throttle(descriptor.value, duration, options)
 				});
 
 				return (this as any)[key];

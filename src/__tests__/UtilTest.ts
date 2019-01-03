@@ -196,8 +196,8 @@ describe("Util",
 		test("debounce debounces function",
 			function (done) {
 				let value = 0;
-				let plus1 = Util.debounce(function inc() {
-					++value;
+				let plus1 = Util.debounce((amount?: number) => {
+					return ++value;
 				}, 20);
 				plus1();
 				plus1();
@@ -213,6 +213,7 @@ describe("Util",
 				let plus1 = Util.debounce(function inc() {
 					return ++value;
 				}, 20, { leading: true });
+
 				expect(plus1()!).toBe(1);
 				expect(plus1()!).toBe(1);
 				expect(plus1()!).toBe(1);
@@ -229,7 +230,7 @@ describe("Util",
 				let plus1 = Util.debounce(function inc(): number {
 					return ++value;
 				}, 20);
-				let result = (plus1() as Promise<number>);
+				let result = plus1();
 				result.then((v) => expect(v).toBe(1));
 				expect(value).toBe(0);
 				(plus1() as Promise<number>).then((v) => expect(v).toBe(1));
@@ -238,6 +239,74 @@ describe("Util",
 					expect(value).toBe(1);
 					done();
 				});
+			});
+		test("debounce without leading on async function returns and resolves promise",
+			async function (done) {
+				let value = 0;
+				let plus1 = Util.debounce(async function inc() {
+					return await new Promise<number>((resolve, reject) => setTimeout(() => {
+						++value;
+						resolve(value);
+					}, 10));
+				}, 20);
+				let result = await plus1();
+				expect(result).toBe(1);
+				expect(value).toBe(1);
+				let promise = plus1();
+				plus1();
+				expect(result).toBe(1);
+				expect(value).toBe(1);
+				promise.then((val) => {
+					expect(val).toBe(2);
+					expect(value).toBe(2);
+					done();
+				});
+			});
+		test("throttle throttles a function",
+			function (done) {
+				let value = 0;
+				let plus1 = Util.throttle(function inc() {
+					++value;
+				}, 20);
+				plus1();
+				plus1();
+				expect(value).toBe(1);
+				setTimeout(() => {
+					expect(value).toBe(1);
+					plus1();
+					expect(value).toBe(2);
+					done();
+				}, 20);
+			});
+		test("throttle with trailing = true repeats last action",
+			function (done) {
+				let value = 0;
+				let plus1 = Util.throttle(function inc() {
+					return ++value;
+				}, 20, { trailing: true });
+
+				plus1();
+				expect(value).toBe(1);
+				setTimeout(() => {
+					expect(value).toBe(2);
+					done();
+				}, 20);
+			});
+		test("throttle with trailing = true repeats last action with correct parameters",
+			function (done) {
+				let value = 0;
+				let plus1 = Util.throttle(function inc(amount: number = 1) {
+					value += amount;
+					return value;
+				}, 20, { trailing: true });
+
+				plus1();
+				plus1(10);
+				expect(value).toBe(1);
+				setTimeout(() => {
+					expect(value).toBe(11);
+					done();
+				}, 20);
 			});
 	}
 );

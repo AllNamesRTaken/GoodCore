@@ -19,24 +19,24 @@
             "outFiles": [],
             "sourceMaps": true
         },
+        // {
+        //     "type": "node",
+        //     "request": "attach",
+        //     "name": "Attach to Process",
+        //     "address": "localhost",
+        //     "port": 5858,
+        //     "outFiles": []
+        // },
         {
-            "type": "node",
-            "request": "attach",
-            "name": "Attach to Process",
-            "address": "localhost",
-            "port": 5858,
-            "outFiles": []
-        },
-        {
-            "name": "Run mocha",
+            "name": "Run Jest",
             "type": "node",
             "request": "launch",
             /* Globally installed mocha */
-            "program": "${workspaceRoot}/node_modules/mocha/bin/_mocha",
+            "program": "${workspaceRoot}/node_modules/jest/bin/jest.js",
             "stopOnEntry": false,
             /* Specify which are the file you want the runner to pick up. */
             "args": [
-                "dist/test/**/*.js"
+                "-i"
             ],
             "cwd": "${workspaceRoot}/",
             "runtimeExecutable": null,
@@ -49,7 +49,9 @@
              */
             "sourceMaps": true,
             /* This is the directory where your tests are located.*/
-            "outDir": "${workspaceRoot}/dist/test"
+            "outFiles": [
+                "${workspaceRoot}/dist/test/**/*.js"
+            ]
         }
     ]
 }

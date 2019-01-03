@@ -6,6 +6,8 @@ interface Indexable<T> {
 interface IObject {
 	[key: string]: any;
 }
+type ArgTypes<T> = T extends (...a: infer A) => unknown ? A : [];
+type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
 interface IInstance<T> extends IObject {
 	constructor?: ICtor<T>;
 }
@@ -37,7 +39,7 @@ interface IBasicList<T> {
 	next(value?: any): IteratorResult<T>;
 	values: T[];
 	get(pos: number): T | undefined;
-    read(pos: number): T | undefined;
+	read(pos: number): T | undefined;
 	count: number;
 	clear(): IBasicList<T>;
 	add(v: T): IBasicList<T> | undefined;
@@ -110,13 +112,6 @@ interface IRange2 {
 interface IRect {
 	start: IVec2;
 	stop: IVec2;
-}
-interface IDebounceOptions {
-	leading: boolean;
-}
-interface IDebouncedFunction<T> {
-	(...args: any[]): T
-	resetTimer?: () => void;
 }
 
 declare namespace goodcore {
@@ -558,27 +553,27 @@ declare namespace goodcore {
 		export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
 		export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[];
 		type zipFn<S, T, U, V = undefined, W = undefined> = (i: number, a: S, b: T, c?: V, d?: W) => U;
-		export function zip<S, T, U = [S, T], V = undefined, W = undefined>(
-			a: S[], 
-			b: T[], 
+		export function zip<S, T, U =[S, T], V = undefined, W = undefined>(
+			a: S[],
+			b: T[],
 			fn?: zipFn<S, T, U, V, W>,
-			c?: undefined, 
-			d?: undefined, 
+			c?: undefined,
+			d?: undefined,
 		): U[];
-		export function zip<S, T, V, U = [S, T, V], W = undefined>(
-			a: S[], 
-			b: T[], 
-			c: V[], 
+		export function zip<S, T, V, U =[S, T, V], W = undefined>(
+			a: S[],
+			b: T[],
+			c: V[],
 			fn?: zipFn<S, T, U, V, W>,
-			d?: undefined, 
+			d?: undefined,
 		): U[];
-		export function zip<S, T, V, W, U = [S, T, V, W]>(
-			a: S[], 
-			b: T[], 
-			c: V[], 
-			d: W[], 
+		export function zip<S, T, V, W, U =[S, T, V, W]>(
+			a: S[],
+			b: T[],
+			c: V[],
+			d: W[],
 			fn?: zipFn<S, T, U, V, W>,
-		): U[]; 
+		): U[];
 		export function unzip<S, T, U =[S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
 		export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
 	}
@@ -633,9 +628,37 @@ declare namespace goodcore {
 		export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(objOrClass: U, fnName: string, proxyFn: (originalFn: (...args: any[]) => S | V, ...args: any[]) => void): void;
 		export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void;
 		export function toArray<T>(arr: ArrayLike<T>): T[];
-		export function debounce<S extends any, T extends (...args: any[]) => S | void>(method: T, duration?: number, options?: Partial<IDebounceOptions>): IDebouncedFunction<S>;
+		export interface IDebounceOptions {
+			leading: boolean;
+		}
+		type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ?
+			PromiseLike<S> :
+			T extends (...a: unknown[]) => infer R ?
+			U extends { leading: true } ?
+			R :
+			PromiseLike<R>
+			: never;
+		export interface IDebouncedFunction<T, U> {
+			(...args: ArgTypes<T>): DebounceResultType<T, U>;
+			resetTimer?(): void;
+		}
+		export function debounce<T extends (...args: any[]) => any, U extends Partial<IDebounceOptions>>(
+			method: T,
+			duration?: number,
+			options?: U,
+		): IDebouncedFunction<T, U>;
+		export interface IThrottleOptions {
+			trailing: boolean;
+		}
+		export interface IThrottledFunction<T> {
+			(...args: ArgTypes<T>): ResultType<T>;
+		}
+		export function throttle<T extends (...args: any[]) => any>(
+			method: T,
+			duration?: number,
+			options?: Partial<IThrottleOptions>
+		): IThrottledFunction<T>;
 	}
-
 	export namespace Test {
 		export class Env {
 			public static useNative?: boolean;
@@ -738,7 +761,12 @@ declare namespace goodcore {
 		endInclusive?: boolean;
 	}
 	export namespace Decorators {
-		export function debounced<S>(duration: number | undefined, options?: Partial<IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+		export function debounced<S>(duration: number | undefined, options?: Partial<Util.IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+			configurable: boolean;
+			enumerable: boolean | undefined;
+			get: () => any;
+		};
+		export function throttled<S>(duration?: number, options?: Partial<Util.IThrottleOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
 			configurable: boolean;
 			enumerable: boolean | undefined;
 			get: () => any;

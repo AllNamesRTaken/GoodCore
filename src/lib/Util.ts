@@ -1,5 +1,5 @@
 import { Global } from "./Global";
-import { hasConsole, hasWindow, isNotUndefined, isNotNullOrUndefined } from "./Test";
+import { hasConsole, hasWindow, isNotUndefined, isNotNullOrUndefined, isUndefined } from "./Test";
 import { Timer } from "./Timer";
 
 export interface IObjectWithFunctions<T extends Object | void> {
@@ -177,29 +177,37 @@ export const DEFAULT_DURATION = 100;
 export interface IDebounceOptions {
 	leading: boolean;
 }
-export interface IDebouncedFunction<T> {
-	(...args: any[]): T | Promise<T>;
+type InnerResultType<T> = T extends (...a: unknown[]) => PromiseLike<infer S> ? S : T extends (...a: unknown[]) => infer S ? S : never;
+type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ? 
+	PromiseLike<S> : 
+	T extends (...a: unknown[]) => infer R ? 
+		U extends { leading: true } ?
+			R : 
+			PromiseLike<R>
+		: never;
+export interface IDebouncedFunction<T, U> {
+	(...args: ArgTypes<T>): DebounceResultType<T, U>;
 	resetTimer?(): void;
 }
-export function debounce<S, T extends (...args: any[]) => S | void>(
+export function debounce<T extends (...args: any[]) => any, U extends Partial<IDebounceOptions>>(
 	method: T,
 	duration: number = DEFAULT_DURATION,
-	options?: Partial<IDebounceOptions>
-): IDebouncedFunction<S> {
+	options?: U,
+): IDebouncedFunction<T, U> {
 	let timeoutHandle: number | null = null;
 	let leading = isNotUndefined(options) && isNotUndefined(options!.leading);
 	let executed = false;
-	let result: S | Promise<S>;
-	let resolve: (value?: S | PromiseLike<S> | undefined) => void;
-	let reject: (value?: S | PromiseLike<S> | undefined) => void;
-	if (!leading) {
-		result = new Promise<S>((_resolve, _reject) => {
-			resolve = _resolve;
-			reject = _reject;
-		});
-	}
+	let result: DebounceResultType<T, U> | undefined = undefined;
+	let resolve: (value?: DebounceResultType<T, U>) => void;
+	let reject: (value?: DebounceResultType<T, U>) => void;
 
-	let wrapper: IDebouncedFunction<S> = function (...args: any[]) {
+	let wrapper: IDebouncedFunction<T, U> = function (...args: any[]) {
+		if (!leading) {
+			result = result || new Promise<InnerResultType<T>>((_resolve, _reject) => {
+				resolve = _resolve as (value?: DebounceResultType<T, U>) => void;
+				reject = _reject as (value?: DebounceResultType<T, U>) => void;
+			}) as DebounceResultType<T, U>;
+		}
 		if (timeoutHandle === null) {
 			if (leading) {
 				executed = true;
@@ -211,9 +219,9 @@ export function debounce<S, T extends (...args: any[]) => S | void>(
 		timeoutHandle = setTimeout(() => {
 			timeoutHandle = null;
 			if (!executed) {
-				let value: Promise<S> | S = method.apply(this, args);
-				if (isNotNullOrUndefined(value) && (value as Promise<S>).hasOwnProperty("then")) {
-					(value as Promise<S>).then((v) => {
+				let value: DebounceResultType<T, U> = method.apply(this, args);
+				if (isNotNullOrUndefined(value) && (value as Promise<DebounceResultType<T, U>>).hasOwnProperty("then")) {
+					(value as Promise<DebounceResultType<T, U>>).then((v) => {
 						resolve(v);
 					});
 				} else {
@@ -221,8 +229,9 @@ export function debounce<S, T extends (...args: any[]) => S | void>(
 				}
 			}
 			executed = false;
+			result = undefined;
 		}, duration) as any;
-		return result;
+		return result as DebounceResultType<T, U>;
 	};
 
 	wrapper.resetTimer = function () {
@@ -230,6 +239,47 @@ export function debounce<S, T extends (...args: any[]) => S | void>(
 			clearTimeout(timeoutHandle);
 			timeoutHandle = null;
 		}
+	};
+
+	return wrapper;
+}
+export interface IThrottleOptions {
+	trailing: boolean;
+}
+export interface IThrottledFunction<T> {
+	(...args: ArgTypes<T>): ResultType<T>;
+}
+export function throttle<T extends (...args: any[]) => any>(
+	method: T,
+	duration: number = DEFAULT_DURATION,
+	options?: Partial<IThrottleOptions>
+): IThrottledFunction<T> {
+	let timeoutHandle: number | null = null;
+	let trailing = isNotUndefined(options) && isNotUndefined(options!.trailing) && options!.trailing;
+	let result: ResultType<T>;
+	let lastContext: any;
+	let lastArgs: any[];
+
+	let wrapper: IThrottledFunction<T> = function (...args: any[]): ResultType<T> {
+		lastArgs = args;
+		lastContext = this;
+		if (timeoutHandle === null) {
+			result = method.apply(lastContext, lastArgs);
+
+			if (!trailing) {
+				lastContext = null;
+				lastArgs = [];
+			}
+			timeoutHandle = setTimeout(() => {
+				timeoutHandle = null;
+				if (trailing) {
+					method.apply(lastContext, lastArgs);
+					lastContext = null;
+					lastArgs = [];
+				}
+			}, duration) as any;
+		}
+		return result;
 	};
 
 	return wrapper;

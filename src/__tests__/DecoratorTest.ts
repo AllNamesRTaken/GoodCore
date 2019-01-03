@@ -1,4 +1,4 @@
-import { debounced, once, asserts, deprecated } from "../lib/Decorators";
+import { debounced, once, asserts, deprecated, throttled } from "../lib/Decorators";
 import { assert, AssertError, pipeOut } from "../lib/Util";
 import { isNumber } from "../lib/Test";
 
@@ -67,6 +67,28 @@ describe("Decorators",
 				}, 20);
 				await result;
 				return true;
+			});
+		test("throttle should throttle the instance function",
+			function (done) {
+				class Foo {
+					public value = 0;
+					@throttled(20)
+					public setFoo() {
+						++this.value;
+					}
+				}
+				let foo1 = new Foo();
+				let foo2 = new Foo();
+				foo1.setFoo();
+				foo1.setFoo();
+				foo2.setFoo();
+				expect(foo1.value).toBe(1);
+				expect(foo2.value).toBe(1);
+				setTimeout(() => {
+					expect(foo1.value).toBe(1);
+					expect(foo2.value).toBe(1);
+					done();
+				}, 20);
 			});
 		test("once returns first value",
 			() => {

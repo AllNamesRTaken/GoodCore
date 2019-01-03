@@ -5,7 +5,12 @@ export interface IDebouncedFunction<T> {
     (...args: any[]): T
     resetTimer?: () => void;
 }
-export function debounced<S>(duration: number | undefined, options?: Partial<IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+export function debounced<S>(duration: number | undefined, options?: Partial<Util.IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+    configurable: boolean;
+    enumerable: boolean | undefined;
+    get: () => any;
+};
+export function throttled<S>(duration?: number, options?: Partial<Util.IThrottleOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
     configurable: boolean;
     enumerable: boolean | undefined;
     get: () => any;

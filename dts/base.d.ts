@@ -7,6 +7,8 @@ interface IObject {
 interface IInstance<T> extends IObject {
 	constructor?: ICtor<T>;
 }
+type ArgTypes<T> = T extends (...a:infer A) => unknown ? A : [];
+type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
 interface IPool<T extends IPoolable> {
 	get(): T;
 	release(obj: T): void;
