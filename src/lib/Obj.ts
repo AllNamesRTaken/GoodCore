@@ -221,14 +221,15 @@ export function setProperties(target: Indexable<any>, values: Indexable<any>, ma
 		}
 	}
 }
-export function forEach<T extends {[index: string]: any}, U = any>(
-	target: T | U[], 
-	fn: (value: any, key?: string|number) => boolean | void
-): void {
+export function forEach<T>(
+	target: Indexable<T> | T[],
+	fn: (value: T, key: string | number) => boolean | void
+): void
+{
 	if (isArray(target)) {
 		let i = - 1;
-		const len = (target as U[]).length;
-		while (++i < len && false !== fn((target as U[])[i], i)) {
+		const len = (target as T[]).length;
+		while (++i < len && false !== fn((target as T[])[i], i)) {
 		}
 	} else {
 		const keys = Object.keys(target);
@@ -238,7 +239,7 @@ export function forEach<T extends {[index: string]: any}, U = any>(
 		let run = true;
 		while (run && ++i < len) {
 			key = keys[i];
-			run = false !== fn((target as T)[key], key);
+			run = false !== fn((target as Indexable<T>)[key], key);
 		}
 	}
 }

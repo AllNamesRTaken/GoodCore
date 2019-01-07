@@ -3,9 +3,7 @@ interface ICtor<T> { new(...args: any[]): T }
 interface Indexable<T> {
 	[key: string]: T;
 }
-interface IObject {
-	[key: string]: any;
-}
+interface IObject extends Indexable<any> {}
 type ArgTypes<T> = T extends (...a: infer A) => unknown ? A : [];
 type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
 interface IInstance<T> extends IObject {
@@ -592,7 +590,10 @@ declare namespace goodcore {
 		export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
 		export function mixin(target: any, exclude: any, ...sources: any[]): any;
 		export function setProperties(target: any, values: any, mapping?: any): void;
-		export function forEach<T extends { [index: string]: any }, U = any>(target: T | Array<U>, fn: (value: any, key?: string | number) => boolean | void): void;
+		export function forEach<T>(
+			target: Indexable<T> | T[],
+			fn: (value: T, key: string | number) => boolean | void
+		): void;
 		export function transform<T extends { [index: string]: any }, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
 		export function difference<T extends { [index: string]: any }, S extends { [index: string]: any } = T>(target: T, base: S): S;
 	}

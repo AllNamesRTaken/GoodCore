@@ -1,9 +1,10 @@
 type Constructor<T> = new (...args: any[]) => T;
 interface ICtor<T> { new(...args: any[]): T; }
 
-interface IObject {
-	[key: string]: any;
+interface Indexable<T> {
+	[key: string]: T;
 }
+interface IObject extends Indexable<any> {}
 interface IInstance<T> extends IObject {
 	constructor?: ICtor<T>;
 }
@@ -27,9 +28,6 @@ interface IInitable<T> {
 interface ISerializable<T> {
 	toJSON(): any;
 	serialize(): T;
-}
-interface Indexable<T> {
-	[key: string]: T;
 }
 interface IDeserializable<T> {
 	deserialize(data: any, ...types: Array<Constructor<any>>): T;

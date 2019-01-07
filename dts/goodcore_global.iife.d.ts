@@ -1,15 +1,15 @@
 type Constructor<T> = new (...args: any[]) => T;
 interface ICtor<T> { new(...args: any[]): T }
 interface Indexable<T> {
-    [key: string]: T;
+	[key: string]: T;
 }
-interface IObject {
-    [key: string]: any;
-}
+interface IObject extends Indexable<any> {}
 interface IInstance<T> extends IObject {
     constructor?: ICtor<T>;
 }
+//@ts-ignore TS2370
 type ArgTypes<T> = T extends (...a: infer A) => unknown ? A : [];
+//@ts-ignore TS2304
 type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
 interface IPool<T extends IPoolable> {
     get(): T & IPoolable;
@@ -113,6 +113,14 @@ interface IRect {
     start: IVec2;
     stop: IVec2;
 }
+interface IDebounceOptions {
+    leading: boolean;
+}
+interface IDebouncedFunction<T> {
+    (...args: any[]): T
+    resetTimer?: () => void;
+}
+
 declare const Global: {
     window: Window | null;
     hasNativeWindow: boolean;
@@ -590,7 +598,10 @@ declare namespace Obj {
     export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
     export function mixin(target: any, exclude: any, ...sources: any[]): any;
     export function setProperties(target: any, values: any, mapping?: any): void;
-    export function forEach<T extends { [index: string]: any }, U = any>(target: T | Array<U>, fn: (value: any, key?: string | number) => boolean | void): void;
+    export function forEach<T>(
+        target: Indexable<T> | T[],
+        fn: (value: T, key: string | number) => boolean | void
+    ): void;
     export function transform<T extends { [index: string]: any }, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
     export function difference<T extends { [index: string]: any }, S extends { [index: string]: any } = T>(target: T, base: S): S;
 }
@@ -629,14 +640,17 @@ declare namespace Util {
     export interface IDebounceOptions {
         leading: boolean;
     }
+    //@ts-ignore TS2304
     type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ?
         PromiseLike<S> :
+        //@ts-ignore TS2304
         T extends (...a: unknown[]) => infer R ?
         U extends { leading: true } ?
         R :
         PromiseLike<R>
         : never;
     export interface IDebouncedFunction<T, U> {
+        //@ts-ignore TS2370
         (...args: ArgTypes<T>): DebounceResultType<T, U>;
         resetTimer?(): void;
     }
@@ -649,6 +663,7 @@ declare namespace Util {
         trailing: boolean;
     }
     export interface IThrottledFunction<T> {
+        //@ts-ignore TS2370
         (...args: ArgTypes<T>): ResultType<T>;
     }
     export function throttle<T extends (...args: any[]) => any>(
@@ -741,13 +756,23 @@ declare class KeyValuePair<S, T> {
     value: T;
 }
 
+declare interface IVec2 {
+    x: number;
+    y: number;
+}
+
+declare interface IRange2 {
+    pos: IVec2;
+    size: IVec2;
+}
+
+declare interface IRect {
+    start: IVec2;
+    stop: IVec2;
+    endInclusive?: boolean;
+}
 declare namespace Decorators {
-    export function debounced<S>(duration: number | undefined, options?: Partial<Util.IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
-        configurable: boolean;
-        enumerable: boolean | undefined;
-        get: () => any;
-    };
-    export function throttled<S>(duration?: number, options?: Partial<Util.IThrottleOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+    export function debounced<S>(duration: number | undefined, options?: Partial<IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
         configurable: boolean;
         enumerable: boolean | undefined;
         get: () => any;

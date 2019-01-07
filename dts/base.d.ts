@@ -1,9 +1,10 @@
 type Constructor<T> = new (...args: any[]) => T;
 interface ICtor<T> { new (...args: any[]): T; }
 
-interface IObject {
-	[key: string]: any;
+interface Indexable<T> {
+	[key: string]: T;
 }
+interface IObject extends Indexable<any> {}
 interface IInstance<T> extends IObject {
 	constructor?: ICtor<T>;
 }
