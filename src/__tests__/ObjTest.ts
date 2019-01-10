@@ -151,15 +151,31 @@ describe("Obj",
 				Obj.setNull(obj2);
 				expect(cleared).toBe(true);
 			});
-		test("SetProperties copys values to existing properties by ref",
+		test("SetProperties copys values to all properties by ref",
 			() => {
 				const obj = { a: 0, b: 0 };
 				const obj2 = { c: 6, d: 5 };
 				Obj.setProperties(obj, this.obj1 as any);
-				expect(obj).toEqual({ a: 1, b: { c: 2 } });
+				expect(obj).toEqual({ a: 1, b: { c: 2 }, d: [3, 4, 5] });
 				expect(obj.b).toBe(this.obj1.b);
 				Obj.setProperties(obj, obj2, { c: "a", d: "b" });
+				expect(obj).toEqual({ a: 6, b: 5, d: [3, 4, 5] });
+				const obj3 = {a: 1};
+				Obj.setProperties(obj3, {b: 2});
+				expect((obj3 as any).b).toEqual(2);
+			});
+		test("SetProperties with limitToExisting=true copys values only to existing properties by ref",
+			() => {
+				const obj = { a: 0, b: 0 };
+				const obj2 = { c: 6, d: 5 };
+				Obj.setProperties(obj, this.obj1 as any, undefined, true);
+				expect(obj).toEqual({ a: 1, b: { c: 2 } });
+				expect(obj.b).toBe(this.obj1.b);
+				Obj.setProperties(obj, obj2, { c: "a", d: "b" }, true);
 				expect(obj).toEqual({ a: 6, b: 5 });
+				const obj3 = {a: 1};
+				Obj.setProperties(obj3, {b: 2}, undefined, true);
+				expect((obj3 as any).b).toBeUndefined();
 			});
 		test("Wipe deletes all properties",
 			() => {

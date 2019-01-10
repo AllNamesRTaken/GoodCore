@@ -195,7 +195,7 @@ export function debounce<T extends (...args: any[]) => any, U extends Partial<ID
 	options?: U,
 ): IDebouncedFunction<T, U> {
 	let timeoutHandle: number | null = null;
-	let leading = isNotUndefined(options) && isNotUndefined(options!.leading);
+	let leading = isNotUndefined(options) && isNotUndefined(options!.leading) && options!.leading;
 	let executed = false;
 	let result: DebounceResultType<T, U> | undefined = undefined;
 	let resolve: (value?: DebounceResultType<T, U>) => void;

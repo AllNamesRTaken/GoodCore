@@ -206,7 +206,7 @@ export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | nul
 	}
 	return result;
 }
-export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>): void {
+export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting: boolean = false): void {
 	const keys = Object.keys(values);
 	let key: string;
 	let i = -1;
@@ -216,7 +216,7 @@ export function setProperties(target: Indexable<any>, values: Indexable<any>, ma
 		if (mapping && key in mapping) {
 			key = mapping[key];
 		}
-		if (key in target) {
+		if (!limitToExisting || key in target) {
 			target[key] = values[keys[i]];
 		}
 	}

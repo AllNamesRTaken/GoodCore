@@ -172,14 +172,7 @@ export function is(selector: string, element: Element): boolean {
 	} else if (element.webkitMatchesSelector) {
 		result = element.webkitMatchesSelector(selector);
 	} else {
-		if (element.parentElement === null) {
-			throw new Error("Element has no parent");
-		}
-		if (element.id !== "") {
-			result = element.parentElement!.querySelector("#" + element.id) !== null;
-		} else {
-			result = toArray(element.parentElement!.querySelectorAll(selector)).indexOf(element) !== -1;
-		}
+		throw new Error("Browser does not support matches");
 	}
 	return result;
 }
