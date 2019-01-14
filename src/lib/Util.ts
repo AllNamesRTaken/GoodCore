@@ -195,7 +195,7 @@ export function debounce<T extends (...args: any[]) => any, U extends Partial<ID
 	options?: U,
 ): IDebouncedFunction<T, U> {
 	let timeoutHandle: number | null = null;
-	let leading = isNotUndefined(options) && isNotUndefined(options!.leading) && options!.leading;
+	let leading = isUndefined(options) || isUndefined(options!.leading) ? false : options!.leading;
 	let executed = false;
 	let result: DebounceResultType<T, U> | undefined = undefined;
 	let resolve: (value?: DebounceResultType<T, U>) => void;
@@ -255,7 +255,7 @@ export function throttle<T extends (...args: any[]) => any>(
 	options?: Partial<IThrottleOptions>
 ): IThrottledFunction<T> {
 	let timeoutHandle: number | null = null;
-	let trailing = isNotUndefined(options) && isNotUndefined(options!.trailing) && options!.trailing;
+	let trailing = isUndefined(options) || isUndefined(options!.trailing) ? true : options!.trailing;
 	let result: ResultType<T>;
 	let lastContext: any;
 	let lastArgs: any[];

@@ -262,12 +262,12 @@ describe("Util",
 					done();
 				});
 			});
-		test("throttle throttles a function",
+		test("throttle with trailing = false throttles a function",
 			function (done) {
 				let value = 0;
 				let plus1 = Util.throttle(function inc() {
 					++value;
-				}, 20);
+				}, 20, { trailing: false });
 				plus1();
 				plus1();
 				expect(value).toBe(1);
@@ -283,7 +283,7 @@ describe("Util",
 				let value = 0;
 				let plus1 = Util.throttle(function inc() {
 					return ++value;
-				}, 20, { trailing: true });
+				}, 20, /*{ trailing: true }*/);
 
 				plus1();
 				expect(value).toBe(1);

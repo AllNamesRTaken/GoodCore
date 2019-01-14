@@ -10,7 +10,7 @@ export function shallowCopy(obj: any): any;
 export function clone<T>(obj: T): T;
 export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
 export function mixin(target: any, exclude: any, ...sources: any[]): any;
-export function setProperties(target: any, values: any, mapping?: any): void;
+export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting?: boolean): void;
 export function forEach<T>(
     target: Indexable<T> | T[],
     fn: (value: T, key: string | number) => boolean | void

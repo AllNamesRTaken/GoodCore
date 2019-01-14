@@ -71,22 +71,34 @@ describe("Decorators",
 		test("throttle should throttle the instance function",
 			function (done) {
 				class Foo {
-					public value = 0;
+					public value1 = 0;
+					public value2 = 0;
 					@throttled(20)
-					public setFoo() {
-						++this.value;
+					public withTrailing() {
+						++this.value1;
+					}
+					@throttled(20, { trailing: false })
+					public noTrailing() {
+						++this.value2;
 					}
 				}
 				let foo1 = new Foo();
 				let foo2 = new Foo();
-				foo1.setFoo();
-				foo1.setFoo();
-				foo2.setFoo();
-				expect(foo1.value).toBe(1);
-				expect(foo2.value).toBe(1);
+				foo1.withTrailing();
+				foo1.withTrailing();
+				foo2.withTrailing();
+				foo1.noTrailing();
+				foo1.noTrailing();
+				foo2.noTrailing();
+				expect(foo1.value1).toBe(1);
+				expect(foo2.value1).toBe(1);
+				expect(foo1.value2).toBe(1);
+				expect(foo2.value2).toBe(1);
 				setTimeout(() => {
-					expect(foo1.value).toBe(1);
-					expect(foo2.value).toBe(1);
+					expect(foo1.value1).toBe(2);
+					expect(foo2.value1).toBe(2);
+					expect(foo1.value2).toBe(1);
+					expect(foo2.value2).toBe(1);
 					done();
 				}, 20);
 			});
