@@ -283,7 +283,7 @@ describe("Util",
 				let value = 0;
 				let plus1 = Util.throttle(function inc() {
 					return ++value;
-				}, 20, /*{ trailing: true }*/);
+				}, 20 );
 
 				plus1();
 				expect(value).toBe(1);
@@ -305,6 +305,36 @@ describe("Util",
 				expect(value).toBe(1);
 				setTimeout(() => {
 					expect(value).toBe(11);
+					done();
+				}, 20);
+			});
+		test("throttle with leading = false only runs trailing",
+			function (done) {
+				let value = 0;
+				let plus1 = Util.throttle(function inc() {
+					return ++value;
+				}, 20, { leading: false });
+
+				plus1();
+				plus1();
+				expect(value).toBe(0);
+				setTimeout(() => {
+					expect(value).toBe(1);
+					done();
+				}, 20);
+			});
+		test("throttle with leading = false and trailing false still runs trailing",
+			function (done) {
+				let value = 0;
+				let plus1 = Util.throttle(function inc() {
+					return ++value;
+				}, 20, { leading: false });
+
+				plus1();
+				plus1();
+				expect(value).toBe(0);
+				setTimeout(() => {
+					expect(value).toBe(1);
 					done();
 				}, 20);
 			});

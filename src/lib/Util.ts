@@ -244,6 +244,7 @@ export function debounce<T extends (...args: any[]) => any, U extends Partial<ID
 	return wrapper;
 }
 export interface IThrottleOptions {
+	leading: boolean;
 	trailing: boolean;
 }
 export interface IThrottledFunction<T> {
@@ -255,7 +256,8 @@ export function throttle<T extends (...args: any[]) => any>(
 	options?: Partial<IThrottleOptions>
 ): IThrottledFunction<T> {
 	let timeoutHandle: number | null = null;
-	let trailing = isUndefined(options) || isUndefined(options!.trailing) ? true : options!.trailing;
+	let leading = isUndefined(options) || isUndefined(options!.leading) ? true : options!.leading;
+	let trailing = !leading || isUndefined(options) || isUndefined(options!.trailing) ? true : options!.trailing;
 	let result: ResultType<T>;
 	let lastContext: any;
 	let lastArgs: any[];
@@ -264,7 +266,9 @@ export function throttle<T extends (...args: any[]) => any>(
 		lastArgs = args;
 		lastContext = this;
 		if (timeoutHandle === null) {
-			result = method.apply(lastContext, lastArgs);
+			if (leading) {
+				result = method.apply(lastContext, lastArgs);
+			}
 
 			if (!trailing) {
 				lastContext = null;

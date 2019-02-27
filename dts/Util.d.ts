@@ -52,6 +52,7 @@ export function debounce<T extends (...args: any[]) => any, U extends Partial<ID
 	options?: U,
 ): IDebouncedFunction<T, U>;
 export interface IThrottleOptions {
+	leading: boolean;
 	trailing: boolean;
 }
 export interface IThrottledFunction<T> {

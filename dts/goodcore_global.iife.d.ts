@@ -668,6 +668,7 @@ declare namespace Util {
         options?: U,
     ): IDebouncedFunction<T, U>;
     export interface IThrottleOptions {
+        leading: boolean;
         trailing: boolean;
     }
     export interface IThrottledFunction<T> {
