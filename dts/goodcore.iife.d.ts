@@ -506,9 +506,16 @@ declare namespace goodcore {
 		export function findAll<T extends HTMLElement>(selector: string, root?: HTMLElement): T[];
 		export function children(root: HTMLElement, selector?: string): Element[];
 		export function findParent<T extends HTMLElement>(root: Element, selector: string): T | null;
-		export function position(el: HTMLElement, x: number, y: number): void;
+		export function getOffset(el: HTMLElement): {
+			left: number;
+			top: number;
+			right: number;
+			bottom: number;
+		};
 		export function is(selector: string, element: Element): boolean;
 		export function setStylesExplicitly(element: HTMLElement, ...styles: string[]): void;
+		export function findParents(element: HTMLElement): HTMLElement[];
+		export function findClosestCommonParent(elements: HTMLElement[], startAtIndex?: number): HTMLElement;
 	}
 
 	export namespace Arr {

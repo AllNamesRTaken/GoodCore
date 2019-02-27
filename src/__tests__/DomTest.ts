@@ -133,6 +133,19 @@ describe("Dom",
 				expect(el.style.left!).toBe("10px");
 				expect(el.style.top!).toBe("20px");
 			});
+		test("getOffset returns the position relative to the page",
+			() => {
+				const el2 = Dom.create(html2);
+				Dom.position(el2, 10, 20);
+				let sub2 = Dom.find("#sub2", el2)!;
+				Dom.setAttr(sub2, {style: {position: "absolute", top: "20px", left: "40px"}});
+				document.body.appendChild(el2);
+				let offset = Dom.getOffset(sub2);
+				// this doesnt work since getBoundingClientRect does not seem to work headless
+				// expect(offset.top).toBe(40);
+				// expect(offset.left).toBe(30);
+				Dom.remove(el2);
+			});			
 		test("Remove removes the child from the parent",
 			() => {
 				const el = Dom.create(html2);
@@ -153,5 +166,32 @@ describe("Dom",
 				expect(Dom.find("#sub1")!.id).toBe("sub1");
 				Dom.remove(el2);
 			});
-	}
+		test("findParents returns list of all parents",
+			() => {
+				const el1 = Dom.create(html1);
+				const el2 = Dom.create(html2);
+				document.body.appendChild(el1);
+				document.body.appendChild(el2);
+				let parentsEl1 = Dom.findParents(el1)
+				let parentsSub1 = Dom.findParents(Dom.find("#sub1")!);
+				let parentsSub2 = Dom.findParents(Dom.find("#sub2")!);
+				expect(parentsEl1.length).toBe(2);
+				expect(parentsSub1.length).toBe(3);
+				expect(parentsSub2.length).toBe(3);
+				Dom.remove(el1);
+				Dom.remove(el2);
+			});
+		test("findClosestCommonParent finds first common parent in list of elements",
+			() => {
+				const el2 = Dom.create(html2);
+				document.body.appendChild(el2);
+				let els1 = Dom.findAll("#foo,#sub2");
+				let els2 = Dom.findAll("#sub1,#sub2");
+				expect(Dom.findClosestCommonParent(els1)).toBe(el2);
+				expect(Dom.findClosestCommonParent(els2)).toBe(el2);
+				expect(Dom.findClosestCommonParent([])).toBe(document.body);
+				expect(Dom.findClosestCommonParent([el2])).toBe(el2);
+				Dom.remove(el2);
+			});
+		}
 );

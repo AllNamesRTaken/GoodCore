@@ -1,6 +1,7 @@
 import { Global } from "./Global";
 import { isNullOrUndefined } from "./Test";
 import { once, assert } from "./Util";
+import { reverse } from "./Arr";
 
 export enum Sides {
 	Top,
@@ -163,6 +164,17 @@ export function position(el: HTMLElement, x: number, y: number): void {
 	el.style.top = `${y}px`;
 	el.style.left = `${x}px`;
 }
+export function getOffset(el: HTMLElement): {left: number, top: number, right: number, bottom: number} {
+	const rect = el.getBoundingClientRect();
+	const scrollLeft = window.pageXOffset || document.documentElement.scrollLeft;
+	const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+	return { 
+		left: (rect.left + scrollLeft) | 0,
+		top: (rect.top + scrollTop) | 0, 
+		right: (rect.right + scrollTop) | 0,
+		bottom: (rect.bottom + scrollLeft) | 0,
+	};
+}
 export function is(selector: string, element: Element): boolean {
 	let result = false;
 	if (element.matches) {
@@ -259,6 +271,46 @@ export function trigger(event: AvailableEvents | string, target: HTMLElement, op
 	}
 	else {
 		result = (target as any).fireEvent("on" + event);
+	}
+	return result;
+}
+export function findParents(element: HTMLElement): HTMLElement[] {
+	let result = [];
+	while(element.parentElement) {
+		element = element.parentElement;
+		result.push(element);
+	}
+	return result;
+}
+export function findClosestCommonParent(elements: HTMLElement[], startAtIndex: number = 0): HTMLElement {
+	let result = document.body;
+	if (elements.length === 1) {
+		result = elements[0];
+	} else if (elements.length > 1) {
+		let parents = elements.map((el) => {
+			let parents = findParents(el);
+			assert(parents.length >= startAtIndex, "startAtIndex higher than element parent depth");
+			if (startAtIndex > 0) {
+				while (parents.length > 0  && startAtIndex > 0) {
+					parents.pop();
+					--startAtIndex;
+				}
+			}
+			let result = reverse(parents);
+			result.push(el);
+			return result;
+		});
+		let minDepth = parents.reduce((p, c, i) => Math.min(p, c.length), Infinity);
+		if (minDepth > 0) {
+			let firstList = parents.shift()!;
+			let found = false;
+			let i = 0;
+			while(!found && i < minDepth) {
+				found = !parents.reduce((p, c) => p === true && c[i] === firstList[i], true);
+				++i;
+			}
+			result = !found ? firstList[i - 1] : firstList[i - 2];
+		}
 	}
 	return result;
 }
