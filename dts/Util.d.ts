@@ -18,6 +18,7 @@ export function once<T extends (...args: any[]) => S, S = void>(fn: T): T;
 export function init(win?: Window): void;
 export function getFunctionName(fn: Function): string;
 export function getFunctionCode(fn: Function): string;
+export function getDate(delta?: string, start?: Date): Date;
 export function newUUID(): string;
 export function newInt(): number;
 export function callDebugger(): void;

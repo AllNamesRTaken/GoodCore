@@ -121,6 +121,48 @@ describe("Util",
 				// tslint:disable-next-line:no-var-keyword
 				expect(Util.getFunctionCode(() => { var a = 1; })).toBe(" var a = 1; ");
 			});
+		test("getDate returns the correct date object", 
+			() => {
+				const now = new Date();
+				let pos = Util.getDate("+1Y2M3d4h5m6s", now);
+				expect(now.getTime() - pos.getTime()).toBe(-37166706000);
+				let neg = Util.getDate("-1Y2M3d4h5m6s", now);
+				expect(now.getTime() - neg.getTime()).toBe(36903906000);
+				let holey = Util.getDate("+2M4h6s", now);
+				expect(now.getTime() - holey.getTime()).toBe(-5284806000);
+				let empty = Util.getDate("", now);
+				expect(now.getTime() - empty.getTime()).toBe(0);
+				let defaultPos = Util.getDate("1h", now);
+				expect(now.getTime() - defaultPos.getTime()).toBe(-3600000);
+				let defaultNow = Util.getDate("1h");
+				expect((now.getTime() - defaultNow.getTime())/10000).toBeCloseTo(-360);
+				let defaultValue = Util.getDate();
+				expect((now.getTime() - defaultValue.getTime())/10000).toBeCloseTo(0);
+				let posYear = Util.getDate("+1Y", now);
+				expect(posYear.getFullYear() - now.getFullYear()).toBe(1);
+				let posMonth = Util.getDate("+1M", now);
+				expect(posMonth.getMonth() - now.getMonth()).toBe(1);
+				let posDay = Util.getDate("+1d", now);
+				expect(posDay.getDate() - now.getDate()).toBe(1);
+				let posHour = Util.getDate("+1h", now);
+				expect(posHour.getHours() - now.getHours()).toBe(1);
+				let posMinute = Util.getDate("+1m", now);
+				expect(posMinute.getMinutes() - now.getMinutes()).toBe(1);
+				let posSecond = Util.getDate("+1s", now);
+				expect(posSecond.getSeconds() - now.getSeconds()).toBe(1);
+				let negYear = Util.getDate("-1Y", now);
+				expect(negYear.getFullYear() - now.getFullYear()).toBe(-1);
+				let negMonth = Util.getDate("-1M", now);
+				expect(negMonth.getMonth() - now.getMonth()).toBe(-1);
+				let negDay = Util.getDate("-1d", now);
+				expect(negDay.getDate() - now.getDate()).toBe(-1);
+				let negHour = Util.getDate("-1h", now);
+				expect(negHour.getHours() - now.getHours()).toBe(-1);
+				let negMinute = Util.getDate("-1m", now);
+				expect(negMinute.getMinutes() - now.getMinutes()).toBe(-1);
+				let negSecond = Util.getDate("-1s", now);
+				expect(negSecond.getSeconds() - now.getSeconds()).toBe(-1);
+			});
 		test("IsArray detects correctly for array and object",
 			() => {
 				expect(Test.isArray([1, 2, 3])).toBe(true);
