@@ -12,6 +12,8 @@ export { Tree as Tree } from "./struct/Tree";
 export { IndexedTree as IndexedTree } from "./struct/IndexedTree";
 import * as Calc from "./Calc";
 export { Calc as Calc };
+import * as Cookie from "./Cookie";
+export { Cookie as Cookie };
 import * as Dom from "./Dom";
 export { Dom as Dom };
 import * as Arr from "./Arr";

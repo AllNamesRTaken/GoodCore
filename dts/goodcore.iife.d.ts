@@ -111,7 +111,19 @@ interface IRect {
 	start: IVec2;
 	stop: IVec2;
 }
-
+interface ICookieMonsterOptions<T extends Indexable<any>> {
+	name: string,
+	defaults: T;
+	retainTime: string;
+	path: string;
+	localStorage: boolean;
+}
+interface ICookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> {
+	setCookie<S extends K>(key: S, value: T[S]): void,
+	getCookie<S extends K>(key: S): T[S],
+	eatCookie(key: K): void,
+	removeCookies(): void;
+}
 declare namespace goodcore {
 	export const Global: {
 		window: Window | null;
@@ -469,6 +481,14 @@ declare namespace goodcore {
 		clone(): this;
 		prune(): this;
 		filter(condition: (node: this) => boolean, parent?: this | null): this;
+	}
+
+	export namespace Cookie {
+		export function getCookie(key: string): string;
+		export function setCookie(key: string, value: string, expires: Date, path?: string): void;
+		export function removeCookie(key: string, path?: string): void;
+		export function parseAllCookies(): Indexable<string>;
+		export function getMonster<T>(options: Partial<ICookieMonsterOptions<T>>): ICookieMonster<T>;
 	}
 
 	export class CalcConst {

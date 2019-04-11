@@ -36,3 +36,5 @@ export { MocData as MocData };
 export { KeyValuePair as KeyValuePair} from "./struct/KeyValuePair";
 import * as Decorators from "./Decorators"; 
 export { Decorators as Decorators };
+import * as Cookie from "./Cookie";
+export { Cookie as Cookie};
