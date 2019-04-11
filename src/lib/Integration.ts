@@ -1,5 +1,6 @@
 import * as Arr from "./Arr";
 import * as Calc from "./Calc";
+import * as Cookie from "./Cookie";
 import * as Dom from "./Dom";
 import { Global } from "./Global";
 import * as MocData from "./MocData";
@@ -27,6 +28,7 @@ export function integrate(alias?: string | object) {
 	let list = [
 		{name: "Arr", object: Arr},
 		{name: "Calc", object: Calc},
+		{name: "Cookie", object: Cookie},
 		{name: "Dom", object: Dom},
 		{name: "Decorators", object: Decorators},
 		{name: "MocData", object: MocData},
