@@ -140,6 +140,22 @@ describe("Arrays",
 				Arr.forEach(null! as number[], (el, i) => { arrEl2.push(el); }, 0);
 				expect(arrEl2).toEqual([]);
 			});
+		test("ForEachAsync loops correctly",
+			async (done) => {
+				const arrEl = new Array<number>();
+				const arri = new Array<number>();
+				await Arr.forEachAsync(this.arr1 as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
+				expect(arrEl).toEqual(this.arr1);
+				expect(arri).toEqual([0, 1, 2, 3]);
+				await Arr.forEachAsync(null! as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
+				expect(arri).toEqual([0, 1, 2, 3]);
+				try {
+					await Arr.forEachAsync(this.arr1 as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
+				} catch (err) {
+					expect(err).toBeTruthy();
+				}
+				done();
+			});
 		test("ReverseForEach loops correctly",
 			() => {
 				const arrEl = new Array<number>();
@@ -167,6 +183,13 @@ describe("Arrays",
 				expect(Arr.map(this.arr1 as number[], (el, i) => el)).toEqual([1, 4, 7, 2]);
 				expect(Arr.map(this.arr1 as number[], (el, i) => i)).toEqual([0, 1, 2, 3]);
 				expect(Arr.map(null! as number[], (el, i) => i)).toEqual([]);
+			});
+		test("MapAsync el and i are correct",
+			async (done) => {
+				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => el)).toEqual([1, 4, 7, 2]);
+				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => i)).toEqual([0, 1, 2, 3]);
+				expect(await Arr.mapAsync(null! as number[], async (el, i) => i)).toEqual([]);
+				done();
 			});
 		test("MapInto maps correctly and sets length",
 			() => {

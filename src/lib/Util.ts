@@ -69,10 +69,9 @@ export function getFunctionCode(fn: Function): string {
 	return result;
 }
 export function getDate(delta: string = "", start?: Date): Date {
-	start = start ? start : new Date();
+	const date = start ? new Date(start.getTime()) : new Date();
 	const rel = delta.split(" ").join("");
 	const [, sign, years, months, days, hours, mins, secs] = toArray(/([+-])?(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/.exec(rel) as ArrayLike<string>);
-	const date = new Date(start);
 	const plus = sign !== "-"; 
 	if (years) date.setFullYear(date.getFullYear() + (plus ? +years : -years));
 	if (months) date.setMonth(date.getMonth() + (plus ? +months : -months));

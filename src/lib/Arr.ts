@@ -265,23 +265,21 @@ export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => b
 	}
 	target.length = j;
 }
-export function map<S, T>(src: S[], fn: (el: S, i: number) => T): T[] {
+export function map<S, T>(src: S[], fn: (el: S, i: number) => T, startIndex: number = 0): T[] {
 	let result: T[];
-	// native still seem slower on node
-	// if(Env.hasFastNativeArrays()) {
-	// 	result = isNullOrUndefined(src) ? [] : src.map(fn);
-	// } else {
-	let i = -1;
+	let i = startIndex - 1;
 	const len = isNullOrUndefined(src) ? 0 : src.length;
 	result = new Array<T>(len);
 	while (++i < len) {
-			result[i] = fn(src[i], i);
-		}
-	// }
+		result[i] = fn(src[i], i);
+	}
 	return result;
 }
-export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T): void {
-	let i = -1;
+export function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => PromiseLike<T>): Promise<T[]> {
+	return Promise.all(map(src, fn));
+}
+export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T, startIndex: number = 0): void {
+	let i = startIndex - 1;
 	const len = isNullOrUndefined(src) ? 0 : src.length;
 	target.length = len;
 	while (++i < len) {
@@ -341,6 +339,14 @@ export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex: 
 	while (++i < len) {
 		fn(src[i], i);
 	}
+}
+export function forEachAsync<T>(array: T[], fn: (el: T, i: number) => PromiseLike<any>): Promise<void> {
+	return new Promise<void>((resolve, reject) => {
+		Promise.all(map(array, fn)).then(
+			() => resolve(),
+			() => reject(),
+		);
+	});
 }
 export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
 	let i = -1;
