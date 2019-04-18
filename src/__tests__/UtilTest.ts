@@ -140,7 +140,7 @@ describe("Util",
 				let wasDst = Util.isDaylightSavingTime(now);
 				let isDst = Util.isDaylightSavingTime(posMonthDst);
 				if(wasDst === isDst) {
-					expect(posMonthDst.getTime() - now.getTime()).toBe(18493200000 + 3600000);
+					expect(posMonthDst.getTime() - now.getTime()).toBe(18493200000 - 3600000);
 				} else {
 					expect(posMonthDst.getTime() - now.getTime()).toBe(18493200000);
 				}
