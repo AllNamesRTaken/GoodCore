@@ -123,25 +123,27 @@ describe("Util",
 			});
 		test("getDate returns the correct date object", 
 			() => {
-				const now = new Date();
-				let pos = Util.getDate("+1Y2M3d4h5m6s", now);
-				expect(now.getTime() - pos.getTime()).toBe(-37166706000);
-				let neg = Util.getDate("-1Y2M3d4h5m6s", now);
-				expect(now.getTime() - neg.getTime()).toBe(36903906000);
-				let holey = Util.getDate("+2M4h6s", now);
-				expect(now.getTime() - holey.getTime()).toBe(-5284806000);
+				const now = new Date("Thu, 18 Apr 2019 08:34:06 GMT");
 				let empty = Util.getDate("", now);
 				expect(now.getTime() - empty.getTime()).toBe(0);
 				let defaultPos = Util.getDate("1h", now);
 				expect(now.getTime() - defaultPos.getTime()).toBe(-3600000);
 				let defaultNow = Util.getDate("1h");
-				expect((now.getTime() - defaultNow.getTime())/10000).toBeCloseTo(-360);
+				expect(((new Date()).getTime() - defaultNow.getTime())/10000).toBeCloseTo(-360);
 				let defaultValue = Util.getDate();
-				expect((now.getTime() - defaultValue.getTime())/10000).toBeCloseTo(0);
+				expect(((new Date()).getTime() - defaultValue.getTime())/10000).toBeCloseTo(0);
 				let posYear = Util.getDate("+1Y", now);
 				expect(posYear.getFullYear() - now.getFullYear()).toBe(1);
 				let posMonth = Util.getDate("+1M", now);
 				expect(posMonth.getMonth() - now.getMonth()).toBe(1);
+				let posMonthDst = Util.getDate("+7M", now);
+				let wasDst = Util.isDaylightSavingTime(now);
+				let isDst = Util.isDaylightSavingTime(posMonthDst);
+				if(wasDst === isDst) {
+					expect(posMonthDst.getTime() - now.getTime()).toBe(18493200000 + 3600000);
+				} else {
+					expect(posMonthDst.getTime() - now.getTime()).toBe(18493200000);
+				}
 				let posDay = Util.getDate("+1d", now);
 				expect(posDay.getDate() - now.getDate()).toBe(1);
 				let posHour = Util.getDate("+1h", now);
@@ -154,7 +156,14 @@ describe("Util",
 				expect(negYear.getFullYear() - now.getFullYear()).toBe(-1);
 				let negMonth = Util.getDate("-1M", now);
 				expect(negMonth.getMonth() - now.getMonth()).toBe(-1);
-				let negDay = Util.getDate("-1d", now);
+				let negMonthDst = Util.getDate("-2M", now);
+				wasDst = Util.isDaylightSavingTime(now);
+				isDst = Util.isDaylightSavingTime(negMonthDst);
+				if(wasDst === isDst) {
+					expect(negMonthDst.getTime() - now.getTime()).toBe(-5094000000 - 3600000);
+				} else {
+					expect(negMonthDst.getTime() - now.getTime()).toBe(-5094000000);
+				}				let negDay = Util.getDate("-1d", now);
 				expect(negDay.getDate() - now.getDate()).toBe(-1);
 				let negHour = Util.getDate("-1h", now);
 				expect(negHour.getHours() - now.getHours()).toBe(-1);
@@ -162,6 +171,18 @@ describe("Util",
 				expect(negMinute.getMinutes() - now.getMinutes()).toBe(-1);
 				let negSecond = Util.getDate("-1s", now);
 				expect(negSecond.getSeconds() - now.getSeconds()).toBe(-1);
+				let pos = Util.getDate("+1Y2M3d4h5m6s", now);
+				expect(pos.getTime() - now.getTime()).toBe(37166706000);
+				let neg = Util.getDate("-1Y2M3d4h5m6s", now);
+				wasDst = Util.isDaylightSavingTime(now);
+				isDst = Util.isDaylightSavingTime(neg);
+				if(wasDst === isDst) {
+					expect(neg.getTime() - now.getTime()).toBe(-36903906000 - 3600000);
+				} else {
+					expect(neg.getTime() - now.getTime()).toBe(-36903906000);
+				}
+				let holey = Util.getDate("+2M4h6s", now);
+				expect(now.getTime() - holey.getTime()).toBe(-5284806000);
 			});
 		test("IsArray detects correctly for array and object",
 			() => {
