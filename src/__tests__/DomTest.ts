@@ -35,6 +35,88 @@ describe("Dom",
 				expect(el.id).toBe("id");
 				expect(el.style.getPropertyValue("background-color")).toBe("red");
 			});
+		test("Resolve resolves element under root",
+		() => {
+			const el = Dom.create(html2);
+			const sub1 = el.children[0] as HTMLElement;
+			expect(Dom.resolve(sub1, el)).toBe(sub1);
+		});
+		test("Resolve resolves selector under root",
+		() => {
+			const el = Dom.create(html2);
+			const sub1 = el.children[0] as HTMLElement;
+			expect(Dom.resolve("#sub1", el)).toBe(sub1);
+		});
+		test("Resolve resolves root under root",
+		() => {
+			const el = Dom.create(html2);
+			expect(Dom.resolve("div", el)).toBe(el);
+			expect(Dom.resolve("div")).toBe(null);
+			expect(Dom.resolve("body")).toBe(document.body);
+		});
+		test("ResolveAll resolves elements under root",
+		() => {
+			const el = Dom.create(html2);
+			const sub1 = el.children[0] as HTMLElement;
+			const sub2 = el.children[1] as HTMLElement;
+			expect(Dom.resolveAll([sub1, sub2], el)).toEqual([sub1, sub2]);
+		});
+		test("ResolveAll resolves selector under root",
+		() => {
+			const el = Dom.create(html2);
+			const sub1 = el.children[0] as HTMLElement;
+			const sub2 = el.children[1] as HTMLElement;
+			expect(Dom.resolveAll("#sub1, #sub2", el)).toEqual([sub1, sub2]);
+		});
+		test("ResolveAll resolves root under root",
+		() => {
+			const el = Dom.create(html2);
+			const sub1 = el.children[0] as HTMLElement;
+			const sub2 = el.children[1] as HTMLElement;
+			expect(Dom.resolveAll("div", el)).toEqual([el, sub1, sub2]);
+			expect(Dom.resolveAll("div")).toEqual([]);
+			expect(Dom.resolveAll("body")).toEqual([document.body]);
+		});
+		test("Contains tests that element is contained in root",
+		() => {
+			const el = Dom.create(html2);
+			const sub1 = el.children[0] as HTMLElement;
+			expect(Dom.contains(sub1, el)).toBe(true);
+		});
+		test("Contains tests that elements are all contained in root",
+		() => {
+			const el = Dom.create(html2);
+			const sub1 = el.children[0] as HTMLElement;
+			const sub2 = el.children[1] as HTMLElement;
+			expect(Dom.contains([sub1, sub2], el)).toBe(true);
+		});
+		test("Contains tests that elements by selector are all contained in root",
+		() => {
+			const el = Dom.create(html2);
+			expect(Dom.contains("#sub1, #sub2", el)).toBe(true);
+			expect(Dom.contains("div", el)).toBe(false);
+		});
+		test("Contains tests that root is not contained in root",
+		() => {
+			const el = Dom.create(html2);
+			expect(Dom.contains(el, el)).toBe(false);
+		});
+		test("Contains tests that root is contained in root when includeRoot is true",
+		() => {
+			const el = Dom.create(html2);
+			expect(Dom.contains(el, el, true)).toBe(true);
+		});
+		test("Contains tests that all attached elements are returned when root is empty",
+		() => {
+			const el = Dom.create(html2);
+			const notAttached = Dom.create(html1);
+			const sub1 = el.children[0] as HTMLElement;
+			const sub2 = el.children[1] as HTMLElement;
+			document.body.appendChild(el);
+			expect(Dom.contains([sub1, sub2, el], undefined, true)).toBe(true);
+			expect(Dom.contains(notAttached)).toBe(false);
+			Dom.remove(el);
+		});
 		test("Clear removes all children of an element",
 			() => {
 				const el = Dom.create(html2);

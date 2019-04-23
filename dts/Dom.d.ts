@@ -7,6 +7,9 @@ export enum Sides {
 export function init(win: Window): void;
 export function toArray<T>(a: ArrayLike<T>): T[];
 export function create<T extends HTMLElement>(html: string, attr?: any): T;
+export function resolve(target: HTMLElement | string, root?: HTMLElement): HTMLElement | null;
+export function resolveAll(target: HTMLElement | HTMLElement[] | string, root?: HTMLElement): HTMLElement[];
+export function contains(target: HTMLElement | HTMLElement[] | string, root?: Node, includeRoot?: boolean): boolean;
 export function outerHTML(el: HTMLElement): string;
 export function setAttr(_el: HTMLElement | Node | String, attr: any): void;
 export function remove(element: Element | Node): Element | Node | null;

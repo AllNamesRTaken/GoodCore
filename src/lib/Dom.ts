@@ -1,7 +1,7 @@
 import { Global } from "./Global";
-import { isNullOrUndefined } from "./Test";
+import { isNullOrUndefined, isString, isElement } from "./Test";
 import { assert } from "./Util";
-import { reverse } from "./Arr";
+import { reverse, reduce } from "./Arr";
 
 export enum Sides {
 	Top,
@@ -55,6 +55,42 @@ export function create<T extends HTMLElement>(html: string, attr?: Indexable<any
 	setAttr(result!, attr);
 	//unsafe cast
 	return result! as T;
+}
+export function resolve(target: HTMLElement | string, root?: HTMLElement): HTMLElement | null {
+	let result = 
+		isString(target)?
+			(root && root !== (DomState._document as any) && is(target as string, root!) ?
+				root :
+				find(target as string, root)) :
+			target as HTMLElement;
+	return result;
+}
+export function resolveAll(target: HTMLElement | HTMLElement[] | string, root?: HTMLElement): HTMLElement[] {
+	let result = 
+		isString(target)?
+			(root && root !== (DomState._document as any) && is(target as string, root!) ?
+				[root].concat(findAll(target as string, root)) :
+				findAll(target as string, root)) :
+			(isElement(target) ?
+				[target as HTMLElement] :
+				target as HTMLElement[]);
+	return result;
+}
+export function contains(target: HTMLElement | HTMLElement[] | string, root?: Node, includeRoot: boolean = false): boolean {
+	const rootNode = root || DomState._document!;
+	let targets = resolveAll(target, root as HTMLElement);
+	const result = reduce(targets, (acc, cur: Node | null) => {
+		if (acc && cur) {
+			if (!includeRoot) {
+				cur = cur.parentNode;
+			}
+			while(cur !== rootNode && cur !== null) {
+				cur = cur.parentNode!;
+			}
+		}
+		return acc && cur === rootNode;
+	}, true);
+	return result;
 }
 export function outerHTML(el: HTMLElement): string {
 	DomState._el!.appendChild(el);
