@@ -156,6 +156,36 @@ describe("Arrays",
 				}
 				done();
 			});
+		test("ForEach with inParallel = true executes out of sequence",
+			async (done) => {
+				let sequence: number[] = [];
+				await Arr.forEachAsync(this.arr1 as number[], async (el, i) => {
+					await new Promise((resolve) => {
+						setTimeout(() => {
+							sequence.push(el);
+							resolve();
+						}, 10 - i*2);
+					});
+					return el;
+				}, true);
+				expect(sequence).toEqual([2, 7, 4, 1]);
+				done();
+			});
+		test("ForEach inParallel = false executes in sequence",
+			async (done) => {
+				let sequence: number[] = [];
+				await Arr.forEachAsync(this.arr1 as number[], async (el, i) => {
+					await new Promise((resolve) => {
+						setTimeout(() => {
+							sequence.push(el);
+							resolve();
+						}, 10 - i*2);
+					});
+					return el;
+				});
+				expect(sequence).toEqual([1, 4, 7, 2]);
+				done();
+			});
 		test("ReverseForEach loops correctly",
 			() => {
 				const arrEl = new Array<number>();
@@ -189,6 +219,36 @@ describe("Arrays",
 				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => el)).toEqual([1, 4, 7, 2]);
 				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => i)).toEqual([0, 1, 2, 3]);
 				expect(await Arr.mapAsync(null! as number[], async (el, i) => i)).toEqual([]);
+				done();
+			});
+		test("MapAsync with inParallel = true executes out of sequence",
+			async (done) => {
+				let sequence: number[] = [];
+				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => {
+					await new Promise((resolve) => {
+						setTimeout(() => {
+							sequence.push(el);
+							resolve();
+						}, 10 - i*2);
+					});
+					return el;
+				}, true)).toEqual([1, 4, 7, 2]);
+				expect(sequence).toEqual([2, 7, 4, 1]);
+				done();
+			});
+		test("MapAsync inParallel = false executes in sequence",
+			async (done) => {
+				let sequence: number[] = [];
+				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => {
+					await new Promise((resolve) => {
+						setTimeout(() => {
+							sequence.push(el);
+							resolve();
+						}, 10 - i*2);
+					});
+					return el;
+				})).toEqual([1, 4, 7, 2]);
+				expect(sequence).toEqual([1, 4, 7, 2]);
 				done();
 			});
 		test("MapInto maps correctly and sets length",

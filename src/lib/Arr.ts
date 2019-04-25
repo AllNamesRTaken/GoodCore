@@ -275,8 +275,19 @@ export function map<S, T>(src: S[], fn: (el: S, i: number) => T, startIndex: num
 	}
 	return result;
 }
-export function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => PromiseLike<T>): Promise<T[]> {
-	return Promise.all(map(src, fn));
+export async function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => PromiseLike<T>, inParallel: boolean = false): Promise<T[]> {
+	let result: T[];
+	if (!inParallel) {
+		let i = - 1;
+		const len = isNullOrUndefined(src) ? 0 : src.length;
+		result = new Array<T>(len);
+		while (++i < len) {
+			result[i] = await fn(src[i], i);
+		}
+	} else {
+		result = await Promise.all(map(src, fn));
+	}
+	return result;
 }
 export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T, startIndex: number = 0): void {
 	let i = startIndex - 1;
@@ -340,13 +351,16 @@ export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex: 
 		fn(src[i], i);
 	}
 }
-export function forEachAsync<T>(array: T[], fn: (el: T, i: number) => PromiseLike<any>): Promise<void> {
-	return new Promise<void>((resolve, reject) => {
-		Promise.all(map(array, fn)).then(
-			() => resolve(),
-			() => reject(),
-		);
-	});
+export async function forEachAsync<T>(array: T[], fn: (el: T, i: number) => PromiseLike<any>, inParallel: boolean = false): Promise<void> {
+	if (!inParallel) {
+		let i = -1;
+		const len = isNullOrUndefined(array) ? 0 : array.length;
+		while (++i < len) {
+			await fn(array[i], i);
+		}
+	} else {
+		await Promise.all(map(array, fn));
+	}
 }
 export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
 	let i = -1;
