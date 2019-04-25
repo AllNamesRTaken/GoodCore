@@ -573,14 +573,14 @@ declare namespace Arr {
     export function filter<T>(src: T[], fn: (el: T, i: number) => boolean): T[];
     export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void;
     export function map<S, T>(src: S[], fn: (el: S, i: number) => T, startIndex?: number): T[];
-    export function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => PromiseLike<T>): Promise<T[]>;
+    export function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => PromiseLike<T>, inParallel?: boolean): Promise<T[]>;
     export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T, startIndex?: number): void;
     export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, pos?: number, to?: number): U;
     export function reduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T, pos?: number, to?: number) => boolean, start: U): U;
     export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U;
     export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
     export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex?: number): void;
-    export function forEachAsync<T>(array: T[], fn: (el: T, i: number) => PromiseLike<any>): Promise<void>
+    export function forEachAsync<T>(array: T[], fn: (el: T, i: number) => PromiseLike<any>, inParallel?: boolean): Promise<void>
     export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void;
     export function until<T>(src: T[], fnOrTest: (el: T, i: number) => void, startIndex?: number): void;
     export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): void;
