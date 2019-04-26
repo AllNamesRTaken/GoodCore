@@ -655,7 +655,8 @@ declare namespace goodcore {
 		export function pipeOut(
 			log?: ((...args: any[]) => void) | null,
 			warn?: ((...args: any[]) => void) | null,
-			error?: ((...args: any[]) => void) | null
+			error?: ((...args: any[]) => void) | null,
+			catchDefault?: boolean | {log?: boolean, warn?: boolean, error: boolean}
 		): void;
 		export class AssertError extends Error { }
 		export function assert(assertion: boolean, message?: string, noThrow?: boolean): boolean;

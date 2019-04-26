@@ -82,6 +82,47 @@ describe("Util",
 				console.error = real.error;
 
 			});
+		test("PipeOut with catchDefault = true catches console log/warn/error.",
+			() => {
+				const log: any[] = [];
+				const warn: any[] = [];
+				const error: any[] = [];
+				let real = {
+					log: console.log,
+					warn: console.warn,
+					error: console.error,
+					window: Global.window
+				};
+				let trueLog = "";
+				console.log = function(...args: string[]) {
+					trueLog = args.join();
+				}
+
+				Util.pipeOut(
+					function (...args: any[]) {
+						log.push.apply(log, args);
+					},
+					function (...args: any[]) {
+						warn.push.apply(warn, args);
+					},
+					function (...args: any[]) {
+						error.push.apply(error, args);
+					},
+					true
+				);
+				console.error("true is true");
+				expect(error[0]).toContain("true is true");
+				console.log("logged");
+				expect(log[0]).toContain("logged");
+				console.warn("warned");
+				expect(warn[0]).toContain("warned");
+				expect(trueLog).toBe("");
+
+				Global.window = real.window;
+				console.log = real.log;
+				console.warn = real.warn;
+				console.error = real.error;
+			});
 		test("proxyFn wraps object method",
 			() => {
 				let barCalled = 0;

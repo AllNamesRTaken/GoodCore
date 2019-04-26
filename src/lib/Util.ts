@@ -116,15 +116,17 @@ export function count(key: number | string = ""): LoggableCounter {
 export function pipeOut(
 	log?: ((...args: any[]) => void) | null,
 	warn?: ((...args: any[]) => void) | null,
-	error?: ((...args: any[]) => void) | null
+	error?: ((...args: any[]) => void) | null,
+	catchDefault: boolean | {log?: boolean, warn?: boolean, error: boolean} = false
 ) {
 	if (hasConsole()) {
+		let preventDefaultObj = catchDefault as {log?: boolean, warn?: boolean, error: boolean};
 		if (isNotNullOrUndefined(log)) {
 			proxyFn(
 				Global.global.console as any,
 				"log",
 				function (superfn, ...args: any[]) {
-					superfn.apply(this, args);
+					if(!(catchDefault || preventDefaultObj.log)) superfn.apply(this, args);
 					log!.apply(this, args);
 				}
 			);
@@ -134,7 +136,7 @@ export function pipeOut(
 				Global.global.console as any,
 				"warn",
 				function (superfn, ...args: any[]) {
-					superfn.apply(this, args);
+					if(!(catchDefault || !preventDefaultObj.warn)) superfn.apply(this, args);
 					warn!.apply(this, args);
 				}
 			);
@@ -144,7 +146,7 @@ export function pipeOut(
 				Global.global.console as any,
 				"error",
 				function (superfn, ...args: any[]) {
-					superfn.apply(this, args);
+					if(!(catchDefault || !preventDefaultObj.error)) superfn.apply(this, args);
 					error!.apply(this, args);
 				}
 			);
