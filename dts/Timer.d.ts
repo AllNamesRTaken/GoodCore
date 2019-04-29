@@ -3,4 +3,8 @@ export class Timer {
     static now(): number;
     static start(): number;
     static stop(): number;
+    readonly time: number;
+    now(): number;
+    start(): number;
+    stop(): number;
 }

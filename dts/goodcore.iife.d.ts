@@ -729,10 +729,13 @@ declare namespace goodcore {
 
 	export class Timer {
 		static readonly time: number;
-		constructor();
 		static now(): number;
 		static start(): number;
 		static stop(): number;
+		readonly time: number;
+		now(): number;
+		start(): number;
+		stop(): number;
 	}
 
 	export class Uri {
