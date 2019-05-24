@@ -18,7 +18,7 @@ export function randomInt(min: number = 0, max: number = LARGEST_INT): number {
 	return randomNumber(min, max) | 0;
 }
 export function randomNumber(min: number = 0, max: number = LARGEST_INT): number {
-	return (Math.random() * (max - min)) + min;
+	return (Math.random() * (max + 1 - min)) + min;
 }
 export function numericArray(length: number, dataType: MocDataType = MocDataType.LinearInt, min: number = 0, max: number = LARGEST_INT): number[] {
 	const result: number[] = new Array(length);
