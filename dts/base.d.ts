@@ -104,3 +104,24 @@ interface IRect {
 	stop: IVec2;
 	endInclusive?: boolean;
 }
+interface IDebounceOptions {
+	leading: boolean;
+}
+type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ? 
+	PromiseLike<S> : 
+	T extends (...a: unknown[]) => infer R ? 
+		U extends { leading: true } ?
+			R : 
+			PromiseLike<R>
+		: never;
+interface IDebouncedFunction<T, U> {
+	(...args: ArgTypes<T>): DebounceResultType<T, U>;
+	resetTimer?(): void;
+}
+interface IThrottleOptions {
+	leading: boolean;
+	trailing: boolean;
+}
+interface IThrottledFunction<T> {
+	(...args: ArgTypes<T>): ResultType<T>;
+}

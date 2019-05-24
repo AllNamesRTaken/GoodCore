@@ -33,33 +33,11 @@ export function assert(assertion: boolean, message?: string, noThrow?: boolean):
 export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(objOrClass: U, fnName: string, proxyFn: (originalFn: (...args: any[]) => S | V, ...args: any[]) => void): void;
 export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void;
 export function toArray<T>(arr: ArrayLike<T>): T[];
-
-export interface IDebounceOptions {
-	leading: boolean;
-}
-type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ? 
-	PromiseLike<S> : 
-	T extends (...a: unknown[]) => infer R ? 
-		U extends { leading: true } ?
-			R : 
-			PromiseLike<R>
-		: never;
-export interface IDebouncedFunction<T, U> {
-	(...args: ArgTypes<T>): DebounceResultType<T, U>;
-	resetTimer?(): void;
-}
 export function debounce<T extends (...args: any[]) => any, U extends Partial<IDebounceOptions>>(
 	method: T,
 	duration?: number,
 	options?: U,
 ): IDebouncedFunction<T, U>;
-export interface IThrottleOptions {
-	leading: boolean;
-	trailing: boolean;
-}
-export interface IThrottledFunction<T> {
-	(...args: ArgTypes<T>): ResultType<T>;
-}
 export function throttle<T extends (...args: any[]) => unknown>(
 	method: T,
 	duration?: number,
