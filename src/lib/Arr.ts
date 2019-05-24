@@ -1,5 +1,6 @@
 import { clone, setProperties } from "./Obj";
 import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction } from "./Test";
+import { assert } from "./Util";
 
 export function flatten<T>(src: any[]): T[] {
 	return flattenInner<T>(src);
@@ -539,6 +540,19 @@ export function unzip<S, T, U = [S, T]>(
 	while (++i < len && (split = fn(arr[i], i, split) ) ) {
 		result[0].push(split[0]);
 		result[1].push(split[1]);
+	}
+	return result;
+}
+export function pivot<S = any, T extends Array<S> = S[]>(arr: T[]): S[][] {
+	assert(isArray(arr) && arr.length > 0 && isArray(arr[0]), "argument has to be a non-empty array of arrays");
+	let result: Array<Array<S>> = [];
+	let i = -1;
+	let len = arr.length;
+	let width = arr[0].length;
+	while(++i < width) {
+		result.push(create(len, (j) => {
+			return arr[j!][i];
+		}));
 	}
 	return result;
 }

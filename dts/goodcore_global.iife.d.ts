@@ -615,6 +615,7 @@ declare namespace Arr {
         fn?: zipFn<S, T, U, V, W>,
     ): U[];
     export function unzip<S, T, U =[S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
+    export function pivot<S = any, T extends Array<S> = S[]>(arr: T[]): S[][];
     export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
 }
 

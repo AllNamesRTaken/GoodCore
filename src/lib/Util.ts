@@ -159,14 +159,17 @@ export class AssertError extends Error {
 		Object.setPrototypeOf(this, AssertError.prototype);
 	}
 }
-export function assert(assertion: boolean, message: string = "", noThrow: boolean = false) {
+export function assert(assertion: boolean, message: string = "", noThrow: boolean = false): boolean {
+	let result = true;
 	if (!assertion) {
 		if (noThrow) {
 			console.error("Assertion failed: " + message);
 		} else {
 			throw new AssertError(message);
 		}
+		result = false;
 	}
+	return result;
 }
 export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(
 	objOrClass: U,

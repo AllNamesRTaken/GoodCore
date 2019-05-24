@@ -566,6 +566,17 @@ describe("Arrays",
 			expect(Arr.unzip<number, string, string>(["f", "fo", "foo"], (u, i, out) => [u.length, u]))
 			.toEqual([ [1, 2, 3], ["f", "fo", "foo"] ]);
 		});
+		test("pivot an array of int arrays and string arrays gives an array of int string arrays",
+		() => {
+			const org = [[1,2,3],["a", "b", "c"]];
+			let pivoted = Arr.pivot(org);
+			expect(pivoted[0][0]).toBe(1);
+			expect(pivoted[0][1]).toBe("a");
+			expect(pivoted.length).toBe(3);
+			expect(pivoted[0].length).toBe(2);
+			let original = Arr.pivot(pivoted) as (number[] | string[])[];
+			expect(original).toEqual(org);
+		});
 		test("Deserialize revives T[]",
 		() => {
 			class Revivable {
