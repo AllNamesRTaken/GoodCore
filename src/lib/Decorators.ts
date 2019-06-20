@@ -1,5 +1,5 @@
 import { isNotNullOrUndefined, isNotUndefined, isFunction } from "./Test";
-import { IDebounceOptions, debounce, AssertError, IThrottleOptions, throttle } from "./Util";
+import { IDebounceOptions, debounce, AssertError, IThrottleOptions, throttle, once as runOnlyOnce } from "./Util";
 
 export function debounced<S>(duration?: number, options?: Partial<IDebounceOptions>) {
 	return function innerDecorator<S>(target: S, key: string, descriptor: PropertyDescriptor) {
@@ -60,12 +60,9 @@ export function deprecated<S>(instead?: string, message?: string) {
 			"Function {class}::{name} is deprecated".replace("{class}", className).replace("{name}", propertyKey) + 
 			(isNotNullOrUndefined(instead) ? " please use {instead} instead".replace("{instead}", instead!) : "");
 
-		let warned = false;
-		function warn() {
-			if (!warned) {
-				console.warn(localMessage);
-			}
-		}
+		const warn = runOnlyOnce(function() {
+			console.warn(localMessage);
+		});
 
 		descriptor.value = function (...args: any[]) {
 			warn();

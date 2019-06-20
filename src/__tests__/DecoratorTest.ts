@@ -119,8 +119,10 @@ describe("Decorators",
 		test("deprecate warns on first use",
 			() => {
 				class Person {
+					public dep1Count = 0;
 					@deprecated()
 					public dep1() {
+						this.dep1Count++;
 					}
 					@deprecated("nonDep")
 					public dep2() {
@@ -130,10 +132,17 @@ describe("Decorators",
 					}
 				}
 				let warning = "";
-				pipeOut(null, (message: string) => warning = message);
+				let warnCount = 0;
+				pipeOut(null, (message: string) => {
+					warnCount++;
+					warning = message;
+				});
 				let sam = new Person();
 				sam.dep1();
+				sam.dep1();
 				expect(warning).toBe("Function Person::dep1 is deprecated");
+				expect(warnCount).toBe(1);
+				expect(sam.dep1Count).toBe(2);
 				sam.dep2();
 				expect(warning).toBe("Function Person::dep2 is deprecated please use nonDep instead");
 				sam.dep3();

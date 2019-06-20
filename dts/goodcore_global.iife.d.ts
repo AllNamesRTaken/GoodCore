@@ -24,6 +24,9 @@ interface ISerializable<T> {
     toJSON(): any;
     serialize(): T
 }
+interface IDeserializable<T> {
+	deserialize(data: any, ...types: Array<Constructor<any>>): T;
+}
 interface IRevivable<T> {
     revive(data: any, ...types: Array<Constructor<any>>): T;
     deserialize(array: any, ...types: Array<Constructor<any>>): T;

@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.27.5",
+  "version": "0.27.6",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "index.js",
   "typings": "goodcore.d.ts",
@@ -18,7 +18,6 @@
     "build-all": "npm run build && npm run build-es",
     "bench": "tsc -p tsconfig.bench.json && node ./dist/benchmark/index.js",
     "test": "jest",
-    "run_test": "mocha ./dist/test/*Test.js",
     "coveralls": "jest --coverage && cat ./tests/coverage/lcov.info | coveralls",
     "cover": "jest --coverage",
     "deploy": "gulp package && npm publish dist/lib",
