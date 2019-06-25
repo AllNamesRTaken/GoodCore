@@ -180,6 +180,15 @@ describe("Dom",
 				expect(Dom.is("#foo", el)).toBe(true);
 				expect(Dom.is(".bar", el)).toBe(false);
 			});
+		test("Is throws helpful warning if you pass the wrong args.",
+			() => {
+				const el = Dom.create(html2);
+				try  {
+					Dom.is(el as any, "#foo" as any);
+				} catch(err) {
+					expect(err.message).toBe("Did you mix up the arguments for Dom::is() ?");
+				}
+			});
 		test("setStylesExplicitly reads styles (from classes) and sets them as explicit styles",
 			() => {
 				const el = Dom.create(html2);
@@ -275,5 +284,5 @@ describe("Dom",
 				expect(Dom.findClosestCommonParent([el2])).toBe(el2);
 				Dom.remove(el2);
 			});
-		}
+	}
 );

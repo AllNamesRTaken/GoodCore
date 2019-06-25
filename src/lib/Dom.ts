@@ -217,6 +217,7 @@ export function is(selector: string, element: Element): boolean {
 	} else if (element.webkitMatchesSelector) {
 		result = element.webkitMatchesSelector(selector);
 	} else {
+		assert(!(isElement(selector) || isString(element)), "Did you mix up the arguments for Dom::is() ?");
 		throw new Error("Browser does not support matches");
 	}
 	return result;
