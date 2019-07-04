@@ -1,25 +1,38 @@
 type Constructor<T> = new (...args: any[]) => T;
-interface ICtor<T> { new(...args: any[]): T }
+type ICtor<T> = { new(...args: any[]): T; };
+type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
+type Diff<T extends string | number | symbol, U extends string | number | symbol> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T];
+type PickKeysOfType<T, KT> = ({ [P in keyof T]: T[P] extends KT ? P : never })[keyof T];
+type PickType<T, KT> = Pick<T, PickKeysOfType<T, KT>>;
+type PickFunctions<T> = PickType<T, Function>;
+type ExcludeType<T, KT> = Omit<T, PickKeysOfType<T, KT>>;
+type ExcludeFunctions<T> = ExcludeType<T, Function>;
+
 interface Indexable<T> {
 	[key: string]: T;
 }
 interface IObject extends Indexable<any> {}
 interface IInstance<T> extends IObject {
-    constructor?: ICtor<T>;
+	constructor?: ICtor<T>;
 }
-//@ts-ignore TS2370
-type ArgTypes<T> = T extends (...a: infer A) => unknown ? A : [];
-//@ts-ignore TS2304
+type ArgTypes<T> = T extends (...a:infer A) => unknown ? A : [];
 type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
 interface IPool<T extends IPoolable> {
-    get(): T & IPoolable;
-    release(obj: T): void;
+	get(): T;
+	release(obj: T): void;
 }
 interface IPoolable {
-    __pool__: IPool<IPoolable>;
-    release(): void;
-    initPool(pool: IPool<IPoolable>): void;
+	__pool__: IPool<IPoolable>;
+	release(): void;
+	initPool(pool: IPool<IPoolable>): void;
 }
+interface ICloneable<T> {
+	clone(): T;
+}
+interface IInitable {
+	init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this;
+}
+type TInitable<T> = T & IInitable;
 interface ISerializable<T> {
     toJSON(): any;
     serialize(): T
@@ -30,12 +43,6 @@ interface IDeserializable<T> {
 interface IRevivable<T> {
     revive(data: any, ...types: Array<Constructor<any>>): T;
     deserialize(array: any, ...types: Array<Constructor<any>>): T;
-}
-interface ICloneable<T> {
-    clone(): T;
-}
-interface IInitable<T> {
-    init(obj: Partial<T> | Indexable<any>, mapping?: Indexable<string>): this;
 }
 interface IBasicList<T> {
     [Symbol.iterator](): IterableIterator<T>;
@@ -119,11 +126,6 @@ interface IRect {
 interface IDebounceOptions {
     leading: boolean;
 }
-interface IDebouncedFunction<T> {
-    (...args: any[]): T
-    resetTimer?: () => void;
-}
-
 declare const Global: {
     window: Window | null;
     hasNativeWindow: boolean;
@@ -404,7 +406,7 @@ declare class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, IClo
     deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
 }
 
-declare class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable<Tree<T>> {
+declare class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable {
     public id: string;
     public parent: this | null;
     public children: List<this> | null;
@@ -769,8 +771,8 @@ declare class Uri {
     init(): void;
 }
 
-declare function Poolable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IPoolable>
-declare function Initable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IInitable<T>>
+export function Poolable<S>(_constructor?: ICtor<S>): ICtor<S & IPoolable>
+export function Initable<S>(_constructor?: ICtor<S>): ICtor<S & IInitable>
 
 declare class Pool<T> {
     readonly available: number;
@@ -800,28 +802,13 @@ declare class KeyValuePair<S, T> {
     value: T;
 }
 
-declare interface IVec2 {
-    x: number;
-    y: number;
-}
-
-declare interface IRange2 {
-    pos: IVec2;
-    size: IVec2;
-}
-
-declare interface IRect {
-    start: IVec2;
-    stop: IVec2;
-    endInclusive?: boolean;
-}
 declare namespace Decorators {
-    export function debounced<S>(duration: number | undefined, options?: Partial<Util.IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+    export function debounced<S>(duration: number | undefined, options?: Partial<IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
         configurable: boolean;
         enumerable: boolean | undefined;
         get: () => any;
     };
-    export function throttled<S>(duration?: number, options?: Partial<Util.IThrottleOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
+    export function throttled<S>(duration?: number, options?: Partial<IThrottleOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
         configurable: boolean;
         enumerable: boolean | undefined;
         get: () => any;
