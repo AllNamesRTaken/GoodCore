@@ -1,10 +1,11 @@
 import { setProperties } from "../Obj";
 
-export function Initable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IInitable<T>> {
-	return class extends _constructor implements IInitable<T> {
-		public init(obj: Partial<T> | any, mapping?: any): this {
-			setProperties(this, obj, mapping);
+export function Initable<S>(_constructor?: ICtor<S>): ICtor<S & IInitable> {
+	const ctor = _constructor || Object as any;
+	return class extends ctor implements IInitable {
+		public init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this {
+			setProperties(this, obj, mapping as any);
 			return this;
 		}
-	};
+	} as any;
 }

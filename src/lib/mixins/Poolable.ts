@@ -1,7 +1,8 @@
 import { Pool } from "../standard/Pool";
 
-export function Poolable<T extends { new(...args: any[]): {} }>(_constructor: T): T & Constructor<IPoolable> {
-	return class extends _constructor implements IPoolable {
+export function Poolable<S>(_constructor?: ICtor<S>): ICtor<S & IPoolable> {
+	const ctor = _constructor || Object as any;
+	return class extends ctor implements IPoolable {
 		constructor(...args: any[]) {
 			super(...args);
 		}
@@ -12,5 +13,5 @@ export function Poolable<T extends { new(...args: any[]): {} }>(_constructor: T)
 		public initPool(pool: Pool<this>): void {
 			this.__pool__ = pool;
 		}
-	};
+	} as any;
 }
