@@ -128,6 +128,7 @@ interface ICookieMonsterOptions<T extends Indexable<any>> {
 	retainTime: string;
 	path: string;
 	localStorage: boolean;
+	session: boolean;
 }
 interface ICookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> {
 	setCookie<S extends K>(key: S, value: T[S]): void,
@@ -562,8 +563,8 @@ declare namespace goodcore {
 		export function removeAt<T>(arr: T[], index: number): T | undefined;
 		export function indexOfElement(src: any[], el: any): number;
 		export function remove(arr: any[], el: any): void;
-		export function indexOf(src: any[], fn: (el: any) => boolean): number;
-		export function find<T>(src: T[], fn: (el: any) => boolean): T | undefined;
+		export function indexOf<T>(src: any[], fn: (el: T) => boolean): number;
+		export function find<T>(src: T[], fn: (el: T) => boolean): T | undefined;
 		export function removeOneByFn<T>(arr: T[], fn: (el: T) => boolean): void;
 		export function shallowCopy<T>(src: T[]): T[];
 		export function shallowCopyInto<T>(src: T[], target: T[]): void;

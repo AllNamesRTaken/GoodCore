@@ -145,7 +145,7 @@ export function remove(arr: any[], el: any): void {
 	const start = indexOfElement(arr, el);
 	removeAt(arr, start);
 }
-export function indexOf(src: any[], fn: (el: any) => boolean): number {
+export function indexOf<T>(src: T[], fn: (el: T) => boolean): number {
 	let i = -1;
 	const len = isNullOrUndefined(src) ? 0 : src.length;
 	while (++i < len) {
@@ -155,7 +155,7 @@ export function indexOf(src: any[], fn: (el: any) => boolean): number {
 	}
 	return -1;
 }
-export function find<T>(src: T[], fn: (el: any) => boolean): T | undefined {
+export function find<T>(src: T[], fn: (el: T) => boolean): T | undefined {
 	let i = indexOf(src, fn);
 	let result: T | undefined;
 	if (i !== -1) {
