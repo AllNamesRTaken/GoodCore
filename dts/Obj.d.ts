@@ -1,15 +1,15 @@
-export function destroy(obj: any): void;
-export function wipe(obj: any): void;
-export function setNull(obj: any): void;
-export function isClassOf(a: any, b: any): boolean;
-export function isSameClass(a: any, b: any): boolean;
-export function inherits(a: any, b: any): boolean;
+export function destroy(obj: Object): void;
+export function wipe(obj: Object): void;
+export function setNull(obj: Object): void;
+export function isClassOf(a: Object, b: Object): boolean;
+export function isSameClass(a: Object, b: Object): boolean;
+export function inherits(a: Object, b: Object): boolean;
 export function equals(a: any, b: any): boolean;
 export function isDifferent(a: any, b: any): boolean;
-export function shallowCopy(obj: any): any;
+export function shallowCopy<T, K extends keyof T>(obj: T): {[P in K]: T[P]};
 export function clone<T>(obj: T): T;
 export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
-export function mixin(target: any, exclude: any, ...sources: any[]): any;
+export function mixin(target: Indexable<any>, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): Indexable<any>;
 export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting?: boolean): void;
 export function forEach<T>(
     target: Indexable<T> | T[],

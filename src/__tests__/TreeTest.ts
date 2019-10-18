@@ -3,8 +3,9 @@ import { isNull } from "../lib/Test";
 
 describe("Tree",
 	() => {
+		let myTree: Tree<any>;
 		beforeAll(() => {
-			this.tree = Tree.fromObject({
+			myTree = Tree.fromObject({
 				data: "root",
 				children: [
 					{ data: "c1" },
@@ -20,14 +21,14 @@ describe("Tree",
 		});
 		test("Tree.fromObject returns correct tree",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				expect(tree.children!.read(1)!.children!.read(1)!.data!).toBe("c2-2");
 				expect(tree.size).toBe(6);
 				expect(tree.leafCount).toBe(4);
 			});
 		test("Aggregate does aggregate values",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				let result = tree.aggregate<string | null>((cur, i, collected) => {
 					return isNull(collected) ? cur.data : [cur.data, ...collected!].join(",");
 				});
@@ -91,7 +92,7 @@ describe("Tree",
 			});
 		test("Root returns root of tree",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				expect((tree.children!.read(1)!.children!.read(1)!.root === tree)).toBe(true);
 			});
 		test("Nodes are initable",
@@ -102,7 +103,7 @@ describe("Tree",
 			});
 		test("ForEach loops over all nodes and passes index in children",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				let iList: number[] = [];
 				let dList: string[] = [];
 				tree.forEach((el, i) => {
@@ -114,13 +115,13 @@ describe("Tree",
 			});
 		test("Find finds the correct node",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				expect(tree.find((node) => node.data === "c2-2")!.data!).toBe("c2-2");
 				expect((tree.find((node) => node.data === "not there") === null)).toBe(true);
 			});
 		test("Find by size finds the correct node",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				expect(tree.find(0)!.data!).toBe("root");
 				expect(tree.find(4)!.data!).toBe("c2-2");
 				expect((tree.find(-1) === null)).toBe(true);
@@ -128,7 +129,7 @@ describe("Tree",
 			});
 		test("getLeaf gets a leaf by position",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				expect(tree.getLeaf(0)!.data!).toBe("c1");
 				expect(tree.getLeaf(2)!.data!).toBe("c2-2");
 				expect(isNull(tree.getLeaf(4))).toBe(true);
@@ -136,7 +137,7 @@ describe("Tree",
 			});
 		test("Filter returns filtered tree",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				const filtered = tree.filter((node) => node.children !== null);
 				expect(filtered!.size).toBe(2);
 				expect(filtered!.leafCount).toBe(1);
@@ -147,17 +148,17 @@ describe("Tree",
 			});
 		test("Select returns a list of matching nodes",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				expect(tree.select((node) => node.children === null).count).toBe(4);
 			});
 		test("Empty select returns all nodes",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				expect(tree.select().count).toBe(6);
 			});
 		test("Add and Remove does add and remove",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				tree.add("c4");
 				expect(tree!.size).toBe(7);
 				expect(tree!.leafCount).toBe(5);
@@ -176,7 +177,7 @@ describe("Tree",
 			});
 		test("Remove sets inner children list to null",
 			() => {
-				const tree = (this.tree as Tree<string>).clone();
+				const tree = (myTree as Tree<string>).clone();
 				const c2 = tree.find((node) => node.data === "c2")!;
 				c2.children!.read(0)!.remove();
 				c2.children!.read(0)!.remove();
@@ -184,14 +185,14 @@ describe("Tree",
 			});
 		test("leafCount is recalculated after Add",
 			() => {
-				const tree = (this.tree as Tree<string>).clone();
+				const tree = (myTree as Tree<string>).clone();
 				const c2 = tree.find((node) => node.data === "c2")!;
 				c2.add("c2-3");
 				expect(tree.leafCount).toBe(5);
 			});
 		test("weight changes size but not leafCount",
 			() => {
-				const tree = (this.tree as Tree<string>).clone();
+				const tree = (myTree as Tree<string>).clone();
 				const c2 = tree.find((node) => node.data === "c2")!;
 				c2.weight = 10;
 				expect(c2.isDirty).toBe(true);
@@ -200,7 +201,7 @@ describe("Tree",
 			});
 		test("Clone clones deep",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				const orgc2t2 = tree.find((node) => node.data === "c2-2");
 				const c2t2 = tree.clone().find((node) => node.data === "c2-2");
 				expect(c2t2!.data!).toBe("c2-2");
@@ -208,12 +209,12 @@ describe("Tree",
 			});
 		test("Reduce performs depth first reduction",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				expect(tree.reduce((acc, cur) => acc += "," + (cur!.data as string), "")).toBe(",root,c1,c2,c2-1,c2-2,c3");
 			});
 		test("Reduce without parameters returns node list",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				let list: Array<Tree<string>> = tree.reduce();
 				expect(list.length).toBe(6);
 				expect(list[0].data!).toBe("root");
@@ -221,7 +222,7 @@ describe("Tree",
 			});
 		test("InsertAt inserts at the correct position",
 			() => {
-				const tree = this.tree as Tree<string>;
+				const tree = myTree as Tree<string>;
 				tree.insertAt(1, "c1.5");
 				expect(tree!.size).toBe(7);
 				expect(tree!.leafCount).toBe(5);
@@ -237,7 +238,7 @@ describe("Tree",
 			});
 		test("Prune removes all children from a node",
 			() => {
-				const tree = (this.tree as Tree<string>).clone();
+				const tree = (myTree as Tree<string>).clone();
 				tree.children!.read(1)!.prune();
 				expect(isNull(tree.children!.read(1)!.children)).toBe(true);
 				expect(tree!.size).toBe(4);
@@ -245,14 +246,14 @@ describe("Tree",
 			});
 		test("Depth returns correct depth",
 			() => {
-				const tree = (this.tree as Tree<string>).clone();
+				const tree = (myTree as Tree<string>).clone();
 				expect(tree.depth()).toBe(0);
 				expect(tree.children!.read(1)!.depth()).toBe(1);
 				expect(tree.children!.read(1)!.children!.read(0)!.depth()).toBe(2);
 			});
 		test("Sort sorts all children recursivly",
 			() => {
-				const tree = (this.tree as Tree<string>).clone();
+				const tree = (myTree as Tree<string>).clone();
 				tree.sort((a, b) => (a.data! < b.data! ? 1 : a.data! > b.data! ? -1 : 0));
 				expect(tree.children!.read(0)!.data!).toBe("c3");
 				expect(tree.children!.read(1)!.children!.read(1)!.data!).toBe("c2-1");
@@ -267,7 +268,7 @@ describe("Tree",
 					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] },
 					{ uid: "0-1", parent: "1", category: "drama", children: ["1-0-0", "1-0-1"] }
 				];
-				const tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
+				const tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: (el as any).category }) });
 				expect(JSON.stringify(tree)).toBe(JSON.stringify([
 					{ id: "-", data: { category: "stuff" }, parent: null, children: ["0", "1"] },
 					{ id: "0", data: { category: "books" }, parent: "-", children: ["0-0", "0-1"] },
@@ -286,7 +287,7 @@ describe("Tree",
 					{ uid: "0-0", parent: "0", category: "adventure", children: ["0-0-0", "0-0-1"] },
 					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] }
 				];
-				const tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) });
+				const tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: (el as any).category }) });
 				expect(tree.toJSON()).toEqual(tree.serialize());
 			});
 	}

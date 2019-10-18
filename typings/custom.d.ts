@@ -1,6 +1,5 @@
 type Constructor<T> = new (...args: any[]) => T;
 type ICtor<T> = { new(...args: any[]): T; };
-type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
 type Diff<T extends string | number | symbol, U extends string | number | symbol> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T];
 type PickKeysOfType<T, KT> = ({ [P in keyof T]: T[P] extends KT ? P : never })[keyof T];
 type PickType<T, KT> = Pick<T, PickKeysOfType<T, KT>>;

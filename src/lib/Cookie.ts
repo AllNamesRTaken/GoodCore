@@ -141,8 +141,8 @@ class CookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> imple
 				session_recipe :
 				local_recipe : 
 				cookie_recipe);
+		this.vacuum();
 		if (recipe) {
-			this.vacuum();
 			let cookies = this.bakeCookies(recipe);
 			this._cookies = {...this._cookies, ...cookies};
 			this.removeCookies();

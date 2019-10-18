@@ -33,11 +33,11 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 	public next(value?: any): IteratorResult<T> {
 		return {
 				done: this._pointer >= this.length,
-				value: this._pointer < this.length ? this._array[this._pointer++] : (this._pointer = 0, undefined as any)
+				value: this._pointer < this.length ? this._array[this._pointer++] : (this._pointer = 0, undefined as any) as any
 			};
 	}
 	protected create<S = T>(arr?: S[] | List<S>): List<S> {
-		return new ((this as any).constructor)(arr);
+		return new ((this as unknown as object).constructor as Constructor<List<S>>)(arr);
 	}
 	public get values(): T[] {
 		return this._array;
@@ -70,7 +70,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 				this._index![this._indexer!(v)] = v;
 			}
 		} else {
-			throw new Error(`index out of bounds on <List>.set(${pos}, ${v.toString()})`);
+			throw new Error(`index out of bounds on <List>.set(${pos}, ${(v as Object).toString()})`);
 		}
 		return this;
 	}
@@ -92,7 +92,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 			this._index = null;
 		} else {
 			if (this._index === null) {
-				this._index = Object.create(null);
+				this._index = Object.create(null) as {[key: string]: T};
 			} else {
 				wipe(this._index);
 			}
@@ -121,7 +121,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		} else if (!(populator instanceof Object)) {
 			this._array = create<T>(size, () => populator);
 		} else {
-			this._array = create(size, () => clone<T>(populator as T));
+			this._array = create(size, () => clone<T>(populator as any as T));
 		}
 		this._reindex();
 		return this;
@@ -466,7 +466,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		return this.values;
 	}
 	public serialize(): T[] {
-		return this.values.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
+		return this.values.map((el) => isFunction((el as any).serialize) ? (el as unknown as ISerializable<any>).serialize() as T : el);
 	}
 	public deserialize(array: any[], ...types: Array<Constructor<any>>): this {
 		deserialize.apply(this, [array, this._array].concat(types));

@@ -1,13 +1,22 @@
-import { areNotNullOrUndefined, isArray, isFunction, isObject } from "./Test";
+import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined, isNull } from "./Test";
 
-export function destroy(obj: any): void {
-	if (obj.constructor.prototype.destroy !== undefined) {
-		obj.destroy();
+interface IDestroyable {
+	destroy(): void;
+}
+interface IClearable {
+	clear(): void;
+}
+interface IEquatable {
+	equals(b: any): boolean;
+}
+export function destroy(obj: Object): void {
+	if (obj.constructor && isFunction((obj.constructor.prototype as any).destroy)) {
+		(obj as IDestroyable).destroy();
 	} else {
 		setNull(obj);
 	}
 }
-export function wipe(obj: any): void {
+export function wipe(obj: Object): void {
 	const keys = Object.keys(obj as Indexable<any>);
 	let i = -1;
 	const len = keys.length;
@@ -15,9 +24,9 @@ export function wipe(obj: any): void {
 		delete (obj as Indexable<any>)[keys[i]];
 	}
 }
-export function setNull(obj: any): void {
-	if (obj.constructor.prototype.clear !== undefined) {
-		obj.clear();
+export function setNull(obj: Object): void {
+	if (obj.constructor && isFunction((obj.constructor.prototype as any).clear)) {
+		(obj as IClearable).clear();
 	} else {
 		const keys = Object.keys(obj as Indexable<any>);
 		let key = null;
@@ -30,46 +39,46 @@ export function setNull(obj: any): void {
 	}
 }
 
-export function isClassOf(a: any, b: any): boolean {
+export function isClassOf(a: Object, b: Object): boolean {
 	return areNotNullOrUndefined(a, b) && a instanceof b.constructor;
 }
-export function isSameClass(a: any, b: any): boolean {
+export function isSameClass(a: Object, b: Object): boolean {
 	return areNotNullOrUndefined(a, b) && a.constructor === b.constructor;
 }
-export function inherits(a: any, b: any): boolean {
+export function inherits(a: Object, b: Object): boolean {
 	return isClassOf(a, b) && !isSameClass(a, b);
 }
 export function equals(a: any, b: any): boolean {
 	let result = a === b;
-	if (a !== b && (a instanceof Object) && isSameClass(a, b)) {
+	if (a !== b && (a instanceof Object) && isSameClass(a as Object, b as Object)) {
 		if (isArray(a)) {
 			// Compare arrays
-			const len = a.length;
+			const len = (a as any[]).length;
 			let i = 0;
-			result = len === b.length;
+			result = len === (b as any[]).length;
 			if (result) {
 				for (; i < len; i += 1) {
-					result = equals(a[i], b[i]);
+					result = equals((a as any[])[i], (b as any[])[i]);
 					if (result === false) {
 						break;
 					}
 				}
 			}
-		} else if (a.constructor.prototype.equals) {
+		} else if ((a as Object).constructor && isFunction(((a as Object).constructor.prototype as any).equals)) {
 			// Compare Coparables
-			result = a.equals(b);
+			result = (a as IEquatable).equals(b);
 		} else {
 			// Compare Objects
-			const keys = Object.keys(a);
+			const keys = Object.keys(a as Object);
 			let key = null;
 			result = true;
 			let i = -1;
 			const len = keys.length;
 			while (++i < len) {
 				key = keys[i];
-				result = equals(a[key], b[key]);
+				result = equals((a as Indexable<any>)[key], (b as Indexable<any>)[key]);
 				if (!result) {
-					if (isFunction(a[key])) {
+					if (isFunction((a as Indexable<any>)[key])) {
 						result = true;
 					} else {
 						break;
@@ -83,24 +92,25 @@ export function equals(a: any, b: any): boolean {
 export function isDifferent(a: any, b: any): boolean {
 	return !equals(a, b);
 }
-export function shallowCopy(obj: any): any {
-	const keys = Object.keys(obj as any);
+export function shallowCopy<T, K extends keyof T>(obj: T): {[P in K]: T[P]} {
+	const keys = Object.keys(obj);
 	const result: Indexable<any> = {};
 	let i = -1;
 	const len = keys.length;
 	while (++i < len) {
 		const key = keys[i];
-		result[key] = obj[key];
+		result[key] = (obj as Indexable<any>)[key];
 	}
-	return result as any;
+	return result as {[P in K]: T[P]};
 }
 export function clone<T>(obj: T): T {
 	let result: T;
-	if (!(obj instanceof Object)) {
+	let isNullObject = !isNullOrUndefined(obj) && !(obj instanceof Object) && !(obj as unknown as Object).constructor;
+	if (!(obj instanceof Object) && !isNullObject) {
 		result = obj;
-	} else if (obj.constructor.prototype.clone !== undefined) {
+	} else if ((obj instanceof Object) && isFunction(((obj as unknown as Object).constructor.prototype as any).clone)) {
 		//Cloneable
-		result = ((obj as any) as ICloneable<T>).clone();
+		result = (obj as unknown as ICloneable<T>).clone();
 	} else if (isArray(obj)) {
 		//Array
 		let i = -1;
@@ -115,7 +125,11 @@ export function clone<T>(obj: T): T {
 		return new RegExp(obj) as any;
 	} else {
 		//Object
-		result = new (obj as any).constructor();
+		if (isNullObject) {
+			result = Object.create(null) as T;
+		} else {
+			result = new ((obj as unknown as Object).constructor as Constructor<T>)();
+		}
 		const keys = Object.keys(obj);
 		let key = null;
 		let i = -1;
@@ -170,7 +184,7 @@ export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
 	}
 	return target;
 }
-export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): any {
+export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): Indexable<any> {
 	const
 		result = target,
 		len = sources ? sources.length : 0;
@@ -178,7 +192,7 @@ export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | nul
 	for (; i < len; i++) {
 		let src = sources[i];
 		if (isFunction(src)) {
-			src = src.prototype;
+			src = src.prototype as Indexable<any>;
 		}
 		if (src === undefined) {
 			continue;
@@ -206,6 +220,7 @@ export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | nul
 	}
 	return result;
 }
+// tslint:disable-next-line: max-line-length
 export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting: boolean = false): void {
 	const keys = Object.keys(values);
 	let key: string;
@@ -224,8 +239,7 @@ export function setProperties(target: Indexable<any>, values: Indexable<any>, ma
 export function forEach<T>(
 	target: Indexable<T> | T[],
 	fn: (value: T, key: string | number) => boolean | void
-): void
-{
+): void {
 	if (isArray(target)) {
 		let i = - 1;
 		const len = (target as T[]).length;
@@ -249,7 +263,7 @@ export function transform<T extends {[index: string]: any}, S = T, U = any>(
 	accumulator?: S
 ): S  {
 	if (accumulator === undefined) {
-		accumulator = Object.create(target);
+		accumulator = Object.create(target) as S;
 	}
 	forEach(target, (value: any, key: string | number) => {
 		return fn(accumulator!, value, key);
@@ -260,7 +274,7 @@ export function difference<T extends {[index: string]: any}, S extends {[index: 
 	function changes<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S {
 		return transform(target, function(result, value: any, key: string) {
 			if (isDifferent(value, base[key])) {
-				result[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
+				(result as Indexable<any>)[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
 			}
 		});
 	}

@@ -6,27 +6,33 @@ import { Vec2 } from "../lib/struct/Vec2";
 
 describe("SortedList",
 	() => {
+		let myLongArr: number[];
+		let myList1: SortedList<number>;
+		let myList2: SortedList<number>;
+		let myList3: SortedList<{ a: number }>;
+		let myList4: SortedList<number>;
+
 		beforeAll(
 			() => {
-				this.longArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
-				this.list1 = new SortedList(Comparer.NumberAsc, [1, 4, 7, 2] as number[]);
-				this.list2 = new SortedList(Comparer.NumberDesc, [4, 8, 1, 9] as number[]);
-				this.list3 = new SortedList(((a: { a: number }, b: { a: number }) => a.a < b.a ? -1 : a.a === b.a ? 0 : 1), [{ a: 2 }, { a: 1 }] as any[]);
-				this.list4 = new SortedList(Comparer.NumberAsc, [4, 8, 1, 9] as number[]);
+				myLongArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
+				myList1 = new SortedList(Comparer.NumberAsc, [1, 4, 7, 2] as number[]);
+				myList2 = new SortedList(Comparer.NumberDesc, [4, 8, 1, 9] as number[]);
+				myList3 = new SortedList(((a: { a: number }, b: { a: number }) => a.a < b.a ? -1 : a.a === b.a ? 0 : 1), [{ a: 2 }, { a: 1 }] as any[]);
+				myList4 = new SortedList(Comparer.NumberAsc, [4, 8, 1, 9] as number[]);
 			});
 		test("getter length returns the length",
 			() => {
-				const list = this.list1 as SortedList<number>;
+				const list = myList1 as SortedList<number>;
 				expect(list.length).toBe(4);
 			});
 		test("getter comparer returns the comparer",
 			() => {
-				const list = this.list1 as SortedList<number>;
+				const list = myList1 as SortedList<number>;
 				expect(list.comparer).toBe(Comparer.NumberAsc);
 			});
 		test("setter comparer sets the comparer and resorts",
 			() => {
-				const list = this.list1 as SortedList<number>;
+				const list = myList1 as SortedList<number>;
 				list.comparer = Comparer.NumberDesc;
 				expect(list.comparer).toBe(Comparer.NumberDesc);
 				expect(list.values).toEqual([7, 4, 2, 1]);
@@ -34,38 +40,38 @@ describe("SortedList",
 			});
 		test("Copy copies values correctly into target",
 			() => {
-				const list = this.list1 as SortedList<number>;
+				const list = myList1 as SortedList<number>;
 				const copy = new SortedList<number>(Comparer.NumberAsc);
-				copy.copy(this.list1);
+				copy.copy(myList1);
 				expect(copy.values).toEqual(list.values);
 				expect(copy.values).not.toBe(list.values);
 			});
 		test("clone copies values correctly into a new SortedList",
 			() => {
-				const list = this.list1 as SortedList<number>;
+				const list = myList1 as SortedList<number>;
 				const copy = list.clone();
 				expect(copy.values).toEqual(list.values);
 				expect(copy.values).not.toBe(list.values);
 			});
 		test("trucate shortens the list to given length",
 			() => {
-				const list = (this.list1 as SortedList<number>).clone();
+				const list = (myList1 as SortedList<number>).clone();
 				expect(list.truncate(2).length).toBe(2);
 				expect(list.read(1)!).toBe(2);
 			});
 		test("trucate with no size empties array",
 			() => {
-				const list = (this.list1 as SortedList<number>).clone();
+				const list = (myList1 as SortedList<number>).clone();
 				expect(list.truncate().length).toBe(0);
 			});
 		test("trucate with large size keeps List as is",
 			() => {
-				const list = (this.list1 as SortedList<number>).clone();
+				const list = (myList1 as SortedList<number>).clone();
 				expect(list.truncate(123).length).toBe(4);
 			});
 		test("trucate with negative size takes from end",
 			() => {
-				const list = (this.list1 as SortedList<number>).clone();
+				const list = (myList1 as SortedList<number>).clone();
 				expect(list.truncate(-2).length).toBe(2);
 				expect(list.read(1)!).toBe(7);
 			});
@@ -86,7 +92,7 @@ describe("SortedList",
 			});
 		test("bulkAdd adds multiple values",
 			() => {
-				const list = this.list1 as SortedList<number>;
+				const list = myList1 as SortedList<number>;
 				const copy = list.clone();
 				copy.bulkAdd([1, 2, 3]);
 				expect(copy.values).toEqual([1, 1, 2, 2, 3, 4, 7]);
@@ -95,7 +101,7 @@ describe("SortedList",
 			});
 		test("reverseUntil work like Until in reverse",
 			() => {
-				const list = this.list1 as SortedList<number>;
+				const list = myList1 as SortedList<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list.reverseUntil((el, i) => i === 1, (el, i) => listEl.push(el));
@@ -106,7 +112,7 @@ describe("SortedList",
 			});
 		test("reverseForEach work like ForEach in reverse",
 			() => {
-				const list = this.list1 as SortedList<number>;
+				const list = myList1 as SortedList<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list.reverseForEach((el, i) => { listEl.push(el); listi.push(i); });
@@ -114,75 +120,75 @@ describe("SortedList",
 			});
 		test("Get gets the value at a given position in the list",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.read(2)!).toBe(4);
 			});
 		test("Count returns the lists length",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.count).toBe(4);
 			});
 		test("Clear sets the size to 0",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.clear().count).toBe(0);
 			});
 		test("Add pushes a value onto the SortedList and returns the list",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.add(42).read(4)!).toBe(42);
 			});
 		test("Pop removes the last element in the list and returns it",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.pop()!).toBe(7);
 			});
 		test("Shift removes the first element in the list and returns it",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.shift()!).toBe(1);
 			});
 		test("Contains checks if a list contains a certain element",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.contains(4)).toBe(true);
 				expect(list1.contains(42)).toBe(false);
 			});
 		test("Remove removes an element from the list",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.read(1)!).toBe(2);
 				expect(list1.remove(4).contains(4)).toBe(false);
 			});
 		test("RemoveAt removes the element at a given position",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.read(2)!).toBe(4);
 				expect(list1.removeAt(2)!).toBe(4);
 				expect(list1.contains(4)).toBe(false);
 			});
 		test("RemoveFirst removes the first element from the list matching a function",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.read(1)!).toBe(2);
 				expect(list1.removeFirst((el: number) => el === 2)!).toBe(2);
 				expect(list1.contains(2)).toBe(false);
 			});
 		test("Filter returns filtered new list",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				const list2 = list1.filter((el, i) => i > 1);
 				expect(list2.values).toEqual([4, 7]);
 			});
 		test("Select returns filtered new list",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				const list2 = list1.select((el, i) => i > 1);
 				expect(list2.values).toEqual([4, 7]);
 			});
 		test("SelectInto uses supplied list",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				const list2 = new SortedList<number>(Comparer.NumberAsc);
 				list2.selectInto(list1, (el, i) => i > 1);
 				expect(list2.values).toEqual([4, 7]);
@@ -192,14 +198,14 @@ describe("SortedList",
 			});
 		test("Head returns new list with fist x items",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.head(2).values).toEqual([1, 2]);
 				expect(list1.head(-2).values).toEqual([]);
 				expect(list1.head(20).values).toEqual([1, 2, 4, 7]);
 			});
 		test("Tail returns new list with last x items",
 			() => {
-				const list1 = this.list1 as List<any>;
+				const list1 = myList1 as SortedList<any>;
 				expect(list1.tail(2).values).toEqual([4, 7]);
 				expect(list1.tail(-2).values).toEqual([]);
 				expect(list1.tail(20).values).toEqual([1, 2, 4, 7]);
@@ -207,16 +213,16 @@ describe("SortedList",
 
 		test("ForEach loops correctly",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.forEach((el, i) => { listEl.push(el); listi.push(i); });
-				expect(listEl).toEqual(this.list1.values);
+				expect(listEl).toEqual(myList1.values);
 				expect(listi).toEqual([0, 1, 2, 3]);
 			});
 		test("ForEach with startIndex loops correctly",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.forEach((el, i) => { listEl.push(el); listi.push(i); }, 1);
@@ -228,20 +234,20 @@ describe("SortedList",
 			});
 		test("IndexOf returns elements index or -1",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.indexOf(2)).toBe(1);
 				expect(list1.indexOf((el: number) => el === 2)).toBe(1);
 				expect(list1.indexOf(42)).toBe(-1);
 			});
 		test("Map el and i are correct",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.map((el, i) => el).values).toEqual([1, 2, 4, 7]);
 				expect(list1.map((el, i) => i).values).toEqual([0, 1, 2, 3]);
 			});
 		test("MapInto maps correctly and sets length",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				let list2 = new SortedList<number>(Comparer.NumberAsc, [1, 2]);
 				list2.mapInto(list1, (el, i) => el);
 				expect(list2.values).toEqual([1, 2, 4, 7]);
@@ -254,45 +260,45 @@ describe("SortedList",
 			});
 		test("Reduce works on numbers",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.reduce((acc, cur) => cur + acc, 0)).toBe(14);
 			});
 		test("ReduceUntil works like reduce with condition",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.reduceUntil((acc, cur) => `${acc}${cur}`, (acc, cur) => cur === 4, "")).toBe("12");
 			});
 		test("ReverseReduce works on numbers",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.reverseReduce((acc: any[], cur) => (acc.push(cur), acc), [])).toEqual(list1.toList().reverse().values);
 			});
 		test("ReverseReduceUntil works like reverseReduce with condition",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				expect(list1.reverseReduceUntil((acc, cur) => `${acc}${cur}`, (acc, cur) => cur === 2, "")).toBe("74");
 			});
 		test("First returns first element or first matching element",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.first()!).toBe(1);
 				expect(list1.first((el) => el > 3)!).toBe(4);
 				expect((list1.first((el) => el > 8) === undefined)).toBe(true);
 			});
 		test("Find returns the first matching element",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.find((el) => el > 3)!).toBe(4);
 				expect((list1.find((el) => el > 8) === undefined)).toBe(true);
 			});
 		test("Last returns last element",
 			() => {
-				const list1 = this.list1.clone() as SortedList<number>;
+				const list1 = myList1.clone() as SortedList<number>;
 				expect(list1.last()!).toBe(7);
 			});
 		test("ForSome works like Filtered ForEach",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.forSome((el, i) => i > 1, (el, i) => listEl.push(el));
@@ -302,7 +308,7 @@ describe("SortedList",
 			});
 		test("Until work like ForEach where returning true breaks the loop",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.until((el, i) => i >= 2, (el, i) => listEl.push(el));
@@ -312,7 +318,7 @@ describe("SortedList",
 			});
 		test("Until with startIndex work like ForEach with startIndex where returning true breaks the loop",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.until((el, i) => i >= 2, (el, i) => listEl.push(el), 1);
@@ -325,24 +331,24 @@ describe("SortedList",
 			});
 		test("Equals deep compares two lists",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
-				const list2 = new SortedList<any>(list1.comparer, this.list1.toList().clone().reverse());
-				const list3 = this.list2 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
+				const list2 = new SortedList<any>(list1.comparer, myList1.toList().clone().reverse());
+				const list3 = myList2 as SortedList<number>;
 				expect(list1.equals(list2)).toBe(true);
 				expect(list1.equals(list3)).toBe(false);
 			});
 		test("Same deep compares two lists",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
-				const list2 = new SortedList<any>(list1.comparer, this.list1.toList().clone().reverse());
-				const list3 = this.list2 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
+				const list2 = new SortedList<any>(list1.comparer, myList1.toList().clone().reverse());
+				const list3 = myList2 as SortedList<number>;
 				expect(list1.same(list2)).toBe(true);
 				expect(list1.same(list3)).toBe(false);
 			});
 		test("Union returns the union of two lists",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
-				const list2 = this.list4 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
+				const list2 = myList4 as SortedList<number>;
 				const list3 = new SortedList(list1.comparer, []);
 				const list4 = new List([3, 4]);
 				const list5 = new List([3, 4, 8, 9, 10]);
@@ -355,8 +361,8 @@ describe("SortedList",
 			});
 		test("Intersect returns a list containing the intersection of 2 lists",
 			() => {
-				const list1 = this.list1 as SortedList<number>;
-				const list2 = this.list4 as SortedList<number>;
+				const list1 = myList1 as SortedList<number>;
+				const list2 = myList4 as SortedList<number>;
 				const list3 = new SortedList(list1.comparer, []);
 				const list4 = new List<number>([2, 4, 42]);
 				const list5 = new List<number>([100, 7, 2, 4, 42]);

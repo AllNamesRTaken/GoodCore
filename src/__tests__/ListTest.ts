@@ -7,23 +7,29 @@ describe("List",
 	() => {
 		function values(obj: { [key: string]: any }): any[] {
 			let keys = Object.keys(obj);
-			return keys.map((k, i) => obj[k]);
+			return keys.map((k, i) => obj[k] as any);
 		}
 		function keys(obj: { [key: string]: any }): string[] {
 			return Object.keys(obj);
 		}
+		let myLongArr: number[];
+		let myList1: List<number>;
+		let myList2: List<number>;
+		let myList3: List<{ a: number }>;
+		let myIndexed: List<number>;
+
 		beforeAll(
 			() => {
-				this.longArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
-				this.list1 = new List([1, 4, 7, 2] as number[]);
-				this.list2 = new List([4, 8, 1, 9] as number[]);
-				this.list3 = new List(new List([{ a: 1 }, { a: 2 }] as any[]));
-				this.indexed = new List();
-				this.indexed.indexer = (el: number) => el;
+				myLongArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
+				myList1 = new List([1, 4, 7, 2] as number[]);
+				myList2 = new List([4, 8, 1, 9] as number[]);
+				myList3 = new List(new List([{ a: 1 }, { a: 2 }] as any[]));
+				myIndexed = new List();
+				myIndexed.indexer = (el: number) => el;
 			});
 		test("setting indexer to null sets index to null",
 			() => {
-				const list = this.list1 as List<number>;
+				const list = myList1 as List<number>;
 				expect((list.indexer === null)).toBe(true);
 				expect(((list as any)._index === null)).toBe(true);
 				list.indexer = (el) => el - 1;
@@ -33,7 +39,7 @@ describe("List",
 			});
 		test("Copy copies values correctly into target",
 			() => {
-				const list = this.list1 as List<number>;
+				const list = myList1 as List<number>;
 				const copy = new List<number>();
 				const copy2 = new List<number>();
 				copy.copy(list);
@@ -43,15 +49,15 @@ describe("List",
 				expect(copy2.values).toEqual(list.values);
 				expect(copy2.values).not.toBe(list.values);
 
-				const indexed = (this.indexed as List<number>).clone();
+				const indexed = (myIndexed as List<number>).clone();
 				indexed.copy(list.values);
-				expect(keys((indexed as any)._index)).toEqual(["1", "2", "4", "7"]);
-				expect(values((indexed as any)._index)).toEqual([1, 2, 4, 7]);
-				expect((indexed as any)._index[7]).toBe(7);
+				expect(keys((indexed as any)._index as any)).toEqual(["1", "2", "4", "7"]);
+				expect(values((indexed as any)._index as any)).toEqual([1, 2, 4, 7]);
+				expect(((indexed as any)._index as any)[7]).toBe(7);
 			});
 		test("clone copies values correctly into a new List",
 			() => {
-				const list = this.list1 as List<number>;
+				const list = myList1 as List<number>;
 				const copy = list.clone();
 				expect(copy.values).toEqual(list.values);
 				expect(copy.values).not.toBe(list.values);
@@ -63,23 +69,23 @@ describe("List",
 			});
 		test("trucate shortens the list to given length",
 			() => {
-				const list = (this.list1 as List<number>).clone();
+				const list = (myList1 as List<number>).clone();
 				expect(list.truncate(2).length).toBe(2);
 				expect(list.read(1)!).toBe(4);
 			});
 		test("trucate with no size empties array",
 			() => {
-				const list = (this.list1 as List<number>).clone();
+				const list = (myList1 as List<number>).clone();
 				expect(list.truncate().length).toBe(0);
 			});
 		test("trucate with large size keeps List as is",
 			() => {
-				const list = (this.list1 as List<number>).clone();
+				const list = (myList1 as List<number>).clone();
 				expect(list.truncate(123).length).toBe(4);
 			});
 		test("trucate with negative size takes elements from the end",
 			() => {
-				const list = (this.list1 as List<number>).clone();
+				const list = (myList1 as List<number>).clone();
 				expect(list.truncate(-2).length).toBe(2);
 				expect(list.read(1)!).toBe(2);
 			});
@@ -126,7 +132,7 @@ describe("List",
 			});
 		test("ShallowCopy references same inner objects",
 			() => {
-				const list = this.list3 as List<any>;
+				const list = myList3 as List<any>;
 				const copy = new List<number>();
 				copy.shallowCopy(list);
 				expect(copy.values[1]).toBe(list.values[1]);
@@ -135,45 +141,45 @@ describe("List",
 				indexed.indexer = (el: { a: number }) => 2 - el.a;
 				indexed.shallowCopy(list.values);
 
-				expect(keys((indexed as any)._index)).toEqual(["0", "1"]);
-				expect(values((indexed as any)._index)).toEqual([{ a: 2 }, { a: 1 }]);
+				expect(keys((indexed as any)._index as any)).toEqual(["0", "1"]);
+				expect(values((indexed as any)._index as any)).toEqual([{ a: 2 }, { a: 1 }]);
 			});
 		test("ShallowCopy can take array as input",
 			() => {
-				const arr = this.list3.values as any[];
+				const arr = myList3.values as any[];
 				const copy = new List<number>();
 				copy.shallowCopy(arr);
 				expect(copy.values[1]).toBe(arr[1]);
 			});
 		test("Append appends a lists values or an array to another Lists values",
 			() => {
-				let list1 = this.list1.clone() as List<any>;
-				const list2 = this.list2 as List<number>;
+				let list1 = myList1.clone() as List<any>;
+				const list2 = myList2 as List<number>;
 				expect(list1.append(list2).values).toEqual([1, 4, 7, 2, 4, 8, 1, 9]);
-				list1 = this.list1.clone() as List<any>;
+				list1 = myList1.clone() as List<any>;
 				expect(list1.append([4, 8, 1, 9]).values).toEqual([1, 4, 7, 2, 4, 8, 1, 9]);
 
-				const indexed = (this.indexed as List<number>).clone();
-				indexed.append(this.list1.values);
+				const indexed = (myIndexed as List<number>).clone();
+				indexed.append(myList1.values);
 
-				expect(keys((indexed as any)._index)).toEqual(["1", "2", "4", "7"]);
-				expect(values((indexed as any)._index)).toEqual([1, 2, 4, 7]);
+				expect(keys((indexed as any)._index as any)).toEqual(["1", "2", "4", "7"]);
+				expect(values((indexed as any)._index as any)).toEqual([1, 2, 4, 7]);
 			});
 		test("Concat concatinates two lists values or arrays and returns as a new list",
 			() => {
-				const list1 = this.list1 as List<number>;
-				const list2 = this.list2 as List<number>;
+				const list1 = myList1 as List<number>;
+				const list2 = myList2 as List<number>;
 				expect(list1.concat(list2).values).toEqual([1, 4, 7, 2, 4, 8, 1, 9]);
 				expect(list1.concat(list2.values).values).toEqual([1, 4, 7, 2, 4, 8, 1, 9]);
 			});
 		test("Get gets the value at a given position in the list",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.read(2)!).toBe(7);
 			});
 		test("getByIndex gets the value at a given index key in an indexed list",
 			() => {
-				const list1 = (this.list1 as List<number>).clone();
+				const list1 = (myList1 as List<number>).clone();
 				expect((list1.getByIndex("k2") === undefined)).toBe(true);
 				list1.indexer = (el: number) => `k${el}`;
 				expect(list1.getByIndex("k2")!).toBe(2);
@@ -181,125 +187,125 @@ describe("List",
 			});
 		test("Set sets a value at a given position if it exists in the list, or throws",
 			() => {
-				const list1 = (this.list1 as List<number>).clone();
-				const list2 = (this.list1 as List<number>).clone();
+				const list1 = (myList1 as List<number>).clone();
+				const list2 = (myList1 as List<number>).clone();
 				list2.indexer = (el) => el;
 				expect(list1.write(2, 42).read(2)!).toBe(42);
 				let err: Error | undefined;
 				try {
 					list1.write(4, 42);
 				} catch (error) {
-					err = error;
+					err = error as Error;
 				}
 				expect((err !== undefined)).toBe(true);
 				expect(list2.write(2, 42).read(2)!).toBe(42);
 			});
 		test("Count returns the lists length",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.count).toBe(4);
 			});
 		test("Clear sets the size to 0",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				list1.indexer = (el) => el;
 				expect(list1.clear().count).toBe(0);
-				expect(keys((list1 as any)._index)).toEqual([]);
-				expect(values((list1 as any)._index)).toEqual([]);
+				expect(keys((list1 as any)._index as any)).toEqual([]);
+				expect(values((list1 as any)._index as any)).toEqual([]);
 			});
 		test("Add pushes a value onto the List and returns the list",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				list1.indexer = (el) => el;
 				expect(list1.add(42).read(4)!).toBe(42);
 				expect(list1.values).toEqual([1, 4, 7, 2, 42]);
-				expect((list1 as any)._index[42]).toBe(42);
+				expect(((list1 as any)._index as any)[42]).toBe(42);
 			});
 		test("Push pushes a value onto the List and returns the index of the new element",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				list1.indexer = (el) => el;
 				expect(list1.push(42)).toBe(5);
-				expect((list1 as any)._index[42]).toBe(42);
+				expect(((list1 as any)._index as any)[42]).toBe(42);
 			});
 		test("Pop removes the last element in the list and returns it",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				list1.indexer = (el) => el;
-				expect((list1 as any)._index[2]).toBe(2);
+				expect(((list1 as any)._index as any)[2]).toBe(2);
 				expect(list1.pop()!).toBe(2);
-				expect((list1 as any)._index[2] === undefined).toBe(true);
+				expect(((list1 as any)._index as any)[2] === undefined).toBe(true);
 			});
 		test("Shift removes the first element in the list and returns it",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				list1.indexer = (el) => el;
-				expect((list1 as any)._index[1]).toBe(1);
+				expect(((list1 as any)._index as any)[1]).toBe(1);
 				expect(list1.shift()!).toBe(1);
-				expect(((list1 as any)._index[1] === undefined)).toBe(true);
+				expect((((list1 as any)._index as any)[1] === undefined)).toBe(true);
 			});
 		test("Contains checks if a list contains a certain element",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.contains(4)).toBe(true);
 				expect(list1.contains(42)).toBe(false);
 				expect(list1.contains((v) => v === 4)).toBe(true);
 				expect(list1.contains((v) => v === 42)).toBe(false);
 
-				const indexed = (this.indexed as List<number>).clone();
+				const indexed = (myIndexed as List<number>).clone();
 				indexed.add(4);
 				expect(indexed.contains(4)).toBe(true);
 				expect(indexed.contains(42)).toBe(false);
-				expect((indexed as any)._index[4]).toBe(4);
+				expect(((indexed as any)._index as any)[4]).toBe(4);
 			});
 		test("Remove removes an element from the list",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				list1.indexer = (el) => el;
 				expect(list1.read(1)!).toBe(4);
 				expect(list1.remove(4).contains(4)).toBe(false);
-				expect(((list1 as any)._index[4] === undefined)).toBe(true);
+				expect((((list1 as any)._index as any)[4] === undefined)).toBe(true);
 			});
 		test("RemoveFirst removes the first element from the list matching a function",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				list1.indexer = (el) => el;
 				expect(list1.read(1)!).toBe(4);
 				expect(list1.removeFirst((el: number) => el === 4)!).toBe(4);
 				expect(list1.contains(4)).toBe(false);
-				expect(((list1 as any)._index[4] === undefined)).toBe(true);
+				expect((((list1 as any)._index as any)[4] === undefined)).toBe(true);
 				expect(isUndefined(list1.removeFirst((el: number) => el === -999))!).toBe(true);
 			});
 		test("RemoveAt removes the element at a given position",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				list1.indexer = (el) => el;
 				expect(list1.read(2)!).toBe(7);
 				expect(list1.removeAt(2)!).toBe(7);
 				expect(list1.contains(7)).toBe(false);
-				expect(((list1 as any)._index[7] === undefined)).toBe(true);
+				expect((((list1 as any)._index as any)[7] === undefined)).toBe(true);
 				expect(isUndefined(list1.removeAt(-1))!).toBe(true);
 			});
 		test("Filter returns filtered new list",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const list2 = list1.filter((el, i) => i > 1);
 				expect(list2.values).toEqual([7, 2]);
 			});
 		test("Select returns filtered new list",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const list2 = list1.select((el, i) => i > 1);
 				expect(list2.values).toEqual([7, 2]);
 			});
 		test("SelectInto uses supplied list",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const list2 = new List<number>();
 				list2.selectInto(list1, (el, i) => i > 1);
 				list2.indexer = (el) => el;
-				expect(((list2 as any)._index[1] === undefined)).toBe(true);
-				expect(((list2 as any)._index[7])).toBe(7);
+				expect((((list2 as any)._index as any)[1] === undefined)).toBe(true);
+				expect((((list2 as any)._index as any)[7])).toBe(7);
 				expect(list2.values).toEqual([7, 2]);
 				const list3 = new List<number>();
 				list3.selectInto(list1.values, (el, i) => i > 1);
@@ -307,35 +313,35 @@ describe("List",
 			});
 		test("Head returns new list with fist x items",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.head(2).values).toEqual([1, 4]);
 				expect(list1.head(-2).values).toEqual([]);
 				expect(list1.head(20).values).toEqual([1, 4, 7, 2]);
 			});
 		test("Tail returns new list with last x items",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.tail(2).values).toEqual([7, 2]);
 				expect(list1.tail(-2).values).toEqual([]);
 				expect(list1.tail(20).values).toEqual([1, 4, 7, 2]);
 			});
 		test("OrderBy sorts the Lists values",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				expect(list1.orderBy((a, b) => a - b).values).toEqual([1, 2, 4, 7]);
 			});
 		test("ForEach loops correctly",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.forEach((el, i) => { listEl.push(el); listi.push(i); });
-				expect(listEl).toEqual(this.list1.values);
+				expect(listEl).toEqual(myList1.values);
 				expect(listi).toEqual([0, 1, 2, 3]);
 			});
 		test("ForEach with startIndex loops correctly",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.forEach((el, i) => { listEl.push(el); listi.push(i); }, 1);
@@ -347,25 +353,25 @@ describe("List",
 			});
 		test("IndexOf returns elements index or -1",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.indexOf(2)).toBe(3);
 				expect(list1.indexOf((el: number) => el === 2)).toBe(3);
 				expect(list1.indexOf(42)).toBe(-1);
 			});
 		test("Map el and i are correct",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.map((el, i) => el).values).toEqual([1, 4, 7, 2]);
 				expect(list1.map((el, i) => i).values).toEqual([0, 1, 2, 3]);
 			});
 		test("MapInto maps correctly and sets length",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				let list2 = new List<number>([1, 2]);
 				list2.indexer = (el) => el;
 				list2.mapInto(list1, (el, i) => el);
 				expect(list2.values).toEqual([1, 4, 7, 2]);
-				expect(values((list2 as any)._index)).toEqual([1, 2, 4, 7]);
+				expect(values(((list2 as any)._index as any))).toEqual([1, 2, 4, 7]);
 
 				list2 = new List<number>([1, 2, 3, 4, 5]);
 				list2.mapInto(list1, (el, i) => i);
@@ -376,55 +382,55 @@ describe("List",
 			});
 		test("Reduce works on numbers",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.reduce((acc, cur) => cur + acc, 0)).toBe(14);
 			});
 		test("ReduceUntil works like reduce with condition",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.reduceUntil((acc, cur) => `${acc}${cur}`, (acc, cur) => cur === 7, "")).toBe("14");
 			});
 		test("ReverseReduce works on numbers",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.reverseReduce((acc, cur) => (acc.push(cur), acc), [] as number[])).toEqual(list1.clone().reverse().values);
 			});
 		test("ReverseReduceUntil works like reverseReduce with condition",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				expect(list1.reverseReduceUntil((acc, cur) => `${acc}${cur}`, (acc, cur) => cur === 4, "")).toBe("27");
 			});
 		test("Reverse reverses the list elements",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				expect(list1.reverse().values).toEqual([2, 7, 4, 1]);
 			});
 		test("First returns first element or first matching element",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				expect(list1.first()!).toBe(1);
 				expect(list1.first((el) => el > 3)!).toBe(4);
 				expect((list1.first((el) => el > 8) === undefined)).toBe(true);
 			});
 		test("Find returns the first matching element",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				expect(list1.find((el) => el > 3)!).toBe(4);
 				expect((list1.find((el) => el > 8) === undefined)).toBe(true);
 			});
 		test("Last returns last element",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				expect(list1.last()!).toBe(2);
 			});
 		test("Select filters out and returns new List",
 			() => {
-				const list1 = this.list1.clone() as List<number>;
+				const list1 = myList1.clone() as List<number>;
 				expect(list1.select((el, i) => el % 2 === 0).values).toEqual([4, 2]);
 			});
 		test("ForSome works like Filtered ForEach",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.forSome((el, i) => i > 1, (el, i) => listEl.push(el));
@@ -434,7 +440,7 @@ describe("List",
 			});
 		test("Until work like ForEach where returning true breaks the loop",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.until((el, i) => i >= 2, (el, i) => listEl.push(el));
@@ -456,7 +462,7 @@ describe("List",
 			});
 		test("Until with startIndex work like ForEach with startIndex where returning true breaks the loop",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.until((el, i) => i >= 2, (el, i) => listEl.push(el), 1);
@@ -475,7 +481,7 @@ describe("List",
 			});
 		test("reverseUntil work like Until in reverse",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const listEl = new Array<number>();
 				list1.reverseUntil((el, i) => i === 1, (el, i) => listEl.push(el));
 				expect(listEl).toEqual([2, 7]);
@@ -485,17 +491,17 @@ describe("List",
 			});
 		test("reverseForEach work like ForEach in reverse",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const listEl = new Array<number>();
 				const listi = new Array<number>();
 				list1.reverseForEach((el, i) => { listEl.push(el); listi.push(i); });
-				expect(listEl).toEqual(this.list1.reverse().values);
+				expect(listEl).toEqual(myList1.reverse().values);
 			});
 		test("Equals deep compares two lists",
 			() => {
-				const list1 = this.list1 as List<number>;
+				const list1 = myList1 as List<number>;
 				const list2 = list1.clone() as List<number>;
-				const list3 = this.list2 as List<number>;
+				const list3 = myList2 as List<number>;
 				expect(list1.equals(list2)).toBe(true);
 				expect(list1.equals(list3)).toBe(false);
 			});
@@ -558,7 +564,7 @@ describe("List",
 				list1.indexer = (el) => el;
 				list1.insertAt(2, 42);
 				expect(list1.values).toEqual([1, 2, 42, 3, 4]);
-				expect((list1 as any)._index[42]).toBe(42);
+				expect(((list1 as any)._index as any)[42]).toBe(42);
 			});
 		test("Some is true if any element is true",
 			() => {

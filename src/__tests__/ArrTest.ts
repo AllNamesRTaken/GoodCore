@@ -5,16 +5,20 @@ import { Test } from "../lib";
 
 describe("Arrays",
 	() => {
+		let longArr: number[];
+		let arr1: number[];
+		let arr2: number[];
+		let arr3: Array<{a: number}>;
 		beforeAll(
 			() => {
-				this.longArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
-				this.arr1 = [1, 4, 7, 2] as number[];
-				this.arr2 = [4, 8, 1, 9] as number[];
-				this.arr3 = [{a: 1}, {a: 2}] as any[];
+				longArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
+				arr1 = [1, 4, 7, 2] as number[];
+				arr2 = [4, 8, 1, 9] as number[];
+				arr3 = [{a: 1}, {a: 2}] as any[];
 			});
 		test("DeepCopy copies values correctly",
 			() => {
-				const arr = this.arr1;
+				const arr = arr1;
 				const copy = Arr.deepCopy(arr);
 				expect(Arr.deepCopy(null!)).toEqual([]);
 				expect(copy).toEqual(arr);
@@ -22,7 +26,7 @@ describe("Arrays",
 			});
 		test("ShallowCopy references same inner objects",
 			() => {
-				const arr = this.arr3;
+				const arr = arr3;
 				const copy = Arr.shallowCopy(arr);
 				expect(copy[1]).toBe(arr[1]);
 				expect(Arr.shallowCopy(null!)).toEqual([]);
@@ -37,41 +41,41 @@ describe("Arrays",
 			});
 		test("Append appends two arrays into the first",
 			() => {
-				const copy = Arr.shallowCopy(this.arr1 as number[]);
-				Arr.append(copy, this.arr2 as number[]);
-				const len = (this.arr1 as number[]).length + (this.arr2 as number[]).length;
+				const copy = Arr.shallowCopy(arr1 as number[]);
+				Arr.append(copy, arr2 as number[]);
+				const len = (arr1 as number[]).length + (arr2 as number[]).length;
 				expect(copy.length).toBe(len);
-				expect(copy).toEqual(this.arr1.concat(this.arr2));
+				expect(copy).toEqual(arr1.concat(arr2));
 				let arr = [1];
 				Arr.append(arr, null!);
 				expect(arr).toEqual([1]);
 			});
 		test("Concat works and does not change the sources",
 			() => {
-				const copy1 = Arr.deepCopy(this.arr1);
-				const copy2 = Arr.deepCopy(this.arr2);
+				const copy1 = Arr.deepCopy(arr1);
+				const copy2 = Arr.deepCopy(arr2);
 				const result = Arr.concat(copy1, copy2);
-				const len = (this.arr1 as number[]).length + (this.arr2 as number[]).length;
+				const len = (arr1 as number[]).length + (arr2 as number[]).length;
 				expect(result.length).toBe(len);
-				expect(result).toEqual(this.arr1.concat(this.arr2));
-				expect(copy1).toEqual(this.arr1);
-				expect(copy2).toEqual(this.arr2);
+				expect(result).toEqual(arr1.concat(arr2));
+				expect(copy1).toEqual(arr1);
+				expect(copy2).toEqual(arr2);
 			});
 		test("DeepCopyInto works and copies into target",
 			() => {
-				const copy = Arr.shallowCopy(this.arr1);
-				Arr.deepCopyInto(this.arr2, copy);
-				expect(copy).toEqual(this.arr2);
-				expect(copy).not.toBe(this.arr2);
+				const copy = Arr.shallowCopy(arr1);
+				Arr.deepCopyInto(arr2, copy);
+				expect(copy).toEqual(arr2);
+				expect(copy).not.toBe(arr2);
 				let arr = [1];
 				Arr.deepCopyInto(null!, arr);
 				expect(arr).toEqual([]);
 			});
 		test("Deepfill works like deepcopy at a position",
 			() => {
-				const copy = Arr.shallowCopy(this.arr1 as number[]);
-				Arr.deepFill(this.arr2 as number[], copy, 2);
-				const len = 2 + (this.arr2 as number[]).length;
+				const copy = Arr.shallowCopy(arr1 as number[]);
+				Arr.deepFill(arr2 as number[], copy, 2);
+				const len = 2 + (arr2 as number[]).length;
 				expect(copy.length).toBe(len);
 				expect(copy).toEqual([1, 4, 4, 8, 1, 9]);
 				let arr = [1, 2];
@@ -80,33 +84,33 @@ describe("Arrays",
 			});
 		test("IndexOf returns correct index",
 			() => {
-				expect(Arr.indexOf(this.arr1 as number[], (el) => el === 7)).toBe(2);
-				expect(Arr.indexOf(this.arr1 as number[], (el) => el === 17)).toBe(-1);
+				expect(Arr.indexOf(arr1 as number[], (el) => el === 7)).toBe(2);
+				expect(Arr.indexOf(arr1 as number[], (el) => el === 17)).toBe(-1);
 				expect(Arr.indexOf(null!, (el) => true)).toBe(-1);
 
 				Test.Env.useNative = false;
 
-				expect(Arr.indexOf(this.arr1 as number[], (el) => el === 7)).toBe(2);
-				expect(Arr.indexOf(this.arr1 as number[], (el) => el === 17)).toBe(-1);
+				expect(Arr.indexOf(arr1 as number[], (el) => el === 7)).toBe(2);
+				expect(Arr.indexOf(arr1 as number[], (el) => el === 17)).toBe(-1);
 				expect(Arr.indexOf(null!, (el) => true)).toBe(-1);
 
 				Test.Env.useNative = undefined;
 			});
 		test("find return correct element or undefined",
 			() => {
-				expect(Arr.find(this.arr1 as number[], (el) => el === 7)!).toBe(7);
-				expect(Arr.find(this.arr1 as number[], (el) => el === 77) === undefined).toBe(true);
+				expect(Arr.find(arr1 as number[], (el) => el === 7)!).toBe(7);
+				expect(Arr.find(arr1 as number[], (el) => el === 77) === undefined).toBe(true);
 			});
 		test("Filter returns correct array",
 			() => {
-				const copy = Arr.filter(this.arr1 as number[], (el, i) => i > 1);
+				const copy = Arr.filter(arr1 as number[], (el, i) => i > 1);
 				expect(copy).toEqual([7, 2]);
 				expect(Arr.filter(null!, (el, i) => true)).toEqual([]);
 			});
 		test("FilterInto uses supplied array",
 			() => {
-				const copy = Arr.shallowCopy(this.arr1 as number[]);
-				Arr.filterInto(this.arr2 as number[], copy, (el, i) => i > 1);
+				const copy = Arr.shallowCopy(arr1 as number[]);
+				Arr.filterInto(arr2 as number[], copy, (el, i) => i > 1);
 				expect(copy).toEqual([1, 9]);
 				Arr.filterInto(null!, copy, (el, i) => i > 1);
 				expect(copy).toEqual([]);
@@ -121,8 +125,8 @@ describe("Arrays",
 			() => {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
-				Arr.forEach(this.arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); });
-				expect(arrEl).toEqual(this.arr1);
+				Arr.forEach(arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); });
+				expect(arrEl).toEqual(arr1);
 				expect(arri).toEqual([0, 1, 2, 3]);
 				Arr.forEach(null! as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				expect(arri).toEqual([0, 1, 2, 3]);
@@ -131,11 +135,11 @@ describe("Arrays",
 			() => {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
-				Arr.forEach(this.arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); }, 1);
+				Arr.forEach(arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); }, 1);
 				expect(arrEl).toEqual([4, 7, 2]);
 				expect(arri).toEqual([1, 2, 3]);
 				const arrEl2 = new Array<number>();
-				Arr.forEach(this.arr1 as number[], (el, i) => { arrEl2.push(el); }, 42);
+				Arr.forEach(arr1 as number[], (el, i) => { arrEl2.push(el); }, 42);
 				expect(arrEl2).toEqual([]);
 				Arr.forEach(null! as number[], (el, i) => { arrEl2.push(el); }, 0);
 				expect(arrEl2).toEqual([]);
@@ -144,13 +148,13 @@ describe("Arrays",
 			async (done) => {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
-				await Arr.forEachAsync(this.arr1 as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
-				expect(arrEl).toEqual(this.arr1);
+				await Arr.forEachAsync(arr1 as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
+				expect(arrEl).toEqual(arr1);
 				expect(arri).toEqual([0, 1, 2, 3]);
 				await Arr.forEachAsync(null! as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
 				expect(arri).toEqual([0, 1, 2, 3]);
 				try {
-					await Arr.forEachAsync(this.arr1 as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
+					await Arr.forEachAsync(arr1 as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
 				} catch (err) {
 					expect(err).toBeTruthy();
 				}
@@ -159,12 +163,12 @@ describe("Arrays",
 		test("ForEach with inParallel = true executes out of sequence",
 			async (done) => {
 				let sequence: number[] = [];
-				await Arr.forEachAsync(this.arr1 as number[], async (el, i) => {
+				await Arr.forEachAsync(arr1 as number[], async (el, i) => {
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							sequence.push(el);
 							resolve();
-						}, 10 - i*2);
+						}, 10 - i * 2);
 					});
 					return el;
 				}, true);
@@ -174,12 +178,12 @@ describe("Arrays",
 		test("ForEach inParallel = false executes in sequence",
 			async (done) => {
 				let sequence: number[] = [];
-				await Arr.forEachAsync(this.arr1 as number[], async (el, i) => {
+				await Arr.forEachAsync(arr1 as number[], async (el, i) => {
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							sequence.push(el);
 							resolve();
-						}, 10 - i*2);
+						}, 10 - i * 2);
 					});
 					return el;
 				});
@@ -190,46 +194,46 @@ describe("Arrays",
 			() => {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
-				Arr.reverseForEach(this.arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); });
-				expect(arrEl).toEqual(Arr.reverse(Arr.shallowCopy(this.arr1 as number[])));
+				Arr.reverseForEach(arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); });
+				expect(arrEl).toEqual(Arr.reverse(Arr.shallowCopy(arr1 as number[])));
 				expect(arri).toEqual([3, 2, 1, 0]);
 				Arr.reverseForEach(null! as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				expect(arri).toEqual([3, 2, 1, 0]);
 			});
 		test("IndexOfElement returns correct index",
 			() => {
-				expect(Arr.indexOfElement(this.arr1 as number[], 7)).toBe(2);
-				expect(Arr.indexOfElement(this.arr1 as number[], 17)).toBe(-1);
+				expect(Arr.indexOfElement(arr1 as number[], 7)).toBe(2);
+				expect(Arr.indexOfElement(arr1 as number[], 17)).toBe(-1);
 				expect(Arr.indexOfElement(null!, 17)).toBe(-1);
 
 				Test.Env.useNative = false;
-				expect(Arr.indexOfElement(this.arr1 as number[], 7)).toBe(2);
-				expect(Arr.indexOfElement(this.arr1 as number[], 17)).toBe(-1);
+				expect(Arr.indexOfElement(arr1 as number[], 7)).toBe(2);
+				expect(Arr.indexOfElement(arr1 as number[], 17)).toBe(-1);
 				expect(Arr.indexOfElement(null!, 17)).toBe(-1);
 				Test.Env.useNative = undefined;
 			});
 		test("Map el and i are correct",
 			() => {
-				expect(Arr.map(this.arr1 as number[], (el, i) => el)).toEqual([1, 4, 7, 2]);
-				expect(Arr.map(this.arr1 as number[], (el, i) => i)).toEqual([0, 1, 2, 3]);
+				expect(Arr.map(arr1 as number[], (el, i) => el)).toEqual([1, 4, 7, 2]);
+				expect(Arr.map(arr1 as number[], (el, i) => i)).toEqual([0, 1, 2, 3]);
 				expect(Arr.map(null! as number[], (el, i) => i)).toEqual([]);
 			});
 		test("MapAsync el and i are correct",
 			async (done) => {
-				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => el)).toEqual([1, 4, 7, 2]);
-				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => i)).toEqual([0, 1, 2, 3]);
+				expect(await Arr.mapAsync(arr1 as number[], async (el, i) => el)).toEqual([1, 4, 7, 2]);
+				expect(await Arr.mapAsync(arr1 as number[], async (el, i) => i)).toEqual([0, 1, 2, 3]);
 				expect(await Arr.mapAsync(null! as number[], async (el, i) => i)).toEqual([]);
 				done();
 			});
 		test("MapAsync with inParallel = true executes out of sequence",
 			async (done) => {
 				let sequence: number[] = [];
-				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => {
+				expect(await Arr.mapAsync(arr1 as number[], async (el, i) => {
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							sequence.push(el);
 							resolve();
-						}, 10 - i*2);
+						}, 10 - i * 2);
 					});
 					return el;
 				}, true)).toEqual([1, 4, 7, 2]);
@@ -239,12 +243,12 @@ describe("Arrays",
 		test("MapAsync inParallel = false executes in sequence",
 			async (done) => {
 				let sequence: number[] = [];
-				expect(await Arr.mapAsync(this.arr1 as number[], async (el, i) => {
+				expect(await Arr.mapAsync(arr1 as number[], async (el, i) => {
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							sequence.push(el);
 							resolve();
-						}, 10 - i*2);
+						}, 10 - i * 2);
 					});
 					return el;
 				})).toEqual([1, 4, 7, 2]);
@@ -254,10 +258,10 @@ describe("Arrays",
 		test("MapInto maps correctly and sets length",
 			() => {
 				let copy = [1, 2];
-				Arr.mapInto(this.arr1 as number[], copy, (el, i) => el);
+				Arr.mapInto(arr1 as number[], copy, (el, i) => el);
 				expect(copy).toEqual([1, 4, 7, 2]);
 				copy = [1, 2, 3, 4, 5];
-				Arr.mapInto(this.arr1 as number[], copy, (el, i) => i);
+				Arr.mapInto(arr1 as number[], copy, (el, i) => i);
 				expect(copy).toEqual([0, 1, 2, 3]);
 				copy = [1, 2, 3, 4, 5];
 				Arr.mapInto(null! as number[], copy, (el, i) => i);
@@ -265,16 +269,16 @@ describe("Arrays",
 			});
 		test("Reduce works on numbers",
 			() => {
-				expect(Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc, 0)).toBe(14);
+				expect(Arr.reduce(arr1 as number[], (acc, cur) => cur + acc, 0)).toBe(14);
 				expect(Arr.reduce(null! as number[], (acc, cur) => cur + acc, 0)).toBe(0);
 			});
 		test("Reduce works with from and to",
 		() => {
-			expect(Arr.reduce(this.arr1 as number[], (acc, cur) => cur + acc, 0, 1, 2)).toBe(11);
+			expect(Arr.reduce(arr1 as number[], (acc, cur) => cur + acc, 0, 1, 2)).toBe(11);
 		});
 		test("ReduceUntil works on numbers",
 			() => {
-				expect(Arr.reduceUntil(this.arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0)).toBe(5);
+				expect(Arr.reduceUntil(arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0)).toBe(5);
 				expect(Arr.reduceUntil(null! as number[], (acc, cur) => cur + acc, (acc, cur) => cur > 5, 0)).toBe(0);
 			});
 		test("ReduceUntil works with from and to",
@@ -283,12 +287,12 @@ describe("Arrays",
 		});
 		test("ReverseReduce works on numbers",
 			() => {
-				expect(Arr.reverseReduce(this.arr1 as number[], (acc, cur) => cur + acc, 0)).toBe(14);
+				expect(Arr.reverseReduce(arr1 as number[], (acc, cur) => cur + acc, 0)).toBe(14);
 				expect(Arr.reverseReduce(null! as number[], (acc, cur) => cur + acc, 0)).toBe(0);
 			});
 		test("ReverseReduceUntil works on numbers",
 			() => {
-				expect(Arr.reverseReduceUntil(this.arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur === 4, 0)).toBe(9);
+				expect(Arr.reverseReduceUntil(arr1 as number[], (acc, cur) => cur + acc, (acc, cur) => cur === 4, 0)).toBe(9);
 				expect(Arr.reverseReduceUntil(null! as number[], (acc, cur) => cur + acc, (acc, cur) => cur === 4, 0)).toBe(0);
 			});
 		test("RemoveAt removes correct item",
@@ -320,7 +324,7 @@ describe("Arrays",
 				const arr = [1, 2, 3, 4];
 				Arr.removeOneByFn(arr, (el) => el > 2);
 				expect(arr).toEqual([1, 2, 4]);
-				Arr.removeOneByFn(null!, (el) => el > 2); // no crash
+				Arr.removeOneByFn(null!, (el) => el as any > 2); // no crash
 			});
 		test("Reverse reverses the array",
 			() => {
@@ -332,18 +336,18 @@ describe("Arrays",
 		test("ShallowCopyInto copys correctly and keeps references",
 			() => {
 				const copy = [1, 2, 3, 4];
-				Arr.shallowCopyInto(this.arr3, copy);
-				expect(copy).toEqual(this.arr3);
-				expect(copy[1]).toBe(this.arr3[1]);
+				Arr.shallowCopyInto(arr2, copy);
+				expect(copy).toEqual(arr2);
+				expect(copy[1]).toBe(arr2[1]);
 				Arr.shallowCopyInto(null!, copy);
 				expect(copy).toEqual([]);
 			});
 		test("ShallowFill works like ShallowCopyInto but at a position",
 			() => {
 				const copy = [1, 2, 3, 4];
-				Arr.shallowFill(this.arr3, copy, 2);
+				Arr.shallowFill(arr3, copy as any, 2);
 				expect(copy).toEqual([1, 2, {a: 1}, {a: 2}]);
-				expect(copy[2]).toBe(this.arr3[0]);
+				expect(copy[2]).toBe(arr3[0]);
 				Arr.shallowFill([5, 6, 7, 8, 9], copy, 0);
 				expect(copy[4]).toBe(9);
 				Arr.shallowFill(null!, copy, 0);
@@ -351,13 +355,13 @@ describe("Arrays",
 			});
 		test("Slice does slice",
 			() => {
-				expect(Arr.slice(this.arr1, 1, 2)).toEqual([4, 7]);
-				expect(Arr.slice(this.arr1, 10, 2)).toEqual([]);
+				expect(Arr.slice(arr1, 1, 2)).toEqual([4, 7]);
+				expect(Arr.slice(arr1, 10, 2)).toEqual([]);
 				expect(Arr.slice(null!, 0, 2)).toEqual([]);
 
 				Test.Env.useNative = false;
-				expect(Arr.slice(this.arr1, 1, 2)).toEqual([4, 7]);
-				expect(Arr.slice(this.arr1, 10, 2)).toEqual([]);
+				expect(Arr.slice(arr1, 1, 2)).toEqual([4, 7]);
+				expect(Arr.slice(arr1, 10, 2)).toEqual([]);
 				expect(Arr.slice(null!, 0, 2)).toEqual([]);
 				Test.Env.useNative = undefined;
 			});
@@ -452,8 +456,8 @@ describe("Arrays",
 			() => {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
-				Arr.forSome(this.arr1 as number[], (el, i) => i > 1, (el, i) => arrEl.push(el));
-				Arr.forSome(this.arr1 as number[], (el, i) => i > 1, (el, i) => arri.push(i));
+				Arr.forSome(arr1 as number[], (el, i) => i > 1, (el, i) => arrEl.push(el));
+				Arr.forSome(arr1 as number[], (el, i) => i > 1, (el, i) => arri.push(i));
 				expect(arrEl).toEqual([7, 2]);
 				expect(arri).toEqual([2, 3]);
 				Arr.forSome(null! as number[], (el, i) => i > 1, (el, i) => arri.push(i));
@@ -465,12 +469,12 @@ describe("Arrays",
 				const arri = new Array<number>();
 				const arrEl2 = new Array<number>();
 				const arri2 = new Array<number>();
-				Arr.until(this.arr1 as number[], (el, i) => i >= 2, (el, i) => arrEl.push(el) );
-				Arr.until(this.arr1 as number[], (el, i) => i >= 2, (el, i) => arri.push(i) );
+				Arr.until(arr1 as number[], (el, i) => i >= 2, (el, i) => arrEl.push(el) );
+				Arr.until(arr1 as number[], (el, i) => i >= 2, (el, i) => arri.push(i) );
 				expect(arrEl).toEqual([1, 4]);
 				expect(arri).toEqual([0, 1]);
-				Arr.until(this.arr1 as number[], (el, i) => (arrEl2.push(el), i >= 2) );
-				Arr.until(this.arr1 as number[], (el, i) => (arri2.push(i), i >= 2) );
+				Arr.until(arr1 as number[], (el, i) => (arrEl2.push(el), i >= 2) );
+				Arr.until(arr1 as number[], (el, i) => (arri2.push(i), i >= 2) );
 				expect(arrEl2).toEqual([1, 4, 7]);
 				expect(arri2).toEqual([0, 1, 2]);
 				Arr.until(null! as number[], (el, i) => (arri2.push(i), i >= 2) );
@@ -483,15 +487,15 @@ describe("Arrays",
 				const arrEl2 = new Array<number>();
 				const arri2 = new Array<number>();
 				const arrEl3 = new Array<number>();
-				Arr.until(this.arr1 as number[], (el, i) => i >= 2, (el, i) => arrEl.push(el), 1 );
-				Arr.until(this.arr1 as number[], (el, i) => i >= 2, (el, i) => arri.push(i), 1 );
+				Arr.until(arr1 as number[], (el, i) => i >= 2, (el, i) => arrEl.push(el), 1 );
+				Arr.until(arr1 as number[], (el, i) => i >= 2, (el, i) => arri.push(i), 1 );
 				expect(arrEl).toEqual([4]);
 				expect(arri).toEqual([1]);
-				Arr.until(this.arr1 as number[], (el, i) => (arrEl2.push(el), i >= 2), 1 );
-				Arr.until(this.arr1 as number[], (el, i) => (arri2.push(i), i >= 2), 1 );
+				Arr.until(arr1 as number[], (el, i) => (arrEl2.push(el), i >= 2), 1 );
+				Arr.until(arr1 as number[], (el, i) => (arri2.push(i), i >= 2), 1 );
 				expect(arrEl2).toEqual([4, 7]);
 				expect(arri2).toEqual([1, 2]);
-				Arr.until(this.arr1 as number[], (el, i) => (arrEl3.push(el), i >= 2), 42);
+				Arr.until(arr1 as number[], (el, i) => (arrEl3.push(el), i >= 2), 42);
 				expect(arrEl3).toEqual([]);
 			});
 		test("ReverseUntil work like ReverseForEach where returning true breaks the loop",
@@ -500,12 +504,12 @@ describe("Arrays",
 				const arri = new Array<number>();
 				const arrEl2 = new Array<number>();
 				const arri2 = new Array<number>();
-				Arr.reverseUntil(this.arr1 as number[], (el, i) => i === 1, (el, i) => arrEl.push(el) );
-				Arr.reverseUntil(this.arr1 as number[], (el, i) => i === 1, (el, i) => arri.push(i) );
+				Arr.reverseUntil(arr1 as number[], (el, i) => i === 1, (el, i) => arrEl.push(el) );
+				Arr.reverseUntil(arr1 as number[], (el, i) => i === 1, (el, i) => arri.push(i) );
 				expect(arrEl).toEqual([2, 7]);
 				expect(arri).toEqual([3, 2]);
-				Arr.reverseUntil(this.arr1 as number[], (el, i) => (arrEl2.push(el), i === 1) );
-				Arr.reverseUntil(this.arr1 as number[], (el, i) => (arri2.push(i), i === 1) );
+				Arr.reverseUntil(arr1 as number[], (el, i) => (arrEl2.push(el), i === 1) );
+				Arr.reverseUntil(arr1 as number[], (el, i) => (arri2.push(i), i === 1) );
 				expect(arrEl2).toEqual([2, 7, 4]);
 				expect(arri2).toEqual([3, 2, 1]);
 				Arr.reverseUntil(null! as number[], (el, i) => (arri2.push(i), i === 1) );
@@ -552,7 +556,7 @@ describe("Arrays",
 			const arr = [1, 2, 3, 4];
 			expect(Arr.all(arr, (el) => el > 0)).toBe(true);
 			expect(Arr.all(arr, (el) => el < 4)).toBe(false);
-			expect(Arr.all(null!, (el) => el < 4)).toBe(true);
+			expect(Arr.all(null!, (el) => el as any < 4)).toBe(true);
 		});
 		test("Zip zips 2 arrays",
 		() => {
@@ -568,13 +572,13 @@ describe("Arrays",
 		});
 		test("pivot an array of int arrays and string arrays gives an array of int string arrays",
 		() => {
-			const org = [[1,2,3],["a", "b", "c"]];
+			const org = [[1, 2, 3], ["a", "b", "c"]];
 			let pivoted = Arr.pivot(org);
 			expect(pivoted[0][0]).toBe(1);
 			expect(pivoted[0][1]).toBe("a");
 			expect(pivoted.length).toBe(3);
 			expect(pivoted[0].length).toBe(2);
-			let original = Arr.pivot(pivoted) as (number[] | string[])[];
+			let original = Arr.pivot(pivoted) as Array<number[] | string[]>;
 			expect(original).toEqual(org);
 		});
 		test("Deserialize revives T[]",
