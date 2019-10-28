@@ -1,5 +1,5 @@
-import { clone, setProperties } from "./Obj";
-import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction } from "./Test";
+import { clone, setProperties, equals } from "./Obj";
+import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction, isObject, isNull } from "./Test";
 import { assert } from "./Util";
 
 export function flatten<T>(src: any[]): T[] {
@@ -577,4 +577,77 @@ export function deserialize<S, U>(array: any[], target: S[], ...types: Array<Con
 	} else {
 		deepCopyInto(array, target);
 	}
+}
+type Descriminator<T> = (el: T) => boolean;
+export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>): T[][] {
+	let i = -1;
+	const len = isNullOrUndefined(array) ? 0 : array.length;
+	const descLen = isNullOrUndefined(desciminators) ? 0 : desciminators.length;
+	let result: T[][] = create(descLen + 1, () => []);
+	while (++i < len) {
+		let j = -1;
+		let match = false;
+		while (++j < descLen && !match) {
+			if (desciminators[j](array[i])) {
+				result[j].push(array[i]);
+				match = true;
+			}
+		}
+		if (!match) {
+			result[j].push(array[i]);
+		}
+	}
+	return result;
+}
+export function split<T>(array: T[], isA: Descriminator<T>): [T[], T[]] {
+	return bucket(array, isA) as [T[], T[]];
+}
+export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[] {
+	let i = -1;
+	const len = isNullOrUndefined(array) ? 0 : array.length;
+	let result: T[] = [];
+	let lookup = Object.create(null) as Indexable<boolean>;
+	let nullFound = false;
+	let undefinedFound = false;
+	let objects: T[] = [];
+	let hasHashFn = !!hashFn;
+	if (len > 0) {
+		if (hasHashFn) {
+			while (++i < len) {
+				let el = array[i];
+				let key = hashFn!(el);
+				if (!lookup[key]) {
+					result.push(el);
+					lookup[key] = true;
+				}
+			}
+		} else {
+			while (++i < len) {
+				let el = array[i];
+				if (isNull(el)) {
+					if (!nullFound) {
+						result.push(el);
+						nullFound = true;
+					}
+				} else if (isUndefined(el)) {
+					if (!undefinedFound) {
+						result.push(el);
+						undefinedFound = true;
+					}
+				} else if (isObject(el)) {
+					if (!find<T>(objects, (obj) => equals(obj, el))) {
+						result.push(el);
+						objects.push(el);
+					}
+				} else {
+					let key = (el as unknown as Object).toString();
+					if (!lookup[key]) {
+						result.push(el);
+						lookup[key] = true;
+					}
+				}
+			}
+		}
+	}
+	return result;
 }

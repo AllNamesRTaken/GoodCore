@@ -126,10 +126,10 @@ class CookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> imple
 		return {...this._options.defaults, ...this.inflateNames(JSON.parse(this.unescape(recipe)) as Indexable<any> )} as T;
 	}
 	private escape(str: string): string {
-		return str.replace(/;/g, "¤s").replace(/=/, "¤e");
+		return str.replace(/;/g, "¤s").replace(/=/g, "¤e");
 	}
 	private unescape(str: string): string {
-		return str.replace(/¤s/g, ";").replace(/¤e/, "=");
+		return str.replace(/¤s/g, ";").replace(/¤e/g, "=");
 	}
 	private openJar() {
 		let local_recipe = localStorage.getItem(this._options.name);

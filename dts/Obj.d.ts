@@ -13,7 +13,7 @@ export function mixin(target: Indexable<any>, exclude: Indexable<any> | null, ..
 export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting?: boolean): void;
 export function forEach<T>(
     target: Indexable<T> | T[],
-    fn: (value: T, key: string | number) => boolean | void
+    fn: (value: T, key: string) => boolean | void
 ): void;
-export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
+export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string) => boolean | void, accumulator?: S): S;
 export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S;

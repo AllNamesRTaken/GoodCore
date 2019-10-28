@@ -64,3 +64,8 @@
     export function unzip<S, T, U = [S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
     export function pivot<S = any, T extends Array<S> = S[]>(arr: T[]): S[][];
     export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
+    type Descriminator<T> = (el: T) => boolean;
+    export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>): T[][];
+    export function split<T>(array: T[], isA: Descriminator<T>): [T[], T[]];
+    export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[];
+    

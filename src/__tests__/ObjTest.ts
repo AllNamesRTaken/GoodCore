@@ -41,15 +41,18 @@ describe("Obj",
 				expect(clone1.b).not.toBe(myObj.b);
 				let usedClone = false;
 				const cloneable = new Able();
-				proxyFn(cloneable, "clone", function (superfn) {
-					usedClone = true;
-					return superfn();
-				});
 				const clone2 = Obj.clone(cloneable);
 				expect(Obj.equals(clone2, cloneable)).toBe(true);
 				expect(clone2).not.toBe(cloneable);
 				expect(clone2.b).not.toBe(cloneable.b);
+
+				proxyFn(cloneable, "clone", function (superfn) {
+					usedClone = true;
+					return superfn();
+				});
+				const clone3 = Obj.clone(cloneable);
 				expect(usedClone).toBe(true);
+
 				let date1 = new Date();
 				let dateClone = Obj.clone(date1);
 				expect(Obj.equals(date1, dateClone)).toBe(true);
@@ -74,7 +77,7 @@ describe("Obj",
 				expect(arrTarget[0]).toBe(1);
 				expect((arrTarget[1] as any).a).toBe(4);
 			});
-		test("Equals compares values deep and ignores functions",
+		test("Equals compares values deep and only checks key name of functions",
 			() => {
 				let equals = false;
 				class Equalable {
@@ -88,7 +91,8 @@ describe("Obj",
 				expect(equals).toBe(true);
 				expect(Obj.equals({ a: 1, b: { c: 2 }, d: [3, 4, 5] }, { a: 1, b: { c: 2 }, d: [3, 4, 5] })).toBe(true);
 				expect(Obj.equals({ a: 1, b: { c: 2 }, d: [3, 4, 5] }, { a: 1, b: { c: 2 }, d: [3, 999, 5] })).toBe(false);
-				expect(Obj.equals({ a: 1, b: { c: 2 }, d: [3, 4, 5] }, { a: 1, b: { c: 2 }, d: [3, 4, 5], e() { } })).toBe(true);
+				expect(Obj.equals({ a: 1, b: { c: 2 }, d: [3, 4, 5], e() { }}, { a: 1, b: { c: 2 }, d: [3, 4, 5], e() { } })).toBe(true);
+				expect(Obj.equals({ a: 1, b: { c: 2 }, d: [3, 4, 5] }, { a: 1, b: { c: 2 }, d: [3, 4, 5], e() { } })).toBe(false);
 			});
 		test("IsDifferent checks differences deep",
 			() => {
@@ -215,7 +219,7 @@ describe("Obj",
 			() => {
 				const obj = [10, 20, 30, null];
 				let result: any = {};
-				Obj.forEach(obj, (value: any, key: string | number) => {
+				Obj.forEach(obj, (value: any, key: string) => {
 					if (value === null) { return false; }
 					(result as any)[key] = value;
 				});

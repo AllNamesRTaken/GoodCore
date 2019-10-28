@@ -600,4 +600,29 @@ describe("Arrays",
 			Arr.deserialize([{x:1, y:1}, {x:2, y:2}], list3, Vec2);
 			expect(JSON.stringify(list3)).toBe('[{"x":1,"y":1},{"x":2,"y":2}]');
 		});
+		test("Split array into buckets work",
+		() => {
+			let [a, b, c] = Arr.bucket([1,2,3,4,5], (el) => el % 3 === 0, (el) => el % 2 === 0);
+			expect(a).toEqual([3]);
+			expect(b).toEqual([2,4]);
+			expect(c).toEqual([1,5]);
+		});
+		test("Split() splits into 2 buckets",
+		() => {
+			let [a, b] = Arr.split([1,2,3,4,5], (el) => el % 2 === 1);
+			expect(a).toEqual([1,3,5]);
+			expect(b).toEqual([2,4]);
+		});
+		test("distinct() without hash removes duplicates",
+		() => {
+			expect(Arr.disinct([1,2,3,2,1,5])).toEqual([1,2,3,5]);
+			expect(Arr.disinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}]))
+			.toEqual([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2}, {a:2, b:null}]);
+		});
+		test("distinct() with hash removes duplicates",
+		() => {
+			expect(Arr.disinct([1,2,3,2,1,5], (el) => el > 3 ? "3" : el.toString())).toEqual([1,2,3]);
+			expect(Arr.disinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}], (el) => el.a.toString()))
+			.toEqual([{a:2, b:[1,2]}, {a:3, b:[1,2]}]);
+		});
 });

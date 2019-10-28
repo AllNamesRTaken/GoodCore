@@ -26,35 +26,38 @@ export function init(win: Window) {
 	DomState._el = DomState._document.createElement("div");
 }
 export function create<T extends HTMLElement>(html: string, attr?: Indexable<any>): T {
-	// tslint:disable-next-line:prefer-const
-	let result: HTMLElement, keys: string[], i: number, k: number, styles: any, styleKeys: string[];
-	let usesTemplate = DomState._template && DomState._template!.content && true;
-	let usesParser = DomState._parser && true;
+	let result: T;
+	result = fromHTML<T>(html)[0];
+	setAttr(result!, attr);
+	return result;
+}
+export function fromHTML<T extends HTMLElement>(html: string): T[] {
+	let result: T[];
+	let usesTemplate = !!(DomState._template && DomState._template!.content);
+	let usesParser = !!(DomState._parser);
 	html = html.trim();
 	if (/^[a-zA-Z]+$/.test(html)) {
-		result = Global.window!.document.createElement(html);
+		result = [Global.window!.document.createElement(html) as T];
 	} else {
 		if (usesTemplate) {
 			let template = DomState._template!;
 			template.innerHTML = html;
 			assert(!!template.content.firstChild, "Dom.create was unable to parse html");
-			result = template.content.firstChild! as HTMLElement;
+			result = toArray(template.content.children!) as T[];
 			clear(template.content);
 		} else if (usesParser) {
 			let parser = DomState._parser!;
 			let doc = parser.parseFromString(html, "text/html");
 			assert(!!doc.body.firstChild, "Dom.create was unable to parse html");
-			result = doc.body.firstChild! as HTMLElement;
+			result = toArray(doc.body.children!) as T[];
 		} else {
 			DomState._el!.innerHTML = html;
 			assert(!!DomState._el!.firstChild, "Dom.create was unable to parse html");			
-			result = DomState._el!.firstChild! as HTMLElement;
+			result = toArray(DomState._el!.children!) as T[];
 			clear(DomState._el!);
 		}
 	}
-	setAttr(result!, attr);
-	//unsafe cast
-	return result! as T;
+	return result;
 }
 export function resolve(target: HTMLElement | string, root?: HTMLElement): HTMLElement | null {
 	let result = 
@@ -67,7 +70,7 @@ export function resolve(target: HTMLElement | string, root?: HTMLElement): HTMLE
 }
 export function resolveAll(target: HTMLElement | HTMLElement[] | string, root?: HTMLElement): HTMLElement[] {
 	let result = 
-		isString(target)?
+		isString(target) ?
 			(root && root !== (DomState._document as any) && is(target as string, root!) ?
 				[root].concat(findAll(target as string, root)) :
 				findAll(target as string, root)) :
@@ -84,7 +87,7 @@ export function contains(target: HTMLElement | HTMLElement[] | string, root?: No
 			if (!includeRoot) {
 				cur = cur.parentNode;
 			}
-			while(cur !== rootNode && cur !== null) {
+			while (cur !== rootNode && cur !== null) {
 				cur = cur.parentNode!;
 			}
 		}
