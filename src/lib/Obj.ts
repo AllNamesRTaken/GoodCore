@@ -98,7 +98,7 @@ export function clone<T>(obj: T): T {
 	let result: T;
 	if (!(obj instanceof Object)) {
 		result = obj;
-	} else if (obj.constructor.prototype.clone !== undefined) {
+	} else if ((obj as Object).constructor.prototype.clone !== undefined) {
 		//Cloneable
 		result = ((obj as any) as ICloneable<T>).clone();
 	} else if (isArray(obj)) {
@@ -256,11 +256,11 @@ export function transform<T extends {[index: string]: any}, S = T, U = any>(
 	});
 	return accumulator!;
 }
-export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S {
-	function changes<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S {
+export function difference<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): S {
+	function changes<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): S {
 		return transform(target, function(result, value: any, key: string) {
 			if (isDifferent(value, base[key])) {
-				result[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
+				(result as Indexable<any>)[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
 			}
 		});
 	}
