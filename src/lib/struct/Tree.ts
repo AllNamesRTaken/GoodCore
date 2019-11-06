@@ -20,9 +20,14 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 
 	public static fromObject<T>(obj: Indexable<any>): Tree<T> {
 		const parent: Tree<T> | null = (this instanceof Tree) ? this : null;
-		const root = new Tree<T>(obj.id).init({ data: obj.data, parent, isDirty: true });
+		const root = new Tree<T>(obj.id as any).init({ data: obj.data as any, parent, isDirty: true });
 		if (obj.children !== undefined && isArray(obj.children)) {
-			root.children = new List<Tree<T>>(map<any, Tree<T>>(obj.children as Array<Tree<T>>, Tree.fromObject.bind(root)));
+			root.children = new List<Tree<T>>(
+				map<any, Tree<T>>(
+					obj.children as Array<Tree<T>>, 
+					Tree.fromObject.bind(root) as (el: any, i: number) => Tree<T>
+				)
+			);
 		}
 		return root;
 	}
@@ -40,8 +45,8 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		// create map
 		let mapResolver = (key: string) => {
 			return !mapcfg || typeof ((mapcfg as any)[key]) === "undefined" ?
-				(key === "id" ? newUUID() : (el: S) => (el as any)[key]) :
-				typeof ((mapcfg as any)[key]) === "string" ? (el: S) => (el as any)[(mapcfg as any)[key]] :
+				(key === "id" ? newUUID() : (el: S) => (el as unknown as Indexable<any>)[key] as any) :
+				typeof ((mapcfg as any)[key]) === "string" ? (el: S) => (el  as unknown as Indexable<any>)[(mapcfg as any)[key]] as any :
 					(mapcfg as any)[key];
 		};
 		let map = {
@@ -132,7 +137,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		}
 	}
 	protected create<S = T>(id?: string | number): this {
-		return new ((this as any).constructor)(id);
+		return new ((this as Tree<T>).constructor as Constructor<Tree<T>>)(id) as this;
 	}
 	public init(obj: Partial<Tree<T>>, mapping?: any): this {
 		setProperties(this, obj);
@@ -232,7 +237,14 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 	public reduce<S>(fn?: (acc: S, cur: this | null) => S, start?: S): S {
 		const stack = new Stack<this>();
 		let acc: S = (start || ([] as any[])) as any;
-		if (!fn) { fn = (acc, cur) => ((acc as any).push({ id: cur!.id, parent: cur!.parent ? cur!.parent!.id : null, data: cur!.data }), acc); }
+		if (!fn) { 
+			fn = (acc, cur) => 
+				((acc as unknown as any[]).push({ 
+					id: cur!.id, 
+					parent: cur!.parent ? cur!.parent!.id : null, 
+					data: cur!.data 
+				}), acc); 
+		}
 		let cur: this | undefined;
 		let i: number;
 		stack.push(this);

@@ -1,44 +1,46 @@
 type Constructor<T> = new (...args: any[]) => T;
-type ICtor<T> = { new(...args: any[]): T; };
-type Omit<T, K extends keyof any> = Pick<T, Exclude<keyof T, K>>;
+type ICtor<T> = new(...args: any[]) => T;
+// tslint:disable-next-line:max-line-length
 type Diff<T extends string | number | symbol, U extends string | number | symbol> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T];
 type PickKeysOfType<T, KT> = ({ [P in keyof T]: T[P] extends KT ? P : never })[keyof T];
 type PickType<T, KT> = Pick<T, PickKeysOfType<T, KT>>;
-type PickFunctions<T> = PickType<T, Function>;
+type PickFunctions<T> = PickType<T, () => any>;
 type ExcludeType<T, KT> = Omit<T, PickKeysOfType<T, KT>>;
-type ExcludeFunctions<T> = ExcludeType<T, Function>;
+type ExcludeFunctions<T> = ExcludeType<T, () => any>;
 
+// tslint:disable-next-line:interface-name
 interface Indexable<T> {
-	[key: string]: T;
+    [key: string]: T;
 }
 interface IObject extends Indexable<any> {}
 interface IInstance<T> extends IObject {
-	constructor?: ICtor<T>;
+    // tslint:disable-next-line:no-reserved-keywords
+    constructor?: ICtor<T>;
 }
-type ArgTypes<T> = T extends (...a:infer A) => unknown ? A : [];
+type ArgTypes<T> = T extends (...a: infer A) => unknown ? A : [];
 type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
 interface IPool<T extends IPoolable> {
-	get(): T;
-	release(obj: T): void;
+    get(): T;
+    release(obj: T): void;
 }
 interface IPoolable {
-	__pool__: IPool<IPoolable>;
-	release(): void;
-	initPool(pool: IPool<IPoolable>): void;
+    __pool__: IPool<IPoolable>;
+    release(): void;
+    initPool(pool: IPool<IPoolable>): void;
 }
 interface ICloneable<T> {
-	clone(): T;
+    clone(): T;
 }
 interface IInitable {
-	init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this;
+    init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this;
 }
 type TInitable<T> = T & IInitable;
 interface ISerializable<T> {
     toJSON(): any;
-    serialize(): T
+    serialize(): T;
 }
 interface IDeserializable<T> {
-	deserialize(data: any, ...types: Array<Constructor<any>>): T;
+    deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
 interface IRevivable<T> {
     revive(data: any, ...types: Array<Constructor<any>>): T;
@@ -103,7 +105,7 @@ interface IList<T> extends IBasicList<T> {
     subtract(b: IList<T>): IList<T>;
     zip<U, V>(list: IList<U>, fn: (t: T, u: U) => V): IList<V>;
     unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
-    flatten<U>(maxDepth?: number): IList<U>
+    flatten<U>(maxDepth?: number): IList<U>;
 }
 interface ITreeNode<T> {
     id: string;
@@ -143,6 +145,7 @@ declare class Vec2 implements IVec2 {
     readonly isZero: boolean;
     constructor(x?: number, y?: number);
     protected create(x?: number, y?: number): Vec2;
+    // tslint:disable-next-line:no-reserved-keywords
     set(src: IVec2): Vec2;
     copy(src: IVec2): Vec2;
     clone(out?: Vec2): Vec2;
@@ -182,6 +185,7 @@ declare class Range2 implements IRange2 {
     readonly isZero: boolean;
     constructor(x?: number, y?: number, w?: number, h?: number);
     protected create(x?: number, y?: number, w?: number, h?: number): Range2;
+    // tslint:disable-next-line:no-reserved-keywords
     set(src: IRange2): Range2;
     copy(src: IRange2): Range2;
     clone(out?: Range2): Range2;
@@ -207,6 +211,7 @@ declare class Rect implements IRect {
     readonly isZero: boolean;
     constructor(x1?: number, y1?: number, x2?: number, y2?: number, endInclusive?: boolean);
     protected create(x1?: number, y1?: number, x2?: number, y2?: number, endInclusive?: boolean): Rect;
+    // tslint:disable-next-line:no-reserved-keywords
     set(src: IRect): Rect;
     copy(src: IRect): Rect;
     clone(out?: Rect): Rect;
@@ -230,9 +235,11 @@ declare class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T
     next(value?: any): IteratorResult<T>;
     protected create<S = T>(arr?: S[] | List<S>): List<S>;
     readonly values: T[];
+    // tslint:disable-next-line:no-reserved-keywords
     get(pos: number): T | undefined;
     read(pos: number): T | undefined;
     getByIndex(key: number | string): T | undefined;
+    // tslint:disable-next-line:no-reserved-keywords
     set(pos: number, v: T): List<T>;
     write(pos: number, v: T): List<T>;
     readonly count: number;
@@ -244,7 +251,7 @@ declare class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T
     push(v: T): number;
     pop(): T | undefined;
     shift(): T | undefined;
-    truncate(size?: number): List<T>
+    truncate(size?: number): List<T>;
     fill(size: number, populator: ((i: number) => T) | T): List<T>;
     splice(pos?: number, remove?: number, insert?: T[] | IList<T>): List<T>;
     concat(v: T[] | List<T>): List<T>;
@@ -308,6 +315,7 @@ declare class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IReviv
     next(value?: any): IteratorResult<T>;
     protected create<S = T>(comparer?: (a: S, b: S) => number, arr?: S[] | List<S> | SortedList<S>): SortedList<S>;
     readonly values: T[];
+    // tslint:disable-next-line:no-reserved-keywords
     get(pos: number): T | undefined;
     read(pos: number): T | undefined;
     readonly count: number;
@@ -320,7 +328,7 @@ declare class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IReviv
     shift(): T | undefined;
     bulkAdd(v: T[] | List<T> | SortedList<T>): SortedList<T>;
     copy(src: SortedList<T> | List<T> | T[]): SortedList<T>;
-    truncate(size?: number): List<T>
+    truncate(size?: number): List<T>;
     fill(size: number, populator: ((i: number) => T) | T): List<T>;
     clone(): SortedList<T>;
     remove(v: T): SortedList<T>;
@@ -331,8 +339,7 @@ declare class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IReviv
     until(fnOrTest: (el: T, i: number) => boolean, startIndex?: number): SortedList<T>;
     until(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): SortedList<T>;
     reverseForEach(fn: (el: T, i: number) => any): SortedList<T>;
-    reverseUntil(fnOrTest: (el: T, i: number) => boolean): SortedList<T>;
-    reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): SortedList<T>;
+    reverseUntil(fnOrTest: (el: T, i: number) => boolean, fn?: (el: T, i: number) => void): SortedList<T>;
     some(fn: (el: T) => boolean): boolean;
     all(fn: (el: T) => boolean): boolean;
     getInsertIndex(v: T): number;
@@ -368,8 +375,11 @@ declare class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictio
     protected create<S = T>(): Dictionary<S>;
     has(key: number | string): boolean;
     contains(key: number | string): boolean;
+    // tslint:disable-next-line:no-reserved-keywords
     get(key: number | string): T | undefined;
+    // tslint:disable-next-line:no-reserved-keywords
     set(key: number | string, value: T): Dictionary<T>;
+    // tslint:disable-next-line:no-reserved-keywords
     delete(key: number | string): Dictionary<T>;
     clear(): Dictionary<T>;
     readonly values: T[];
@@ -429,7 +439,7 @@ declare class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInita
         id?: ((node: S) => string) | string;
         parent?: ((node: S) => string) | string;
         data?: ((node: S) => any) | string;
-    }, virtualRoot?: boolean): Tree<T>;
+    },                        virtualRoot?: boolean): Tree<T>;
     constructor(id?: string | number);
     protected create<S = T>(...args: any[]): Tree<S>;
     protected markAsDirty(): void;
@@ -438,6 +448,7 @@ declare class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInita
     /**
      * @deprecated Since version 1.9.2. Will be deleted in version 2.0. Use aggregate instead.
      */
+    // tslint:disable-next-line:max-line-length
     public collect<S = any>(fn: (cur: this, i: number, collected: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
     public init(obj: Partial<this>, mapping?: any): this;
     public insertAt(pos: number, data: T, id?: string | number): void;
@@ -467,14 +478,15 @@ declare class IndexedTree<T> extends Tree<T> {
     static fromNodeList<S, T>(nodes: S[], mapcfg?: {
         id?: ((node: S) => string | number) | string | number,
         parent?: ((node: S) => string | number) | string | number,
-        data?: ((node: S) => any) | string
-    }, virtualRoot?: boolean): Tree<T>;
+        data?: ((node: S) => any) | string,
+    },                        virtualRoot?: boolean): Tree<T>;
     constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Dictionary<Tree<T>>);
     protected create<S = T>(...args: any[]): Tree<S>;
     insertAt(pos: number, data: T, id?: string | number, updateIndex?: boolean): void;
     addTo(parentId: string | number, data: T | this, id?: string | number, updateIndex?: boolean): this | undefined;
     add(data: T | this, id?: string | number, updateIndex?: boolean): this;
-    contains(node: this | string | number): boolean
+    contains(node: this | string | number): boolean;
+    // tslint:disable-next-line:no-reserved-keywords
     get(id: string | number): this | undefined;
     lookup(id: string | number): this | undefined;
     cut(): this;
@@ -485,18 +497,19 @@ declare class IndexedTree<T> extends Tree<T> {
 }
 
 declare interface ICookieMonsterOptions<T extends Indexable<any>> {
-    name: string,
+    name: string;
     defaults: T;
     retainTime: string;
     path: string;
     localStorage: boolean;
+    session: boolean;
 }
 declare interface ICookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> {
-    setCookie<S extends K>(key: S, value: T[S]): void,
-    getCookie<S extends K>(key: S): T[S],
-    eatCookie(key: K): void,
+    setCookie<S extends K>(key: S, value: T[S]): void;
+    getCookie<S extends K>(key: S): T[S];
+    eatCookie(key: K): void;
     removeCookies(): void;
-}	
+}    
 
 declare namespace Cookie {
     export function getCookie(key: string): string;
@@ -533,10 +546,11 @@ declare namespace Dom {
     export function resolveAll(target: HTMLElement | HTMLElement[] | string, root?: HTMLElement): HTMLElement[];
     export function contains(target: HTMLElement | HTMLElement[] | string, root?: Node, includeRoot?: boolean): boolean;
     export function outerHTML(el: HTMLElement): string;
-    export function setAttr(_el: HTMLElement | Node | String, attr: any): void;
+    export function setAttr(_el: HTMLElement | Node | string, attr: any): void;
     export function remove(element: Element | Node): Element | Node | null;
     export function replace(src: HTMLElement, target: HTMLElement): HTMLElement;
     export function clear(element: Element | Node): void;
+    // tslint:disable-next-line:no-reserved-keywords
     export function get<T extends HTMLElement>(id: string): T | null;
     export function byId<T extends HTMLElement>(id: string): T | null;
     export function find<T extends HTMLElement>(selector: string, root?: Element): T | null;
@@ -561,13 +575,13 @@ declare namespace Arr {
     export function reverse<T>(array: T[]): T[];
     export function concat(...arrs: any[]): any[];
     export function slice<T>(src: T[], pos?: number, count?: number): T[];
-    export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void
+    export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void;
     export function append<T>(arr: T[], values: T[]): void;
     export function removeAt<T>(arr: T[], index: number): T | undefined;
     export function indexOfElement(src: any[], el: any): number;
     export function remove(arr: any[], el: any): void;
-    export function indexOf(src: any[], fn: (el: any) => boolean): number;
-    export function find<T>(src: T[], fn: (el: any) => boolean): T | undefined;
+    export function indexOf<T>(src: any[], fn: (el: T) => boolean): number;
+    export function find<T>(src: T[], fn: (el: T) => boolean): T | undefined;
     export function removeOneByFn<T>(arr: T[], fn: (el: T) => boolean): void;
     export function shallowCopy<T>(src: T[]): T[];
     export function shallowCopyInto<T>(src: T[], target: T[]): void;
@@ -585,7 +599,7 @@ declare namespace Arr {
     export function reverseReduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U): U;
     export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, test: (acc: U, cur: T) => boolean, start: U): U;
     export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex?: number): void;
-    export function forEachAsync<T>(array: T[], fn: (el: T, i: number) => PromiseLike<any>, inParallel?: boolean): Promise<void>
+    export function forEachAsync<T>(array: T[], fn: (el: T, i: number) => PromiseLike<any>, inParallel?: boolean): Promise<void>;
     export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void;
     export function until<T>(src: T[], fnOrTest: (el: T, i: number) => void, startIndex?: number): void;
     export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void, startIndex?: number): void;
@@ -598,81 +612,80 @@ declare namespace Arr {
     export function binarySearch<T>(src: T[], cmp: (el: T) => number, closest?: boolean): number;
     export function create<T>(length: number, populator: (i: number, arr: T[]) => T): T[];
     type zipFn<S, T, U, V = undefined, W = undefined> = (i: number, a: S, b: T, c?: V, d?: W) => U;
-    export function zip<S, T, U =[S, T], V = undefined, W = undefined>(
+    export function zip<S, T, U = [S, T], V = undefined, W = undefined>(
         a: S[],
         b: T[],
         fn?: zipFn<S, T, U, V, W>,
         c?: undefined,
         d?: undefined,
     ): U[];
-    export function zip<S, T, V, U =[S, T, V], W = undefined>(
+    export function zip<S, T, V, U = [S, T, V], W = undefined>(
         a: S[],
         b: T[],
         c: V[],
         fn?: zipFn<S, T, U, V, W>,
         d?: undefined,
     ): U[];
-    export function zip<S, T, V, W, U =[S, T, V, W]>(
+    export function zip<S, T, V, W, U = [S, T, V, W]>(
         a: S[],
         b: T[],
         c: V[],
         d: W[],
         fn?: zipFn<S, T, U, V, W>,
     ): U[];
-    export function unzip<S, T, U =[S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
-    export function pivot<S = any, T extends Array<S> = S[]>(arr: T[]): S[][];
+    export function unzip<S, T, U = [S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
+    export function pivot<S = any, T extends S[] = S[]>(arr: T[]): S[][];
     export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
 }
 
 declare namespace Obj {
-    export function destroy(obj: any): void;
-    export function wipe(obj: any): void;
-    export function setNull(obj: any): void;
-    export function isClassOf(a: any, b: any): boolean;
-    export function isSameClass(a: any, b: any): boolean;
-    export function inherits(a: any, b: any): boolean;
+    export function destroy(obj: Object): void;
+    export function wipe(obj: Object): void;
+    export function setNull(obj: Object): void;
+    export function isClassOf(a: Object, b: Object): boolean;
+    export function isSameClass(a: Object, b: Object): boolean;
+    export function inherits(a: Object, b: Object): boolean;
     export function equals(a: any, b: any): boolean;
     export function isDifferent(a: any, b: any): boolean;
-    export function shallowCopy(obj: any): any;
+    export function shallowCopy<T, K extends keyof T>(obj: T): {[P in K]: T[P]};
     export function clone<T>(obj: T): T;
     export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
-    export function mixin(target: any, exclude: any, ...sources: any[]): any;
+    export function mixin(target: Indexable<any>, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): Indexable<any>;
     export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting?: boolean): void;
     export function forEach<T>(
         target: Indexable<T> | T[],
-        fn: (value: T, key: string | number) => boolean | void
+        fn: (value: T, key: string | number) => boolean | void,
     ): void;
-    export function transform<T extends { [index: string]: any }, S = T, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
-    export function difference<T extends { [index: string]: any }, S extends { [index: string]: any } = T>(target: T, base: S): S;
+    // tslint:disable-next-line:max-line-length
+    export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | U[], fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
+    export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S;
 }
 declare interface IObjectWithFunctions<T extends Object | void> {
     [key: string]: (...args: any[]) => T;
 }
 
 interface IDebounceOptions {
-	leading: boolean;
+    leading: boolean;
 }
 //@ts-ignore TS2304
 type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ? 
-	PromiseLike<S> : 
-	T extends (...a: unknown[]) => infer R ? 
-		U extends { leading: true } ?
-			R : 
-			PromiseLike<R>
-		: never;
+    PromiseLike<S> : 
+    T extends (...a: unknown[]) => infer R ? 
+        U extends { leading: true } ?
+            R : 
+            PromiseLike<R>
+        : never;
 //@ts-ignore TS2304
 interface IDebouncedFunction<T, U> {
-	(...args: ArgTypes<T>): DebounceResultType<T, U>;
+    (...args: ArgTypes<T>): DebounceResultType<T, U>;
     //@ts-ignore TS2304
-	resetTimer?(): void;
+    resetTimer?(): void;
 }
 interface IThrottleOptions {
-	leading: boolean;
-	trailing: boolean;
+    leading: boolean;
+    trailing: boolean;
 }
-interface IThrottledFunction<T> {
-	(...args: ArgTypes<T>): ResultType<T>;
-}
+type IThrottledFunction<T> = (...args: ArgTypes<T>) => ResultType<T>;
 declare namespace Util {
     export class LoggableCounter {
         public name: string;
@@ -696,10 +709,11 @@ declare namespace Util {
         log?: ((...args: any[]) => void) | null,
         warn?: ((...args: any[]) => void) | null,
         error?: ((...args: any[]) => void) | null,
-        catchDefault?: boolean | {log?: boolean, warn?: boolean, error: boolean}
+        catchDefault?: boolean | {log?: boolean, warn?: boolean, error: boolean},
     ): void;
     export class AssertError extends Error { }
     export function assert(assertion: boolean, message?: string, noThrow?: boolean): boolean;
+    // tslint:disable-next-line:max-line-length
     export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(objOrClass: U, fnName: string, proxyFn: (originalFn: (...args: any[]) => S | V, ...args: any[]) => void): void;
     export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void;
     export function toArray<T>(arr: ArrayLike<T>): T[];
@@ -712,7 +726,7 @@ declare namespace Util {
     export function throttle<T extends (...args: any[]) => any>(
         method: T,
         duration?: number,
-        options?: Partial<IThrottleOptions>
+        options?: Partial<IThrottleOptions>,
     ): IThrottledFunction<T>;
 }
 declare namespace Test {
@@ -771,13 +785,14 @@ declare class Uri {
     init(): void;
 }
 
-export function Poolable<S>(_constructor?: ICtor<S>): ICtor<S & IPoolable>
-export function Initable<S>(_constructor?: ICtor<S>): ICtor<S & IInitable>
+declare function Poolable<S>(_constructor?: ICtor<S>): ICtor<S & IPoolable>;
+declare function Initable<S>(_constructor?: ICtor<S>): ICtor<S & IInitable>;
 
 declare class Pool<T> {
     readonly available: number;
     readonly size: number;
     constructor(cls: ICtor<T>, growthStep?: number);
+    // tslint:disable-next-line:no-reserved-keywords
     get(): T & IPoolable;
     release(obj: T): void;
 }
@@ -803,14 +818,18 @@ declare class KeyValuePair<S, T> {
 }
 
 declare namespace Decorators {
+    // tslint:disable-next-line:max-line-length
     export function debounced<S>(duration: number | undefined, options?: Partial<IDebounceOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
         configurable: boolean;
         enumerable: boolean | undefined;
+        // tslint:disable-next-line:no-reserved-keywords
         get: () => any;
     };
+    // tslint:disable-next-line:max-line-length
     export function throttled<S>(duration?: number, options?: Partial<IThrottleOptions>): <S>(target: S, key: string, descriptor: PropertyDescriptor) => {
         configurable: boolean;
         enumerable: boolean | undefined;
+        // tslint:disable-next-line:no-reserved-keywords
         get: () => any;
     };
     export function once<S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
@@ -818,14 +837,21 @@ declare namespace Decorators {
         (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
     export function asserts<S>(assertFn: Function, result?: any):
         (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+    // tslint:disable-next-line:max-line-length
     export function before<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+    // tslint:disable-next-line:max-line-length
     export function after<S>(decoration: (name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+    // tslint:disable-next-line:max-line-length
     export function around<S>(decoration: (callback: Function, name: string, ...args: any[]) => void): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+    // tslint:disable-next-line:max-line-length
     export function provided<S>(condition: (name: string, ...args: any[]) => boolean): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
     export let async: {
         <S>(target: S, propertyKey: string, descriptor: PropertyDescriptor): PropertyDescriptor;
+        // tslint:disable-next-line:max-line-length
         before?<S>(decoration: (name: string, ...args: any[]) => Promise<any>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+        // tslint:disable-next-line:max-line-length
         after?<S>(decoration: (name: string, ...args: any[]) => Promise<any>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
+        // tslint:disable-next-line:max-line-length
         provided?<S>(async_predicate: (...args: any[]) => Promise<boolean>): (target: S, propertyKey: string, descriptor: PropertyDescriptor) => PropertyDescriptor;
     };
 }

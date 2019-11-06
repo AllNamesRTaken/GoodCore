@@ -22,16 +22,23 @@ describe("Obj",
 
 			}
 		}
+		let myObj: {
+			a: number;
+			b: {
+				c: number;
+			};
+			d: number[];
+		}; 
 		beforeAll(
 			() => {
-				this.obj1 = { a: 1, b: { c: 2 }, d: [3, 4, 5] };
+				myObj = { a: 1, b: { c: 2 }, d: [3, 4, 5] };
 			});
 		test("Clone clones POJOs as well as uses the Clone fn on Classes with Clone()",
 			() => {
-				const clone1 = Obj.clone(this.obj1);
-				expect(clone1).toEqual(this.obj1);
-				expect(clone1).not.toBe(this.obj1);
-				expect(clone1.b).not.toBe(this.obj1.b);
+				const clone1 = Obj.clone(myObj);
+				expect(clone1).toEqual(myObj);
+				expect(clone1).not.toBe(myObj);
+				expect(clone1.b).not.toBe(myObj.b);
 				let usedClone = false;
 				const cloneable = new Able();
 				proxyFn(cloneable, "clone", function (superfn) {
@@ -54,18 +61,18 @@ describe("Obj",
 			});
 		test("CloneInto clones and reuses same values",
 			() => {
-				const target: any = {};
-				Obj.cloneInto(this.obj1, target);
-				expect(target).toEqual(this.obj1);
-				const part = target.b;
-				target.a = 2;
-				Obj.cloneInto(this.obj1, target);
-				expect(target.a).toBe(this.obj1.a);
-				expect(target.b).toBe(part);
+				const target = {};
+				Obj.cloneInto(myObj, target);
+				expect(target).toEqual(myObj);
+				const part = (target as any).b as any;
+				(target as any).a = 2;
+				Obj.cloneInto(myObj, target);
+				expect((target as any).a).toBe(myObj.a);
+				expect((target as any).b).toBe(part);
 				let arrTarget: any[] = [5, { a: 7 }];
 				Obj.cloneInto([1, { a: 4 }], arrTarget);
 				expect(arrTarget[0]).toBe(1);
-				expect(arrTarget[1].a).toBe(4);
+				expect((arrTarget[1] as any).a).toBe(4);
 			});
 		test("Equals compares values deep and ignores functions",
 			() => {
@@ -116,8 +123,8 @@ describe("Obj",
 			});
 		test("Mixin overwrites target",
 			() => {
-				expect(Obj.mixin({ foo: "bar", a: 10 }, null, this.obj1)).toEqual({ foo: "bar", a: 1, b: { c: 2 }, d: [3, 4, 5] });
-				expect(Obj.mixin({ foo: "bar", a: 10 }, { a: true }, this.obj1)).toEqual({ foo: "bar", a: 10, b: { c: 2 }, d: [3, 4, 5] });
+				expect(Obj.mixin({ foo: "bar", a: 10 }, null, myObj)).toEqual({ foo: "bar", a: 1, b: { c: 2 }, d: [3, 4, 5] });
+				expect(Obj.mixin({ foo: "bar", a: 10 }, { a: true }, myObj)).toEqual({ foo: "bar", a: 10, b: { c: 2 }, d: [3, 4, 5] });
 			});
 		test("Mixin handles functions",
 			() => {
@@ -155,9 +162,9 @@ describe("Obj",
 			() => {
 				const obj = { a: 0, b: 0 };
 				const obj2 = { c: 6, d: 5 };
-				Obj.setProperties(obj, this.obj1 as any);
+				Obj.setProperties(obj, myObj as any);
 				expect(obj).toEqual({ a: 1, b: { c: 2 }, d: [3, 4, 5] });
-				expect(obj.b).toBe(this.obj1.b);
+				expect(obj.b).toBe(myObj.b);
 				Obj.setProperties(obj, obj2, { c: "a", d: "b" });
 				expect(obj).toEqual({ a: 6, b: 5, d: [3, 4, 5] });
 				const obj3 = {a: 1};
@@ -168,9 +175,9 @@ describe("Obj",
 			() => {
 				const obj = { a: 0, b: 0 };
 				const obj2 = { c: 6, d: 5 };
-				Obj.setProperties(obj, this.obj1 as any, undefined, true);
+				Obj.setProperties(obj, myObj as any, undefined, true);
 				expect(obj).toEqual({ a: 1, b: { c: 2 } });
-				expect(obj.b).toBe(this.obj1.b);
+				expect(obj.b).toBe(myObj.b);
 				Obj.setProperties(obj, obj2, { c: "a", d: "b" }, true);
 				expect(obj).toEqual({ a: 6, b: 5 });
 				const obj3 = {a: 1};
@@ -185,10 +192,10 @@ describe("Obj",
 			});
 		test("ShallowCopy copys by ref",
 			() => {
-				const copy = Obj.shallowCopy(this.obj1);
-				expect(copy).toEqual(this.obj1);
-				expect(copy).not.toBe(this.obj1);
-				expect(copy.b).toBe(this.obj1.b);
+				const copy = Obj.shallowCopy(myObj);
+				expect(copy).toEqual(myObj);
+				expect(copy).not.toBe(myObj);
+				expect(copy.b).toBe(myObj.b);
 			});
 		test("forEach loops over all keys",
 			() => {
@@ -210,12 +217,12 @@ describe("Obj",
 				let result: any = {};
 				Obj.forEach(obj, (value: any, key: string | number) => {
 					if (value === null) { return false; }
-					result[key] = value;
+					(result as any)[key] = value;
 				});
-				expect(result["0"]).toBe(10);
-				expect(result["1"]).toBe(20);
-				expect(result["2"]).toBe(30);
-				expect((result["3"] === undefined)).toBe(true);
+				expect((result as any)["0"]).toBe(10);
+				expect((result as any)["1"]).toBe(20);
+				expect((result as any)["2"]).toBe(30);
+				expect(((result as any)["3"] === undefined)).toBe(true);
 
 			});
 		test("Transform returns object with correct prototype and properties",
@@ -226,16 +233,16 @@ describe("Obj",
 					public c = "string";
 				}
 				const iteratee = new Iter();
-				let result = Obj.transform<Indexable<any>>(iteratee, (result: any, value: any, key: string) => {
-					result[key] = !isNaN(parseInt(value, 10)) ? parseInt(value, 10) : value;
+				let result = Obj.transform<Indexable<any>>(iteratee, (result: Indexable<any>, value: any, key: string) => {
+					result[key] = !isNaN(parseInt(value as string, 10)) ? parseInt(value as string, 10) : value;
 				});
 				expect(result.a).toBe(1);
 				expect(result.b).toBe(2);
 				expect(result.c).toBe("string");
 				expect(Obj.isSameClass(result, iteratee)).toBe(true);
 
-				let result2 = Obj.transform(iteratee, (result: any, value: any, key: string) => {
-					result[key] = !isNaN(parseInt(value, 10)) ? parseInt(value, 10) : value;
+				let result2 = Obj.transform(iteratee, (result: Indexable<any>, value: any, key: string) => {
+					result[key] = !isNaN(parseInt(value as string, 10)) ? parseInt(value as string, 10) : value;
 				}, {});
 				expect(result2.a).toBe(1);
 				expect(result2.b).toBe(2);

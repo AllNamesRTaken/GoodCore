@@ -141,12 +141,18 @@ export class IndexedTree<T> extends Tree<T> {
 		return root;
 	}
 
-	public static fromObject<T>(obj: any, indexer?: (node: IndexedTree<T>) => string | number): Tree<T> {
+	public static fromObject<T>(obj: Indexable<any>, indexer?: (node: IndexedTree<T>) => string | number): Tree<T> {
 		const parent: IndexedTree<T> | null = (this instanceof IndexedTree) ? this : null;
-		const root = new IndexedTree<T>(obj.id, indexer, parent ? parent._index : undefined).init({ data: obj.data, parent: parent as Tree<T> }) as IndexedTree<T>;
+		const root = new IndexedTree<T>(obj.id as any, indexer, parent ? parent._index : undefined)
+		.init({ data: obj.data as any, parent: parent as Tree<T> }) as IndexedTree<T>;
 		root.index.add(root._indexer(root!), root);
 		if (obj.children !== undefined && isArray(obj.children)) {
-			root.children = new List<IndexedTree<T>>(map<any, IndexedTree<T>>(obj.children as Array<IndexedTree<T>>, (el, i) => IndexedTree.fromObject.call(root, el, indexer) as IndexedTree<T>));
+			root.children = new List<IndexedTree<T>>(
+				map<any, IndexedTree<T>>(
+					obj.children as Array<IndexedTree<T>>, 
+					(el, i) => IndexedTree.fromObject.call(root, el, indexer) as IndexedTree<T>
+				)
+			);
 		}
 		return root;
 	}

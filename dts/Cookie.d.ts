@@ -9,6 +9,7 @@ export interface ICookieMonsterOptions<T extends Indexable<any>> {
     retainTime: string;
     path: string;
     localStorage: boolean;
+    session: boolean;
 }
 export interface ICookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> {
     setCookie<S extends K>(key: S, value: T[S]): void,
