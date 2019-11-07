@@ -28,3 +28,4 @@ export function isNull(arg: any): boolean;
 export function isNotNull(arg: any): boolean;
 export function isUndefined(arg: any): boolean;
 export function isNotUndefined(arg: any): boolean;
+

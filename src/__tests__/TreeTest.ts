@@ -51,6 +51,21 @@ describe("Tree",
 				expect(tree.size).toBe(5);
 				expect(tree.leafCount).toBe(3);
 			});
+		test("Tree.fromNodeList returns correct tree without map function",
+			() => {
+				let nodeList = [
+					{ id: "-", parent: null, data: {category: "stuff"}, children: ["0", "1"] },
+					{ id: "0", parent: "-", data: {category: "books"}, children: ["0-0", "0-1"] },
+					{ id: "1", parent: "-", data: {category: "toys"}, children: ["1-0", "1-1"] },
+					{ id: "0-0", parent: "0", data: {category: "adventure"}, children: ["0-0-0", "0-0-1"] },
+					{ id: "0-1", parent: "0", data: {category: "drama"}, children: ["0-1-0", "0-1-1"] }
+				];
+				let tree = Tree.fromNodeList(nodeList);
+				expect(tree.children!.read(0)!.children!.read(1)!.data!).toEqual({ category: "drama" });
+				expect(tree.id).toBe("-");
+				expect(tree.size).toBe(5);
+				expect(tree.leafCount).toBe(3);
+			});
 		test("Tree.fromNodeList returns correct tree in case with single root and duplicate IDs",
 			() => {
 				let nodeList = [
@@ -289,6 +304,33 @@ describe("Tree",
 				];
 				const tree = Tree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: (el as any).category }) });
 				expect(tree.toJSON()).toEqual(tree.serialize());
+			});
+		test("changing data or id triggers change callback",
+			() => {
+				let nodeList: any[] = [
+					{ uid: "-", parent: null, category: "stuff", children: ["0", "1"] },
+					{ uid: "0", parent: "-", category: "books", children: ["0-0", "0-1"] },
+					{ uid: "1", parent: "-", category: "toys", children: ["1-0", "1-1"] },
+					{ uid: "0-0", parent: "0", category: "adventure", children: ["0-0-0", "0-0-1"] },
+					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] }
+				];
+				const tree = Tree.fromNodeList<any, {category: string}>(nodeList, { id: "uid", data: (el) => ({ category: (el as any).category }) });
+				let value = "";
+				var id = tree.on("change", (nodes) => value = nodes[0].data!.category);
+				tree.find((node) => node.id === "0-0")!.set({category: "changed"});
+				expect(value).toBe("changed");
+
+				tree.off("change", id);
+				tree.find((node) => node.id === "0-0")!.set({category: "changed again"});
+				expect(value).toBe("changed");
+
+				var id = tree.on("change", (nodes) => value = nodes[0].data!.category);
+				tree.find((node) => node.id === "0-0")!.set();
+				expect(value).toBe("changed again");
+
+				tree.off("change");
+				tree.find((node) => node.id === "0-0")!.set({category: "changed again again"});
+				expect(value).toBe("changed again");
 			});
 	}
 );

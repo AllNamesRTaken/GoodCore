@@ -1,5 +1,5 @@
-import { map } from "../Arr";
-import { clone, isSameClass, setProperties } from "../Obj";
+import { map, remove } from "../Arr";
+import { clone, isSameClass, setProperties, forEach } from "../Obj";
 import { isArray, isNullOrUndefined, isNotNullOrUndefined, isNumber, isNull } from "../Test";
 import { newUUID } from "../Util";
 import { Dictionary } from "./Dictionary";
@@ -17,6 +17,8 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 	protected _size: number = 1;
 	protected _leafCount: number = 1;
 	protected _weight = 1;
+	protected _listeners: Indexable<Indexable<(targets?: Array<Tree<T>>) => void> | null> = {};
+	protected _listenerIndex: number = 0;
 
 	public static fromObject<T>(obj: Indexable<any>): Tree<T> {
 		const parent: Tree<T> | null = (this instanceof Tree) ? this : null;
@@ -44,10 +46,16 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		let result = new Tree<T>();
 		// create map
 		let mapResolver = (key: string) => {
-			return !mapcfg || typeof ((mapcfg as any)[key]) === "undefined" ?
-				(key === "id" ? newUUID() : (el: S) => (el as unknown as Indexable<any>)[key] as any) :
-				typeof ((mapcfg as any)[key]) === "string" ? (el: S) => (el  as unknown as Indexable<any>)[(mapcfg as any)[key]] as any :
-					(mapcfg as any)[key];
+			return !mapcfg || typeof ((mapcfg as any)[key]) === "undefined"
+				? (key === "id"
+					? (el: S) => typeof ((el as unknown as Indexable<any>)[key]) === undefined
+						? newUUID()
+						: (el as unknown as Indexable<any>)[key] as any
+					: (el: S) => (el as unknown as Indexable<any>)[key] as any
+				)
+				: typeof ((mapcfg as any)[key]) === "string"
+					? (el: S) => (el as unknown as Indexable<any>)[(mapcfg as any)[key]] as any
+					: (mapcfg as any)[key];
 		};
 		let map = {
 			id: mapResolver("id") as ((node: S) => string | number),
@@ -128,6 +136,35 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		}
 	}
 
+	public on(event: TreeEvent, callback: (targets: Array<Tree<T>>) => void): number {
+		this._listeners[event] = this._listeners[event] || {};
+		this._listeners[event]![this._listenerIndex] = callback;
+		return this._listenerIndex++;
+	}
+	public off(event: TreeEvent, index?: number): void {
+		if (index === undefined) {
+			this._listeners[event] && (delete this._listeners[event])
+		} else {
+			this._listeners[event] && delete this._listeners[event]![index];
+		}
+		(this._listeners[event] && Object.keys(this._listeners[event]!).length === 0) && (delete this._listeners[event]);
+	}
+	public trigger(event: TreeEvent, targets: Array<Tree<T>>): void {
+		switch (event) {
+			case "change":
+				this._listeners[event] && forEach(this._listeners[event]!, (fn) => fn(targets));
+				this.parent && this.parent.trigger(event, targets || [this]);
+				break;
+			default:
+				break;
+		}
+	}
+
+	public set(values?: Partial<T>) {
+		this.data && values && (this.data! = {...this.data!, ...values});
+		this.trigger("change", [this]);  
+	}
+
 	protected markAsDirty(): void {
 		if (!this.isDirty) {
 			this.isDirty = true;
@@ -156,6 +193,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 			}
 			this.children.insertAt(pos, node);
 			this.markAsDirty();
+			this.trigger("change", [this]); 
 		}
 		return node;
 	}
@@ -173,15 +211,19 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 			this.children.add(node);
 		}
 		this.markAsDirty();
+		this.trigger("change", [this]); 
 		return node;
 	}
 	public remove(): void {
-		if (this.parent !== null) {
-			this.parent.children!.remove(this);
-			if (this.parent.children!.count === 0) {
-				this.parent.children = null;
+		let parent = this.parent;
+		if (parent !== null) {
+			parent.children!.remove(this);
+			if (parent.children!.count === 0) {
+				parent.children = null;
 			}
-			this.parent.markAsDirty();
+			parent.markAsDirty();
+			this.parent = null; 
+			parent.trigger("change", [parent]);
 		}
 	}
 	public prune(): this {
@@ -194,11 +236,11 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		}
 		this.children = null;
 		this.markAsDirty();
+		this.trigger("change", [this]); 
 		return this;
 	}
 	public cut(): this {
 		this.remove();
-		this.parent = null;
 		return this;
 	}
 	public forEach(fn: (el: this, i: number) => void, _i: number = 0): this {
@@ -385,6 +427,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		if (this.children !== null) {
 			this.children.orderBy(comparer);
 			this.children.forEach((el) => el.sort(comparer));
+			this.trigger("change", [this]); 
 		}
 		return this;
 	}

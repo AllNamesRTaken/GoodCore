@@ -51,4 +51,8 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
     public sort(comparer: (a: this, b: this) => number): this;
     public serialize(): T[];		
     public toJSON(): any;
+    public on(event: TreeEvent, callback: (targets: Array<Tree<T>>) => void): number;
+    public off(event: TreeEvent, index: number): void;
+    public trigger(event: TreeEvent, targets: Array<Tree<T>>): void;    
+    public set(values: Partial<T>): void;
 }

@@ -97,6 +97,7 @@ interface ITreeNode<T> {
 	children: IList<ITreeNode<T>> | null;
 	data: T | null;
 }
+type TreeEvent = "change";
 interface IVec2 {
 	x: number;
 	y: number;
