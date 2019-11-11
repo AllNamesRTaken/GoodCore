@@ -270,8 +270,8 @@ export function transform<T extends {[index: string]: any}, S = T, U = any>(
 	});
 	return accumulator!;
 }
-export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S {
-	function changes<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S {
+export function difference<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): S {
+	function changes<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): S {
 		return transform(target, function(result, value: any, key: string) {
 			if (isDifferent(value, base[key])) {
 				(result as Indexable<any>)[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
