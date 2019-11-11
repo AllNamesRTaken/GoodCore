@@ -69,8 +69,8 @@ export function getFunctionCode(fn: Function): string {
 	return result;
 }
 function stdTimezoneOffset(date: Date) {
-    var jan = new Date(date.getFullYear(), 0, 1);
-    var jul = new Date(date.getFullYear(), 6, 1);
+    let jan = new Date(date.getFullYear(), 0, 1);
+    let jul = new Date(date.getFullYear(), 6, 1);
     return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
 }
 export function isDaylightSavingTime(date: Date) {
@@ -81,12 +81,12 @@ export function getDate(delta: string = "", start?: Date): Date {
 	const rel = delta.split(" ").join("");
 	const [, sign, years, months, days, hours, mins, secs] = toArray(/([+-])?(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/.exec(rel) as ArrayLike<string>);
 	const plus = sign !== "-"; 
-	if (secs) date.setSeconds(date.getSeconds() + (plus ? +parseInt(secs, 10) : -parseInt(secs, 10)));
-	if (mins) date.setMinutes(date.getMinutes() + (plus ? +parseInt(mins, 10): -parseInt(mins, 10)));
-	if (hours) date.setHours(date.getHours() + (plus ? +parseInt(hours, 10): -parseInt(hours, 10)));
-	if (days) date.setDate(date.getDate() + (plus ? +parseInt(days, 10) : -parseInt(days, 10)));
-	if (months) date.setMonth(date.getMonth() + (plus ? +parseInt(months, 10) : -parseInt(months, 10)));
-	if (years) date.setFullYear(date.getFullYear() + (plus ? +parseInt(years, 10) : -parseInt(years, 10)));
+	if (secs) { date.setSeconds(date.getSeconds() + (plus ? +parseInt(secs, 10) : -parseInt(secs, 10))); }
+	if (mins) { date.setMinutes(date.getMinutes() + (plus ? +parseInt(mins, 10): -parseInt(mins, 10))); }
+	if (hours) { date.setHours(date.getHours() + (plus ? +parseInt(hours, 10): -parseInt(hours, 10))); }
+	if (days) { date.setDate(date.getDate() + (plus ? +parseInt(days, 10) : -parseInt(days, 10))); }
+	if (months) { date.setMonth(date.getMonth() + (plus ? +parseInt(months, 10) : -parseInt(months, 10))); }
+	if (years) { date.setFullYear(date.getFullYear() + (plus ? +parseInt(years, 10) : -parseInt(years, 10))); }
 	return date;
 }
 export function newUUID(): string { // export function Domain/MIT
@@ -126,7 +126,7 @@ export function pipeOut(
 				Global.global.console as any,
 				"log",
 				function (superfn, ...args: any[]) {
-					if(!(catchDefault || preventDefaultObj.log)) superfn.apply(this, args);
+					if(!(catchDefault || preventDefaultObj.log)) { superfn.apply(this, args); }
 					log!.apply(this, args);
 				}
 			);
@@ -136,7 +136,7 @@ export function pipeOut(
 				Global.global.console as any,
 				"warn",
 				function (superfn, ...args: any[]) {
-					if(!(catchDefault || !preventDefaultObj.warn)) superfn.apply(this, args);
+					if(!(catchDefault || !preventDefaultObj.warn)) { superfn.apply(this, args); }
 					warn!.apply(this, args);
 				}
 			);
@@ -146,7 +146,7 @@ export function pipeOut(
 				Global.global.console as any,
 				"error",
 				function (superfn, ...args: any[]) {
-					if(!(catchDefault || !preventDefaultObj.error)) superfn.apply(this, args);
+					if(!(catchDefault || !preventDefaultObj.error)) { superfn.apply(this, args); }
 					error!.apply(this, args);
 				}
 			);
