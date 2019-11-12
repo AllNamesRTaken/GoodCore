@@ -69,19 +69,19 @@ export function equals(a: any, b: any): boolean {
 			result = (a as IEquatable).equals(b);
 		} else {
 			// Compare Objects
-			const keys = Object.keys(a as Object);
+			const aKeys = Object.keys(a as Object);
+			const bKeys = Object.keys(b as Object);
+			let sameLength = aKeys.length === bKeys.length;
 			let key = null;
-			result = true;
+			result = sameLength;
 			let i = -1;
-			const len = keys.length;
-			while (++i < len) {
-				key = keys[i];
+			const len = aKeys.length;
+			while (++i < len && result) {
+				key = aKeys[i];
 				result = equals((a as Indexable<any>)[key], (b as Indexable<any>)[key]);
 				if (!result) {
-					if (isFunction((a as Indexable<any>)[key])) {
+					if (isFunction((a as Indexable<any>)[key]) && isFunction((b as Indexable<any>)[key])) {
 						result = true;
-					} else {
-						break;
 					}
 				}
 			}
@@ -238,12 +238,12 @@ export function setProperties(target: Indexable<any>, values: Indexable<any>, ma
 }
 export function forEach<T>(
 	target: Indexable<T> | T[],
-	fn: (value: T, key: string | number) => boolean | void
+	fn: (value: T, key: string) => boolean | void
 ): void {
 	if (isArray(target)) {
 		let i = - 1;
 		const len = (target as T[]).length;
-		while (++i < len && false !== fn((target as T[])[i], i)) {
+		while (++i < len && false !== fn((target as T[])[i], i.toString())) {
 		}
 	} else {
 		const keys = Object.keys(target);
@@ -259,13 +259,13 @@ export function forEach<T>(
 }
 export function transform<T extends {[index: string]: any}, S = T, U = any>(
 	target: T | U[], 
-	fn: (result: S, value: any, key: string | number) => boolean | void, 
+	fn: (result: S, value: any, key: string) => boolean | void, 
 	accumulator?: S
 ): S  {
 	if (accumulator === undefined) {
 		accumulator = Object.create(target) as S;
 	}
-	forEach(target, (value: any, key: string | number) => {
+	forEach(target, (value: any, key: string) => {
 		return fn(accumulator!, value, key);
 	});
 	return accumulator!;

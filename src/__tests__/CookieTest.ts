@@ -54,6 +54,7 @@ describe("Cookie",
 				let monster = Cookie.getMonster({name: "test", defaults: {a: 1, b: "2"}});
 				expect(monster.getCookie("a")).toBe(1);
 				expect(monster.getCookie("b")).toBe("2");
+				monster.removeCookies();
 			});
 		test("monster.setCookie sets cookie",
 			() => {
@@ -61,6 +62,16 @@ describe("Cookie",
 				monster.setCookie("a", 2);
 				expect(Cookie.getCookie("test")).toBe('{"0":2}');
 				expect(monster.getCookie("a")).toBe(2);
+				monster.removeCookies();
+			});
+		test("monster.setCookie escapes = and ;",
+			() => {
+				let monster = Cookie.getMonster({name: "test", defaults: {a: 1, b: "2"}});
+				let value = "a = 1; b = 2;";
+				monster.setCookie("b", value);
+				expect(Cookie.getCookie("test")).toBe('{"1":"a ¤e 1¤s b ¤e 2¤s"}');
+				expect(monster.getCookie("b")).toBe("a = 1; b = 2;");
+				monster.removeCookies();
 			});
 		test("monster.setCookie with path sets path",
 			() => {
@@ -72,6 +83,7 @@ describe("Cookie",
 				expect(Cookie.getCookie("test")).toBe('{"0":2}');
 				Cookie.removeCookie("test", "/");
 				expect(Cookie.getCookie("test")).toBeUndefined();
+				monster.removeCookies();
 			});
 		test("monster.setCookie to default value removes cookie part",
 			() => {
@@ -82,6 +94,7 @@ describe("Cookie",
 				monster.setCookie("a", 1);
 				expect(Cookie.getCookie("test")).toBe('{}');
 				expect(monster.getCookie("a")).toBe(1);
+				monster.removeCookies();
 			});
 		test("monster.eatCookie sets cookie part to default",
 			() => {
@@ -90,6 +103,7 @@ describe("Cookie",
 				monster.eatCookie("a");
 				expect(Cookie.getCookie("test")).toBe('{}');
 				expect(monster.getCookie("a")).toBe(1);
+				monster.removeCookies();
 			});
 		test("localStorage: true in options saves cookie to localStorage and removes from cookie",
 			() => {
@@ -102,6 +116,7 @@ describe("Cookie",
 				expect(sessionStorage.getItem("test")).toBeNull();
 				expect(localStorage.getItem("test")).toBe('{"0":2}');
 				expect(monster2.getCookie("a")).toBe(2);
+				monster.removeCookies();
 			});
 		test("localStorage: false in options saves cookie to cookie and removes from localStorage",
 			() => {
@@ -114,6 +129,7 @@ describe("Cookie",
 				expect(sessionStorage.getItem("test")).toBeNull();
 				expect(monster.getCookie("b")).toBe("foo");
 				expect(Cookie.getCookie("test")).toBe('{"1":"foo"}');
+				monster.removeCookies();
 			});
 		test("localStorage: saving cookie to sessionStorage removes it from localStorage",
 			() => {
@@ -126,6 +142,7 @@ describe("Cookie",
 				expect(Cookie.getCookie("test")).toBeUndefined();
 				expect(sessionStorage.getItem("test")).toBe('{"1":"foo"}');
 				expect(monster.getCookie("b")).toBe("foo");
+				monster.removeCookies();
 			});
 	}
 );

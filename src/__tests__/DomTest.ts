@@ -35,6 +35,13 @@ describe("Dom",
 				expect(el.id).toBe("id");
 				expect(el.style.getPropertyValue("background-color")).toBe("red");
 			});
+		test("fromHTML returns multiple elements",
+		() => {
+			const els = Dom.fromHTML(" <div id='a'> </div><div id='b'> </div>  ");
+			expect(els.length).toBe(2);
+			expect(els[0].id).toBe("a");
+			expect(els[1].id).toBe("b");
+		});
 		test("Resolve resolves element under root",
 		() => {
 			const el = Dom.create(html2);

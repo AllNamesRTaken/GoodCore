@@ -639,6 +639,10 @@ declare namespace goodcore {
         export function unzip<S, T, U = [S, T]>(arr: U[], fn?: (u: U, i?: number, out?: [S, T]) => [S, T]): [S[], T[]];
         export function pivot<S = any, T extends S[] = S[]>(arr: T[]): S[][];
         export function deserialize<S>(array: any[], target: S[], ...types: Array<Constructor<any>>): S[];
+        type Descriminator<T> = (el: T) => boolean;
+        export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>): T[][];
+        export function split<T>(array: T[], isA: Descriminator<T>): [T[], T[]];
+        export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[];    
     }
 
     export namespace Obj {
@@ -657,10 +661,10 @@ declare namespace goodcore {
         export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting?: boolean): void;
         export function forEach<T>(
             target: Indexable<T> | T[],
-            fn: (value: T, key: string | number) => boolean | void,
+            fn: (value: T, key: string) => boolean | void,
         ): void;
         // tslint:disable-next-line:max-line-length
-        export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | U[], fn: (result: S, value: any, key: string | number) => boolean | void, accumulator?: S): S;
+        export function transform<T extends {[index: string]: any}, S = T, U = any>(target: T | U[], fn: (result: S, value: any, key: string) => boolean | void, accumulator?: S): S;
         export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S;
     }
     export interface IObjectWithFunctions<T extends Object | void> {
