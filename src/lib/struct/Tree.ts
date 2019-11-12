@@ -1,4 +1,4 @@
-import { map, remove } from "../Arr";
+import { map } from "../Arr";
 import { clone, isSameClass, setProperties, forEach } from "../Obj";
 import { isArray, isNullOrUndefined, isNotNullOrUndefined, isNumber, isNull } from "../Test";
 import { newUUID } from "../Util";
@@ -12,6 +12,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 	public children: List<this> | null = null;
 	public data: T | null = null;
 	public isDirty: boolean = false;
+	public isEventing: boolean = true;
 
 	protected _virtual: boolean = false;
 	protected _size: number = 1;
@@ -65,7 +66,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		// create node lookup
 		let list = new List<S>(nodes);
 		let lookup: Dictionary<Array<Tree<T>>> = new Dictionary();
-		let nodeList = list.map((el) => new ctor("").init({ id: map.id(el), data: map.data(el), isDirty: true }));
+		let nodeList = list.map((el) => new ctor("").init({ id: map.id(el), data: map.data(el), isDirty: true, isEventing: false }));
 		nodeList.forEach((node, i) => {
 			if (!lookup.has(node.id)) {
 				lookup.add(node.id, []);
@@ -83,6 +84,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 				rootNodes.add(nodeList.read(i)!);
 			}
 		});
+		nodeList.forEach((n) => n.isEventing = true);
 
 		// find root
 		if (virtualRoot === false) {
@@ -150,13 +152,15 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		(this._listeners[event] && Object.keys(this._listeners[event]!).length === 0) && (delete this._listeners[event]);
 	}
 	public trigger(event: TreeEvent, targets: Array<Tree<T>>): void {
-		switch (event) {
-			case "change":
-				this._listeners[event] && forEach(this._listeners[event]!, (fn) => fn(targets));
-				this.parent && this.parent.trigger(event, targets || [this]);
-				break;
-			default:
-				break;
+		if(this.isEventing) {
+			switch (event) {
+				case "change":
+					this._listeners[event] && forEach(this._listeners[event]!, (fn) => fn(targets));
+					this.parent && this.parent.trigger(event, targets || [this]);
+					break;
+				default:
+					break;
+			}
 		}
 	}
 
@@ -187,7 +191,8 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		} else {
 			if (data instanceof Tree) {
 				node = data;
-				data.parent = this;
+				node.cut();
+				node.parent = this;
 			} else {
 				node = this.create<T>(id).init({ data, parent: this });
 			}
@@ -204,6 +209,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		}
 		if (isSameClass(data, this)) {
 			node = data as this;
+			node.cut();
 			node.parent = this;
 			this.children.add(node);
 		} else {
