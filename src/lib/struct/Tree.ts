@@ -152,7 +152,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitab
 		(this._listeners[event] && Object.keys(this._listeners[event]!).length === 0) && (delete this._listeners[event]);
 	}
 	public trigger(event: TreeEvent, targets: Array<Tree<T>>): void {
-		if(this.isEventing) {
+		if (this.isEventing) {
 			switch (event) {
 				case "change":
 					this._listeners[event] && forEach(this._listeners[event]!, (fn) => fn(targets));

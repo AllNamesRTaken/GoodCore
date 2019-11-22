@@ -13,7 +13,7 @@
     "clean": "rimraf ./dist",
     "fixEnumsDestroyMap": "node fixEnums.js",
     "dev": "npm run clean && tsc -p tsconfig.app.json",
-    "build": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp copyDTS && gulp copyWebpackExternalsFn",
+    "build": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp copyDTS && gulp copyWebpackExternalsFn && rollup -c rollup.config.core.js",
     "build-es": "tsc -p tsconfig.es6.json && gulp copyDTSES",
     "build-all": "npm run build && npm run build-es",
     "bench": "tsc -p tsconfig.bench.json && node ./dist/benchmark/index.js",
