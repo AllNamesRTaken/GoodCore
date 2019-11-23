@@ -1,4 +1,4 @@
-import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined, isNull } from "./Test";
+import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined } from "./Test";
 
 interface IDestroyable {
 	destroy(): void;
