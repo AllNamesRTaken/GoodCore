@@ -2,7 +2,7 @@ import { deepCopy, slice, deserialize } from "../Arr";
 import { isFunction } from "../Test";
 import { List } from "./List";
 
-export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable<Stack<T>> {
+export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable {
 	public DEFAULT_SIZE = 100;
 	private _array: T[];
 	private _pos: number = 0;

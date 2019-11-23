@@ -9,7 +9,7 @@ import { once } from "../Util";
 if (hasWindow() && !(window as any).Symbol) {
 	(window as any).Symbol = { iterator: "iterator" };
 }
-export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
+export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable {
 	private _array: T[] = [];
 	private _index: {[key: string]: T} | null = null;
 	private _indexer: ((el: T) => any) | null = null;

@@ -1,7 +1,7 @@
 /// <reference path="../base.d.ts" />
 
 import { List } from "./List";
-export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable {
+export class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
     public id: string;
     public parent: this | null;
     public children: List<this> | null;

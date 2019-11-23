@@ -3,7 +3,7 @@ import { clone, setProperties, wipe } from "../Obj";
 import { isFunction, isNotUndefined, isNotNullOrUndefined } from "../Test";
 import { once, loop } from "../Util";
 
-export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable {
 	private _lookup: { [key: string]: T };
 	private _list: T[];
 	private _isDirty: boolean;

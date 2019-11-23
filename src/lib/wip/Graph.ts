@@ -8,7 +8,7 @@ import { assert, once } from "../Util";
 import { zip, create } from "../Arr";
 
 @Initable
-export class GraphNode<T> implements ICloneable<GraphNode<T>> {
+export class GraphNode<T> implements ICloneable {
 	private _id: number = 0;
 	private _data: T | null = null;
 	private _costs: List<number> | null = null;
@@ -64,7 +64,7 @@ export class GraphNode<T> implements ICloneable<GraphNode<T>> {
 		setProperties(this, obj);
 		return this;
 	}
-	public clone(): GraphNode<T> {
+	public clone(): this {
 		const result = new ((this as any).constructor as ICtor<GraphNode<T>>)();
 		result._id = this._id;
 		result._data = isNullOrUndefined(this._data) ? this._data : clone(this._data);

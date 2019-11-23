@@ -110,7 +110,7 @@ export function clone<T>(obj: T): T {
 		result = obj;
 	} else if ((obj instanceof Object) && isFunction(((obj as unknown as Object).constructor.prototype as any).clone)) {
 		//Cloneable
-		result = (obj as unknown as ICloneable<T>).clone();
+		result = (obj as unknown as ICloneable).clone() as any;
 	} else if (isArray(obj)) {
 		//Array
 		let i = -1;

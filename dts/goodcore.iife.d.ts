@@ -28,8 +28,8 @@ interface IPoolable {
     release(): void;
     initPool(pool: IPool<IPoolable>): void;
 }
-interface ICloneable<T> {
-    clone(): T;
+interface ICloneable {
+    clone(): this;
 }
 interface IInitable {
     init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this;
@@ -58,7 +58,7 @@ interface IBasicList<T> {
     pop(): T | undefined;
     shift(): T | undefined;
     copy(src: IBasicList<T> | T[]): IBasicList<T>;
-    clone(): IBasicList<T>;
+    clone(): this;
     truncate(size?: number): IBasicList<T>;
     fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
     remove(v: T): IBasicList<T>;
@@ -107,6 +107,7 @@ interface IList<T> extends IBasicList<T> {
     unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
     flatten<U>(maxDepth?: number): IList<U>;
 }
+type TreeEvent = "change";
 interface ITreeNode<T> {
     id: string;
     parent: ITreeNode<T> | null;
@@ -241,7 +242,7 @@ declare namespace goodcore {
         zero(): Rect;
     }
 
-    export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable<List<T>> {
+    export class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable {
         constructor(arr?: T[] | List<T>);
         [Symbol.iterator](): IterableIterator<T>;
         next(value?: any): IteratorResult<T>;
@@ -270,7 +271,7 @@ declare namespace goodcore {
         append(v: T[] | List<T>): List<T>;
         copy(src: List<T> | T[]): List<T>;
         shallowCopy(src: List<T> | T[]): List<T>;
-        clone(): List<T>;
+        clone(): this;
         remove(v: T): List<T>;
         removeFirst(fn: (el: T) => boolean): T | undefined;
         removeAt(n: number): T | undefined;
@@ -321,7 +322,7 @@ declare namespace goodcore {
         static NumberAsc: (a: number, b: number) => 1 | -1 | 0;
         static NumberDesc: (a: number, b: number) => 1 | -1 | 0;
     }
-    export class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
+    export class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable {
         constructor(comparer?: (a: T, b: T) => number, arr?: T[] | List<T> | SortedList<T>);
         [Symbol.iterator](): IterableIterator<T>;
         next(value?: any): IteratorResult<T>;
@@ -342,7 +343,7 @@ declare namespace goodcore {
         copy(src: SortedList<T> | List<T> | T[]): SortedList<T>;
         truncate(size?: number): List<T>;
         fill(size: number, populator: ((i: number) => T) | T): List<T>;
-        clone(): SortedList<T>;
+        clone(): this;
         remove(v: T): SortedList<T>;
         removeAt(n: number): T | undefined;
         removeFirst(fn: (el: T) => boolean): T | undefined;
@@ -382,7 +383,7 @@ declare namespace goodcore {
         deserialize(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
     }
 
-    export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+    export class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable {
         constructor();
         protected create<S = T>(): Dictionary<S>;
         has(key: number | string): boolean;
@@ -397,14 +398,14 @@ declare namespace goodcore {
         readonly values: T[];
         readonly keys: string[];
         readonly count: number;
-        clone(): Dictionary<T>;
+        clone(): this;
         toJSON(): any;
         serialize(): IObject;
         revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
         deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
     }
 
-    export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable<Stack<T>> {
+    export class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable {
         DEFAULT_SIZE: number;
         readonly values: T[];
         readonly depth: number;
@@ -421,14 +422,14 @@ declare namespace goodcore {
         peekAt(index: number): T | undefined;
         toList(): List<T>;
         clear(): Stack<T>;
-        clone(): Stack<T>;
+        clone(): this;
         toJSON(): any;
         serialize(): T[];
         revive(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
         deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
     }
 
-    export class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable {
+    export class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
         public id: string;
         public parent: this | null;
         public children: List<this> | null;

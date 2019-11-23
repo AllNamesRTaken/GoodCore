@@ -25,8 +25,8 @@ interface IPoolable {
 	release(): void;
 	initPool(pool: IPool<IPoolable>): void;
 }
-interface ICloneable<T> {
-	clone(): T;
+interface ICloneable {
+	clone(): this;
 }
 interface IInitable {
 	init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this;
@@ -48,7 +48,7 @@ interface IBasicList<T> {
 	shift(): T | undefined;
 	copy(src: IBasicList<T> | T[]): IBasicList<T>;
 	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
-	clone(): IBasicList<T>;
+	clone(): this;
 	remove(v: T): IBasicList<T>;
 	removeFirst(fn: (el: T) => boolean): T | undefined;
 	removeAt(n: number): T | undefined;

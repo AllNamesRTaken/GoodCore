@@ -1,7 +1,7 @@
 /// <reference path="../base.d.ts" />
 
 import { List } from "./List";
-export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable<Stack<T>> {
+export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable {
     DEFAULT_SIZE: number;
     readonly values: T[];
     readonly depth: number;
@@ -18,7 +18,7 @@ export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, 
     peekAt(index: number): T | undefined;
     toList(): List<T>;
     clear(): Stack<T>;
-    clone(): Stack<T>;
+    clone(): this;
     toJSON(): any;
     serialize(): T[];
     deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
