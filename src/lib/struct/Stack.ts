@@ -1,6 +1,5 @@
 import { deepCopy, slice, deserialize } from "../Arr";
 import { isFunction } from "../Test";
-import { List } from "./List";
 
 export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable {
 	public DEFAULT_SIZE = 100;
@@ -69,10 +68,6 @@ export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, 
 	}
 	public peekAt(index: number): T | undefined {
 		return index < 0 || index >= this._pos ? undefined : this._array[this._pos - index - 1];
-	}
-	public toList(): List<T> {
-		const result = new List<T>();
-		return new List(this.values);
 	}
 	public clear(): this {
 		this._pos = 0;

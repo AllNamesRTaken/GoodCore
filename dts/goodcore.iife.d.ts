@@ -111,7 +111,7 @@ type TreeEvent = "change";
 interface ITreeNode<T> {
     id: string;
     parent: ITreeNode<T> | null;
-    children: IList<ITreeNode<T>> | null;
+    children: Array<ITreeNode<T>> | null;
     data: T | null;
 }
 interface IVec2 {
@@ -420,7 +420,6 @@ declare namespace goodcore {
         pop(): T | undefined;
         peek(): T | undefined;
         peekAt(index: number): T | undefined;
-        toList(): List<T>;
         clear(): Stack<T>;
         clone(): this;
         toJSON(): any;
@@ -432,7 +431,7 @@ declare namespace goodcore {
     export class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
         public id: string;
         public parent: this | null;
-        public children: List<this> | null;
+        public children: this[] | null;
         public data: T | null;
         public virtual: boolean;
         public isDirty: boolean;
@@ -474,7 +473,7 @@ declare namespace goodcore {
         public reduce<S>(fn?: (acc: S, cur: this | null) => S, start?: S): S;
         public clone(): this;
         public filter(condition: (node: this) => boolean): this;
-        public select(condition?: (node: this) => boolean, acc?: List<this>): List<this>;
+        public select(condition?: (node: this) => boolean, acc?: this[]): this[];
         public find(condition: number | ((node: this) => boolean)): this | null;
         protected _findBySize(pos: number): this | null;
         public depth(): number;
@@ -489,7 +488,7 @@ declare namespace goodcore {
 
     export class IndexedTree<T> extends Tree<T> {
         init(obj: Partial<this>, mapping?: any): this;
-        index: Dictionary<this>;
+        index: Indexable<this>;
         indexer: (node: this) => string | number;
         count: number;
         static fromObject<T>(obj: any, indexer?: (node: IndexedTree<T>) => string | number): Tree<T>;
@@ -498,7 +497,7 @@ declare namespace goodcore {
             parent?: ((node: S) => string | number) | string | number,
             data?: ((node: S) => any) | string,
         },                        virtualRoot?: boolean): Tree<T>;
-        constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Dictionary<Tree<T>>);
+        constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Indexable<Tree<T>>);
         protected create<S = T>(...args: any[]): Tree<S>;
         insertAt(pos: number, data: T, id?: string | number, updateIndex?: boolean): void;
         addTo(parentId: string | number, data: T | this, id?: string | number, updateIndex?: boolean): this | undefined;

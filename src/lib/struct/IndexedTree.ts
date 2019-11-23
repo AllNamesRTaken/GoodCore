@@ -1,34 +1,32 @@
 import { Tree } from "./Tree";
-import { Dictionary } from "./Dictionary";
 import { isArray } from "../Test";
-import { List } from "./List";
-import { map } from "../Arr";
 import { once } from "../Util";
+import { wipe } from "../Obj";
 
 export class IndexedTree<T> extends Tree<T> {
 	private _indexer: (node: this) => string | number;
-	private _index: Dictionary<this> | undefined;
-	constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Dictionary<IndexedTree<T>>) {
+	private _index: Indexable<this> | undefined;
+	constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: {[key: string]: IndexedTree<T>}) {
 		super(id);
 		this._indexer = indexer ? indexer : (node: IndexedTree<T>) => node.id;
 		this._index = index as any;
 		if (index !== undefined) {
-			this._index!.add(this.id, this);
+			this._index![this.id] = this;
 		}
 	}
-	public get index(): Dictionary<this> {
+	public get index(): Indexable<this> {
 		if (this._index === undefined) {
-			let newIndex = new Dictionary<this>();
+			let newIndex = Object.create(null);
 			this.forEach((node) => {
 				if ((node)._index !== newIndex) {
 					(node)._index = newIndex;
-					this._index!.add(this._indexer(node as this), node as this);
+					this._index![this._indexer(node as this)] = node as this;
 				}
 			});
 		}
-		return this._index! as Dictionary<this>;
+		return this._index! as Indexable<this>;
 	}
-	public set index(v: Dictionary<this>) {
+	public set index(v: Indexable<this>) {
 		throw new Error("Not a settable property");
 	}
 	public get indexer(): (node: this) => string | number {
@@ -42,13 +40,13 @@ export class IndexedTree<T> extends Tree<T> {
 		}
 	}
 	public get _count(): number {
-		return this.index.count;
+		return Object.keys(this.index).length;
 	}
 	public reIndex(): this {
 		let root = this.root;
-		this.index.clear();
+		wipe(this.index);
 		root.forEach((node: this) => {
-			this.index.add(this._indexer(node), node);
+			this.index[this._indexer(node)] = node;
 		});
 		return this;
 	}
@@ -60,10 +58,10 @@ export class IndexedTree<T> extends Tree<T> {
 		return this.lookup(id);
 	}
 	public lookup(id: string | number): this | undefined {
-		return this.index.lookup(id);
+		return this.index[id];
 	}
 	public addTo(parentId: string | number, data: T | this, id?: string | number, updateIndex = true): this | undefined {
-		let parent = this.index.lookup(parentId);
+		let parent = this.index[parentId];
 		let node: this | undefined;
 		if (parent) {
 			node = parent.add(data, id, updateIndex);
@@ -77,12 +75,12 @@ export class IndexedTree<T> extends Tree<T> {
 			if (!hasSameIndex) {
 				node._index = this.index;
 			}
-			this.index.add(this._indexer(node), node);
+			this.index[this._indexer(node)] = node;
 			if (!hasSameIndex) {
 				node.forEach((el: this) => {
 					el._index = this._index;
 					el._indexer = this._indexer;
-					this.index.add(this._indexer(el), el);
+					this.index[this._indexer(el)] = el;
 				});
 			}
 		}
@@ -93,7 +91,7 @@ export class IndexedTree<T> extends Tree<T> {
 		super.remove();
 		this.forEach((node: this) => {
 			if (parent !== null) {
-				parent.index.remove(parent._indexer(node));
+				delete parent.index[parent._indexer(node)];
 			}
 			node._index = undefined;
 		});
@@ -102,11 +100,11 @@ export class IndexedTree<T> extends Tree<T> {
 	public insertAt(pos: number, data: T, id?: string | number, updateIndex = true): this {
 		const node = super.insertAt(pos, data, id);
 		if (updateIndex) {
-			this.index.add(this._indexer(node), node);
+			this.index[this._indexer(node)] = node;
 			node.forEach((el: this) => {
 				el._index = this._index;
 				el._indexer = this._indexer;
-				this.index.add(this._indexer(el), el);
+				this.index[this._indexer(el)] = el;
 			});
 		}
 		return node;
@@ -114,14 +112,14 @@ export class IndexedTree<T> extends Tree<T> {
 	public clone(): this {
 		const node = super.clone();
 		if (node.parent === null) {
-			node._index = new Dictionary<this>();
+			node._index = Object.create(null);
 			node.forEach((n) => n._index = node.index);
 			node.reIndex();
 		}
 		return node;
 	}
 	public contains(node: this | string | number): boolean {
-		return this.index.contains(node instanceof IndexedTree ? this._indexer(node) : node);
+		return this.index[node instanceof IndexedTree ? this._indexer(node) : node] !== undefined;
 	}
 	public prune(): this {
 		let tree = super.prune();
@@ -145,14 +143,12 @@ export class IndexedTree<T> extends Tree<T> {
 		const parent: IndexedTree<T> | null = (this instanceof IndexedTree) ? this : null;
 		const root = new IndexedTree<T>(obj.id as any, indexer, parent ? parent._index : undefined)
 		.init({ data: obj.data as any, parent: parent as Tree<T> }) as IndexedTree<T>;
-		root.index.add(root._indexer(root!), root);
+		root.index[root._indexer(root!)] = root;
 		if (obj.children !== undefined && isArray(obj.children)) {
-			root.children = new List<IndexedTree<T>>(
-				map<any, IndexedTree<T>>(
-					obj.children as Array<IndexedTree<T>>, 
-					(el, i) => IndexedTree.fromObject.call(root, el, indexer) as IndexedTree<T>
-				)
-			);
+			root.children = 
+				(obj.children as Array<IndexedTree<T>>)
+				.map((el, i) => IndexedTree.fromObject.call(root, el, indexer) as IndexedTree<T>)
+				;
 		}
 		return root;
 	}

@@ -94,7 +94,7 @@ interface IList<T> extends IBasicList<T> {
 interface ITreeNode<T> {
 	id: string;
 	parent: ITreeNode<T> | null;
-	children: IList<ITreeNode<T>> | null;
+	children: Array<ITreeNode<T>> | null;
 	data: T | null;
 }
 type TreeEvent = "change";

@@ -1,6 +1,5 @@
 import { IndexedTree } from "../lib/struct/IndexedTree";
 import { Tree } from "../lib/struct/Tree";
-import { Dictionary } from "../lib";
 import { isNotUndefined } from "../lib/Test";
 
 describe("IndexedTree",
@@ -28,8 +27,8 @@ describe("IndexedTree",
 		test("Tree.fromObject returns correct tree",
 			() => {
 				const tree = myTree as IndexedTree<string>;
-				expect(tree.children!.read(1)!.children!.read(1)!.data!).toBe("c2-2");
-				expect(tree.children!.read(0)!.data!).toBe("c3");
+				expect(tree.children![1]!.children![1]!.data!).toBe("c2-2");
+				expect(tree.children![0]!.data!).toBe("c3");
 			});
 		test("Tree.fromNodeList returns correct tree in case with single root",
 			() => {
@@ -41,10 +40,10 @@ describe("IndexedTree",
 					{ uid: "0-1", parent: "0", category: "drama", children: ["0-1-0", "0-1-1"] }
 				];
 				let tree = IndexedTree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }) as IndexedTree<string>;
-				expect(tree.children!.read(0)!.children!.read(1)!.data!).toEqual({ category: "drama" });
+				expect(tree.children![0]!.children![1]!.data!).toEqual({ category: "drama" });
 				tree = IndexedTree.fromNodeList(nodeList, { id: "uid", data: (el) => ({ category: el.category }) }, true) as IndexedTree<string>;
 				expect(tree.virtual).toBe(true);
-				expect(tree.children!.read(0)!.id).toBe("-");
+				expect(tree.children![0]!.id).toBe("-");
 				expect(tree._count).toBe(6);
 			});
 		test("Count returns the correct number of nodes",
@@ -69,9 +68,9 @@ describe("IndexedTree",
 		test("index can be read but not set",
 			() => {
 				const tree = myTree as IndexedTree<string>;
-				expect(tree.index.lookup("root")!).toBe(tree);
+				expect(tree.index["root"]!).toBe(tree);
 				try {
-					tree.index = new Dictionary<IndexedTree<string>>();
+					tree.index = Object.create(null);
 				} catch (err) {
 					expect(isNotUndefined(err)).toBe(true);
 				}
@@ -86,8 +85,8 @@ describe("IndexedTree",
 				const tree = myTree as IndexedTree<string>;
 				expect(tree._count).toBe(6);
 				const filtered = tree.filter((node) => node.children !== null)!;
-				expect(filtered.children!.read(0)!.data!).toBe("c2");
-				expect(filtered.children!.read(0)!.childCount).toBe(0);
+				expect(filtered.children![0]!.data!).toBe("c2");
+				expect(filtered.children![0]!.childCount).toBe(0);
 				expect(tree._count).toBe(6);
 				expect(filtered._count).toBe(2);
 			});
@@ -102,13 +101,13 @@ describe("IndexedTree",
 		test("Select returns a list of matching nodes",
 			() => {
 				const tree = myTree as IndexedTree<string>;
-				expect(tree.select((node) => node.children === null).count).toBe(4);
+				expect(tree.select((node) => node.children === null).length).toBe(4);
 				expect(tree._count).toBe(6);
 			});
 		test("Empty select returns all nodes",
 			() => {
 				const tree = myTree as IndexedTree<string>;
-				expect(tree.select().count).toBe(6);
+				expect(tree.select().length).toBe(6);
 			});
 		test("Add and Remove does add and remove, and modify index",
 			() => {
@@ -173,7 +172,7 @@ describe("IndexedTree",
 				expect(tree.contains("newNode")).toBe(false);
 				let newNode = tree.addTo("c1", "new node", "newNode")!;
 				expect(tree.contains("newNode")).toBe(true);
-				expect(tree.children!.read(2)!.children!.read(0)!.data!).toBe("new node");
+				expect(tree.children![2]!.children![0]!.data!).toBe("new node");
 				expect((tree.addTo("no such parent", "data") === undefined)).toBe(true);
 				newNode.remove();
 				expect(tree._count).toBe(6);
@@ -191,7 +190,7 @@ describe("IndexedTree",
 				expect(c2t2!.data!).toBe("c2-2");
 				expect(orgc2t2!).not.toBe(c2t2);
 				const clone = tree.clone();
-				expect((clone.children!.read(1)!.parent === clone)).toBe(true);
+				expect((clone.children![1]!.parent === clone)).toBe(true);
 				expect(tree._count).toBe(6);
 			});
 		test("Reduce performs depth first reduction",
@@ -212,25 +211,25 @@ describe("IndexedTree",
 			() => {
 				const tree = myTree as IndexedTree<string>;
 				tree.insertAt(1, "c1.5");
-				expect(tree.children!.read(1)!.data!).toBe("c1.5");
-				expect(tree.children!.read(2)!.data!).toBe("c2");
-				tree.children!.read(1)!.remove();
+				expect(tree.children![1]!.data!).toBe("c1.5");
+				expect(tree.children![2]!.data!).toBe("c2");
+				tree.children![1]!.remove();
 				tree.insertAt(100000, "c4");
-				expect(tree.children!.read(3)!.data!).toBe("c4");
-				tree.children!.read(3)!.remove();
+				expect(tree.children![3]!.data!).toBe("c4");
+				tree.children![3]!.remove();
 			});
 		test("Prune removes all children from a node",
 			() => {
 				const tree = (myTree as IndexedTree<string>).clone() as IndexedTree<string>;
-				tree.children!.read(1)!.prune();
-				expect((tree.children!.read(1)!.children === null)).toBe(true);
+				tree.children![1]!.prune();
+				expect((tree.children![1]!.children === null)).toBe(true);
 				expect(tree._count).toBe(4);
 			});
 		test("Cut returns a node without its parent",
 			() => {
 				const tree = (myTree as IndexedTree<string>).clone() as IndexedTree<string>;
-				let child = tree.children!.read(1)!.cut() as IndexedTree<string>;
-				expect(tree.children!.read(1)!.id).toBe("c1");
+				let child = tree.children![1]!.cut() as IndexedTree<string>;
+				expect(tree.children![1]!.id).toBe("c1");
 				expect((child.parent === null)).toBe(true);
 				expect(child.id).toBe("c2");
 				expect(tree._count).toBe(3);
@@ -241,15 +240,15 @@ describe("IndexedTree",
 			() => {
 				const tree = (myTree as IndexedTree<string>).clone();
 				expect(tree.depth()).toBe(0);
-				expect(tree.children!.read(1)!.depth()).toBe(1);
-				expect(tree.children!.read(1)!.children!.read(0)!.depth()).toBe(2);
+				expect(tree.children![1]!.depth()).toBe(1);
+				expect(tree.children![1]!.children![0]!.depth()).toBe(2);
 			});
 		test("Sort sorts all children recursivly",
 			() => {
 				const tree = (myTree as IndexedTree<string>).clone();
 				tree.sort(desc);
-				expect(tree.children!.read(0)!.data!).toBe("c3");
-				expect(tree.children!.read(1)!.children!.read(1)!.data!).toBe("c2-1");
+				expect(tree.children![0]!.data!).toBe("c3");
+				expect(tree.children![1]!.children![1]!.data!).toBe("c2-1");
 			});
 
 	}

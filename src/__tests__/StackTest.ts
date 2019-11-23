@@ -55,7 +55,7 @@ describe("Stack",
 				const stack = new Stack();
 				stack.push(1);
 				stack.push(2);
-				expect(stack.toList().values).toEqual([1, 2]);
+				expect(stack.values).toEqual([1, 2]);
 			});
 		test("Setting a limit limits the list by shifting",
 			() => {
@@ -65,14 +65,14 @@ describe("Stack",
 				stack.push(3);
 				stack.limit = 2;
 				//setting limit evicts the oldest
-				expect(stack.toList().values).toEqual([2, 3]);
+				expect(stack.values).toEqual([2, 3]);
 				stack.push(4);
 				//pushing on a limited stack evicts the oldest
-				expect(stack.toList().values).toEqual([3, 4]);
+				expect(stack.values).toEqual([3, 4]);
 				stack.limit = 0;
 				stack.push(5);
 				//setting the limit to 0 removes the limit
-				expect(stack.toList().values).toEqual([3, 4, 5]);
+				expect(stack.values).toEqual([3, 4, 5]);
 				stack.limit = -1;
 				//limit is >= 0
 				expect(stack.limit).toBe(0);
@@ -96,7 +96,7 @@ describe("Stack",
 				stack.push(2);
 				stack.push(3);
 				let stack2 = stack.clone();
-				expect(stack.toList().equals(stack2.toList())).toBe(true);
+				expect(stack.values).toEqual(stack2.values);
 			});
 		test("ToJson formats Stack correct",
 			() => {

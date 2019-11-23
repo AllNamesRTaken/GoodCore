@@ -1,10 +1,9 @@
 /// <reference path="../base.d.ts" />
 
-import { List } from "./List";
 export class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
     public id: string;
     public parent: this | null;
-    public children: List<this> | null;
+    public children: this[] | null;
     public data: T | null;
     public virtual: boolean;
     public isDirty: boolean;
@@ -44,7 +43,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
     public reduce<S>(fn?: (acc: S, cur: this | null) => S, start?: S): S;
     public clone(): this;
     public filter(condition: (node: this) => boolean): this;
-    public select(condition?: (node: this) => boolean, acc?: List<this>): List<this>;
+    public select(condition?: (node: this) => boolean, acc?: this[]): this[];
     public find(condition: number | ((node: this) => boolean)): this | null;
     protected _findBySize(pos: number): this | null;
     public depth(): number;
