@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
 	    "rootDir": "./src",
-		"outDir": "./distES",
+		"outDir": "./dist",
 	    "sourceMap": true,
 	    "target": "es6",
-	    "module": "es2015",
+	    "module": "commonjs",
 	    "moduleResolution": "node",
 	    "declaration": false,
 	    "noImplicitAny": true,
@@ -18,21 +18,22 @@
 	    "experimentalDecorators": true,
 	    "allowJs": false,
 		"listFiles": false,
-		"downlevelIteration": true,
+		"downlevelIteration": false,
 		"lib": [
+			"es2015.symbol.wellknown",
 			"dom",
+			"es5",
 			"es6",
             "es2015.promise",
 			"scripthost"
         ]
     },
 	"include": [
-		"./src/**/*.ts",
+		"./src/lib/GoodCoreList.ts",
 		"./typings/**/*.d.ts"
 	],
 	"exclude": [
 		"**/__tests__/**/*.ts",
-		"./src/lib/wip/**/*.ts",
-		"./src/lib/GoodCoreList.ts"
+		"./src/lib/wip/**/*.ts"
 	]
 }
