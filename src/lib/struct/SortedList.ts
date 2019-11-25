@@ -14,7 +14,7 @@ export class Comparer {
 	public static NumberAsc = function(a: number, b: number) { return a < b ? -1 : a === b ? 0 : 1; };
 	public static NumberDesc = function(a: number, b: number) { return a < b ? 1 : a === b ? 0 : -1; };
 }
-export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T>, ISerializable<T[]>, IDeserializable<SortedList<T>>, ICloneable<SortedList<T>> {
+export class SortedList<T = number> implements IterableIterator<T>, IBasicList<T>, ISerializable<T[]>, IDeserializable<SortedList<T>>, ICloneable {
 	private _list: List<T> = new List<T>();
 	private _cmp: (a: T, b: T) => number;
 	private _pointer: number = 0;

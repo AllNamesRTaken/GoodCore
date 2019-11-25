@@ -1,7 +1,7 @@
 /// <reference path="../base.d.ts" />
 
 import { List } from "./List";
-export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable {
     constructor();
     protected create<S = T>(): Dictionary<S>;
     has(key: number | string): boolean;
@@ -16,7 +16,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
     readonly values: T[];
     readonly keys: string[];
     readonly count: number;
-    clone(): Dictionary<T>;
+    clone(): this;
     toJSON(): any;
     serialize(): IObject;
     deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;

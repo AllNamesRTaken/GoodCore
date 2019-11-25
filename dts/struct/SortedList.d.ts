@@ -7,7 +7,7 @@ export class Comparer {
     static NumberAsc: (a: number, b: number) => 1 | 0 | -1;
     static NumberDesc: (a: number, b: number) => 1 | 0 | -1;
 }
-export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>, IDeserializable<SortedList<T>>, ICloneable<SortedList<T>> {
+export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>, IDeserializable<SortedList<T>>, ICloneable {
     constructor(comparer?: ((a: T, b: T) => number), arr?: T[] | List<T> | SortedList<T>);
     [Symbol.iterator](): IterableIterator<T>;
     next(value?: any): IteratorResult<T>;
@@ -27,7 +27,7 @@ export class SortedList<T = number> implements IBasicList<T>, ISerializable<T[]>
     shift(): T | undefined;
     bulkAdd(v: T[] | List<T> | SortedList<T>): SortedList<T>;
     copy(src: SortedList<T> | List<T> | T[]): SortedList<T>;
-    clone(): SortedList<T>;
+    clone(): this;
     remove(v: T): SortedList<T>;
     removeAt(n: number): T | undefined;
     removeFirst(fn: (el: T) => boolean): T | undefined;

@@ -21,6 +21,21 @@ function cycle(event: any) {
 let dump: any;
 export const suites = [
 	new Benchmark.Suite()
+		.add("Array::some", function () {
+			dump = intArray10k.some((v, i) => i > 5000);
+		})
+		.add("Arr.some", function () {
+			dump = Arr.some(intArray10k, (v, i) => i > 5000);
+		})
+		// add listeners
+		.on("cycle", function (event: any) {
+			cycle(event);
+		})
+		.on("complete", function () {
+			complete(this);
+		}),
+
+	new Benchmark.Suite()
 		.add("Array::indexOf", function () {
 			dump = intArray10k.indexOf(-1);
 		})

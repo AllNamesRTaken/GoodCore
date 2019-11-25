@@ -1,6 +1,6 @@
 /// <reference path="../base.d.ts" />
 
-export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable<List<T>> {
+export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<List<T>>, ICloneable {
     constructor(arr?: T[] | List<T>);
     [Symbol.iterator](): IterableIterator<T>;
     next(value?: any): IteratorResult<T>;
@@ -26,7 +26,7 @@ export class List<T> implements IList<T>, ISerializable<T[]>, IDeserializable<Li
     append(v: T[] | List<T>): List<T>;
     copy(src: List<T> | T[]): List<T>;
     shallowCopy(src: List<T> | T[]): List<T>;
-    clone(): List<T>;
+    clone(): this;
     remove(v: T): List<T>;
     removeFirst(fn: (el: T) => boolean): T | undefined;
     removeAt(n: number): T | undefined;

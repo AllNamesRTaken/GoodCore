@@ -149,21 +149,25 @@ export function remove(arr: any[], el: any): void {
 	const start = indexOfElement(arr, el);
 	removeAt(arr, start);
 }
-export function indexOf<T>(src: T[], fn: (el: T) => boolean): number {
+export function indexOf<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean): number {
 	let i = -1;
 	const len = isNullOrUndefined(src) ? 0 : src.length;
 	while (++i < len) {
-		if (fn(src[i])) {
+		if (fn(src[i], i, src)) {
 			return i;
 		}
 	}
 	return -1;
 }
-export function find<T>(src: T[], fn: (el: T) => boolean): T | undefined {
-	let i = indexOf(src, fn);
+export function find<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean): T | undefined {
 	let result: T | undefined;
-	if (i !== -1) {
-		result = src[i];
+	if(Array.prototype.find) {
+		result = src.find(fn);
+	} else {
+		let i = indexOf(src, fn);
+		if (i !== -1) {
+			result = src[i];
+		}
 	}
 	return result;
 } 
@@ -236,20 +240,19 @@ export function deepFill<T>(src: T[], target: T[], at: number = 0): void {
 }
 export function filter<T>(src: T[], fn: (el: T, i: number) => boolean): T[] {
 	let result: T[];
-	// natives are still slower on node 10.9
-	// if(Env.hasFastNativeArrays()) {
-	// 	result = isNullOrUndefined(src) ? [] : src.filter(fn);
-	// } else {
-	result = [];
-	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
-	while (++i < len) {
+	if(Env.hasFastNativeArrays()) {
+		result = isNullOrUndefined(src) ? [] : src.filter(fn);
+	} else {
+		result = [];
+		let i = -1;
+		const len = isNullOrUndefined(src) ? 0 : src.length;
+		while (++i < len) {
 			const el = src[i];
 			if (fn(el, i) === true) {
 				result.push(el);
 			}
 		}
-	// }
+	}
 	return result;
 }
 export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void {
@@ -273,10 +276,15 @@ export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => b
 export function map<S, T>(src: S[], fn: (el: S, i: number) => T, startIndex: number = 0): T[] {
 	let result: T[];
 	let i = startIndex - 1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
-	result = new Array<T>(len);
-	while (++i < len) {
-		result[i] = fn(src[i], i);
+	let isNull = isNullOrUndefined(src);
+	if (Env.hasFastNativeArrays && !isNull) {
+		result = src.map(fn)
+	} else {
+		const len = isNull ? 0 : src.length;
+		result = new Array<T>(len);
+		while (++i < len) {
+			result[i] = fn(src[i], i);
+		}
 	}
 	return result;
 }
@@ -305,11 +313,15 @@ export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T
 export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, pos?: number, to?: number): U {
 	let acc: U = start;
 	if (isNotNullOrUndefined(src)) {
-		pos = Math.min(Math.max(0, isUndefined(pos) ? 0 : pos!), src.length - 1);
-		to = Math.min(Math.max(0, isUndefined(to) ? src.length - 1 : to!), src.length - 1);
-		let i = pos - 1;
-		while (++i < to + 1) {
-			acc = fn(acc, src[i]);
+		if (Env.hasFastNativeArrays && !isNull) {
+			acc = src.reduce(fn, acc);
+		} else {	
+			pos = Math.min(Math.max(0, isUndefined(pos) ? 0 : pos!), src.length - 1);
+			to = Math.min(Math.max(0, isUndefined(to) ? src.length - 1 : to!), src.length - 1);
+			let i = pos - 1;
+			while (++i < to + 1) {
+				acc = fn(acc, src[i]);
+			}
 		}
 	}
 	return acc;
@@ -402,19 +414,23 @@ export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolea
 	while (--i >= 0 && (combined ? !fnOrTest(src[i], i) : !(fnOrTest(src[i], i) || (fn!(src[i], i), false)))) {
 	}
 }
-export function some<T>(src: T[], fn: (el: T) => boolean): boolean {
+export function some<T>(src: T[], fn: (el: T, i: number) => boolean): boolean {
 	let result = false;
-	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
-	while (++i < len && !(result = fn(src[i]))) {
+	if (Env.hasFastNativeArrays && !isNull) {
+		result = isNullOrUndefined(src) ? false : src.some(fn);
+	} else {	
+		let i = -1;
+		const len = isNullOrUndefined(src) ? 0 : src.length;
+		while (++i < len && !(result = fn(src[i], i))) {
+		}
 	}
 	return result;
 }
-export function all<T>(src: T[], fn: (el: T) => boolean): boolean {
+export function all<T>(src: T[], fn: (el: T, i: number) => boolean): boolean {
 	let result = true;
 	let i = -1;
 	const len = isNullOrUndefined(src) ? 0 : src.length;
-	while (++i < len && (result = fn(src[i]))) {
+	while (++i < len && (result = fn(src[i], i))) {
 	}
 	return result;
 }

@@ -25,8 +25,8 @@ interface IPoolable {
 	release(): void;
 	initPool(pool: IPool<IPoolable>): void;
 }
-interface ICloneable<T> {
-	clone(): T;
+interface ICloneable {
+	clone(): this;
 }
 interface IInitable {
 	init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this;
@@ -50,7 +50,7 @@ interface IBasicList<T> {
 	pop(): T | undefined;
 	shift(): T | undefined;
 	copy(src: IBasicList<T> | T[]): IBasicList<T>;
-	clone(): IBasicList<T>;
+	clone(): this;
 	truncate(size?: number): IBasicList<T>;
 	fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
 	remove(v: T): IBasicList<T>;
@@ -102,7 +102,7 @@ interface IList<T> extends IBasicList<T> {
 interface ITreeNode<T> {
 	id: string;
 	parent: ITreeNode<T> | null;
-	children: IList<ITreeNode<T>> | null;
+	children: Array<ITreeNode<T>> | null;
 	data: T | null;
 }
 type TreeEvent = "change";

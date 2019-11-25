@@ -28,8 +28,8 @@ interface IPoolable {
     release(): void;
     initPool(pool: IPool<IPoolable>): void;
 }
-interface ICloneable<T> {
-    clone(): T;
+interface ICloneable {
+    clone(): this;
 }
 interface IInitable {
     init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this;
@@ -58,7 +58,7 @@ interface IBasicList<T> {
     pop(): T | undefined;
     shift(): T | undefined;
     copy(src: IBasicList<T> | T[]): IBasicList<T>;
-    clone(): IBasicList<T>;
+    clone(): this;
     truncate(size?: number): IBasicList<T>;
     fill(size: number, populator: ((i: number) => T) | T): IBasicList<T>;
     remove(v: T): IBasicList<T>;
@@ -107,10 +107,11 @@ interface IList<T> extends IBasicList<T> {
     unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
     flatten<U>(maxDepth?: number): IList<U>;
 }
+type TreeEvent = "change";
 interface ITreeNode<T> {
     id: string;
     parent: ITreeNode<T> | null;
-    children: IList<ITreeNode<T>> | null;
+    children: Array<ITreeNode<T>> | null;
     data: T | null;
 }
 interface IVec2 {
@@ -229,7 +230,7 @@ declare class Rect implements IRect {
     zero(): Rect;
 }
 
-declare class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable<List<T>> {
+declare class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T>>, ICloneable {
     constructor(arr?: T[] | List<T>);
     [Symbol.iterator](): IterableIterator<T>;
     next(value?: any): IteratorResult<T>;
@@ -258,7 +259,7 @@ declare class List<T> implements IList<T>, ISerializable<T[]>, IRevivable<List<T
     append(v: T[] | List<T>): List<T>;
     copy(src: List<T> | T[]): List<T>;
     shallowCopy(src: List<T> | T[]): List<T>;
-    clone(): List<T>;
+    clone(): this;
     remove(v: T): List<T>;
     removeFirst(fn: (el: T) => boolean): T | undefined;
     removeAt(n: number): T | undefined;
@@ -309,7 +310,7 @@ declare class Comparer {
     static NumberAsc: (a: number, b: number) => 1 | -1 | 0;
     static NumberDesc: (a: number, b: number) => 1 | -1 | 0;
 }
-declare class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable<SortedList<T>> {
+declare class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IRevivable<SortedList<T>>, ICloneable {
     constructor(comparer?: (a: T, b: T) => number, arr?: T[] | List<T> | SortedList<T>);
     [Symbol.iterator](): IterableIterator<T>;
     next(value?: any): IteratorResult<T>;
@@ -330,7 +331,7 @@ declare class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IReviv
     copy(src: SortedList<T> | List<T> | T[]): SortedList<T>;
     truncate(size?: number): List<T>;
     fill(size: number, populator: ((i: number) => T) | T): List<T>;
-    clone(): SortedList<T>;
+    clone(): this;
     remove(v: T): SortedList<T>;
     removeAt(n: number): T | undefined;
     removeFirst(fn: (el: T) => boolean): T | undefined;
@@ -370,7 +371,7 @@ declare class SortedList<T> implements IBasicList<T>, ISerializable<T[]>, IReviv
     deserialize(array: any[], ...types: Array<Constructor<any>>): SortedList<T>;
 }
 
-declare class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable<Dictionary<T>> {
+declare class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictionary<T>>, ICloneable {
     constructor();
     protected create<S = T>(): Dictionary<S>;
     has(key: number | string): boolean;
@@ -385,14 +386,14 @@ declare class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictio
     readonly values: T[];
     readonly keys: string[];
     readonly count: number;
-    clone(): Dictionary<T>;
+    clone(): this;
     toJSON(): any;
     serialize(): IObject;
     revive(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
     deserialize(obj: any, ...types: Array<Constructor<any>>): Dictionary<T>;
 }
 
-declare class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable<Stack<T>> {
+declare class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, ICloneable {
     DEFAULT_SIZE: number;
     readonly values: T[];
     readonly depth: number;
@@ -407,19 +408,18 @@ declare class Stack<T> implements ISerializable<T[]>, IRevivable<Stack<T>>, IClo
     pop(): T | undefined;
     peek(): T | undefined;
     peekAt(index: number): T | undefined;
-    toList(): List<T>;
     clear(): Stack<T>;
-    clone(): Stack<T>;
+    clone(): this;
     toJSON(): any;
     serialize(): T[];
     revive(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
     deserialize(array: any[], ...types: Array<Constructor<any>>): Stack<T>;
 }
 
-declare class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInitable {
+declare class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
     public id: string;
     public parent: this | null;
-    public children: List<this> | null;
+    public children: this[] | null;
     public data: T | null;
     public virtual: boolean;
     public isDirty: boolean;
@@ -460,7 +460,7 @@ declare class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInita
     public reduce<S>(fn?: (acc: S, cur: this | null) => S, start?: S): S;
     public clone(): this;
     public filter(condition: (node: this) => boolean): this;
-    public select(condition?: (node: this) => boolean, acc?: List<this>): List<this>;
+    public select(condition?: (node: this) => boolean, acc?: this[]): this[];
     public find(condition: number | ((node: this) => boolean)): this | null;
     protected _findBySize(pos: number): this | null;
     public depth(): number;
@@ -475,7 +475,7 @@ declare class Tree<T> implements ISerializable<T[]>, ICloneable<Tree<T>>, IInita
 
 declare class IndexedTree<T> extends Tree<T> {
     init(obj: Partial<this>, mapping?: any): this;
-    index: Dictionary<this>;
+    index: Indexable<this>;
     indexer: (node: this) => string | number;
     count: number;
     static fromObject<T>(obj: any, indexer?: (node: IndexedTree<T>) => string | number): Tree<T>;
@@ -484,7 +484,7 @@ declare class IndexedTree<T> extends Tree<T> {
         parent?: ((node: S) => string | number) | string | number,
         data?: ((node: S) => any) | string,
     },                        virtualRoot?: boolean): Tree<T>;
-    constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Dictionary<Tree<T>>);
+    constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Indexable<Tree<T>>);
     protected create<S = T>(...args: any[]): Tree<S>;
     insertAt(pos: number, data: T, id?: string | number, updateIndex?: boolean): void;
     addTo(parentId: string | number, data: T | this, id?: string | number, updateIndex?: boolean): this | undefined;

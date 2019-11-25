@@ -1,6 +1,5 @@
 import { Global } from "./Global";
 import { hasConsole, isNotUndefined, isNotNullOrUndefined, isUndefined } from "./Test";
-import { Timer } from "./Timer";
 
 export interface IObjectWithFunctions<T extends Object | void> {
 	[key: string]: (...args: any[]) => T;
@@ -91,7 +90,10 @@ export function getDate(delta: string = "", start?: Date): Date {
 }
 export function newUUID(): string { // export function Domain/MIT
 	let d: number = new Date().getTime();
-	d += Timer.now();
+	let hrTime: [number, number] = [0,0];
+	d += typeof(performance) !== "undefined" 
+		? performance.now() 
+		: (hrTime = process.hrtime(), hrTime[0] * 1000 + (hrTime[1] / 1e6));
 	return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
 		const r: number = (d + Math.random() * 16) % 16 | 0;
 		d = Math.floor(d / 16);
