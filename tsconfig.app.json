@@ -34,6 +34,7 @@
 	],
 	"exclude": [
 		"**/__tests__/**/*.ts",
-		"./src/lib/wip/**/*.ts"
+		"./src/lib/wip/**/*.ts",
+		"./src/lib/GoodCoreList.ts"
 	]
 }

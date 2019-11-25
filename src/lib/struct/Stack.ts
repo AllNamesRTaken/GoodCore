@@ -1,4 +1,4 @@
-import { deepCopy, slice, deserialize } from "../Arr";
+import { deepCopy, deserialize } from "../Arr";
 import { isFunction } from "../Test";
 
 export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable {
@@ -7,7 +7,7 @@ export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, 
 	private _pos: number = 0;
 	private _limit: number = 0;
 	public get values(): T[] {
-		return slice(this._array, 0, this._pos);
+		return this._array.slice(0, this._pos);
 	}
 	public get depth(): number {
 		return this._pos;
@@ -89,10 +89,12 @@ export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, 
 		}
 	}
 	public toJSON(): T[] {
-		return slice(this.values, 0, this._pos);
+		return this.values.slice(0, this._pos);
 	}
 	public serialize(): T[] {
-		return slice(this.values, 0, this._pos).map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
+		return this.values
+			.slice(0, this._pos)
+			.map((el) => isFunction((el as any).serialize) ? (el as any).serialize() : el);
 	}
 	public deserialize(array: any[], ...types: Array<Constructor<any>>): this {
 		deserialize.apply(this, [array, this._array].concat(types));
