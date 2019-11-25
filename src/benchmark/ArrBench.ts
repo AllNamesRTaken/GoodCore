@@ -166,14 +166,127 @@ export const suites = [
 
 	new Benchmark.Suite()
 		.add("Array::splice", function () {
-			workset.splice(SIZE / 2, 100, ...intArray100);
+			workset.splice.bind(workset, SIZE / 2, 100).apply(workset, intArray100);
+			workset.length = SIZE;
 		})
 		.add("Arr.splice", function () {
 			Arr.splice(workset, SIZE / 2, 100, intArray100);
+			workset.length = SIZE;
 		})
 		.add("Arr.splice (no native)", function () {
 			Test.Env.useNative = false;
 			Arr.splice(workset, SIZE / 2, 100, intArray100);
+			workset.length = SIZE;
+			Test.Env.useNative = undefined;
+		})
+		.on("start", function (event: any) {
+			workset = intArray10k.slice();
+		})
+		.on("cycle", function (event: any) {
+			cycle(event);
+		})
+		.on("complete", function () {
+			complete(this);
+			if (workset.length !== SIZE) {
+				console.log(workset.length);
+			}
+		}),
+
+	new Benchmark.Suite()
+		.add("Array::splice", function () {
+			workset.splice.bind(workset, SIZE / 2, 10).apply(workset, intArray100);
+			workset.length = SIZE;
+		})
+		.add("Arr.splice", function () {
+			Arr.splice(workset, SIZE / 2, 10, intArray100);
+			workset.length = SIZE;
+		})
+		.add("Arr.splice (no native)", function () {
+			Test.Env.useNative = false;
+			Arr.splice(workset, SIZE / 2, 10, intArray100);
+			workset.length = SIZE;
+			Test.Env.useNative = undefined;
+		})
+		.on("start", function (event: any) {
+			workset = intArray10k.slice();
+		})
+		.on("cycle", function (event: any) {
+			cycle(event);
+		})
+		.on("complete", function () {
+			complete(this);
+			if (workset.length !== SIZE) {
+				console.log(workset.length);
+			}
+		}),
+
+	new Benchmark.Suite()
+		.add("Array::splice", function () {
+			workset.splice.bind(workset, SIZE / 2, 200).apply(workset, intArray100);
+			workset.length = SIZE;
+		})
+		.add("Arr.splice", function () {
+			Arr.splice(workset, SIZE / 2, 200, intArray100);
+			workset.length = SIZE;
+		})
+		.add("Arr.splice (no native)", function () {
+			Test.Env.useNative = false;
+			Arr.splice(workset, SIZE / 2, 200, intArray100);
+			workset.length = SIZE;
+			Test.Env.useNative = undefined;
+		})
+		.on("start", function (event: any) {
+			workset = intArray10k.slice();
+		})
+		.on("cycle", function (event: any) {
+			cycle(event);
+		})
+		.on("complete", function () {
+			complete(this);
+			if (workset.length !== SIZE) {
+				console.log(workset.length);
+			}
+		}),
+		new Benchmark.Suite()
+		.add("Array::splice", function () {
+			workset.splice.bind(workset, SIZE - 10, 10).apply(workset, intArray100);
+			workset.length = SIZE;
+		})
+		.add("Arr.splice", function () {
+			Arr.splice(workset, SIZE - 10, 10, intArray100);
+			workset.length = SIZE;
+		})
+		.add("Arr.splice (no native)", function () {
+			Test.Env.useNative = false;
+			Arr.splice(workset, SIZE - 10, 10, intArray100);
+			workset.length = SIZE;
+			Test.Env.useNative = undefined;
+		})
+		.on("start", function (event: any) {
+			workset = intArray10k.slice();
+		})
+		.on("cycle", function (event: any) {
+			cycle(event);
+		})
+		.on("complete", function () {
+			complete(this);
+			if (workset.length !== SIZE) {
+				console.log(workset.length);
+			}
+		}),
+		new Benchmark.Suite()
+		.add("Array::splice", function () {
+			workset.splice.bind(workset, 0, 10).apply(workset, intArray100);
+			workset.length = SIZE;
+		})
+		.add("Arr.splice", function () {
+			Arr.splice(workset, 0, 10, intArray100);
+			workset.length = SIZE;
+		})
+		.add("Arr.splice (no native)", function () {
+			Test.Env.useNative = false;
+			Arr.splice(workset, 0, 10, intArray100);
+			workset.length = SIZE;
 			Test.Env.useNative = undefined;
 		})
 		.on("start", function (event: any) {

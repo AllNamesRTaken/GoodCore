@@ -66,14 +66,19 @@ export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, 
 	remove = Math.min(remove, srcLen - pos);
 
 	// natives are still slower on node 10.9
-	if (Env.hasFastNativeArrays() && (insert.length !== remove || pos + insert.length >= src.length)) {
+	if (Env.hasFastNativeArrays() && (insert.length !== remove && srcLen - remove - pos !== 0 )) {
 		(src.splice.bind(src, pos, remove) as Function).apply(src, insert);
 	} else {
 		let insertLen = insert.length;
 		let newLen = srcLen - remove + insertLen;
 		let delta = remove - insertLen;
-		if (delta < 0) {
-			src.length = newLen;		
+		let endOfCut = pos + remove;
+		let cutsEnd = endOfCut === srcLen;
+
+		if (cutsEnd) {
+			src.length = newLen;
+		} else if (delta < 0) {
+			src.length = newLen;
 			let i = newLen;
 			while (--i >= pos + remove) {
 				src[i] = src[i + delta];
@@ -84,12 +89,13 @@ export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, 
 		while (++i < pos + insertLen) {
 			src[i] = insert[i - pos];
 		}
-		if ( delta > 0) {
+		if (!cutsEnd && delta > 0) {
 			--i;
 			while (++i < srcLen - delta) {
 				src[i] = src[i + delta];
 			}
 			src.length = newLen;
+			
 		}
 	}
 }
@@ -110,11 +116,9 @@ export function removeAt<T>(arr: T[], index: number): T | undefined {
 			result = arr.splice(index, 1)[0];
 		} else {
 			let len = arr.length;
-			index = Math.max(0, index);
-			index = Math.min(index, len);
-			let i = index;
+			let i = Math.max(0, index);
+			i = Math.min(i, len);
 			result = arr[i];
-			// result = arr[index];
 			while (++i < len) {
 				arr[i - 1] = arr[i];
 			}

@@ -50,16 +50,16 @@ export function integrate(alias?: string | object) {
 		{name: "Util", object: Util},
 	];
 	if (stringAlias) {
-		(Global.window as any)[alias as string] = (Global.window as any)[alias as string] || {};
+		(Global.global as any)[alias as string] = (Global.global as any)[alias as string] || {};
 	}
 	for (let i = 0; i < list.length; i++) {
 		let stuff = list[i];
 		if (stringAlias) {
-			(Global.window as any)[alias as string][stuff.name] = stuff.object;
+			(Global.global as any)[alias as string][stuff.name] = stuff.object;
 		} else if (objectAlias) {
 			(alias as any)[stuff.name] = stuff.object;
 		} else {
-			(Global.window as any)[stuff.name] = stuff.object;
+			(Global.global as any)[stuff.name] = stuff.object;
 		}
 	}
 }
