@@ -1,4 +1,4 @@
-import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined } from "./Test";
+import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined, isString } from "./Test";
 
 interface IDestroyable {
 	destroy(): void;
@@ -262,9 +262,7 @@ export function transform<T extends {[index: string]: any}, S = T, U = any>(
 	fn: (result: S, value: any, key: string) => boolean | void, 
 	accumulator?: S
 ): S  {
-	if (accumulator === undefined) {
-		accumulator = Object.create(target) as S;
-	}
+	accumulator = accumulator || (isObject(target) ? Object.create(target) as S : {} as S);
 	forEach(target, (value: any, key: string) => {
 		return fn(accumulator!, value, key);
 	});
