@@ -151,7 +151,7 @@ declare namespace Arr {
     * Transforms two or more arrays of max length N into one array of length N
     * @param a Input array
     * @param b Input array
-    * @param fn (Optional) transform function. Default will return a tuple of [a, b]
+    * @param fn (Optional) transform function. Default will return an array of elements being tuples of [a, b]
     * @returns The new array
     */
     export function zip<S, T, U = [S, T], V = undefined, W = undefined>(
@@ -166,7 +166,7 @@ declare namespace Arr {
     * @param a Input array
     * @param b Input array
     * @param c Input array
-    * @param fn (Optional) transform function. Default will return a tuple of [a, b, c]
+    * @param fn (Optional) transform function. Default will return an array of elements being tuples of [a, b, c]
     * @returns The new array
     */
     export function zip<S, T, V, U = [S, T, V], W = undefined>(
@@ -177,12 +177,12 @@ declare namespace Arr {
         d?: undefined,
     ): U[];
     /**
-    * Transforms two or more arrays of max length N into one array of length N
+    * Transforms two or more arrays of min length N into one array of length N
     * @param a Input array
     * @param b Input array
     * @param c Input array
     * @param d Input array
-    * @param fn (Optional) transform function. Default will return a tuple of [a, b, c, d]
+    * @param fn (Optional) transform function. Default will return an array of elements being tuples of [a, b, c, d]
     * @returns The new array
     */
     export function zip<S, T, V, W, U = [S, T, V, W]>(

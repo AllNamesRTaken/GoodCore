@@ -59,9 +59,6 @@ import {
 
 import * as Test from "./Test";
 
-// import {Stack} from "goodcorees/struct/Stack";
-// import {Tree} from "goodcorees/struct/Tree";
-
 export {Test as Test};
 
 export const Arr = {
