@@ -16,4 +16,4 @@ export function forEach<T>(
     fn: (value: T, key: string) => boolean | void
 ): void;
 export function transform<T extends {[index: string]: any}, S = {}, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string) => boolean | void, accumulator?: S): S;
-export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S;
+export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): T;

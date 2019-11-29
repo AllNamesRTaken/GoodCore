@@ -147,7 +147,7 @@ declare namespace Obj {
     ): void;
     // tslint:disable-next-line:max-line-length
     export function transform<T extends {[index: string]: any}, S = {}, U = any>(target: T | U[], fn: (result: S, value: any, key: string) => boolean | void, accumulator?: S): S;
-    export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): S;
+    export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): T;
 }
 declare interface IObjectWithFunctions<T extends Object | void> {
     [key: string]: (...args: any[]) => T;
@@ -192,7 +192,7 @@ declare namespace Util {
     export function getFunctionCode(fn: Function): string;
     export function getDate(delta?: string, start?: Date): Date;
     export function newUUID(): string;
-    export function newInt(): number;
+    export function newInt(key: number | string = 0): number;
     export function callDebugger(): void;
     export function pipeOut(
         log?: ((...args: any[]) => void) | null,
