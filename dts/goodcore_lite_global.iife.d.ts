@@ -45,6 +45,9 @@ declare const Global: {
     hasNativeWindow: boolean;
     global: Window; // has to exclude Node since this is browser only
 };
+/**
+* Functions that helps you manipulate arrays
+*/
 declare namespace Arr {
     /**
     * Flattens a nested array to a single level.
@@ -53,7 +56,7 @@ declare namespace Arr {
     */
     export function flatten<T>(src: any[]): T[];
     /**
-    * Reverses an array.
+    * Reverses an array. (Very fast)
     * @param src Array to reverse
     */
     export function reverse<T>(array: T[]): T[];
@@ -217,7 +220,7 @@ declare namespace Arr {
     * @param desciminators N-1 functions that returns true if a value belongs to a bucket.
     * @returns a tuple with N arrays where ich array contains the elements matched by the matching deciminator function.
     */
-   export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>): T[][];
+    export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>): T[][];
     /**
     * Splits an array into two separate arrays bases on a descriminator function.
     * @param array Array to split
@@ -233,7 +236,9 @@ declare namespace Arr {
     */
     export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[];
 }
-
+/**
+* Functions that loops over, transform or act on objects
+*/
 declare namespace Obj {
     /**
     * Calles the destroy function on any IDestroyable or sets all properties to null on other objects.
@@ -290,7 +295,7 @@ declare namespace Obj {
     * @param obj Object to copy
     * @returns a shallow copy of obj
     */
-   export function shallowCopy<T, K extends keyof T>(obj: T): { [P in K]: T[P] };
+    export function shallowCopy<T, K extends keyof T>(obj: T): { [P in K]: T[P] };
     /**
     * Copys an object deeply
     * @param obj Object to copy
@@ -319,13 +324,13 @@ declare namespace Obj {
     * @param mapping (Optional) property name transformation map
     * @param limitToExisting (Optional) Limit the properties being set to those that have non undefined values in target
     */
-   export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting?: boolean): void;
+    export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting?: boolean): void;
     /**
     * Applies a function to all the properties of an object. Returning false will end the loop.
     * @param target Target object to loop over
     * @param fn Function to apply to each property. Returning false will end the loop
     */
-   export function forEach<T>(
+    export function forEach<T>(
         target: Indexable<T> | T[],
         fn: (value: T, key: string) => boolean | void,
     ): void;
@@ -344,7 +349,7 @@ declare namespace Obj {
     * @param base Object to compare against.
     * @returns An object of the targets type with the properties of target where those are different from the same properties in base.
     */
-   export function difference<T extends { [index: string]: any }, S extends { [index: string]: any } = T>(target: T, base: S): T;
+    export function difference<T extends { [index: string]: any }, S extends { [index: string]: any } = T>(target: T, base: S): T;
 }
 declare interface IObjectWithFunctions<T extends Object | void> {
     [key: string]: (...args: any[]) => T;
@@ -372,6 +377,9 @@ interface IThrottleOptions {
     trailing: boolean;
 }
 type IThrottledFunction<T> = (...args: ArgTypes<T>) => ResultType<T>;
+/**
+* Utility functions to make your life full of sunshine
+*/
 declare namespace Util {
     export class LoggableCounter {
         public name: string;
@@ -386,19 +394,19 @@ declare namespace Util {
     * @param key (Optional) name of the counter.
     * @returns LoggableCounter.
     */
-   export function counter(key?: number | string): LoggableCounter;
+    export function counter(key?: number | string): LoggableCounter;
     /**
     * Increases a counter with a given name by 1.
     * @param key (Optional) name of the counter.
     * @returns LoggableCounter.
     */
-   export function count(key?: number | string): LoggableCounter;
+    export function count(key?: number | string): LoggableCounter;
     /**
     * Wraps a function so that it only runs once.
     * @param fn Function to wrap
     * @returns A wrapped function that will only execute once.
     */
-   export function once<T extends (...args: any[]) => S, S = void>(fn: T): T;
+    export function once<T extends (...args: any[]) => S, S = void>(fn: T): T;
     export function init(win?: Window): void;
     /**
     * Gets a new Date object with a delta. Not as exact as a Time library like moment.
@@ -406,7 +414,7 @@ declare namespace Util {
     * @param start (Optional) Start Date to add delta to. Default is now.
     * @returns A new Date.
     */
-   export function getDate(delta?: string, start?: Date): Date;
+    export function getDate(delta?: string, start?: Date): Date;
     /**
     * Creates a reasonably unique UUID that conforms to to the standard UUID format.
     * @returns a UUID string.
@@ -459,12 +467,15 @@ declare namespace Util {
     * @param options Options object to configure if the throttled function should also trigger on the leading call and/or trailing the last timeout.
     * @returns The new throttled function.
     */
-   export function throttle<T extends (...args: any[]) => any>(
+    export function throttle<T extends (...args: any[]) => any>(
         method: T,
         duration?: number,
         options?: Partial<IThrottleOptions>,
     ): IThrottledFunction<T>;
 }
+/**
+* Functions that test if a value is what you hope it is
+*/
 declare namespace Test {
     export class Env {
         public static useNative?: boolean;
@@ -490,38 +501,38 @@ declare namespace Test {
     * @param it Argument to test.
     * @returns true if it is.
     */
-   export function isArray(it: any): boolean;
+    export function isArray(it: any): boolean;
     /**
     * Tests if the argument is an Element.
     * @param it Argument to test.
     * @returns true if it is.
     */
-   export function isElement(target: any): boolean;
+    export function isElement(target: any): boolean;
     /**
     * Tests if the argument is a function.
     * @param it Argument to test.
     * @returns true if it is.
     */
-   export function isFunction(it: any): boolean;
+    export function isFunction(it: any): boolean;
     /**
     * Tests if the argument is a number. (Strings with numbers are not numbers.)
     * @param it Argument to test.
     * @returns true if it is.
     */
-   export function isNumber(x: any): boolean;
+    export function isNumber(x: any): boolean;
     /**
     * Tests if the argument is an integer.
     * @param it Argument to test.
     * @returns true if it is.
     */
-   export function isInt(x: any): boolean;
+    export function isInt(x: any): boolean;
     /**
     * Tests if the argument is a string.
     * @param it Argument to test.
     * @returns true if it is.
     */
-   export function isString(x: any): boolean;
-   export function areNullOrUndefined(...args: any[]): boolean;
+    export function isString(x: any): boolean;
+    export function areNullOrUndefined(...args: any[]): boolean;
     export function areNotNullOrUndefined(...args: any[]): boolean;
     export function isNullOrUndefined(arg: any): boolean;
     export function isNotNullOrUndefined(arg: any): boolean;
