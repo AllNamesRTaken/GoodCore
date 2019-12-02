@@ -992,7 +992,7 @@ declare namespace Util {
     * @param key (Optional) name of counter.
     * @returns new integer.
     */
-    export function newInt(key: number | string = 0): number;
+    export function newInt(key?: number | string): number;
     export class AssertError extends Error { }
     /**
     * Asserts that a boolean expression is true or throws an exception with a given message.
