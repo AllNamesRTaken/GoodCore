@@ -68,10 +68,17 @@ declare namespace Arr {
     export function append<T>(arr: T[], values: T[]): void;
     /**
     * Searches an array for a matching condition.
-    * @param src Array search through
-    * @param fn Condition test the elements against
-    * @returns matching element or undefined
+    * @param src Array to search through
+    * @param fn Condition to test the elements against
+    * @returns the index of the matching element or -1
     */
+    export function indexOf<T>(src: any[], fn: (el: T) => boolean): number;
+    /**
+ * Searches an array for a matching condition.
+ * @param src Array to search through
+ * @param fn Condition to test the elements against
+ * @returns matching element or undefined
+ */
     export function find<T>(src: T[], fn: (el: T) => boolean): T | undefined;
     /**
     * Copies an array by copying the elements by reference.
@@ -92,12 +99,18 @@ declare namespace Arr {
     */
     export function deepCopyInto<T>(src: T[], target: T[]): void;
     /**
-    * Applies an async function to all elements in an array and returns a resulting array
+    * Applies an mapping function to all elements in an array and sets them in a targetArray without extra array allocation.
     * @param array Array loop over
     * @param fn Async function to apply
-    * @param inParallel (Optional) option to execute functions in parallel or serially
-    * @returns the flattened arrays
     */
+    export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T, startIndex?: number): void;
+    /**
+ * Applies an async function to all elements in an array and returns a resulting array
+ * @param array Array loop over
+ * @param fn Async function to apply
+ * @param inParallel (Optional) option to execute functions in parallel or serially
+ * @returns the flattened arrays
+ */
     export function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => PromiseLike<T>, inParallel?: boolean): Promise<T[]>;
     /**
     * Applies an async function to all elements in an array
@@ -547,4 +560,47 @@ declare namespace Test {
 declare class KeyValuePair<S, T> {
     key: S;
     value: T;
+}
+
+/**
+* Simple and precise Timer, can be used statically or as an instance.
+*/
+export class Timer {
+    /**
+    * (readonly) The last measured time for this timer. The same as Stop() returns.
+    */
+    static readonly time: number;
+    /**
+    * Get the current precition date time value in ms
+    */
+    static now(): number;
+    /**
+    * Starts the timer
+    * @returns the current time in ms
+    */
+    static start(): number;
+    /**
+    * Stops the timer and records the delta between start and stop
+    * @returns The delta between start and stop in ms
+    */
+    static stop(): number;
+    /**
+    * (readonly) The last measured time for this timer. The same as Stop() returns.
+    */
+    readonly time: number;
+    /**
+    * Get the current precition date time value in ms
+    * @returns the current time in ms
+    */
+    now(): number;
+    /**
+    * Starts the timer
+    * @returns the current time in ms
+    */
+    start(): number;
+    /**
+    * Stops the timer and records the delta between start and stop
+    * @returns The delta between start and stop in ms
+    */
+    stop(): number;
 }
