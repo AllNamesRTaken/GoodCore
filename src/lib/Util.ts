@@ -68,12 +68,12 @@ export function getFunctionCode(fn: Function): string {
 	return result;
 }
 function stdTimezoneOffset(date: Date) {
-    let jan = new Date(date.getFullYear(), 0, 1);
-    let jul = new Date(date.getFullYear(), 6, 1);
-    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+	let jan = new Date(date.getFullYear(), 0, 1);
+	let jul = new Date(date.getFullYear(), 6, 1);
+	return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
 }
 export function isDaylightSavingTime(date: Date) {
-    return date.getTimezoneOffset() < stdTimezoneOffset(date);
+	return date.getTimezoneOffset() < stdTimezoneOffset(date);
 }
 export function getDate(delta: string = "", start?: Date): Date {
 	const date = start ? new Date(start.getTime()) : new Date();
@@ -81,8 +81,8 @@ export function getDate(delta: string = "", start?: Date): Date {
 	const [, sign, years, months, days, hours, mins, secs] = toArray(/([+-])?(?:(\d+)Y)?(?:(\d+)M)?(?:(\d+)d)?(?:(\d+)h)?(?:(\d+)m)?(?:(\d+)s)?/.exec(rel) as ArrayLike<string>);
 	const plus = sign !== "-"; 
 	if (secs) { date.setSeconds(date.getSeconds() + (plus ? +parseInt(secs, 10) : -parseInt(secs, 10))); }
-	if (mins) { date.setMinutes(date.getMinutes() + (plus ? +parseInt(mins, 10): -parseInt(mins, 10))); }
-	if (hours) { date.setHours(date.getHours() + (plus ? +parseInt(hours, 10): -parseInt(hours, 10))); }
+	if (mins) { date.setMinutes(date.getMinutes() + (plus ? +parseInt(mins, 10) : -parseInt(mins, 10))); }
+	if (hours) { date.setHours(date.getHours() + (plus ? +parseInt(hours, 10) : -parseInt(hours, 10))); }
 	if (days) { date.setDate(date.getDate() + (plus ? +parseInt(days, 10) : -parseInt(days, 10))); }
 	if (months) { date.setMonth(date.getMonth() + (plus ? +parseInt(months, 10) : -parseInt(months, 10))); }
 	if (years) { date.setFullYear(date.getFullYear() + (plus ? +parseInt(years, 10) : -parseInt(years, 10))); }
@@ -90,7 +90,7 @@ export function getDate(delta: string = "", start?: Date): Date {
 }
 export function newUUID(): string { // export function Domain/MIT
 	let d: number = new Date().getTime();
-	let hrTime: [number, number] = [0,0];
+	let hrTime: [number, number] = [0, 0];
 	d += typeof(performance) !== "undefined" 
 		? performance.now() 
 		: (hrTime = process.hrtime(), hrTime[0] * 1000 + (hrTime[1] / 1e6));

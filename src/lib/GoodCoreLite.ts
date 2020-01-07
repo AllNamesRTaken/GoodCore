@@ -12,8 +12,10 @@ import {
 	flatten,
 	forEachAsync,
 	forSome,
+	indexOf,
 	insertAt,
 	mapAsync,
+	mapInto,
 	pivot,
 	reverse,
 	shallowCopy as scArray,
@@ -59,9 +61,9 @@ import {
 
 import * as Test from "./Test";
 
-// import {Stack} from "goodcorees/struct/Stack";
-// import {Tree} from "goodcorees/struct/Tree";
+import {Timer as Timer} from "./Timer";
 
+export {Timer as Timer};
 export {Test as Test};
 
 export const Arr = {
@@ -78,8 +80,10 @@ export const Arr = {
 	flatten,
 	forEachAsync,
 	forSome,
+	indexOf,
 	insertAt,
 	mapAsync,
+	mapInto,
 	pivot,
 	reverse,
 	shallowCopy: scArray,
@@ -123,10 +127,6 @@ export const Util = {
 	toArray,
 };
 
-// export {Stack as Stack}
-
-// export {Tree as Tree}
-
 const root = typeof(window) !== "undefined" 
 	? window 
 	: typeof(global) !== "undefined" 
@@ -140,8 +140,7 @@ export function integrate(alias?: string | object) {
 		{name: "Obj", object: Obj},
 		{name: "Test", object: Test},
 		{name: "Util", object: Util},
-		// {name: "Stack", object: Stack},
-		// {name: "Tree", object: Tree},
+		{name: "Timer", object: Timer},
 	];
 	if (stringAlias) {
 		(root as any)[alias as string] = (root as any)[alias as string] || {};

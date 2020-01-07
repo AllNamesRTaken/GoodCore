@@ -161,7 +161,7 @@ export function indexOf<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean
 }
 export function find<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean): T | undefined {
 	let result: T | undefined;
-	if(Array.prototype.find) {
+	if (Array.prototype.find) {
 		result = src.find(fn);
 	} else {
 		let i = indexOf(src, fn);
@@ -298,7 +298,7 @@ export async function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => Promise
 			result[i] = await fn(src[i], i);
 		}
 	} else {
-		result = await Promise.all(map(src, fn));
+		result = await Promise.all(src.map(fn));
 	}
 	return result;
 }
@@ -376,7 +376,7 @@ export async function forEachAsync<T>(array: T[], fn: (el: T, i: number) => Prom
 			await fn(array[i], i);
 		}
 	} else {
-		await Promise.all(map(array, fn));
+		await Promise.all(array.map(fn));
 	}
 }
 export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: (el: T, i: number) => any): void {
@@ -389,8 +389,8 @@ export function forSome<T>(src: T[], filter: (el: T, i: number) => boolean, fn: 
 		}
 	}
 }
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, startIndex?: number): void;
-export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn: (el: T, i: number) => void, startIndex?: number): void;
+export function until<T>(src: T[], fn: (el: T, i: number) => boolean | void, startIndex?: number): void;
+export function until<T>(src: T[], test: (el: T, i: number) => boolean | void, fn: (el: T, i: number) => void, startIndex?: number): void;
 export function until<T>(src: T[], fnOrTest: (el: T, i: number) => boolean | void, fn?: ((el: T, i: number) => void) | number, startIndex?: number): void {
 	let isCombined = isUndefined(fn) || isNumber(fn);
 	startIndex = isCombined ? fn as number : startIndex;

@@ -1,4 +1,4 @@
-import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined } from "./Test";
+import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined, isString } from "./Test";
 
 interface IDestroyable {
 	destroy(): void;
@@ -262,16 +262,14 @@ export function transform<T extends {[index: string]: any}, S = T, U = any>(
 	fn: (result: S, value: any, key: string) => boolean | void, 
 	accumulator?: S
 ): S  {
-	if (accumulator === undefined) {
-		accumulator = Object.create(target) as S;
-	}
+	accumulator = accumulator || (isObject(target) ? Object.create(target) as S : {} as S);
 	forEach(target, (value: any, key: string) => {
 		return fn(accumulator!, value, key);
 	});
 	return accumulator!;
 }
-export function difference<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): S {
-	function changes<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): S {
+export function difference<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): T {
+	function changes<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): T {
 		return transform(target, function(result, value: any, key: string) {
 			if (isDifferent(value, base[key])) {
 				(result as Indexable<any>)[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;

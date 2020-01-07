@@ -27,7 +27,7 @@ export class Timer {
 		return this._staticTimer.start();
 	}
 	public start(): number {
-		const now = Timer.now();
+		const now = this.now();
 		this._state._start = this._state._last = now;
 		this._state._time = 0;
 		return now;
@@ -36,9 +36,8 @@ export class Timer {
 		return this._staticTimer.stop();
 	}
 	public stop(): number {
-		const start = this._state._start;
-		const now = Timer.now();
+		const now = this.now();
 		this._state._last = now;
-		return this._state._time = now - start;
+		return this._state._time = now - this._state._start;
 	}
 }
