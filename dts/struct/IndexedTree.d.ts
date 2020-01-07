@@ -14,7 +14,7 @@ export class IndexedTree<T> extends Tree<T> {
     }, virtualRoot?: boolean): Tree<T>;
     constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Indexable<Tree<T>>);
     protected create<S = T>(...args: any[]): Tree<S>;
-    insertAt(pos: number, data: T, id?: string | number, updateIndex?: boolean): void;
+    insertAt(pos: number, data: T | this, id?: string | number, updateIndex?: boolean): void;
     addTo(parentId: string | number, data: T| this, id?: string | number, updateIndex?: boolean): this | undefined;
     add(data: T | this, id?: string | number, updateIndex?: boolean): this;
     contains(node: this | string | number): boolean

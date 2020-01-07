@@ -451,7 +451,7 @@ declare class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
     // tslint:disable-next-line:max-line-length
     public collect<S = any>(fn: (cur: this, i: number, collected: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
     public init(obj: Partial<this>, mapping?: any): this;
-    public insertAt(pos: number, data: T, id?: string | number): void;
+    public insertAt(pos: number, data: T | this, id?: string | number): void;
     public add(data: T | this, id?: string | number): this;
     public remove(): void;
     public prune(): this;
@@ -486,7 +486,7 @@ declare class IndexedTree<T> extends Tree<T> {
     },                        virtualRoot?: boolean): Tree<T>;
     constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Indexable<Tree<T>>);
     protected create<S = T>(...args: any[]): Tree<S>;
-    insertAt(pos: number, data: T, id?: string | number, updateIndex?: boolean): void;
+    insertAt(pos: number, data: T | this, id?: string | number, updateIndex?: boolean): void;
     addTo(parentId: string | number, data: T | this, id?: string | number, updateIndex?: boolean): this | undefined;
     add(data: T | this, id?: string | number, updateIndex?: boolean): this;
     contains(node: this | string | number): boolean;
@@ -728,7 +728,7 @@ declare namespace Util {
 
     export function debounce<T extends (...args: any[]) => any, U extends Partial<IDebounceOptions>>(
         method: T,
-        duration: number,
+        duration?: number,
         options?: U,
     ): IDebouncedFunction<T, U>;
     export function throttle<T extends (...args: any[]) => any>(

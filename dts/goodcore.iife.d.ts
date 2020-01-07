@@ -464,7 +464,7 @@ declare namespace goodcore {
         // tslint:disable-next-line:max-line-length
         public collect<S = any>(fn: (cur: this, i: number, collected: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
         public init(obj: Partial<this>, mapping?: any): this;
-        public insertAt(pos: number, data: T, id?: string | number): void;
+        public insertAt(pos: number, data: T | this, id?: string | number): void;
         public add(data: T | this, id?: string | number): this;
         public remove(): void;
         public prune(): this;
@@ -499,7 +499,7 @@ declare namespace goodcore {
         },                        virtualRoot?: boolean): Tree<T>;
         constructor(id?: string | number, indexer?: (node: IndexedTree<T>) => string | number, index?: Indexable<Tree<T>>);
         protected create<S = T>(...args: any[]): Tree<S>;
-        insertAt(pos: number, data: T, id?: string | number, updateIndex?: boolean): void;
+        insertAt(pos: number, data: T | this, id?: string | number, updateIndex?: boolean): void;
         addTo(parentId: string | number, data: T | this, id?: string | number, updateIndex?: boolean): this | undefined;
         add(data: T | this, id?: string | number, updateIndex?: boolean): this;
         contains(node: this | string | number): boolean;
