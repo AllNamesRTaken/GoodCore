@@ -15,6 +15,7 @@ import { Range2 } from "./struct/Range2";
 import { Rect } from "./struct/Rect";
 import { Stack } from "./struct/Stack";
 import { Tree } from "./struct/Tree";
+import { IndexedTree } from "./struct/IndexedTree";
 import { Vec2 } from "./struct/Vec2";
 import * as Test from "./Test";
 import { Timer } from "./Timer";
@@ -43,6 +44,7 @@ export function integrate(alias?: string | object) {
 		{name: "Rect", object: Rect},
 		{name: "Stack", object: Stack},
 		{name: "Tree", object: Tree},
+		{name: "IndexedTree", object: IndexedTree},
 		{name: "Vec2", object: Vec2},
 		{name: "Test", object: Test},
 		{name: "Timer", object: Timer},
