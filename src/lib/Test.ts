@@ -8,37 +8,42 @@ export class Env {
 	public static useNative?: boolean = undefined;
 	private static _isNode: boolean;
 	public static isNode(): boolean {
-		this._isNode = this._isNode || (!hasWindow() || typeof module !== "undefined" && module.exports !== undefined);
+		this._isNode = this._isNode 
+		?? (!hasWindow() || typeof module !== "undefined" && module.exports !== undefined);
 		return this._isNode;
 	}
 	private static _isOpera: boolean;
 	public static isOpera(): boolean {
-		this._isOpera = this._isOpera || (hasWindow() && Global.window!.navigator.userAgent.match(/(?:^opera.+?version|opr)\/(\d+)/) !== null);
+		this._isOpera = this._isOpera 
+		?? (hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/(?:^opera.+?version|opr)\/(\d+)/) !== null);
 		return this._isOpera;
 	}
 	private static _isFirefox: boolean;
 	public static isFirefox(): boolean {
-		this._isFirefox = this._isFirefox || (hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/(?:firefox|fxios)\/(\d+)/) !== null);
+		this._isFirefox = this._isFirefox 
+		?? (hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/(?:firefox|fxios)\/(\d+)/) !== null);
 		return this._isFirefox;
 	}
 	private static _isSafari: boolean;
 	public static isSafari(): boolean {
-		this._isSafari = this._isSafari || ( hasWindow() && Global.window!.navigator.userAgent.match(/version\/(\d+).+?safari/) !== null );
+		this._isSafari = this._isSafari 
+		?? ( hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/version\/(\d+).+?safari/) !== null );
 		return this._isSafari;
 	}
 	private static _isIE: boolean;
 	public static isIE(): boolean {
-		this._isIE = this._isIE || ( hasWindow() && Global.window!.navigator.userAgent.match(/(?:msie |trident.+?; rv:)(\d+)/) !== null );
+		this._isIE = this._isIE 
+		?? ( hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/(?:msie |trident.+?; rv:)(\d+)/) !== null );
 		return this._isIE;
 	}
 	private static _isEdge: boolean;
 	public static isEdge(): boolean {
-		this._isEdge = this._isEdge || ( hasWindow() && Global.window!.navigator.userAgent.match(/edge\/(\d+)/) !== null );
+		this._isEdge = this._isEdge || ( hasWindow() && Global.window!.navigator.userAgent.toLowerCase().match(/edge\/(\d+)/) !== null );
 		return this._isEdge;
 	}
 	private static _isChrome: boolean;
 	public static isChrome(): boolean {
-		this._isChrome = this._isChrome || ( hasWindow() 
+		this._isChrome = this._isChrome ?? ( hasWindow() 
 			&& ((/google inc/.test(Global.window!.navigator.vendor.toLowerCase()) ? 
 			Global.window!.navigator.userAgent.toLowerCase().match(/(?:chrome|crios)\/(\d+)/) : 
 			null) !== null) 
@@ -47,7 +52,7 @@ export class Env {
 	}
 	private static _isBlink: boolean;
 	public static isBlink(): boolean {
-		this._isBlink = this._isBlink || (hasWindow() && (this.isChrome || this.isOpera) && !!((Global.window as any).CSS));
+		this._isBlink = this._isBlink ?? (hasWindow() && (this.isChrome || this.isOpera) && !!((Global.window as any).CSS));
 		return this._isBlink;
 	}
 	public static hasFastNativeArrays(): boolean {

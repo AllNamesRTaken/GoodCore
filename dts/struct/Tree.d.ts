@@ -34,7 +34,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
  */
     public collect<S = any>(fn: (cur: this, i: number, collected: S[], isPruned: boolean) => S, prune?: (cur: this, i: number) => boolean, i?: number): S;
     public init(obj: Partial<this>, mapping?: any): this;
-    public insertAt(pos: number, data: T, id?: string | number): void;
+    public insertAt(pos: number, data: T | this, id?: string | number): void;
     public add(data: T | this, id?: string | number): this;
     public remove(): void;
     public prune(): this;

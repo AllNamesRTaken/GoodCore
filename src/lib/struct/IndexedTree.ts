@@ -97,7 +97,7 @@ export class IndexedTree<T> extends Tree<T> {
 		});
 		this._index = undefined;
 	}
-	public insertAt(pos: number, data: T, id?: string | number, updateIndex = true): this {
+	public insertAt(pos: number, data: T | this, id?: string | number, updateIndex = true): this {
 		const node = super.insertAt(pos, data, id);
 		if (updateIndex) {
 			this.index[this._indexer(node)] = node;
