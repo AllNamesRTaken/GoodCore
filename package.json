@@ -11,7 +11,6 @@
   "scripts": {
     "install_tools": "npm install && typings install",
     "clean": "rimraf ./dist",
-    "fixEnumsDestroyMap": "node fixEnums.js",
     "dev": "npm run clean && tsc -p tsconfig.app.json",
     "build": "npm run clean && tsc -p tsconfig.app.json && rollup -c && gulp copyDTS && gulp copyWebpackExternalsFn",
     "build-lite": "rollup -c rollup.lite.js",
@@ -67,7 +66,7 @@
     "tslint": "^5.20.0",
     "tslint-language-service": "^0.9.9",
     "tslint-microsoft-contrib": "^6.2.0",
-    "typescript": "^3.6.4"
+    "typescript": "^3.7.4"
   },
   "bugs": {
     "url": "https://github.com/allnamesrtaken/goodcore/issues"

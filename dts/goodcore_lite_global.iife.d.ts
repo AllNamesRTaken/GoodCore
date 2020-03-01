@@ -19,10 +19,6 @@ interface IInstance<T> extends IObject {
 }
 type ArgTypes<T> = T extends (...a: infer A) => unknown ? A : [];
 type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
-interface IPool<T extends IPoolable> {
-    get(): T;
-    release(obj: T): void;
-}
 interface ICloneable {
     clone(): this;
 }
@@ -648,7 +644,7 @@ declare class KeyValuePair<S, T> {
 /**
 * Simple and precise Timer, can be used statically or as an instance.
 */
-export class Timer {
+declare class Timer {
     /**
     * (readonly) The last measured time for this timer. The same as Stop() returns.
     */
