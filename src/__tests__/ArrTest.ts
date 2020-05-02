@@ -615,14 +615,14 @@ describe("Arrays",
 		});
 		test("distinct() without hash removes duplicates",
 		() => {
-			expect(Arr.disinct([1,2,3,2,1,5])).toEqual([1,2,3,5]);
-			expect(Arr.disinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}]))
+			expect(Arr.distinct([1,2,3,2,1,5])).toEqual([1,2,3,5]);
+			expect(Arr.distinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}]))
 			.toEqual([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2}, {a:2, b:null}]);
 		});
 		test("distinct() with hash removes duplicates",
 		() => {
-			expect(Arr.disinct([1,2,3,2,1,5], (el) => el > 3 ? "3" : el.toString())).toEqual([1,2,3]);
-			expect(Arr.disinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}], (el) => el.a.toString()))
+			expect(Arr.distinct([1,2,3,2,1,5], (el) => el > 3 ? "3" : el.toString())).toEqual([1,2,3]);
+			expect(Arr.distinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}], (el) => el.a.toString()))
 			.toEqual([{a:2, b:[1,2]}, {a:3, b:[1,2]}]);
 		});
 });

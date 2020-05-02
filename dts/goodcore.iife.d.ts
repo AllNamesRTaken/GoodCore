@@ -774,7 +774,7 @@ declare namespace goodcore {
         * @param hashFn (Optional) Function to provide a hash for each value.
         * @returns a new array without duplicates
         */
-        export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[];
+        export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[];
         export function concat(...arrs: any[]): any[];
         export function slice<T>(src: T[], pos?: number, count?: number): T[];
         export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void;

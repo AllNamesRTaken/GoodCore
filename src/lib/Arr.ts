@@ -622,7 +622,7 @@ export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>)
 export function split<T>(array: T[], isA: Descriminator<T>): [T[], T[]] {
 	return bucket(array, isA) as [T[], T[]];
 }
-export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[] {
+export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[] {
 	let i = -1;
 	const len = isNullOrUndefined(array) ? 0 : array.length;
 	let result: T[] = [];

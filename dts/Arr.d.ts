@@ -67,5 +67,5 @@
     type Descriminator<T> = (el: T) => boolean;
     export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>): T[][];
     export function split<T>(array: T[], isA: Descriminator<T>): [T[], T[]];
-    export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[];
+    export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[];
     
