@@ -20,7 +20,7 @@ export function getFunctionName(fn: Function): string;
 export function getFunctionCode(fn: Function): string;
 export function getDate(delta?: string, start?: Date): Date;
 export function newUUID(): string;
-export function newInt(key: number | string = 0): number;
+export function newInt(key?: number | string): number;
 export function callDebugger(): void;
 export function pipeOut(
     log?: ((...args: any[]) => void) | null,
