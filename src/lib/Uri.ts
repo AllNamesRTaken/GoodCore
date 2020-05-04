@@ -11,6 +11,7 @@ export class Uri {
 	public protocol = "";
 	public origin = "";
 	public full = "";
+	public directory = "";
 	public get args(): Indexable<string> {
 		return this._args;
 	}
@@ -54,6 +55,9 @@ export class Uri {
 			let slashPos = this.pathName.lastIndexOf("/");
 			let page = slashPos === -1 ? "" : this.pathName.substring(slashPos + 1);
 			this.page = page.indexOf(".") !== -1 ? page : "";
+			this.directory = page.indexOf(".") === -1 
+				? this.pathName 
+				: slashPos === -1 ? "" : this.pathName.substring(0, slashPos);
 			this.origin = (this._a as HTMLAnchorElement).origin;
 			this.full = this._a.href;
 		}

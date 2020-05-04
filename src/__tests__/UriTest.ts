@@ -21,6 +21,8 @@ describe("Uri",
 				let uri = new Uri("http://test.uri.com/ponent/with.html?parameters=1");
 				expect(uri.hostName).toBe("test.uri.com");
 				expect(uri.pathName).toBe("/ponent/with.html");
+				expect(uri.directory).toBe("/ponent");
+				expect(uri.page).toBe("with.html");
 				expect(uri.args.parameters).toBe("1");
 				uri.args = {apa: "banan"}
 				expect(uri.args.parameters).toBeUndefined();

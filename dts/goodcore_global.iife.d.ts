@@ -1170,6 +1170,7 @@ declare class Uri {
     hash: string;
     page: string;
     pathName: string;
+    directory: string;
     port: string;
     hostName: string;
     protocol: string;
