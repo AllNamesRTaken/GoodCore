@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "0.34.1",
+  "version": "0.34.2",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "index.js",
   "typings": "goodcore.d.ts",
@@ -60,13 +60,13 @@
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
     "rollup-plugin-typescript": "^1.0.1",
-    "rollup-plugin-uglify": "^6.0.3",
+    "rollup-plugin-uglify": "^6.0.4",
     "ts-jest": "^24.1.0",
     "tslib": "^1.10.0",
     "tslint": "^5.20.0",
     "tslint-language-service": "^0.9.9",
     "tslint-microsoft-contrib": "^6.2.0",
-    "typescript": "^3.7.4"
+    "typescript": "^3.8.3"
   },
   "bugs": {
     "url": "https://github.com/allnamesrtaken/goodcore/issues"
