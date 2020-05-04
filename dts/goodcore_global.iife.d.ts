@@ -1176,7 +1176,7 @@ declare class Uri {
     origin: string;
     full: string;
     args: Indexable<string>;
-    constructor();
+    constructor(url?: string);
     init(): void;
 }
 
