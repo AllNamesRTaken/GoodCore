@@ -156,7 +156,7 @@ declare namespace goodcore {
         x: number;
         y: number;
         readonly isZero: boolean;
-        constructor(x?: number, y?: number);
+        constructor(x?: number | IVec2, y?: number);
         protected create(x?: number, y?: number): Vec2;
         // tslint:disable-next-line:no-reserved-keywords
         set(src: IVec2): Vec2;
@@ -191,6 +191,7 @@ declare namespace goodcore {
         min(v: IVec2): Vec2;
         zero(): Vec2;
     }
+    export function V2(x?: number | IVec2, y?: number): Vec2
 
     export class Range2 implements IRange2 {
         pos: Vec2;

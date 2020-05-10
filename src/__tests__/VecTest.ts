@@ -1,4 +1,4 @@
-import { Vec2, Vec2Const } from "../lib/struct/Vec2";
+import { Vec2, Vec2Const, V2 } from "../lib/struct/Vec2";
 // tslint:disable-next-line:ordered-imports
 
 describe("Vec2",
@@ -9,6 +9,24 @@ describe("Vec2",
 		test("new should create correct sized vec2",
 			() => {
 				const v1 = new Vec2(2, 3);
+				expect(v1.x).toBe(2);
+				expect(v1.y).toBe(3);
+			});
+		test("new inited with IVec2 should create correct sized vec2",
+			() => {
+				const v1 = new Vec2({x: 2, y: 3});
+				expect(v1.x).toBe(2);
+				expect(v1.y).toBe(3);
+			});
+		test("V2 should create correct sized vec2",
+			() => {
+				const v1 = V2(2, 3);
+				expect(v1.x).toBe(2);
+				expect(v1.y).toBe(3);
+			});
+		test("V2 inited with IVec2 should create correct sized vec2",
+			() => {
+				const v1 = V2({x: 2, y: 3});
 				expect(v1.x).toBe(2);
 				expect(v1.y).toBe(3);
 			});

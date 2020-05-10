@@ -144,7 +144,7 @@ declare class Vec2 implements IVec2 {
     x: number;
     y: number;
     readonly isZero: boolean;
-    constructor(x?: number, y?: number);
+    constructor(x?: number | Vec2, y?: number);
     protected create(x?: number, y?: number): Vec2;
     // tslint:disable-next-line:no-reserved-keywords
     set(src: IVec2): Vec2;
@@ -179,6 +179,7 @@ declare class Vec2 implements IVec2 {
     min(v: IVec2): Vec2;
     zero(): Vec2;
 }
+export function V2(x?: number | IVec2, y?: number): Vec2
 
 declare class Range2 implements IRange2 {
     pos: Vec2;
