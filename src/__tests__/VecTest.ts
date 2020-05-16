@@ -46,6 +46,22 @@ describe("Vec2",
 				expect(v1.x).toBe(-2);
 				expect(v1.y).toBe(-2);
 			});
+		test("AddUV adds correctly",
+			() => {
+				const v1 = new Vec2(2, 3);
+				const v2 = new Vec2(0.5, 0.5);
+				v1.addUV(v2);
+				expect(v1.x).toBe(3);
+				expect(v1.y).toBe(4.5);
+			});
+		test("SubtractUV subtracts correctly",
+			() => {
+				const v1 = new Vec2(2, 3);
+				const v2 = new Vec2(0.5, 0.5);
+				v1.subtractUV(v2);
+				expect(v1.x).toBe(1);
+				expect(v1.y).toBe(1.5);
+			});
 		test("Scale multiplies each factor with the corresponding factor in the scale vector",
 			() => {
 				const v1 = new Vec2(2, 3);

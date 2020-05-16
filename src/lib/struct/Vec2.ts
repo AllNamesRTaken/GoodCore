@@ -116,6 +116,18 @@ export class Vec2 implements IVec2 {
 		return this;
 	}
 
+	public addUV(vectorB: IVec2): this {
+		this.x = this.x + vectorB.x * this.x;
+		this.y = this.y + vectorB.y * this.y;
+		return this;
+	}
+
+	public subtractUV(vectorB: IVec2): this {
+		this.x = this.x - vectorB.x * this.x;
+		this.y = this.y - vectorB.y * this.y;
+		return this;
+	}
+
 	public invert() {
 		this.x = -this.x;
 		this.y = -this.y;

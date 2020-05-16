@@ -164,6 +164,8 @@ declare class Vec2 implements IVec2 {
     multiply(scalar: number): Vec2;
     add(vectorB: IVec2): Vec2;
     subtract(vectorB: IVec2): Vec2;
+    addUV(vectorB: IVec2): Vec2;
+    subtractUV(vectorB: IVec2): Vec2;
     invert(): this;
     equals(target: IVec2): boolean;
     almostEquals(target: IVec2): boolean;
