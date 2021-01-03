@@ -48,6 +48,7 @@ export function isSameClass(a: Object, b: Object): boolean {
 export function inherits(a: Object, b: Object): boolean {
 	return isClassOf(a, b) && !isSameClass(a, b);
 }
+// TODO: Handle circular references by passing along a weakmap of all object values
 export function equals(a: any, b: any): boolean {
 	let result = a === b;
 	if (a !== b && (a instanceof Object) && isSameClass(a as Object, b as Object)) {

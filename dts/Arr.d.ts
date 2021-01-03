@@ -68,4 +68,8 @@
     export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>): T[][];
     export function split<T>(array: T[], isA: Descriminator<T>): [T[], T[]];
     export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[];
-    
+    export function toLookup<T>(a: Array<T>, hashFn?: (el: T) => string): Indexable<boolean>;
+    export function difference<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): [T[] , S[]];
+    export function intersect<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T>;
+    export function union<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T | S>;
+    export function subtract<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T>;

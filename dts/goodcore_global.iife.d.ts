@@ -804,6 +804,12 @@ declare namespace Arr {
     export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
     export function some<T>(src: T[], fn: (el: T) => boolean): boolean;
     export function insertAt<T>(src: T[], pos: number, v: T): void;
+    export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[];
+    export function toLookup<T>(a: Array<T>, hashFn?: (el: T) => string): Indexable<boolean>;
+    export function difference<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): [T[] , S[]];
+    export function intersect<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T>;
+    export function union<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T | S>;
+    export function subtract<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T>;
 }
 
 /**
