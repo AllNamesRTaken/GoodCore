@@ -125,7 +125,7 @@ export function setAttr(_el: HTMLElement | Node | String, attr?: Indexable<any>)
 					if (typeof (style) === "string") {
 						el.style.setProperty(styleKeys[k], style);
 					} else {
-						el.style.setProperty(styleKeys[k], style[0], style[1]);
+						el.style.setProperty(styleKeys[k], style[0], style[1] ?? undefined);
 					}
 				}
 			} else if ((keys[i] === "classes" || keys[i] === "class" || keys[i] === "className") && attr[keys[i]] !== undefined) {
