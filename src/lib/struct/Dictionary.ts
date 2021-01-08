@@ -1,7 +1,7 @@
 import { forEach } from "../Arr";
 import { clone, setProperties, wipe } from "../Obj";
 import { isFunction, isNotUndefined, isNotNullOrUndefined } from "../Test";
-import { once, loop } from "../Util";
+import { once } from "../Util";
 
 export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable {
 	private _lookup: { [key: string]: T };
@@ -42,11 +42,11 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 		return this._lookup[key];
 	}
 	// tslint:disable-next-line:no-reserved-keywords
-	public set(key: number | string): T | undefined {
+	public set(key: number | string, value: T): this {
 		once(() => {
 			console.warn("Function Dictionary::set(id) is deprecated please use Dictionary::add instead. set is a reserved word.");
 		});
-		return this.lookup(key);
+		return this.add(key, value);
 	}
 	public add(key: number | string, value: T): this {
 		this._isDirty = this._isDirty || this.has(key);

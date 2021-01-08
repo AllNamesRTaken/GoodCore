@@ -7,7 +7,8 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
     has(key: number | string): boolean;
     contains(key: number | string): boolean;
     get(key: number | string): T | undefined;
-    add(key: number | string): T | undefined;
+    lookup(key: number | string): T | undefined;
+    add(key: number | string, value: T): Dictionary<T>;
     set(key: number | string, value: T): Dictionary<T>;
     remove(key: number | string, value: T): Dictionary<T>;
     delete(key: number | string): Dictionary<T>;

@@ -2,7 +2,7 @@ import { shallowCopy, create, insertAt, concat, forEach, append, deepCopy, deepC
 	shallowCopyInto, remove, removeAt, forSome, until, reverseForEach, indexOfElement, map,  
 	reverseUntil, some, all, reverse, indexOf, filterInto, slice, splice, filter, 
 	mapInto, reduce, reduceUntil, reverseReduce, reverseReduceUntil, deserialize } from "../Arr";
-import { clone, equals, setProperties, wipe } from "../Obj";
+import { clone, equals, wipe } from "../Obj";
 import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow, isNotNull } from "../Test";
 import { once } from "../Util";
 
