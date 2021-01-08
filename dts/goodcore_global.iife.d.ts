@@ -385,6 +385,7 @@ declare class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictio
     add(key: number | string, value: T): Dictionary<T>;
     // tslint:disable-next-line:no-reserved-keywords0
     set(key: number | string, value: T): Dictionary<T>;
+    remove(key: number | string): Dictionary<T>;
     // tslint:disable-next-line:no-reserved-keywords
     delete(key: number | string): Dictionary<T>;
     clear(): Dictionary<T>;

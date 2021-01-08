@@ -397,6 +397,7 @@ declare namespace goodcore {
         add(key: number | string, value: T): Dictionary<T>;
             // tslint:disable-next-line:no-reserved-keywords
         set(key: number | string, value: T): Dictionary<T>;
+        remove(key: number | string): Dictionary<T>;
         // tslint:disable-next-line:no-reserved-keywords
         delete(key: number | string): Dictionary<T>;
         clear(): Dictionary<T>;

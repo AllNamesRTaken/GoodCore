@@ -18,7 +18,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 			once(() => {
 				console.warn("Function Dictionary::delete(id) is deprecated please use Dictionary::remove instead. set is a reserved word.");
 			});
-			return this.lookup(key);
+			return this.remove(key);
 		};
 	}
 
