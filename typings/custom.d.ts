@@ -140,3 +140,22 @@ interface IThrottleOptions {
 interface IThrottledFunction<T> {
 	(...args: ArgTypes<T>): ResultType<T>;
 }
+type IValue = number | string | boolean | null | undefined;
+type IValueOf<T extends IDiffable> = T[keyof T] extends IDiffable ? T[keyof T] : never;
+type IDiffable = Indexable<IDiffable> | IDiffable[] | IValue;
+type IDeltaObj<T extends IDiffable, S extends IDiffable> = 
+	T extends Indexable<IDiffable> ?
+	S extends Indexable<IDiffable> ? 
+		{[P in keyof (S | T)]: IDelta<T[P], S[P]>} : 
+	never :
+	never;
+type IDelta<T extends IDiffable, S extends IDiffable> = 
+	T extends Array<infer U> ? 
+	S extends Array<infer V> ?
+		[U[], null | [], V[]] : 
+		[T, null, S] :
+	T extends Object ? 
+	S extends Object ? 
+		[Partial<T>, IDeltaObj<T, S>, Partial<S>] : 
+		[T, null, S] :
+	[T, null, S];

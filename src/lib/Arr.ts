@@ -1,6 +1,8 @@
-import { clone, setProperties, equals } from "./Obj";
+import { clone, setProperties, equals, toLookup, defaultHashFunction, arrayDiff } from "./Obj";
 import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction, isObject, isNull } from "./Test";
 import { assert } from "./Util";
+export { toLookup } from "./Obj"
+export const difference = arrayDiff;
 
 export function flatten<T>(src: any[]): T[] {
 	return flattenInner<T>(src);
@@ -277,7 +279,7 @@ export function map<S, T>(src: S[], fn: (el: S, i: number) => T, startIndex: num
 	let result: T[];
 	let i = startIndex - 1;
 	let isNull = isNullOrUndefined(src);
-	if (Env.hasFastNativeArrays && !isNull) {
+	if (Env.hasFastNativeArrays() && !isNull) {
 		result = src.map(fn)
 	} else {
 		const len = isNull ? 0 : src.length;
@@ -313,7 +315,7 @@ export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T
 export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, pos?: number, to?: number): U {
 	let acc: U = start;
 	if (isNotNullOrUndefined(src)) {
-		if (Env.hasFastNativeArrays && !isNull) {
+		if (Env.hasFastNativeArrays() && !isNull) {
 			acc = src.reduce(fn, acc);
 		} else {	
 			pos = Math.min(Math.max(0, isUndefined(pos) ? 0 : pos!), src.length - 1);
@@ -416,7 +418,7 @@ export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolea
 }
 export function some<T>(src: T[], fn: (el: T, i: number) => boolean): boolean {
 	let result = false;
-	if (Env.hasFastNativeArrays && !isNull) {
+	if (Env.hasFastNativeArrays() && !isNull) {
 		result = isNullOrUndefined(src) ? false : src.some(fn);
 	} else {	
 		let i = -1;
@@ -674,30 +676,6 @@ export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[] {
 function shortLong<T, S = T>(a: Array<T>, b: Array<S>): [Array<T>, Array<S>] | [Array<S>, Array<T>] {
 	return a.length < b.length ? [a, b] : [b, a];
 }
-function defaultHashFunction<T>(el: T): string {
-	return isNull(el) 
-	? "____null"
-	: isUndefined(el)
-	? "____undefined"
-	: isObject(el)
-	? "____object"
-	: (el as unknown as object).toString()
-
-}
-export function toLookup<T>(a: Array<T>, hashFn: (el: T) => string = defaultHashFunction): Indexable<boolean> {
-	return a.reduce((p, c) => {
-		p[hashFn(c)] = true
-		return p
-	  }, {} as Indexable<boolean>);
-}
-export function difference<T, S = T>(a: Array<T>, b: Array<S>, hashFn: (el: T | S) => string = defaultHashFunction): [T[] , S[]] {
-    const lookupb = toLookup(b);
-    const lookupa = toLookup(a)
-    return [
-      a.filter((el) => !lookupb[hashFn(el)]),
-      b.filter((el) => !lookupa[hashFn(el)]),
-    ]
-  }
 export function intersect<T, S = T>(a: Array<T>, b: Array<S>, hashFn: (el: T | S) => string = defaultHashFunction): Array<T> {
 	const result: T[] = [];
 	const [_short, _long] = shortLong(a, b);

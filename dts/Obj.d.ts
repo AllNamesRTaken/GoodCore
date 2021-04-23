@@ -17,3 +17,4 @@ export function forEach<T>(
 ): void;
 export function transform<T extends {[index: string]: any}, S = {}, U = any>(target: T | Array<U>, fn: (result: S, value: any, key: string) => boolean | void, accumulator?: S): S;
 export function difference<T extends {[index: string]: any}, S extends {[index: string]: any} = T>(target: T, base: S): T;
+export function diff<T extends IDiffable, S extends IDiffable>(target: T, base: S): IDelta<T, S>;

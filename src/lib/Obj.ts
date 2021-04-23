@@ -1,4 +1,4 @@
-import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined, isString } from "./Test";
+import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined } from "./Test";
 
 interface IDestroyable {
 	destroy(): void;
@@ -17,11 +17,15 @@ export function destroy(obj: Object): void {
 	}
 }
 export function wipe(obj: Object): void {
-	const keys = Object.keys(obj as Indexable<any>);
-	let i = -1;
-	const len = keys.length;
-	while (++i < len) {
-		delete (obj as Indexable<any>)[keys[i]];
+	if(isArray(obj)) {
+		(obj as Array<unknown>).length = 0;
+	} else if(isObject(obj)) {
+		const keys = Object.keys(obj as Indexable<any>);
+		let i = -1;
+		const len = keys.length;
+		while (++i < len) {
+			delete (obj as Indexable<any>)[keys[i]];
+		}
 	}
 }
 export function setNull(obj: Object): void {
@@ -269,6 +273,29 @@ export function transform<T extends {[index: string]: any}, S = T, U = any>(
 	});
 	return accumulator!;
 }
+export function defaultHashFunction<T>(el: T): string {
+	return el === null
+	? "____null"
+	: el === undefined
+	? "____undefined"
+	: isObject(el)
+	? "____object"
+	: (el as unknown as object).toString()
+}
+export function toLookup<T>(a: Array<T>, hashFn: (el: T) => string = defaultHashFunction): Indexable<boolean> {
+	return a.reduce((p, c) => {
+		p[hashFn(c)] = true
+		return p
+	  }, {} as Indexable<boolean>);
+}
+export function arrayDiff<T, S = T>(a: Array<T>, b: Array<S>, hashFn: (el: T | S) => string = defaultHashFunction): [T[] , S[]] {
+    const lookupb = toLookup(b);
+    const lookupa = toLookup(a)
+    return [
+      a.filter((el) => !lookupb[hashFn(el)]),
+      b.filter((el) => !lookupa[hashFn(el)]),
+    ]
+  }
 export function difference<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): T {
 	function changes<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): T {
 		return transform(target, function(result, value: any, key: string) {
@@ -276,6 +303,42 @@ export function difference<T extends Indexable<any>, S extends Indexable<any> = 
 				(result as Indexable<any>)[key] = (isObject(value) && isObject(base[key])) ? changes(value, base[key]) : value;
 			}
 		});
+	}
+	return changes(target, base);
+}
+export function diff<T extends IDiffable, S extends IDiffable>(target: T, base: S): IDelta<T,S> {
+	function changes<T extends IDiffable, S extends IDiffable>(target: T, base: S): IDelta<T,S> {
+		if (isArray(target) && isArray(base)) {
+			const [added, removed] = arrayDiff(target as IDiffable[], base as IDiffable[]);
+			if(added.length === 0 && removed.length === 0 && equals(target, base)) {
+				return [added, null, removed] as IDelta<T, S>
+			}
+			return [added, [] as any, removed] as IDelta<T, S>
+		} else if(isObject(target) && isObject(base)) {
+			const keyDiff = arrayDiff(Object.keys(target as Indexable<any>), Object.keys(base as Indexable<any>))
+			const keyDiffLookup = keyDiff.map((keys) => toLookup(keys))
+			const added = keyDiff[0].reduce((p: Partial<T>, c: string, i: number) => {
+				(p as Indexable<any>)[c] = (target as Indexable<any>)[c]
+				return p
+			}, new ((target as Object).constructor as Constructor<T>)())
+			const changed = transform(target as Indexable<IDiffable>, function(result: IDeltaObj<T, S>, value: IValueOf<T>, key: string) {
+				if(!(key as string in keyDiffLookup[0])) {
+					if (isDifferent(value, (base)[key as keyof S])) {
+					(result)[key as keyof IDeltaObj<T, S>] = (isObject(value) && isObject((base)[key as keyof S])) ? 
+						changes(value, (base)[key as keyof S] as IValueOf<S>) as unknown as IValueOf<IDeltaObj<T, S>> : 
+						[value, null, (base)[key as keyof S] as IValueOf<S>] as unknown as IValueOf<IDeltaObj<T, S>>;
+					}
+				}
+			}, {} as IDeltaObj<T,S>)
+			const removed = keyDiff[1].reduce((p: Partial<S>, c: string, i: number) => {
+				(p as Indexable<any>)[c] = (base as Indexable<any>)[c];
+				return p;
+			}, new ((base as Object).constructor as Constructor<S>)())
+			return [added, changed, removed] as IDelta<T, S>;
+		} else {
+			return [target as Partial<T>, null, base as Partial<S>] as IDelta<T, S>;
+		}
+		
 	}
 	return changes(target, base);
 }
