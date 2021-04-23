@@ -125,7 +125,7 @@ export function pipeOut(
 		let preventDefaultObj = catchDefault as {log?: boolean, warn?: boolean, error: boolean};
 		if (isNotNullOrUndefined(log)) {
 			proxyFn(
-				Global.global.console as any,
+				(Global.global as any).console as any,
 				"log",
 				function (superfn, ...args: any[]) {
 					if(!(catchDefault || preventDefaultObj.log)) { superfn.apply(this, args); }
@@ -135,7 +135,7 @@ export function pipeOut(
 		}
 		if (isNotNullOrUndefined(warn)) {
 			proxyFn(
-				Global.global.console as any,
+				(Global.global as any).console as any,
 				"warn",
 				function (superfn, ...args: any[]) {
 					if(!(catchDefault || !preventDefaultObj.warn)) { superfn.apply(this, args); }
@@ -145,7 +145,7 @@ export function pipeOut(
 		}
 		if (isNotNullOrUndefined(error)) {
 			proxyFn(
-				Global.global.console as any,
+				(Global.global as any).console as any,
 				"error",
 				function (superfn, ...args: any[]) {
 					if(!(catchDefault || !preventDefaultObj.error)) { superfn.apply(this, args); }
@@ -173,7 +173,7 @@ export function assert(assertion: boolean, message: string = "", noThrow: boolea
 	}
 	return result;
 }
-export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (any | IObjectWithFunctions<S>)>(
+export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, U extends (Indexable<any> | IObjectWithFunctions<S>)>(
 	objOrClass: U,
 	fnName: string,
 	proxyFn: (
@@ -189,7 +189,7 @@ export function proxyFn<S extends void, V, T extends (...args: any[]) => S | V, 
 			return fn.call(this || objOrClass);
 		}
 	};
-	objOrClass[fnName] = proxyFn.bind(objOrClass, _superFn);
+	(objOrClass as any)[fnName] = proxyFn.bind(objOrClass, _superFn);
 }
 export function loop(count: number, fn: (i: number, ...args: any[]) => any | void): void {
 	let i = -1;

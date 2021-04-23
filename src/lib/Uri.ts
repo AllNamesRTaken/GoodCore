@@ -1,5 +1,6 @@
 import { Global } from "./Global";
 export class Uri {
+	private _attatched = true
 	private _a: HTMLAnchorElement | null = null;
 	private _args: Indexable<string> = {};
 	public hash = "";
@@ -10,6 +11,7 @@ export class Uri {
 	public protocol = "";
 	public origin = "";
 	public full = "";
+	public directory = "";
 	public get args(): Indexable<string> {
 		return this._args;
 	}
@@ -17,21 +19,23 @@ export class Uri {
 		this._args = args;
 		if (this._a) {
 			let search = "?" + Object.keys(args).map((key) => `${key}=${args[key]}`).join("&");
+			const url = this.page + search;
 			if (typeof(history) !== "undefined") {
-				history.replaceState({}, "", this.page + search);
-				this.init();
+				history.replaceState({}, "", url);
 			}
+			this.init(url);
 		}
 	}
 
-	constructor() {
-		this.init();
+	constructor(url?: string) {
+		this._attatched = !url
+		this.init(url);
 	}
 
-	public init() {
+	public init(url?: string) {
 		if (Global.window !== null) {
-			this._a = Global.window.document.createElement("a");
-			this._a.setAttribute("href", Global.window.location.href);
+			this._a = !this._a || this._attatched ? Global.window.document.createElement("a") : this._a;
+			this._a.setAttribute("href", url ?? Global.window.location.href);
 			const args = this.args;
 			let search = this._a.search.trim();
 			if (search.length > 1) {
@@ -51,6 +55,9 @@ export class Uri {
 			let slashPos = this.pathName.lastIndexOf("/");
 			let page = slashPos === -1 ? "" : this.pathName.substring(slashPos + 1);
 			this.page = page.indexOf(".") !== -1 ? page : "";
+			this.directory = page.indexOf(".") === -1 
+				? this.pathName 
+				: slashPos === -1 ? "" : this.pathName.substring(0, slashPos);
 			this.origin = (this._a as HTMLAnchorElement).origin;
 			this.full = this._a.href;
 		}

@@ -161,7 +161,7 @@ export function indexOf<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean
 }
 export function find<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean): T | undefined {
 	let result: T | undefined;
-	if (Array.prototype.find) {
+	if (typeof Array.prototype.find !== "undefined") {
 		result = src.find(fn);
 	} else {
 		let i = indexOf(src, fn);
@@ -622,7 +622,7 @@ export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>)
 export function split<T>(array: T[], isA: Descriminator<T>): [T[], T[]] {
 	return bucket(array, isA) as [T[], T[]];
 }
-export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[] {
+export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[] {
 	let i = -1;
 	const len = isNullOrUndefined(array) ? 0 : array.length;
 	let result: T[] = [];
@@ -669,5 +669,57 @@ export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[] {
 			}
 		}
 	}
+	return result;
+}
+function shortLong<T, S = T>(a: Array<T>, b: Array<S>): [Array<T>, Array<S>] | [Array<S>, Array<T>] {
+	return a.length < b.length ? [a, b] : [b, a];
+}
+function defaultHashFunction<T>(el: T): string {
+	return isNull(el) 
+	? "____null"
+	: isUndefined(el)
+	? "____undefined"
+	: isObject(el)
+	? "____object"
+	: (el as unknown as object).toString()
+
+}
+export function toLookup<T>(a: Array<T>, hashFn: (el: T) => string = defaultHashFunction): Indexable<boolean> {
+	return a.reduce((p, c) => {
+		p[hashFn(c)] = true
+		return p
+	  }, {} as Indexable<boolean>);
+}
+export function difference<T, S = T>(a: Array<T>, b: Array<S>, hashFn: (el: T | S) => string = defaultHashFunction): [T[] , S[]] {
+    const lookupb = toLookup(b);
+    const lookupa = toLookup(a)
+    return [
+      a.filter((el) => !lookupb[hashFn(el)]),
+      b.filter((el) => !lookupa[hashFn(el)]),
+    ]
+  }
+export function intersect<T, S = T>(a: Array<T>, b: Array<S>, hashFn: (el: T | S) => string = defaultHashFunction): Array<T> {
+	const result: T[] = [];
+	const [_short, _long] = shortLong(a, b);
+	const longLookup = toLookup(_long, hashFn)
+	_short.forEach((el: any) => {
+		if (longLookup[hashFn(el)]) {
+			result.push(el);
+		}
+	});
+	return result;
+}
+export function union<T, S = T>(a: Array<T>, b: Array<S>, hashFn: (el: T | S) => string = defaultHashFunction): Array<T | S> {
+	const result: Array<T | S> = a.concat(b as any);
+	return distinct(result, hashFn);
+}
+export function subtract<T, S = T>(a: Array<T>, b: Array<S>, hashFn: (el: T | S) => string = defaultHashFunction): Array<T> {
+	const result: T[] = [];
+	const bLookup = toLookup(b, hashFn);
+	a.forEach((el: T) => {
+		if (!bLookup[hashFn(el)]) {
+			result.push(el);
+		}
+	})
 	return result;
 }

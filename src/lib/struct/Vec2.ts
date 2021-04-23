@@ -15,9 +15,9 @@ export class Vec2 implements IVec2 {
 	public get isZero(): boolean {
 		return this.x === 0 && this.y === 0;
 	}
-	constructor(x: number = 0, y: number = 0) {
-		this.x = x;
-		this.y = y;
+	constructor(x: number | IVec2 = 0, y: number = 0) {
+		this.x = ((x as IVec2)?.x ?? x) as number;
+		this.y = ((x as IVec2)?.y ?? y) as number;
 	}
 	protected create(x: number = 0, y: number = 0): this {
 		return new ((this as any).constructor)(x, y);
@@ -116,6 +116,18 @@ export class Vec2 implements IVec2 {
 		return this;
 	}
 
+	public addUV(vectorB: IVec2): this {
+		this.x = this.x + vectorB.x * this.x;
+		this.y = this.y + vectorB.y * this.y;
+		return this;
+	}
+
+	public subtractUV(vectorB: IVec2): this {
+		this.x = this.x - vectorB.x * this.x;
+		this.y = this.y - vectorB.y * this.y;
+		return this;
+	}
+
 	public invert() {
 		this.x = -this.x;
 		this.y = -this.y;
@@ -176,4 +188,7 @@ export class Vec2 implements IVec2 {
 		this.y = 0;
 		return this;
 	}
+}
+export function V2(x: number | IVec2 = 0, y: number = 0) {
+	return new Vec2(x, y);
 }

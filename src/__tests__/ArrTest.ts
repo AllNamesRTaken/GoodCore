@@ -167,7 +167,7 @@ describe("Arrays",
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							sequence.push(el);
-							resolve();
+							resolve(void(0));
 						}, 10 - i * 2);
 					});
 					return el;
@@ -182,7 +182,7 @@ describe("Arrays",
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							sequence.push(el);
-							resolve();
+							resolve(void(0));
 						}, 10 - i * 2);
 					});
 					return el;
@@ -232,7 +232,7 @@ describe("Arrays",
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							sequence.push(el);
-							resolve();
+							resolve(void(0));
 						}, 10 - i * 2);
 					});
 					return el;
@@ -247,7 +247,7 @@ describe("Arrays",
 					await new Promise((resolve) => {
 						setTimeout(() => {
 							sequence.push(el);
-							resolve();
+							resolve(void(0));
 						}, 10 - i * 2);
 					});
 					return el;
@@ -564,6 +564,18 @@ describe("Arrays",
 			expect(Arr.zip<number, string, string>([1, 2, 3], ["a", "b", "c"], (i, a, b) => b.toString().repeat(a!) ))
 			.toEqual([ "a", "bb", "ccc" ]);
 		});
+		test("Zip zips 3 arrays",
+		() => {
+			expect(Arr.zip([1, 2, 3], ["a", "b", "c"], [1, 2, 3], (i,a,b,c) => [a,b,c])).toEqual([[1, "a", 1], [2, "b", 2], [3, "c", 3]]);
+			expect(Arr.zip<number, string, number, string>([1, 2, 3], ["a", "b", "c"], [1, 2, 3], (i, a, b, c) => b.toString().repeat(a!) + (c!) ))
+			.toEqual([ "a1", "bb2", "ccc3" ]);
+		});
+		test("Zip zips 4 arrays",
+		() => {
+			expect(Arr.zip([1, 2, 3], ["a", "b", "c"], [1, 2, 3], [1, 2, 3], (i,a,b,c,d) => [a,b,c,d])).toEqual([[1, "a", 1, 1], [2, "b", 2, 2], [3, "c", 3, 3]]);
+			expect(Arr.zip<number, string, number, number, string>([1, 2, 3], ["a", "b", "c"], [1, 2, 3], [1, 2, 3], (i, a, b, c, d) => b.toString().repeat(a!) + (c! + d!) ))
+			.toEqual([ "a2", "bb4", "ccc6" ]);
+		});
 		test("Unzip unzips 1 array to a tuple of 2 arrays",
 		() => {
 			expect(Arr.unzip<number, string>([[1, "a"], [2, "b"], [3, "c"]])).toEqual([ [1, 2, 3], ["a", "b", "c"] ]);
@@ -615,14 +627,35 @@ describe("Arrays",
 		});
 		test("distinct() without hash removes duplicates",
 		() => {
-			expect(Arr.disinct([1,2,3,2,1,5])).toEqual([1,2,3,5]);
-			expect(Arr.disinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}]))
+			expect(Arr.distinct([1,2,3,2,1,5,null,undefined,{}])).toEqual([1,2,3,5,null,undefined,{}]);
+			expect(Arr.distinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}]))
 			.toEqual([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2}, {a:2, b:null}]);
 		});
 		test("distinct() with hash removes duplicates",
 		() => {
-			expect(Arr.disinct([1,2,3,2,1,5], (el) => el > 3 ? "3" : el.toString())).toEqual([1,2,3]);
-			expect(Arr.disinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}], (el) => el.a.toString()))
+			expect(Arr.distinct([1,2,3,2,1,5], (el) => el > 3 ? "3" : el.toString())).toEqual([1,2,3]);
+			expect(Arr.distinct([{a:2, b:[1,2]}, {a:3, b:[1,2]}, {a:2, b:[1,3]}, {a:2, b:[1,2]}, {a:2}, {a:2}, {a:2, b:null}, {a:2, b:null}], (el) => el.a.toString()))
 			.toEqual([{a:2, b:[1,2]}, {a:3, b:[1,2]}]);
+		});
+		test("toLookup creates loopup from array",
+		() => {
+			expect(Arr.toLookup([1,2,3,2,1,5,null,undefined,{}]))
+			.toEqual({'1':true,'2':true,'3':true,'5':true,'____null':true,'____undefined':true,'____object':true});
+		});
+		test("difference returns 2 arrays with the missing values from a and b",
+		() => {
+			expect(Arr.difference([1,2,3], [2,4])).toEqual([[1,3], [4]]);
+		});
+		test("intersect returns the array intersection of a and b",
+		() => {
+			expect(Arr.intersect([1,2,3], [2,3,4])).toEqual([2,3]);
+		});
+		test("union joins two arrays and returns the distinct array",
+		() => {
+			expect(Arr.union([1,2,3], [2,3,4])).toEqual([1,2,3,4]);
+		});
+		test("subtract removes elements in b from array a",
+		() => {
+			expect(Arr.subtract([1,2,3,5], [2,3,4])).toEqual([1,5]);
 		});
 });

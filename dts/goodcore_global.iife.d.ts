@@ -144,7 +144,7 @@ declare class Vec2 implements IVec2 {
     x: number;
     y: number;
     readonly isZero: boolean;
-    constructor(x?: number, y?: number);
+    constructor(x?: number | Vec2, y?: number);
     protected create(x?: number, y?: number): Vec2;
     // tslint:disable-next-line:no-reserved-keywords
     set(src: IVec2): Vec2;
@@ -164,6 +164,8 @@ declare class Vec2 implements IVec2 {
     multiply(scalar: number): Vec2;
     add(vectorB: IVec2): Vec2;
     subtract(vectorB: IVec2): Vec2;
+    addUV(vectorB: IVec2): Vec2;
+    subtractUV(vectorB: IVec2): Vec2;
     invert(): this;
     equals(target: IVec2): boolean;
     almostEquals(target: IVec2): boolean;
@@ -179,6 +181,7 @@ declare class Vec2 implements IVec2 {
     min(v: IVec2): Vec2;
     zero(): Vec2;
 }
+export function V2(x?: number | IVec2, y?: number): Vec2
 
 declare class Range2 implements IRange2 {
     pos: Vec2;
@@ -378,8 +381,11 @@ declare class Dictionary<T> implements ISerializable<IObject>, IRevivable<Dictio
     contains(key: number | string): boolean;
     // tslint:disable-next-line:no-reserved-keywords
     get(key: number | string): T | undefined;
-    // tslint:disable-next-line:no-reserved-keywords
+    lookup(key: number | string): T | undefined;
+    add(key: number | string, value: T): Dictionary<T>;
+    // tslint:disable-next-line:no-reserved-keywords0
     set(key: number | string, value: T): Dictionary<T>;
+    remove(key: number | string): Dictionary<T>;
     // tslint:disable-next-line:no-reserved-keywords
     delete(key: number | string): Dictionary<T>;
     clear(): Dictionary<T>;
@@ -776,7 +782,7 @@ declare namespace Arr {
     * @param hashFn (Optional) Function to provide a hash for each value.
     * @returns a new array without duplicates
     */
-    export function disinct<T>(array: T[], hashFn?: (el: T) => string): T[];
+    export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[];
     export function concat(...arrs: any[]): any[];
     export function slice<T>(src: T[], pos?: number, count?: number): T[];
     export function splice<T>(src: T[], pos?: number, remove?: number, insert?: T[]): void;
@@ -801,6 +807,11 @@ declare namespace Arr {
     export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolean, fn: (el: T, i: number) => void): void;
     export function some<T>(src: T[], fn: (el: T) => boolean): boolean;
     export function insertAt<T>(src: T[], pos: number, v: T): void;
+    export function toLookup<T>(a: Array<T>, hashFn?: (el: T) => string): Indexable<boolean>;
+    export function difference<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): [T[] , S[]];
+    export function intersect<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T>;
+    export function union<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T | S>;
+    export function subtract<T, S = T>(a: Array<T>, b: Array<S>, hashFn?: (el: T | S) => string): Array<T>;
 }
 
 /**
@@ -1170,13 +1181,14 @@ declare class Uri {
     hash: string;
     page: string;
     pathName: string;
+    directory: string;
     port: string;
     hostName: string;
     protocol: string;
     origin: string;
     full: string;
     args: Indexable<string>;
-    constructor();
+    constructor(url?: string);
     init(): void;
 }
 

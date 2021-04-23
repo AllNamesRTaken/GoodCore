@@ -1,4 +1,4 @@
-namespace NodeJS {
+declare namespace NodeJS {
     export interface Global {}
 }
 export const Global: {

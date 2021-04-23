@@ -10,7 +10,7 @@ export class Vec2 implements IVec2 {
     x: number;
     y: number;
     readonly isZero: boolean;
-    constructor(x?: number, y?: number);
+    constructor(x?: number | IVec2, y?: number);
     protected create(x?: number, y?: number): Vec2;
     set(src: IVec2): Vec2;
     copy(src: IVec2): Vec2;
@@ -29,6 +29,8 @@ export class Vec2 implements IVec2 {
     multiply(scalar: number): Vec2;
     add(vectorB: IVec2): Vec2;
     subtract(vectorB: IVec2): Vec2;
+    addUV(vectorB: IVec2): Vec2;
+    subtractUV(vectorB: IVec2): Vec2;
     invert(): this;
     equals(target: IVec2): boolean;
     almostEquals(target: IVec2): boolean;
@@ -44,3 +46,4 @@ export class Vec2 implements IVec2 {
     min(v: IVec2): Vec2;
     zero(): Vec2;
 }
+export function V2(x?: number | IVec2, y?: number): Vec2

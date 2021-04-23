@@ -7,7 +7,7 @@ describe("AsyncCombinators",
 				class Person {
 					public anxiety: number = 0;
 					@async.before!(function (): Promise<any> {
-						return new Promise<any>((resolve, reject) => {
+						return new Promise<void>((resolve, reject) => {
 							setTimeout(() => {
 								this.anxiety++;
 								resolve();
@@ -46,7 +46,7 @@ describe("AsyncCombinators",
 				class Person {
 					public anxiety: number = 0;
 					@async.after!(function (value, reason): Promise<any> {
-						return new Promise<any>((resolve, reject) => {
+						return new Promise<void>((resolve, reject) => {
 							setTimeout(() => {
 								this.anxiety++;
 								resolve();
