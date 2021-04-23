@@ -125,7 +125,7 @@ export function setAttr(_el: HTMLElement | Node | String, attr?: Indexable<any>)
 					if (typeof (style) === "string") {
 						el.style.setProperty(styleKeys[k], style);
 					} else {
-						el.style.setProperty(styleKeys[k], style[0], style[1]);
+						el.style.setProperty(styleKeys[k], style[0], style[1] ?? undefined);
 					}
 				}
 			} else if ((keys[i] === "classes" || keys[i] === "class" || keys[i] === "className") && attr[keys[i]] !== undefined) {
@@ -186,10 +186,10 @@ export function children(root: Element, selector?: string): Element[] {
 	const children = toArray((root || DomState._document).children);
 	return selector === undefined ? children : children.filter((el) => is(selector, el));
 }
-export function findParent<T extends HTMLElement>(root: Element, selector: string): T | null {
-	let result = root.parentElement;
+export function findParent<T extends HTMLElement>(start: Element, parent: string | Element): T | null {
+	let result = start.parentElement;
 	while (result) {
-		if (is(selector, result)) {
+		if (is(parent, result)) {
 			break;
 		}
 		result = result.parentElement;
@@ -211,9 +211,11 @@ export function getOffset(el: HTMLElement): {left: number, top: number, right: n
 		bottom: (rect.bottom + scrollLeft) | 0,
 	};
 }
-export function is(selector: string, element: Element): boolean {
+export function is(selector: string | Element, element: Element): boolean {
 	let result = false;
-	if (element.matches) {
+	if (selector instanceof Element) {
+		result = selector === element;
+	} else if (element.matches) {
 		result = element.matches(selector);
 	} else if ((element as any).msMatchesSelector) {
 		result = ((element as any).msMatchesSelector)(selector);
