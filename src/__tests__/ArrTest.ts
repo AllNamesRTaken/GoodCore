@@ -640,7 +640,7 @@ describe("Arrays",
 		test("toLookup creates loopup from array",
 		() => {
 			expect(Arr.toLookup([1,2,3,2,1,5,null,undefined,{}]))
-			.toEqual({'1':true,'2':true,'3':true,'5':true,'____null':true,'____undefined':true,'____object':true});
+			.toEqual({'1':true,'2':true,'3':true,'5':true,'____null':true,'____undefined':true,'{}':true});
 		});
 		test("difference returns 2 arrays with the missing values from a and b",
 		() => {

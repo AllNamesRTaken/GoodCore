@@ -279,7 +279,7 @@ export function defaultHashFunction<T>(el: T): string {
 	: el === undefined
 	? "____undefined"
 	: isObject(el)
-	? "____object"
+	? JSON.stringify(el)
 	: (el as unknown as object).toString()
 }
 export function toLookup<T>(a: Array<T>, hashFn: (el: T) => string = defaultHashFunction): Indexable<boolean> {
@@ -291,9 +291,11 @@ export function toLookup<T>(a: Array<T>, hashFn: (el: T) => string = defaultHash
 export function arrayDiff<T, S = T>(a: Array<T>, b: Array<S>, hashFn: (el: T | S) => string = defaultHashFunction): [T[] , S[]] {
     const lookupb = toLookup(b);
     const lookupa = toLookup(a)
+	const hashb = Object.keys(lookupb)
+	const hasha = Object.keys(lookupa)
     return [
-      a.filter((el) => !lookupb[hashFn(el)]),
-      b.filter((el) => !lookupa[hashFn(el)]),
+      a.filter((el, i) => !lookupb[hasha[i]]),
+      b.filter((el, i) => !lookupa[hashb[i]]),
     ]
   }
 export function difference<T extends Indexable<any>, S extends Indexable<any> = T>(target: T, base: S): T {
