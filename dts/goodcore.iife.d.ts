@@ -946,7 +946,6 @@ declare namespace goodcore {
         * @returns An object of the targets type with the properties of target where those are different from the same properties in base.
         */
         export function difference<T extends { [index: string]: any }, S extends { [index: string]: any } = T>(target: T, base: S): T;
-        export function diff<T extends IDiffable, S extends IDiffable>(target: T, base: S): IDelta<T, S>;
     }
     export interface IObjectWithFunctions<T extends Object | void> {
         [key: string]: (...args: any[]) => T;

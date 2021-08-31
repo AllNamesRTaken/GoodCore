@@ -200,7 +200,7 @@ declare class Vec2 implements IVec2 {
     min(v: IVec2): Vec2;
     zero(): Vec2;
 }
-export function V2(x?: number | IVec2, y?: number): Vec2
+declare function V2(x?: number | IVec2, y?: number): Vec2
 
 declare class Range2 implements IRange2 {
     pos: Vec2;
@@ -947,7 +947,6 @@ declare namespace Obj {
     * @returns An object of the targets type with the properties of target where those are different from the same properties in base.
     */
     export function difference<T extends { [index: string]: any }, S extends { [index: string]: any } = T>(target: T, base: S): T;
-    export function diff<T extends IDiffable, S extends IDiffable>(target: T, base: S): IDelta<T, S>;
 }
 declare interface IObjectWithFunctions<T extends Object | void> {
     [key: string]: (...args: any[]) => T;

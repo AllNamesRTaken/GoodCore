@@ -213,7 +213,9 @@ export function getOffset(el: HTMLElement): {left: number, top: number, right: n
 }
 export function is(selector: string | Element, element: Element): boolean {
 	let result = false;
-	if (selector instanceof Element) {
+	if(!selector || !element || (selector as any) === document) {
+	}
+	else if (selector instanceof Element) {
 		result = selector === element;
 	} else if (element.matches) {
 		result = element.matches(selector);
