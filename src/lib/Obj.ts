@@ -128,6 +128,8 @@ export function clone<T>(obj: T): T {
 		return new Date(obj.getTime()) as any;
 	} else if (obj instanceof RegExp) {
 		return new RegExp(obj) as any;
+	} else if (isFunction(obj)) {
+		result = obj;
 	} else {
 		//Object
 		if (isNullObject) {
