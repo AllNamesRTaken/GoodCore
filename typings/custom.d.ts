@@ -141,7 +141,7 @@ interface IThrottledFunction<T> {
 	(...args: ArgTypes<T>): ResultType<T>;
 }
 type IValue = number | string | boolean | null | undefined;
-type IValueOf<T extends IDiffable> = T[keyof T] extends IDiffable ? T[keyof T] : never;
+type IValueOf<T extends IDiffable> = T[keyof T] extends IDiffable ? T[keyof T] : IValue;
 type IDiffable = Indexable<IDiffable> | IDiffable[] | IValue;
 type IDeltaObj<T extends IDiffable, S extends IDiffable> = 
 	T extends Indexable<IDiffable> ?

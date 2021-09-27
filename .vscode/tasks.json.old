@@ -1,0 +1,39 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "0.1.0",
+    "command": "yarn",
+    "isShellCommand": true,
+    "suppressTaskName": true,
+    "tasks": [
+        {
+            // Build task, Ctrl+Shift+B
+            "taskName": "build",
+            "isBuildCommand": true,
+            "showOutput": "always",
+            "args": ["run", "build"]
+        },
+        {
+            // Test task, Ctrl+Shift+T
+            "command": "yarn",
+            "taskName": "test",
+            "isTestCommand": true,
+            "showOutput": "always",
+            "args": ["run", "test"]
+        },
+        {
+            "command": "yarn",
+            "taskName": "cover",
+            "isTestCommand": true,
+            "showOutput": "always",
+            "args": ["run", "cover"]
+        },
+        {
+            "command": "yarn",
+            "taskName": "all",
+            "isTestCommand": true,
+            "showOutput": "always",
+            "args": ["run", "all"]
+        }
+    ]
+}
