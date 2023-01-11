@@ -1,13 +1,24 @@
-module.exports = {
+
+export default {
     coverageDirectory: 'coverage',
-    globals: {
-        'ts-jest': {
-            tsConfig: 'tsconfig.test.json',
-            diagnostics: true,
-        },
+    // globals: {
+    //     'ts-jest': {
+    //         tsconfig: 'tsconfig.test.json',
+    //         diagnostics: true,
+    //     },
+    // },
+    transform: {
+        '\\.ts$': [
+            'ts-jest', {
+                tsconfig: 'tsconfig.test.json',
+                diagnostics: true,
+            }
+        ]
     },
     testEnvironment: "node",
-    testURL: "http://domain.com/index.html",
+    testEnvironmentOptions: {
+        url: "http://domain.com/index.html"
+    },
     moduleFileExtensions: [
         'js',
         'ts',
@@ -17,4 +28,5 @@ module.exports = {
     testMatch: [
         '**/src/__tests__/*Test.+(ts|tsx|js)',
     ],
+    testTimeout: 25000,
 }

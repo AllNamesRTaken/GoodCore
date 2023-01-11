@@ -1,34 +1,26 @@
 {
-    "compilerOptions": {
-	    "rootDir": "./src",
-		"outDir": "./dist",
-	    "sourceMap": true,
-	    "target": "es6",
-	    "module": "commonjs",
-	    "moduleResolution": "node",
-	    "declaration": false,
-	    "noImplicitAny": true,
-	    "noResolve": false,
-	    "removeComments": true,
-	    "noLib": false,
-	    "emitDecoratorMetadata": true,
-	    "experimentalDecorators": true,
-	    "preserveConstEnums": true,
-		"allowJs": false,
-		"listFiles": false,
-		"listEmittedFiles": false,
-		"lib": [
-            "dom",
-            "es6",
-            "es2015.promise",
-			"scripthost"
-		],
-    },
-	"include": [
-		"./src/**/*.ts",
-		"./src/test/**/*.ts",
-		"./typings/**/*.d.ts"
-	],
-	"exclude": [
-	]
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "target": "ES2021",
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "declaration": false,
+    "noImplicitAny": true,
+    "noResolve": false,
+    "removeComments": true,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "preserveConstEnums": true,
+    "allowJs": false,
+    "listFiles": false,
+    "listEmittedFiles": false,
+		"esModuleInterop": true,
+		"allowSyntheticDefaultImports": true,
+    "lib": ["dom", "ES2021", "ES2021.Promise", "ES2021.String", "scripthost"]
+  },
+  "include": ["./src/**/*.ts", "./src/test/**/*.ts", "./typings/**/*.d.ts"],
+  "exclude": []
 }

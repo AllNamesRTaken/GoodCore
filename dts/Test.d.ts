@@ -8,7 +8,6 @@ export class Env {
 	public static isEdge(): boolean;
 	public static isChrome(): boolean;
 	public static isBlink(): boolean;
-    public static hasFastNativeArrays(): boolean;
 }
 export function hasConsole(): boolean;
 export function isObject(it: any): boolean;

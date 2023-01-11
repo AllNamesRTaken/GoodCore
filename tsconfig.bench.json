@@ -1,38 +1,26 @@
 {
-    "compilerOptions": {
-	    "rootDir": "./src",
-		"outDir": "./dist",
-	    "sourceMap": false,
-	    "target": "es6",
-	    "module": "commonjs",
-	    "moduleResolution": "node",
-	    "declaration": false,
-	    "noImplicitAny": true,
-	    "noResolve": false,
-	    "removeComments": true,
-	    "noLib": false,
-	    "emitDecoratorMetadata": true,
-	    "experimentalDecorators": true,
-	    "preserveConstEnums": true,
-		"allowJs": false,
-		"listFiles": false,
-		"listEmittedFiles": false,
-		"lib": [
-            "dom",
-            "es6",
-            "es2015.promise",
-			"scripthost"
-		],
-		"types": [
-			"node"
-		]
-    },
-	"include": [
-		"./src/benchmark/**/*.ts",
-		"./typings/**/*.d.ts"
-	],
-	"exclude": [
-		"./src/__test__/**/*.ts",
-		"./src/lib/wip/**/*.ts"
-	]
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "sourceMap": false,
+    "target": "ES2021",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "declaration": false,
+    "noImplicitAny": true,
+    "noResolve": false,
+    "removeComments": true,
+    "noLib": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "preserveConstEnums": true,
+    "allowJs": false,
+    "listFiles": false,
+    "listEmittedFiles": false,
+    "lib": ["dom", "ES2021", "ES2021.Promise", "ES2021.String", "scripthost"],
+		"typeRoots": ["./node_modules/@types", "./src/@types"],
+    "baseUrl": "."
+  },
+  "include": ["./src/benchmark/**/*.ts", "./src/@types/*.ts"],
+  "exclude": ["./src/__test__/**/*.ts", "./src/lib/wip/**/*.ts"]
 }

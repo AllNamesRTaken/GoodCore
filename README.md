@@ -5,7 +5,7 @@
 [![Build Status](https://travis-ci.org/AllNamesRTaken/GoodCore.svg?branch=master)](https://travis-ci.org/AllNamesRTaken/GoodCore)
 [![Coverage Status](https://coveralls.io/repos/github/AllNamesRTaken/GoodCore/badge.svg?branch=master)](https://coveralls.io/github/AllNamesRTaken/GoodCore?branch=master)
 
-Good Core typescript library with utility functions and effective data structures for use with both Node and browser.
+A Good Core typescript library with utility functions and effective data structures for use with both Node and browser.
 
 It brings:
 - type definitions
@@ -13,7 +13,7 @@ It brings:
 - high performance
 - fully tested
 - fully tree shakeable with rollup
-- no external dependencies
+- Zero external dependencies
 
 It contains ...
 
@@ -60,6 +60,19 @@ and lots of utility functions for:
   - Log pipe
   - Guid generation
   - looping
+
+# Version 1.0.0 Changes
+- Removed all different bundlings of the library except: goodcore.bundle.min.js and goodcore-lite.bundle.min.js.
+- Moved to ES2021 transpilation for the whole library.
+- Removed the ES(6) version of the library since there is no ES5 version anymore.
+- Several Array functions, such as slice() and map(), have been deprecated in favor of native array functions. Deprecated functions will result in a console.warn message. If you want to disable this message set ```Global.noDeprecationWarnings = true;```
+- Array functions that had optimized code for older browsers (IE) have had that code removed.
+- Obj
+  - CHANGE: ```mixin()``` now mixes objects deep in the case when the target and the source both have a property value with the object type.
+- Util
+  - ADDED: ```function deprecate<T extends Function>(instead: string, fn: T): T```
+  - REMOVED: ```getFunctionName()``` in favor of ```Function.prototype.name```
+  - REMOVED: ```getFunctionCode()``` since it did not feel very "core" and was not handling any variations of arrow functions. Replace with .toString and a regex of your choice.
 
 # Caveat
 Iterator support in List and SortedList requires that the browser supports it too. So if you have to support a browser which do not such as IE11 then please use a polyfill like core.js. 

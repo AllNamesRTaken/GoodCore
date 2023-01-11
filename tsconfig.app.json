@@ -1,40 +1,33 @@
 {
-    "compilerOptions": {
-	    "rootDir": "./src",
-		"outDir": "./dist",
-	    "sourceMap": true,
-	    "target": "es5",
-	    "module": "commonjs",
-	    "moduleResolution": "node",
-	    "declaration": false,
-	    "noImplicitAny": true,
-		"noImplicitThis": false,
-		"strictNullChecks": true,
-	    "noResolve": false,
-	    "removeComments": true,
-	    "noLib": false,
-	    "preserveConstEnums": true,
-		"emitDecoratorMetadata": true,
-	    "experimentalDecorators": true,
-	    "allowJs": false,
-		"listFiles": false,
-		"downlevelIteration": false,
-		"lib": [
-			"es2015.symbol.wellknown",
-			"dom",
-			"es5",
-			"es6",
-            "es2015.promise",
-			"scripthost"
-        ]
-    },
-	"include": [
-		"./src/**/*.ts",
-		"./typings/**/*.d.ts"
-	],
-	"exclude": [
-		"**/__tests__/**/*.ts",
-		"./src/lib/wip/**/*.ts",
-		"./src/lib/GoodCoreList.ts"
-	]
+  "compilerOptions": {
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "sourceMap": true,
+    "target": "ES2021",
+    "module": "ES2020",
+    "moduleResolution": "node",
+    "declaration": false,
+    "noImplicitAny": true,
+    "noImplicitThis": false,
+    "strictNullChecks": true,
+    "noResolve": false,
+    "removeComments": true,
+    "noLib": false,
+    "preserveConstEnums": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowJs": false,
+    "listFiles": false,
+    "downlevelIteration": false,
+    "esModuleInterop": true,
+    "lib": ["dom", "ES2021", "ES2021.Promise", "ES2021.String", "scripthost"],
+    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "baseUrl": "."
+  },
+  "include": ["./src/**/*.ts"],
+  "exclude": [
+    "**/__tests__/**/*.ts",
+    "./src/lib/wip/**/*.ts",
+    "./src/lib/GoodCoreLite.ts"
+  ]
 }

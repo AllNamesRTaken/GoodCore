@@ -1,3 +1,4 @@
+import { Global } from "../lib/Global";
 import * as MocData from "../lib/MocData";
 import { List } from "../lib/struct/List";
 import { Vec2 } from "../lib/struct/Vec2";
@@ -20,6 +21,7 @@ describe("List",
 
 		beforeAll(
 			() => {
+				Global.noDeprecationWarnings = true;
 				myLongArr = MocData.numericArray(100, MocData.MocDataType.RandomInt);
 				myList1 = new List([1, 4, 7, 2] as number[]);
 				myList2 = new List([4, 8, 1, 9] as number[]);
@@ -132,6 +134,8 @@ describe("List",
 			});
 		test("ShallowCopy references same inner objects",
 			() => {
+				Global.noDeprecationWarnings = true;
+
 				const list = myList3 as List<any>;
 				const copy = new List<number>();
 				copy.shallowCopy(list);
@@ -146,6 +150,8 @@ describe("List",
 			});
 		test("ShallowCopy can take array as input",
 			() => {
+				Global.noDeprecationWarnings = true;
+
 				const arr = myList3.values as any[];
 				const copy = new List<number>();
 				copy.shallowCopy(arr);

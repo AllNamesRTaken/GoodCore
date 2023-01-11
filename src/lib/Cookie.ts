@@ -21,7 +21,7 @@ export function parseAllCookies(): Indexable<string> {
 			return p;
 		}, {} as Indexable<string>);
 }
-export function getMonster<T>(options: Partial<ICookieMonsterOptions<T>>): ICookieMonster<T> {
+export function getMonster<T extends object>(options: Partial<ICookieMonsterOptions<T>>): ICookieMonster<T> {
 	return new CookieMonster(options);
 }
 interface ICookieMonsterOptions<T extends Indexable<any>> {
@@ -85,16 +85,16 @@ class CookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> imple
 	private saveCookies() {
 		if (this._options.localStorage) {
 			if (this._options.session) {
-				sessionStorage.setItem(this._options.name, this.makeRecepie(this._cookies));
+				sessionStorage.setItem(this._options.name, this.makeRecipe(this._cookies));
 			} else {
-				localStorage.setItem(this._options.name, this.makeRecepie(this._cookies));
+				localStorage.setItem(this._options.name, this.makeRecipe(this._cookies));
 			}
 		} else {
 			let expires: Date = getDate(this._options.retainTime);
-			setCookie(this._options.name, this.makeRecepie(this._cookies), expires, this._options.path);
+			setCookie(this._options.name, this.makeRecipe(this._cookies), expires, this._options.path);
 		}
 	}
-	private makeRecepie(cookie: Partial<InternalCookie<T>>): string {
+	private makeRecipe(cookie: Partial<InternalCookie<T>>): string {
 		let essentials = transform<Partial<T>>(cookie, (acc, value, key) => {
 			if (value !== this._options.defaults[key]) {
 				(acc as Indexable<any>)[key] = value;

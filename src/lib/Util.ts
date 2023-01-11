@@ -45,27 +45,25 @@ export function once<T extends (...args: any[]) => S, S = void>(fn: T): T {
 		return result;
 	} as T;
 }
+
+export function deprecate<T extends Function>(instead: string, fn: T): T {
+  let localMessage = `Function ${fn.name} is deprecated, please use ${instead} instead`
+
+  const warn = once(function () {
+    console.warn(localMessage)
+  })
+  return {
+		[fn.name]: function (...args: unknown[]) {
+			if(!Global.noDeprecationWarnings) warn()
+			return fn(...args)
+		}
+	}[fn.name] as any
+}
+
 export function init(win?: Window) {
 	if (win !== undefined) {
 		Global.window = win;
 	}
-}
-export function getFunctionName(fn: Function): string {
-	let result: string;
-	if (fn.hasOwnProperty("name") !== undefined) {
-		result = (fn as any).name;
-	} else {
-		//for old browsers not inferring anonymous function names.
-		const fnString = fn.toString();
-		result = fnString.substring(9, fnString.indexOf("("));
-	}
-	return result;
-}
-export function getFunctionCode(fn: Function): string {
-	let result: string;
-	const fnString = fn.toString();
-	result = fnString.substring(fnString.indexOf("{") + 1, fnString.lastIndexOf("}"));
-	return result;
 }
 function stdTimezoneOffset(date: Date) {
 	let jan = new Date(date.getFullYear(), 0, 1);

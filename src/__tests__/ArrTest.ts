@@ -1,7 +1,7 @@
 import * as Arr from "../lib/Arr";
 import * as MocData from "../lib/MocData";
 import { Vec2 } from "../lib/struct/Vec2";
-import { Test } from "../lib";
+import { Global, Test } from "../lib";
 
 describe("Arrays",
 	() => {
@@ -15,6 +15,7 @@ describe("Arrays",
 				arr1 = [1, 4, 7, 2] as number[];
 				arr2 = [4, 8, 1, 9] as number[];
 				arr3 = [{a: 1}, {a: 2}] as any[];
+				Global.noDeprecationWarnings = true;
 			});
 		test("DeepCopy copies values correctly",
 			() => {
@@ -145,7 +146,7 @@ describe("Arrays",
 				expect(arrEl2).toEqual([]);
 			});
 		test("ForEachAsync loops correctly",
-			async (done) => {
+			async () => {
 				const arrEl = new Array<number>();
 				const arri = new Array<number>();
 				await Arr.forEachAsync(arr1 as number[], async (el, i) => {arrEl.push(el); arri.push(i); });
@@ -158,10 +159,9 @@ describe("Arrays",
 				} catch (err) {
 					expect(err).toBeTruthy();
 				}
-				done();
 			});
 		test("ForEach with inParallel = true executes out of sequence",
-			async (done) => {
+			async () => {
 				let sequence: number[] = [];
 				await Arr.forEachAsync(arr1 as number[], async (el, i) => {
 					await new Promise((resolve) => {
@@ -173,10 +173,9 @@ describe("Arrays",
 					return el;
 				}, true);
 				expect(sequence).toEqual([2, 7, 4, 1]);
-				done();
 			});
 		test("ForEach inParallel = false executes in sequence",
-			async (done) => {
+			async () => {
 				let sequence: number[] = [];
 				await Arr.forEachAsync(arr1 as number[], async (el, i) => {
 					await new Promise((resolve) => {
@@ -188,7 +187,6 @@ describe("Arrays",
 					return el;
 				});
 				expect(sequence).toEqual([1, 4, 7, 2]);
-				done();
 			});
 		test("ReverseForEach loops correctly",
 			() => {
@@ -219,14 +217,13 @@ describe("Arrays",
 				expect(Arr.map(null! as number[], (el, i) => i)).toEqual([]);
 			});
 		test("MapAsync el and i are correct",
-			async (done) => {
+			async () => {
 				expect(await Arr.mapAsync(arr1 as number[], async (el, i) => el)).toEqual([1, 4, 7, 2]);
 				expect(await Arr.mapAsync(arr1 as number[], async (el, i) => i)).toEqual([0, 1, 2, 3]);
 				expect(await Arr.mapAsync(null! as number[], async (el, i) => i)).toEqual([]);
-				done();
 			});
 		test("MapAsync with inParallel = true executes out of sequence",
-			async (done) => {
+			async () => {
 				let sequence: number[] = [];
 				expect(await Arr.mapAsync(arr1 as number[], async (el, i) => {
 					await new Promise((resolve) => {
@@ -238,10 +235,9 @@ describe("Arrays",
 					return el;
 				}, true)).toEqual([1, 4, 7, 2]);
 				expect(sequence).toEqual([2, 7, 4, 1]);
-				done();
 			});
 		test("MapAsync inParallel = false executes in sequence",
-			async (done) => {
+			async () => {
 				let sequence: number[] = [];
 				expect(await Arr.mapAsync(arr1 as number[], async (el, i) => {
 					await new Promise((resolve) => {
@@ -253,7 +249,6 @@ describe("Arrays",
 					return el;
 				})).toEqual([1, 4, 7, 2]);
 				expect(sequence).toEqual([1, 4, 7, 2]);
-				done();
 			});
 		test("MapInto maps correctly and sets length",
 			() => {

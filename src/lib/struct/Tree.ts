@@ -204,7 +204,7 @@ export class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
 		if (this.children === null) {
 			this.children = [];
 		}
-		if (isSameClass(data, this)) {
+		if (isSameClass(data as object, this)) {
 			node = data as this;
 			node.cut();
 			node.parent = this;

@@ -1,4 +1,5 @@
 
+import { Global } from "../lib/Global";
 import * as MocData from "../lib/MocData";
 import { List } from "../lib/struct/List";
 import { Comparer, SortedList } from "../lib/struct/SortedList";
@@ -19,6 +20,7 @@ describe("SortedList",
 				myList2 = new SortedList(Comparer.NumberDesc, [4, 8, 1, 9] as number[]);
 				myList3 = new SortedList(((a: { a: number }, b: { a: number }) => a.a < b.a ? -1 : a.a === b.a ? 0 : 1), [{ a: 2 }, { a: 1 }] as any[]);
 				myList4 = new SortedList(Comparer.NumberAsc, [4, 8, 1, 9] as number[]);
+				Global.noDeprecationWarnings = true;
 			});
 		test("getter length returns the length",
 			() => {

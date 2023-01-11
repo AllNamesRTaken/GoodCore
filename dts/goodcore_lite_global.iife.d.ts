@@ -422,6 +422,7 @@ declare namespace Util {
     * @returns A wrapped function that will only execute once.
     */
     export function once<T extends (...args: any[]) => S, S = void>(fn: T): T;
+    export function deprecate<T extends Function>(instead: string, fn: T): T;
     export function init(win?: Window): void;
     /**
     * Gets a new Date object with a delta. Not as exact as a Time library like moment.
@@ -501,7 +502,6 @@ declare namespace Test {
         public static isEdge(): boolean;
         public static isChrome(): boolean;
         public static isBlink(): boolean;
-        public static hasFastNativeArrays(): boolean;
     }
     export function hasWindow(): boolean;
     export function hasConsole(): boolean;

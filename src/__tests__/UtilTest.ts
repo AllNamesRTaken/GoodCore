@@ -10,6 +10,36 @@ describe("Util",
 				// this.document = this.window.document;
 				Util.init();
 			});
+		test("deprecate warns once",
+			() => {
+				Global.noDeprecationWarnings = false;
+
+				const bar = Util.deprecate("<foo>", function bar(a: string) {return a})
+
+				const warn: any[] = [];
+				let real = {
+					warn: console.warn,
+				};
+				Util.pipeOut(
+					null,
+					function (...args: any[]) {
+						warn.push.apply(warn, args);
+					},
+				);
+
+				expect(warn.length).toBe(0);
+				bar("test")
+				expect(warn.length).toBe(1);
+				bar("test")
+				expect(warn.length).toBe(1);
+				let result = bar("test")
+				expect(warn[0]).toContain("<foo>");
+				expect(result).toBe("test");
+
+				// reset
+				console.warn = real.warn;
+				Global.noDeprecationWarnings = true;
+			});
 		test("init sets Global.window object",
 			() => {
 				let org = Global.window;
@@ -149,18 +179,6 @@ describe("Util",
 				foo2.bar(2);
 				expect(barCalled).toBe(6);
 				expect(proxyCalled).toBe(2);
-			});
-		test("GetFunctionName returns correct name",
-			() => {
-				expect(Util.getFunctionName(function foo() { })).toBe("foo");
-				function fn() { }
-				fn.hasOwnProperty = () => undefined as any;
-				expect(Util.getFunctionName(fn)).toBe("fn");
-			});
-		test("GetFunctionCode returns correct code as string",
-			() => {
-				// tslint:disable-next-line:no-var-keyword
-				expect(Util.getFunctionCode(() => { var a = 1; })).toBe(" var a = 1; ");
 			});
 		test("getDate returns the correct date object", 
 			() => {
@@ -345,7 +363,7 @@ describe("Util",
 				});
 			});
 		test("debounce without leading on async function returns and resolves promise",
-			async function (done) {
+			async function () {
 				let value = 0;
 				let plus1 = Util.debounce(async function inc() {
 					return await new Promise<number>((resolve, reject) => setTimeout(() => {
@@ -363,7 +381,6 @@ describe("Util",
 				promise.then((val) => {
 					expect(val).toBe(2);
 					expect(value).toBe(2);
-					done();
 				});
 			});
 		test("throttle with trailing = false throttles a function",

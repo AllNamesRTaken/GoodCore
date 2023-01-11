@@ -140,7 +140,7 @@ export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Di
 				for (let i = 0; i < keys.length; i ++) {
 					let key = keys[i];
 					let newT = new T!() as T;
-					setProperties(newT, obj[key]);
+					setProperties(newT as Indexable<any>, obj[key]);
 					this.add(key, newT);
 				}
 			}

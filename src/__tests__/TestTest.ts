@@ -9,7 +9,7 @@ describe("Test",
 		let win: Window;
 		beforeAll(() => {
 			const dom = new JSDOM();
-			win = dom.window;
+			win = dom.window as any;
 			Global.window = null;
 		});
 		test("Env.isNode should be true",
@@ -19,10 +19,6 @@ describe("Test",
 		test("hasWindow returns false when no window is available",
 			() => {
 				expect(Test.hasWindow()).toBe(false);
-			});
-		test("hasFastNativeArrays should be true in node",
-			() => {
-				expect(Test.Env.hasFastNativeArrays()).toBe(true);
 			});
 		test("hasConsole returns true if console is available available",
 			() => {

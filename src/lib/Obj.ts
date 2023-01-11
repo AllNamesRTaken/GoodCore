@@ -70,7 +70,7 @@ export function equals(a: any, b: any): boolean {
 				}
 			}
 		} else if ((a as Object).constructor && isFunction(((a as Object).constructor.prototype as any).equals)) {
-			// Compare Coparables
+			// Compare Comparables
 			result = (a as IEquatable).equals(b);
 		} else {
 			// Compare Objects
@@ -97,7 +97,7 @@ export function equals(a: any, b: any): boolean {
 export function isDifferent(a: any, b: any): boolean {
 	return !equals(a, b);
 }
-export function shallowCopy<T, K extends keyof T>(obj: T): {[P in K]: T[P]} {
+export function shallowCopy<T extends object, K extends keyof T>(obj: T): {[P in K]: T[P]} {
 	const keys = Object.keys(obj);
 	const result: Indexable<any> = {};
 	let i = -1;
@@ -137,7 +137,7 @@ export function clone<T>(obj: T): T {
 		} else {
 			result = new ((obj as unknown as Object).constructor as Constructor<T>)();
 		}
-		const keys = Object.keys(obj);
+		const keys = Object.keys(obj as object);
 		let key = null;
 		let i = -1;
 		const len = keys.length;
@@ -165,7 +165,7 @@ export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
 		}
 	} else {
 		//Object
-		const keys = Object.keys(src);
+		const keys = Object.keys(src as object);
 		let key = null;
 		let i = -1;
 		const len = keys.length;
@@ -192,11 +192,9 @@ export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
 	return target;
 }
 export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): Indexable<any> {
-	const
-		result = target,
-		len = sources ? sources.length : 0;
-	let i = 0;
-	for (; i < len; i++) {
+	const result = target;
+	const srcLength = sources?.length ?? 0;
+	for (let i=0; i < srcLength; i++) {
 		let src = sources[i];
 		if (isFunction(src)) {
 			src = src.prototype as Indexable<any>;
@@ -206,21 +204,15 @@ export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | nul
 		}
 		const keys = Object.keys(src);
 		let key = null;
-		if (exclude) {
-			let i = -1;
-			const len = keys.length;
-			while (++i < len) {
-				key = keys[i];
-				if (exclude.hasOwnProperty(key)) {
-					continue;
-				}
-				target[key] = src[key];
+		const keysLength = keys.length
+		for (let k=0; k < keysLength; k++) {
+			key = keys[k];
+			if (exclude && exclude.hasOwnProperty(key)) {
+				continue;
 			}
-		} else {
-			let i = -1;
-			const len = keys.length;
-			while (++i < len) {
-				key = keys[i];
+			if(isObject(target[key]) && isObject(src[key])) {
+				mixin(target[key], exclude, src[key])
+			} else {
 				target[key] = src[key];
 			}
 		}
@@ -310,39 +302,3 @@ export function difference<T extends Indexable<any>, S extends Indexable<any> = 
 	}
 	return changes(target, base);
 }
-// export function diff<T extends IDiffable, S extends IDiffable>(target: T, base: S): IDelta<T,S> {
-// 	function changes<T extends IDiffable, S extends IDiffable>(target: T, base: S): IDelta<T,S> {
-// 		if (isArray(target) && isArray(base)) {
-// 			const [added, removed] = arrayDiff(target as IDiffable[], base as IDiffable[]);
-// 			if(added.length === 0 && removed.length === 0 && equals(target, base)) {
-// 				return [added, null, removed] as IDelta<T, S>
-// 			}
-// 			return [added, [] as any, removed] as IDelta<T, S>
-// 		} else if(isObject(target) && isObject(base)) {
-// 			const keyDiff = arrayDiff(Object.keys(target as Indexable<any>), Object.keys(base as Indexable<any>))
-// 			const keyDiffLookup = keyDiff.map((keys) => toLookup(keys))
-// 			const added = keyDiff[0].reduce((p: Partial<T>, c: string, i: number) => {
-// 				(p as Indexable<any>)[c] = (target as Indexable<any>)[c]
-// 				return p
-// 			}, new ((target as Object).constructor as Constructor<T>)())
-// 			const changed = transform(target as Indexable<IDiffable>, function(result: IDeltaObj<T, S>, value: IValueOf<T>, key: string) {
-// 				if(!(key as string in keyDiffLookup[0])) {
-// 					if (isDifferent(value, (base)[key as keyof S])) {
-// 					(result)[key as keyof IDeltaObj<T, S>] = (isObject(value) && isObject((base)[key as keyof S])) ? 
-// 						changes(value, (base)[key as keyof S] as IValueOf<S>) as unknown as IValueOf<IDeltaObj<T, S>> : 
-// 						[value, null, (base)[key as keyof S] as IValueOf<S>] as unknown as IValueOf<IDeltaObj<T, S>>;
-// 					}
-// 				}
-// 			}, {} as IDeltaObj<T,S>)
-// 			const removed = keyDiff[1].reduce((p: Partial<S>, c: string, i: number) => {
-// 				(p as Indexable<any>)[c] = (base as Indexable<any>)[c];
-// 				return p;
-// 			}, new ((base as Object).constructor as Constructor<S>)())
-// 			return [added, changed, removed] as IDelta<T, S>;
-// 		} else {
-// 			return [target as Partial<T>, null, base as Partial<S>] as IDelta<T, S>;
-// 		}
-		
-// 	}
-// 	return changes(target, base);
-// }

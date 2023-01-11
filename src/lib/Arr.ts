@@ -1,24 +1,12 @@
 import { clone, setProperties, equals, toLookup, defaultHashFunction, arrayDiff } from "./Obj";
 import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction, isObject, isNull } from "./Test";
-import { assert } from "./Util";
+import { assert, deprecate } from "./Util";
 export { toLookup } from "./Obj"
 export const difference = arrayDiff;
 
-export function flatten<T>(src: any[]): T[] {
-	return flattenInner<T>(src);
-}
-function flattenInner<T>(src: any[], result: T[] = []): T[] {
-	let i = -1;
-	const len = isNullOrUndefined(src) ? 0 : src.length;
-	while (++i < len) {
-		if (isArray(src[i])) {
-			flattenInner<T>(src[i] as any[], result);
-		} else {
-			result.push(src[i] as T);
-		}
-	}
-	return result;
-}
+export const flatten = deprecate("Array.prototype.flatten", function flatten<T>(src: any[]): T[] {
+	return src?.flat() ?? []
+})
 export function reverse<T>(array: T[]): T[] {
 	let left = null;
 	let right = null;
@@ -31,33 +19,20 @@ export function reverse<T>(array: T[]): T[] {
 	}
 	return array;
 }
-export function concat(...arrs: any[]): any[] {
+export const concat = deprecate("Array.prototype.concat", function concat(...arrs: any[]): any[] {
 	const result = Array.prototype.concat.apply([], arrs) as any[];
 	return result;
-}
-export function slice<T>(src: T[], pos: number = 0, count: number = Infinity): T[] {
+})
+export const slice = deprecate("Array.prototype.slice", function slice<T>(src: T[], pos: number = 0, count: number = Infinity): T[] {
 	let result: T[];
 	if (isNotNullOrUndefined(src)) {
-		let len = Math.min( src.length - pos, count);
-		if (Env.hasFastNativeArrays()) {
-			result = src.slice(pos, pos + count);
-		} else {
-			let len = Math.min( src.length - pos, count);
-			if (len <= 0) {
-				len = 0;
-			}
-			result = new Array(len);
-			let i = -1;
-			while (++i < len) {
-				result[i] = src[i + pos];
-			}
-		}
+		result = src.slice(pos, pos + count);
 	} else {
 		result = [];
 	}
 	return result;
-}
-export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, insert: T[] = []): void {
+})
+export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, insert: T[] = []): T[] {
 	if (isNullOrUndefined(src)) {
 		throw new Error("Unable to splice on null or undefined");
 	}
@@ -66,40 +41,8 @@ export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, 
 	pos = Math.min(pos, srcLen);
 	remove = Math.max(0, remove);
 	remove = Math.min(remove, srcLen - pos);
-
-	// natives are still slower on node 10.9
-	if (Env.hasFastNativeArrays() && (insert.length !== remove && srcLen - remove - pos !== 0 )) {
-		(src.splice.bind(src, pos, remove) as Function).apply(src, insert);
-	} else {
-		let insertLen = insert.length;
-		let newLen = srcLen - remove + insertLen;
-		let delta = remove - insertLen;
-		let endOfCut = pos + remove;
-		let cutsEnd = endOfCut === srcLen;
-
-		if (cutsEnd) {
-			src.length = newLen;
-		} else if (delta < 0) {
-			src.length = newLen;
-			let i = newLen;
-			while (--i >= pos + remove) {
-				src[i] = src[i + delta];
-			}
-		}
-
-		let i = pos - 1;
-		while (++i < pos + insertLen) {
-			src[i] = insert[i - pos];
-		}
-		if (!cutsEnd && delta > 0) {
-			--i;
-			while (++i < srcLen - delta) {
-				src[i] = src[i + delta];
-			}
-			src.length = newLen;
-			
-		}
-	}
+	
+	return src.splice(pos, remove, ...insert);
 }
 export function append<T>(arr: T[], values: T[]): void {
 	let index = -1;
@@ -111,44 +54,13 @@ export function append<T>(arr: T[], values: T[]): void {
 	}
 }
 export function removeAt<T>(arr: T[], index: number): T | undefined {
-	let result;
-	if (isNotNullOrUndefined(arr) && index >= 0) {
-		// natives are still slower on node 10.9
-		if (Env.hasFastNativeArrays()) {
-			result = arr.splice(index, 1)[0];
-		} else {
-			let len = arr.length;
-			let i = Math.max(0, index);
-			i = Math.min(i, len);
-			result = arr[i];
-			while (++i < len) {
-				arr[i - 1] = arr[i];
-			}
-			arr.length -= 1;
-		}
-	}
-	return result;
+	return index >= 0 ? arr?.splice(index, 1)[0] : undefined;
 }
-export function indexOfElement(src: any[], el: any): number {
-	let result = -1;
-	if (isNotNullOrUndefined(src)) {
-		if (Env.hasFastNativeArrays()) {
-			result = src.indexOf(el);
-		} else {
-			const len = isNullOrUndefined(src) ? 0 : src.length;
-			let i = -1;
-			while (++i < len) {
-				if (src[i] === el) {
-					result = i;
-					break;
-				}
-			}
-		}
-	}
-	return result;
-}
+export const indexOfElement = deprecate("Array.prototype.indexOf", function indexOfElement(src: any[], el: any): number {
+	return src?.indexOf(el) ?? -1;
+})
 export function remove(arr: any[], el: any): void {
-	const start = indexOfElement(arr, el);
+	const start = arr?.indexOf(el) ?? -1
 	removeAt(arr, start);
 }
 export function indexOf<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean): number {
@@ -178,22 +90,7 @@ export function removeOneByFn<T>(arr: T[], fn: (el: T) => boolean): void {
 	removeAt(arr, start);
 }
 export function shallowCopy<T>(src: T[]): T[] {
-	let i = -1;
-	let result: T[];
-	if (isNotNullOrUndefined(src)) {
-		if (Env.hasFastNativeArrays()) {
-			result = src.slice();
-		} else {
-			const len = src.length;
-			result = new Array(len);
-			while (++i < len) {
-				result[i] = src[i];
-			}
-		}
-	} else {
-		result = [];
-	}
-	return result;
+	return src?.slice() ?? [];
 }
 export function shallowCopyInto<T>(src: T[], target: T[]): void {
 	let i = -1;
@@ -240,23 +137,9 @@ export function deepFill<T>(src: T[], target: T[], at: number = 0): void {
 		target[at + i] = (clone(src[i]));
 	}
 }
-export function filter<T>(src: T[], fn: (el: T, i: number) => boolean): T[] {
-	let result: T[];
-	if(Env.hasFastNativeArrays()) {
-		result = isNullOrUndefined(src) ? [] : src.filter(fn);
-	} else {
-		result = [];
-		let i = -1;
-		const len = isNullOrUndefined(src) ? 0 : src.length;
-		while (++i < len) {
-			const el = src[i];
-			if (fn(el, i) === true) {
-				result.push(el);
-			}
-		}
-	}
-	return result;
-}
+export const filter = deprecate("Array.prototype.filter", function filter<T>(src: T[], fn: (el: T, i: number) => boolean): T[] {
+	return src?.filter(fn) ?? [];
+})
 export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void {
 	let i = -1;
 	let j = 0;
@@ -275,21 +158,9 @@ export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => b
 	}
 	target.length = j;
 }
-export function map<S, T>(src: S[], fn: (el: S, i: number) => T, startIndex: number = 0): T[] {
-	let result: T[];
-	let i = startIndex - 1;
-	let isNull = isNullOrUndefined(src);
-	if (Env.hasFastNativeArrays() && !isNull) {
-		result = src.map(fn)
-	} else {
-		const len = isNull ? 0 : src.length;
-		result = new Array<T>(len);
-		while (++i < len) {
-			result[i] = fn(src[i], i);
-		}
-	}
-	return result;
-}
+export const map = deprecate("Array.prototype.map", function map<S, T>(src: S[], fn: (el: S, i: number) => T, startIndex: number = 0): T[] {
+	return src?.map(fn) ?? []
+})
 export async function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => PromiseLike<T>, inParallel: boolean = false): Promise<T[]> {
 	let result: T[];
 	if (!inParallel) {
@@ -314,16 +185,12 @@ export function mapInto<S, T>(src: S[], target: T[], fn: (el: S, i: number) => T
 }
 export function reduce<T, U>(src: T[], fn: (acc: U, cur: T) => U, start: U, pos?: number, to?: number): U {
 	let acc: U = start;
-	if (isNotNullOrUndefined(src)) {
-		if (Env.hasFastNativeArrays() && !isNull) {
-			acc = src.reduce(fn, acc);
-		} else {	
-			pos = Math.min(Math.max(0, isUndefined(pos) ? 0 : pos!), src.length - 1);
-			to = Math.min(Math.max(0, isUndefined(to) ? src.length - 1 : to!), src.length - 1);
-			let i = pos - 1;
-			while (++i < to + 1) {
-				acc = fn(acc, src[i]);
-			}
+	if (isNotNullOrUndefined(src)) {	
+		pos = Math.min(Math.max(0, isUndefined(pos) ? 0 : pos!), src.length - 1);
+		to = Math.min(Math.max(0, isUndefined(to) ? src.length - 1 : to!), src.length - 1);
+		let i = pos - 1;
+		while (++i < to + 1) {
+			acc = fn(acc, src[i]);
 		}
 	}
 	return acc;
@@ -416,18 +283,9 @@ export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolea
 	while (--i >= 0 && (combined ? !fnOrTest(src[i], i) : !(fnOrTest(src[i], i) || (fn!(src[i], i), false)))) {
 	}
 }
-export function some<T>(src: T[], fn: (el: T, i: number) => boolean): boolean {
-	let result = false;
-	if (Env.hasFastNativeArrays() && !isNull) {
-		result = isNullOrUndefined(src) ? false : src.some(fn);
-	} else {	
-		let i = -1;
-		const len = isNullOrUndefined(src) ? 0 : src.length;
-		while (++i < len && !(result = fn(src[i], i))) {
-		}
-	}
-	return result;
-}
+export const some = deprecate("Array.prototype.some", function some<T>(src: T[], fn: (el: T, i: number) => boolean): boolean {
+	return src?.some(fn) ?? false;
+})
 export function all<T>(src: T[], fn: (el: T, i: number) => boolean): boolean {
 	let result = true;
 	let i = -1;

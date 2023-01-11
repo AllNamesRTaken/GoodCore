@@ -8,17 +8,17 @@ if (typeof (window) === "undefined") {
 } else {
 	win = window;
 }
-const root: NodeJS.Global | Window = typeof(window) !== "undefined" 
+const root: typeof global | Window = typeof(window) !== "undefined" 
 	? window 
 	: typeof(global) !== "undefined" 
 		? global 
-		: (() => this)() as unknown as NodeJS.Global; 
+		: globalThis as unknown as typeof global; 
 // tslint:disable-next-line:class-name
 export class _Global {
 	private _window: Window | null = win;
 	private _nativeWindow: boolean = nativeWindow;
 
-	public get global(): NodeJS.Global | Window {
+	public get global(): typeof global | Window {
 		if (this.hasNativeWindow) {
 			return this.window!;
 		}
@@ -36,6 +36,7 @@ export class _Global {
 	public get hasNativeWindow(): boolean {
 		return this._nativeWindow;
 	}
+	public noDeprecationWarnings: boolean = false;
 }
 // tslint:disable-next-line:variable-name
 export let Global = new _Global();

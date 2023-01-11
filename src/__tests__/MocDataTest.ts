@@ -28,7 +28,8 @@ describe("MocData",
 				const val2 = MocData.randomInt(10, 20);
 				expect((typeof(val2))).toBe("number");
 				expect(val2).toBe(val2 | 0);
-				expect(val2 >= 10 && val2 < 20).toBe(true);
+				expect(val2).toBeGreaterThanOrEqual(10);
+				expect(val2).toBeLessThan(20);
 			});
 		test("RandomNumber returns number",
 			() => {
@@ -37,7 +38,8 @@ describe("MocData",
 
 				const val2 = MocData.randomNumber(10, 20);
 				expect((typeof(val2))).toBe("number");
-				expect((val2 >= 10 && val2 < 20)).toBe(true);
+				expect(val2).toBeGreaterThanOrEqual(10);
+				expect(val2).toBeLessThan(20);
 			});
 		test("RandomString returns string of correct length",
 			() => {

@@ -55,14 +55,6 @@ export class Env {
 		this._isBlink = this._isBlink ?? (hasWindow() && (this.isChrome || this.isOpera) && !!((Global.window as any).CSS));
 		return this._isBlink;
 	}
-	public static hasFastNativeArrays(): boolean {
-		// Node 10+, Chrome (modern) and FF (modern) has some very fast array operations
-		return this.useNative === undefined ? this._hasFastNativeArrays() : this.useNative!;
-	}
-	private static __hasFastNativeArrays: boolean;
-	private static _hasFastNativeArrays(): boolean {
-		return this.__hasFastNativeArrays = this.__hasFastNativeArrays || !this.isIE();
-	}
 }
 
 export function hasConsole(): boolean {

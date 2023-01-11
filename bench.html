@@ -13,7 +13,6 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="dist/lib/goodcore.bundle.js"></script>
-    <script src="node_modules/lodash/lodash.js"></script>
     <script src="node_modules/platform/platform.js"></script>
     <script src="node_modules/benchmark/benchmark.js"></script>
     <script></script>
@@ -57,9 +56,6 @@
                     dump = goodcore.Arr.indexOfElement(intArray10k, -1);
                     goodcore.Test.Env.forceNotNative = false;
                 })
-                .add('_.indexOf', function () {
-                    dump = _.indexOf(intArray10k, -1);
-                })
                 .on('cycle', function (event) {
                     cycle(event);
                 })
@@ -86,9 +82,6 @@
                     dump = goodcore.Arr.shallowCopy(intArray10k);
                     goodcore.Test.Env.forceNotNative = false;
                 })
-                .add('_.slice', function () {
-                    dump = _.slice(intArray10k);
-                })
                 .on('cycle', function (event) {
                     cycle(event);
                 })
@@ -101,9 +94,6 @@
                 })
                 .add('Arr.reverse', function () {
                     dump = goodcore.Arr.reverse(intArray10k);
-                })
-                .add('_.reverse', function () {
-                    dump = _.reverse(intArray10k);
                 })
                 .on('cycle', function (event) {
                     cycle(event);
@@ -118,9 +108,6 @@
                 .add('Arr.filter', function () {
                     dump = goodcore.Arr.filter(intArray10k, (el, i) => el > 50000);
                 })
-                .add('_.filter', function () {
-                    dump = _.filter(intArray10k, (el, i) => el > 50000);
-                })
                 .on('cycle', function (event) {
                     cycle(event);
                 })
@@ -133,9 +120,6 @@
                 })
                 .add('Arr.forEach', function () {
                     dump = goodcore.Arr.forEach(intArray10k, (el, i) => void (0));
-                })
-                .add('_.forEach', function () {
-                    dump = _.forEach(intArray10k, (el, i) => void (0));
                 })
                 .on('cycle', function (event) {
                     cycle(event);
@@ -150,9 +134,6 @@
                 .add('Arr.map', function () {
                     dump = goodcore.Arr.map(intArray10k, (el, i) => el + 1);
                 })
-                .add('_.map', function () {
-                    dump = _.map(intArray10k, (el, i) => el + 1);
-                })
                 .on('cycle', function (event) {
                     cycle(event);
                 })
@@ -165,9 +146,6 @@
                 })
                 .add('Arr.reduce', function () {
                     dump = goodcore.Arr.reduce(intArray10k, (agg, cur) => agg + cur, 0);
-                })
-                .add('_.reduce', function () {
-                    dump = _.reduce(intArray10k, (agg, cur) => agg + cur, 0);
                 })
                 .on('cycle', function (event) {
                     cycle(event);
@@ -232,9 +210,6 @@
                 })
                 .add('Arr.find', function () {
                     dump = goodcore.Arr.find(intArray10k, (el) => el === -1);
-                })
-                .add('_.find', function () {
-                    dump = _.find(intArray10k, (el) => el === -1);
                 })
                 .on('cycle', function (event) {
                     cycle(event);

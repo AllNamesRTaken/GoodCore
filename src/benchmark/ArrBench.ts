@@ -1,7 +1,6 @@
 import * as Benchmark from "benchmark";
 import { MocData, Arr, Test } from "../lib";
-import { MocDataType } from "../lib/MocData";
-import * as _ from "lodash";
+import { MocDataType } from "../lib/MocData.js";
 import chalk from "chalk";
 
 const SIZE = 10000;
@@ -20,74 +19,6 @@ function cycle(event: any) {
 
 let dump: any;
 export const suites = [
-	new Benchmark.Suite()
-		.add("Array::some", function () {
-			dump = intArray10k.some((v, i) => i > 5000);
-		})
-		.add("Arr.some", function () {
-			dump = Arr.some(intArray10k, (v, i) => i > 5000);
-		})
-		// add listeners
-		.on("cycle", function (event: any) {
-			cycle(event);
-		})
-		.on("complete", function () {
-			complete(this);
-		}),
-
-	new Benchmark.Suite()
-		.add("Array::indexOf", function () {
-			dump = intArray10k.indexOf(-1);
-		})
-		.add("Arr.indexOfElement", function () {
-			dump = Arr.indexOfElement(intArray10k, -1);
-		})
-		.add("Arr.indexOfElement (no native)", function () {
-			Test.Env.useNative = false;
-			dump = Arr.indexOfElement(intArray10k, -1);
-			Test.Env.useNative = undefined;
-		})
-		.add("_.indexOf", function () {
-			dump = _.indexOf(intArray10k, -1);
-		})
-		// add listeners
-		.on("cycle", function (event: any) {
-			cycle(event);
-		})
-		.on("complete", function () {
-			complete(this);
-		}),
-
-	new Benchmark.Suite()
-		.add("Array::slice", function () {
-			dump = intArray10k.slice();
-		})
-		.add("Arr.slice", function () {
-			dump = Arr.slice(intArray10k);
-		})
-		.add("Arr.shallowCopy", function () {
-			dump = Arr.shallowCopy(intArray10k);
-		})
-		.add("Arr.slice (no native)", function () {
-			Test.Env.useNative = false;
-			dump = Arr.slice(intArray10k);
-			Test.Env.useNative = undefined;
-		})
-		.add("Arr.shallowCopy (no native)", function () {
-			Test.Env.useNative = false;
-			dump = Arr.shallowCopy(intArray10k);
-			Test.Env.useNative = undefined;
-		})
-		.add("_.slice", function () {
-			dump = _.slice(intArray10k);
-		})
-		// add listeners
-		.on("cycle", function (event: any) {
-			cycle(event);
-		})
-		.on("complete", function () {
-			complete(this);
-		}),
 
 	new Benchmark.Suite()
 		.add("Array::reverse", function () {
@@ -95,9 +26,6 @@ export const suites = [
 		})
 		.add("Arr.reverse", function () {
 			dump = Arr.reverse(intArray10k);
-		})
-		.add("_.reverse", function () {
-			dump = _.reverse(intArray10k);
 		})
 		// add listeners
 		.on("cycle", function (event: any) {
@@ -114,9 +42,6 @@ export const suites = [
 		.add("Arr.filter", function () {
 			dump = Arr.filter(intArray10k, (el, i) => el > 50000);
 		})
-		.add("_.filter", function () {
-			dump = _.filter(intArray10k, (el, i) => el > 50000);
-		})
 		// add listeners
 		.on("cycle", function (event: any) {
 			cycle(event);
@@ -131,9 +56,6 @@ export const suites = [
 		})
 		.add("Arr.forEach", function () {
 			dump = Arr.forEach(intArray10k, (el, i) => void (0));
-		})
-		.add("_.forEach", function () {
-			dump = _.forEach(intArray10k, (el, i) => void (0));
 		})
 		// add listeners
 		.on("cycle", function (event: any) {
@@ -150,9 +72,6 @@ export const suites = [
 		.add("Arr.map", function () {
 			dump = Arr.map(intArray10k, (el, i) => el + 1);
 		})
-		.add("_.map", function () {
-			dump = _.map(intArray10k, (el, i) => el + 1);
-		})
 		// add listeners
 		.on("cycle", function (event: any) {
 			cycle(event);
@@ -168,9 +87,6 @@ export const suites = [
 		.add("Arr.reduce", function () {
 			dump = Arr.reduce(intArray10k, (agg, cur) => agg + cur, 0);
 		})
-		.add("_.reduce", function () {
-			dump = _.reduce(intArray10k, (agg, cur) => agg + cur, 0);
-		})
 		// add listeners
 		.on("cycle", function (event: any) {
 			cycle(event);
@@ -180,19 +96,13 @@ export const suites = [
 		}),
 
 	new Benchmark.Suite()
-		.add("Array::splice", function () {
+		.add("Array::splice delete half add 100", function () {
 			workset.splice.bind(workset, SIZE / 2, 100).apply(workset, intArray100);
 			workset.length = SIZE;
 		})
-		.add("Arr.splice", function () {
+		.add("Arr.splice delete half add 100", function () {
 			Arr.splice(workset, SIZE / 2, 100, intArray100);
 			workset.length = SIZE;
-		})
-		.add("Arr.splice (no native)", function () {
-			Test.Env.useNative = false;
-			Arr.splice(workset, SIZE / 2, 100, intArray100);
-			workset.length = SIZE;
-			Test.Env.useNative = undefined;
 		})
 		.on("start", function (event: any) {
 			workset = intArray10k.slice();
@@ -208,19 +118,13 @@ export const suites = [
 		}),
 
 	new Benchmark.Suite()
-		.add("Array::splice", function () {
+		.add("Array::splice delete 10 in the middle and add 100", function () {
 			workset.splice.bind(workset, SIZE / 2, 10).apply(workset, intArray100);
 			workset.length = SIZE;
 		})
-		.add("Arr.splice", function () {
+		.add("Arr.splice delete 10 in the middle and add 100", function () {
 			Arr.splice(workset, SIZE / 2, 10, intArray100);
 			workset.length = SIZE;
-		})
-		.add("Arr.splice (no native)", function () {
-			Test.Env.useNative = false;
-			Arr.splice(workset, SIZE / 2, 10, intArray100);
-			workset.length = SIZE;
-			Test.Env.useNative = undefined;
 		})
 		.on("start", function (event: any) {
 			workset = intArray10k.slice();
@@ -236,19 +140,13 @@ export const suites = [
 		}),
 
 	new Benchmark.Suite()
-		.add("Array::splice", function () {
+		.add("Array::splice delete 200 in the middle and add 100", function () {
 			workset.splice.bind(workset, SIZE / 2, 200).apply(workset, intArray100);
 			workset.length = SIZE;
 		})
-		.add("Arr.splice", function () {
+		.add("Arr.splice delete 200 in the middle and add 100", function () {
 			Arr.splice(workset, SIZE / 2, 200, intArray100);
 			workset.length = SIZE;
-		})
-		.add("Arr.splice (no native)", function () {
-			Test.Env.useNative = false;
-			Arr.splice(workset, SIZE / 2, 200, intArray100);
-			workset.length = SIZE;
-			Test.Env.useNative = undefined;
 		})
 		.on("start", function (event: any) {
 			workset = intArray10k.slice();
@@ -263,19 +161,13 @@ export const suites = [
 			}
 		}),
 		new Benchmark.Suite()
-		.add("Array::splice", function () {
+		.add("Array::splice delete 10 at the end and add 100", function () {
 			workset.splice.bind(workset, SIZE - 10, 10).apply(workset, intArray100);
 			workset.length = SIZE;
 		})
-		.add("Arr.splice", function () {
+		.add("Arr.splice delete 10 at the end and add 100", function () {
 			Arr.splice(workset, SIZE - 10, 10, intArray100);
 			workset.length = SIZE;
-		})
-		.add("Arr.splice (no native)", function () {
-			Test.Env.useNative = false;
-			Arr.splice(workset, SIZE - 10, 10, intArray100);
-			workset.length = SIZE;
-			Test.Env.useNative = undefined;
 		})
 		.on("start", function (event: any) {
 			workset = intArray10k.slice();
@@ -290,19 +182,13 @@ export const suites = [
 			}
 		}),
 		new Benchmark.Suite()
-		.add("Array::splice", function () {
+		.add("Array::splice delete 10 at start and add 100", function () {
 			workset.splice.bind(workset, 0, 10).apply(workset, intArray100);
 			workset.length = SIZE;
 		})
-		.add("Arr.splice", function () {
+		.add("Arr.splice delete 10 at start and add 100", function () {
 			Arr.splice(workset, 0, 10, intArray100);
 			workset.length = SIZE;
-		})
-		.add("Arr.splice (no native)", function () {
-			Test.Env.useNative = false;
-			Arr.splice(workset, 0, 10, intArray100);
-			workset.length = SIZE;
-			Test.Env.useNative = undefined;
 		})
 		.on("start", function (event: any) {
 			workset = intArray10k.slice();
@@ -318,19 +204,13 @@ export const suites = [
 		}),
 
 	new Benchmark.Suite()
-		.add("Array::splice(1)", function () {
+		.add("Array::splice(1) delete 1 in the middle", function () {
 			workset.splice(SIZE / 2, 1);
 			workset.push(1);
 		})
-		.add("Arr.removeAt", function () {
+		.add("Arr.removeAt delete 1 in the middle", function () {
 			Arr.removeAt(workset, SIZE / 2);
 			workset.push(1);
-		})
-		.add("Arr.removeAt (no native)", function () {
-			Test.Env.useNative = false;
-			Arr.removeAt(workset, SIZE / 2);
-			workset.push(1);
-			Test.Env.useNative = undefined;
 		})
 		.on("start", function (event: any) {
 			workset = intArray10k.slice();
@@ -351,9 +231,6 @@ export const suites = [
 		})
 		.add("Arr.find", function () {
 			dump = Arr.find(intArray10k, (el) => el === -1);
-		})
-		.add("_.find", function () {
-			dump = _.find(intArray10k, (el) => el === -1);
 		})
 		// add listeners
 		.on("cycle", function (event: any) {

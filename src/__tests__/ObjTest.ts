@@ -133,6 +133,11 @@ describe("Obj",
 				expect(Obj.mixin({ foo: "bar", a: 10 }, null, myObj)).toEqual({ foo: "bar", a: 1, b: { c: 2 }, d: [3, 4, 5] });
 				expect(Obj.mixin({ foo: "bar", a: 10 }, { a: true }, myObj)).toEqual({ foo: "bar", a: 10, b: { c: 2 }, d: [3, 4, 5] });
 			});
+		test("Mixin works with deep structures",
+			() => {
+				expect(Obj.mixin({ foo: "bar", deep: { a: 10 } }, null, { bar: "baz", deep: { b: 30 } })).toEqual({ bar: "baz" , foo: "bar", deep: { a: 10, b: 30 }});
+				expect(Obj.mixin({ foo: "bar", deep: { a: 10 } }, { bar: true }, { bar: "baz", deep: { b: 30 } })).toEqual({ foo: "bar", deep: { a: 10, b: 30 } });
+			});
 		test("Mixin handles functions",
 			() => {
 				expect(Obj.mixin({ foo: "bar", a: 10 }, null, function someFn() { })).toEqual({ foo: "bar", a: 10 });
