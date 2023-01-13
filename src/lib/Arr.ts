@@ -19,10 +19,10 @@ export function reverse<T>(array: T[]): T[] {
 	}
 	return array;
 }
-export const concat = deprecate("Array.prototype.concat", function concat(...arrs: any[]): any[] {
+export function concat (...arrs: any[]): any[] {
 	const result = Array.prototype.concat.apply([], arrs) as any[];
 	return result;
-})
+}
 export const slice = deprecate("Array.prototype.slice", function slice<T>(src: T[], pos: number = 0, count: number = Infinity): T[] {
 	let result: T[];
 	if (isNotNullOrUndefined(src)) {
