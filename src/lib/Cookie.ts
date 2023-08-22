@@ -6,11 +6,11 @@ export function getCookie(key: string) {
 	let cookie = find(document.cookie.split(";").map((cookie) => cookie.trim()), (cookie) => cookie.indexOf(`${key}=`) === 0);
 	return cookie ? cookie.trim().split("=")[1] : undefined;
 }
-export function setCookie(key: string, value: string, expires: Date, path?: string) {
-	document.cookie = `${key}=${value}; expires=${expires.toUTCString()}${(path ? "; path=" + path : "")}`;
+export function setCookie(key: string, value: string, expires: Date, path?: string | null, sameSite: "Strict" | "Lax" | "None" = 'Lax', requireSSL: boolean = false) {
+	document.cookie = `${key}=${value}; expires=${expires.toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(this.CookieSameSite ?? 'Lax')};{${(this.RequireSSL || this.CookieSameSite === 'None' ? 'secure;' : '')}`;
 }
-export function removeCookie(key: string, path?: string) {
-	document.cookie = `${key}=${"null"}; expires=${(new Date(0)).toUTCString()}${(path ? "; path=" + path : "")}`;
+export function removeCookie(key: string, path?: string | null, sameSite: "Strict" | "Lax" | "None" = 'Lax', requireSSL: boolean = false) {
+	document.cookie = `${key}=${"null"}; expires=${(new Date(0)).toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(this.CookieSameSite ?? 'Lax')};{${(this.RequireSSL || this.CookieSameSite === 'None' ? 'secure;' : '')}`;
 }
 export function parseAllCookies(): Indexable<string> {
 	return document.cookie.split(";")
@@ -31,6 +31,8 @@ interface ICookieMonsterOptions<T extends Indexable<any>> {
 	path: string;
 	localStorage: boolean;
 	session: boolean;
+	sameSite: "Strict" | "Lax" | "None";
+	requireSSL: boolean;
 }
 interface ICookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> {
 	setCookie<S extends K>(key: S, value: T[S]): void;
@@ -48,6 +50,8 @@ class CookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> imple
 		path: "",
 		localStorage: false,
 		session: false,
+		sameSite: 'Lax', 
+		requireSSL: false
 	};
 	private _defaultsKeyIndexes: Indexable<number> = {};
 	private _options: ICookieMonsterOptions<T> = this._defaultOptions;
@@ -79,7 +83,7 @@ class CookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> imple
 				localStorage.removeItem(this._options.name);
 			}
 		} else {
-			removeCookie(this._options.name, this._options.path);
+			removeCookie(this._options.name, this._options.path, this._options.sameSite, this._options.requireSSL);
 		}
 	}
 	private saveCookies() {
@@ -91,7 +95,7 @@ class CookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> imple
 			}
 		} else {
 			let expires: Date = getDate(this._options.retainTime);
-			setCookie(this._options.name, this.makeRecipe(this._cookies), expires, this._options.path);
+			setCookie(this._options.name, this.makeRecipe(this._cookies), expires, this._options.path, this._options.sameSite, this._options.requireSSL);
 		}
 	}
 	private makeRecipe(cookie: Partial<InternalCookie<T>>): string {
