@@ -1,5 +1,5 @@
-import { Poolable } from "../lib/mixins/Poolable";
-import { Pool } from "../lib/standard/Pool";
+import { Poolable } from "../lib/mixins/Poolable.js";
+import { Pool } from "../lib/standard/Pool.js";
 
 describe("Poolable",
 	() => {

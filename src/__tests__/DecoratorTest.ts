@@ -1,6 +1,6 @@
-import { debounced, once, asserts, deprecated, throttled } from "../lib/Decorators";
-import { assert, AssertError, pipeOut } from "../lib/Util";
-import { isNumber } from "../lib/Test";
+import { debounced, once, asserts, deprecated, throttled } from "../lib/Decorators.js";
+import { assert, AssertError, pipeOut } from "../lib/Util.js";
+import { isNumber } from "../lib/Test.js";
 
 describe("Decorators",
 	() => {

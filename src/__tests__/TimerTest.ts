@@ -1,4 +1,4 @@
-import { Timer } from "../lib/Timer";
+import { Timer } from "../lib/Timer.js";
 
 jest.useFakeTimers();
 

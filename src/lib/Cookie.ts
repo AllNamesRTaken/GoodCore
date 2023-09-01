@@ -1,16 +1,16 @@
-import { find } from "./Arr";
-import { getDate, assert } from "./Util";
-import { transform } from "./Obj";
+import { find } from "./Arr.js";
+import { getDate, assert } from "./Util.js";
+import { transform } from "./Obj.js";
 
 export function getCookie(key: string) {
 	let cookie = find(document.cookie.split(";").map((cookie) => cookie.trim()), (cookie) => cookie.indexOf(`${key}=`) === 0);
 	return cookie ? cookie.trim().split("=")[1] : undefined;
 }
 export function setCookie(key: string, value: string, expires: Date, path?: string | null, sameSite: "Strict" | "Lax" | "None" = 'Lax', requireSSL: boolean = false) {
-	document.cookie = `${key}=${value}; expires=${expires.toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(sameSite ?? 'Lax')};{${(this.RequireSSL || sameSite === 'None' ? 'secure;' : '')}`;
+	document.cookie = `${key}=${value}; expires=${expires.toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(sameSite ?? 'Lax')};{${(requireSSL || sameSite === 'None' ? 'secure;' : '')}`;
 }
 export function removeCookie(key: string, path?: string | null, sameSite: "Strict" | "Lax" | "None" = 'Lax', requireSSL: boolean = false) {
-	document.cookie = `${key}=${"null"}; expires=${(new Date(0)).toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(sameSite ?? 'Lax')};{${(this.RequireSSL || sameSite === 'None' ? 'secure;' : '')}`;
+	document.cookie = `${key}=${"null"}; expires=${(new Date(0)).toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(sameSite ?? 'Lax')};{${(requireSSL || sameSite === 'None' ? 'secure;' : '')}`;
 }
 export function parseAllCookies(): Indexable<string> {
 	return document.cookie.split(";")

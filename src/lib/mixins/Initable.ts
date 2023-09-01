@@ -1,4 +1,4 @@
-import { setProperties } from "../Obj";
+import { setProperties } from "../Obj.js";
 
 export function Initable<S>(_constructor?: ICtor<S>): ICtor<S & IInitable> {
 	const ctor = _constructor || Object as any;

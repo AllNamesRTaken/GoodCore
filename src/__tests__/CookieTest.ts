@@ -2,8 +2,8 @@
  * @jest-environment jsdom
  */
 
-import * as Cookie from "../lib/Cookie";
-import { getDate } from "../lib/Util";
+import * as Cookie from "../lib/Cookie.js";
+import { getDate } from "../lib/Util.js";
 
 describe("Cookie",
 	() => {

@@ -1,5 +1,5 @@
-import { Tree } from "../lib/struct/Tree";
-import { isNull } from "../lib/Test";
+import { Tree } from "../lib/struct/Tree.js";
+import { isNull } from "../lib/Test.js";
 
 describe("Tree",
 	() => {

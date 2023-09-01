@@ -1,10 +1,10 @@
 import { shallowCopy, create, insertAt, forEach, append, deepCopy, deepCopyInto, 
 	shallowCopyInto, remove, removeAt, forSome, until, reverseForEach,  
 	reverseUntil, all, reverse, indexOf, filterInto, splice, 
-	mapInto, reduce, reduceUntil, reverseReduce, reverseReduceUntil, deserialize } from "../Arr";
-import { clone, equals, wipe } from "../Obj";
-import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow, isNotNull } from "../Test";
-import { once } from "../Util";
+	mapInto, reduce, reduceUntil, reverseReduce, reverseReduceUntil, deserialize } from "../Arr.js";
+import { clone, equals, wipe } from "../Obj.js";
+import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow, isNotNull } from "../Test.js";
+import { once } from "../Util.js";
 
 if (hasWindow() && !(window as any).Symbol) {
 	(window as any).Symbol = { iterator: "iterator" };

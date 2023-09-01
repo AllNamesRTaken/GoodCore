@@ -1,5 +1,5 @@
-import { Global } from "./Global";
-import { hasConsole, isNotUndefined, isNotNullOrUndefined, isUndefined } from "./Test";
+import { Global } from "./Global.js";
+import { hasConsole, isNotUndefined, isNotNullOrUndefined, isUndefined } from "./Test.js";
 
 export interface IObjectWithFunctions<T extends Object | void> {
 	[key: string]: (...args: any[]) => T;

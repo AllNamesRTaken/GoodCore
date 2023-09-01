@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import * as Dom from "../lib/Dom";
+import * as Dom from "../lib/Dom.js";
 
 describe("Dom",
 	() => {

@@ -1,4 +1,4 @@
-import { Initable } from "../lib/mixins/Initable";
+import { Initable } from "../lib/mixins/Initable.js";
 
 describe("Initable",
 	() => {

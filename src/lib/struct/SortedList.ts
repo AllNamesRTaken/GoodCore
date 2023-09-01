@@ -1,8 +1,8 @@
-import { binarySearch, shallowCopy } from "../Arr";
-import { equals, setProperties } from "../Obj";
-import { isFunction, isNotUndefined, hasWindow } from "../Test";
-import { List } from "./List";
-import { once } from "../Util";
+import { binarySearch, shallowCopy } from "../Arr.js";
+import { equals, setProperties } from "../Obj.js";
+import { isFunction, isNotUndefined, hasWindow } from "../Test.js";
+import { List } from "./List.js";
+import { once } from "../Util.js";
 
 if (hasWindow() && !(window as any).Symbol) {
 	(window as any).Symbol = { iterator: "iterator" };

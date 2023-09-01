@@ -1,8 +1,8 @@
-import { Global } from "../lib/Global";
-import * as MocData from "../lib/MocData";
-import { List } from "../lib/struct/List";
-import { Vec2 } from "../lib/struct/Vec2";
-import { isUndefined, isNotNullOrUndefined } from "../lib/Test";
+import { Global } from "../lib/Global.js";
+import * as MocData from "../lib/MocData.js";
+import { List } from "../lib/struct/List.js";
+import { Vec2 } from "../lib/struct/Vec2.js";
+import { isUndefined, isNotNullOrUndefined } from "../lib/Test.js";
 
 describe("List",
 	() => {

@@ -1,5 +1,5 @@
-import { Dictionary } from "../lib/struct/Dictionary";
-import { Vec2 } from "../lib/struct/Vec2";
+import { Dictionary } from "../lib/struct/Dictionary.js";
+import { Vec2 } from "../lib/struct/Vec2.js";
 
 describe("Dictionary",
 	() => {

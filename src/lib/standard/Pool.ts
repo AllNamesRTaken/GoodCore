@@ -1,4 +1,4 @@
-import { once } from "../Util";
+import { once } from "../Util.js";
 
 export class Pool<T> {
 	private _pool: T[] = [];

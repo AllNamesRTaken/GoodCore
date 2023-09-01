@@ -1,6 +1,6 @@
 /// <reference path="../base.d.ts" />
 
-import { Tree } from "./Tree";
+import { Tree } from "./Tree.js";
 export class IndexedTree<T> extends Tree<T> {
     init(obj: Partial<this>, mapping?: any): this;
     index: Indexable<this>;

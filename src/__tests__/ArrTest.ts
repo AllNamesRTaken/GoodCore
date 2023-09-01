@@ -1,6 +1,6 @@
-import * as Arr from "../lib/Arr";
-import * as MocData from "../lib/MocData";
-import { Vec2 } from "../lib/struct/Vec2";
+import * as Arr from "../lib/Arr.js";
+import * as MocData from "../lib/MocData.js";
+import { Vec2 } from "../lib/struct/Vec2.js";
 import { Global, Test } from "../lib";
 
 describe("Arrays",

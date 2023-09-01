@@ -1,6 +1,6 @@
-import { IndexedTree } from "../lib/struct/IndexedTree";
-import { Tree } from "../lib/struct/Tree";
-import { isNotUndefined } from "../lib/Test";
+import { IndexedTree } from "../lib/struct/IndexedTree.js";
+import { Tree } from "../lib/struct/Tree.js";
+import { isNotUndefined } from "../lib/Test.js";
 
 describe("IndexedTree",
 	() => {

@@ -1,6 +1,6 @@
 /// <reference path="../base.d.ts" />
 
-import { List } from "./List";
+import { List } from "./List.js";
 export class Dictionary<T> implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable {
     constructor();
     protected create<S = T>(): Dictionary<S>;

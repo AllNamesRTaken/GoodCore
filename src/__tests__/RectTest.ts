@@ -1,6 +1,6 @@
-import { Rect } from "../lib/struct/Rect";
-import { Vec2 } from "../lib/struct/Vec2";
-import { Range2 } from "../lib/struct/Range2";
+import { Rect } from "../lib/struct/Rect.js";
+import { Vec2 } from "../lib/struct/Vec2.js";
+import { Range2 } from "../lib/struct/Range2.js";
 
 describe("Rect",
 	() => {

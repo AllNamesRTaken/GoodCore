@@ -1,7 +1,7 @@
-import { Global } from "./Global";
-import { isNullOrUndefined, isString, isElement } from "./Test";
-import { assert } from "./Util";
-import { reverse, reduce } from "./Arr";
+import { Global } from "./Global.js";
+import { isNullOrUndefined, isString, isElement } from "./Test.js";
+import { assert } from "./Util.js";
+import { reverse, reduce } from "./Arr.js";
 
 export enum Sides {
 	Top,

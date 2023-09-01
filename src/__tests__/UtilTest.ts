@@ -1,6 +1,6 @@
-import { Global } from "../lib/Global";
-import * as Test from "../lib/Test";
-import * as Util from "../lib/Util";
+import { Global } from "../lib/Global.js";
+import * as Test from "../lib/Test.js";
+import * as Util from "../lib/Util.js";
 
 describe("Util",
 	() => {

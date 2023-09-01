@@ -1,11 +1,11 @@
-import { clone, setProperties } from "../Obj";
-import { Initable } from "../mixins/Initable";
-import { Dictionary } from "../struct/Dictionary";
-import { List } from "../struct/List";
-import { isArray, isNullOrUndefined, isNotUndefined, isNotNull } from "../Test";
+import { clone, setProperties } from "../Obj.js";
+import { Initable } from "../mixins/Initable.js";
+import { Dictionary } from "../struct/Dictionary.js";
+import { List } from "../struct/List.js";
+import { isArray, isNullOrUndefined, isNotUndefined, isNotNull } from "../Test.js";
 import { Util } from "..";
-import { assert, once } from "../Util";
-import { zip, create } from "../Arr";
+import { assert, once } from "../Util.js";
+import { zip, create } from "../Arr.js";
 
 @Initable
 export class GraphNode<T> implements ICloneable {

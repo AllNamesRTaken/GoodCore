@@ -1,6 +1,6 @@
-import { rotationRad } from "../Calc";
-import { IVec2 } from "./IVec2";
-import { once } from "../Util";
+import { rotationRad } from "../Calc.js";
+import { IVec2 } from "./IVec2.js";
+import { once } from "../Util.js";
 
 export class Vec2Const {
 	public static EPSILON: number = 1e-8;

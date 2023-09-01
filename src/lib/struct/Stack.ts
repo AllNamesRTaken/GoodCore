@@ -1,5 +1,5 @@
-import { deepCopy, deserialize } from "../Arr";
-import { isFunction } from "../Test";
+import { deepCopy, deserialize } from "../Arr.js";
+import { isFunction } from "../Test.js";
 
 export class Stack<T> implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable {
 	public DEFAULT_SIZE = 100;

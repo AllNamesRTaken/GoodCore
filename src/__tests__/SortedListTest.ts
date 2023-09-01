@@ -1,9 +1,9 @@
 
-import { Global } from "../lib/Global";
-import * as MocData from "../lib/MocData";
-import { List } from "../lib/struct/List";
-import { Comparer, SortedList } from "../lib/struct/SortedList";
-import { Vec2 } from "../lib/struct/Vec2";
+import { Global } from "../lib/Global.js";
+import * as MocData from "../lib/MocData.js";
+import { List } from "../lib/struct/List.js";
+import { Comparer, SortedList } from "../lib/struct/SortedList.js";
+import { Vec2 } from "../lib/struct/Vec2.js";
 
 describe("SortedList",
 	() => {

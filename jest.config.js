@@ -29,4 +29,5 @@ export default {
         '**/src/__tests__/*Test.+(ts|tsx|js)',
     ],
     testTimeout: 25000,
+    resolver: 'jest-ts-webcompat-resolver',
 }

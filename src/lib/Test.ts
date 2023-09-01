@@ -1,4 +1,4 @@
-import { Global } from "./Global";
+import { Global } from "./Global.js";
 
 export function hasWindow(): boolean {
 	return Global.window !== null;
@@ -52,7 +52,7 @@ export class Env {
 	}
 	private static _isBlink: boolean;
 	public static isBlink(): boolean {
-		this._isBlink = this._isBlink ?? (hasWindow() && (this.isChrome || this.isOpera) && !!((Global.window as any).CSS));
+		this._isBlink = this._isBlink ?? (hasWindow() && (this.isChrome() || this.isOpera()) && !!((Global.window as any).CSS));
 		return this._isBlink;
 	}
 }

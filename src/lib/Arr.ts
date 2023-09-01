@@ -1,7 +1,7 @@
-import { clone, setProperties, equals, toLookup, defaultHashFunction, arrayDiff } from "./Obj";
-import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction, isObject, isNull } from "./Test";
-import { assert, deprecate } from "./Util";
-export { toLookup } from "./Obj"
+import { clone, setProperties, equals, toLookup, defaultHashFunction, arrayDiff } from "./Obj.js";
+import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction, isObject, isNull } from "./Test.js";
+import { assert, deprecate } from "./Util.js";
+export { toLookup } from "./Obj.js"
 export const difference = arrayDiff;
 
 export const flatten = deprecate("Array.prototype.flatten", function flatten<T>(src: any[]): T[] {

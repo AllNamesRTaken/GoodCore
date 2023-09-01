@@ -1,7 +1,7 @@
-import { IRange2 } from "./IRange2";
-import { IVec2 } from "./IVec2";
-import { Vec2 } from "./Vec2";
-import { once } from "../Util";
+import { IRange2 } from "./IRange2.js";
+import { IVec2 } from "./IVec2.js";
+import { Vec2 } from "./Vec2.js";
+import { once } from "../Util.js";
 
 export class Range2 implements IRange2 {
 	public pos: Vec2;

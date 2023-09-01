@@ -1,5 +1,5 @@
-import { isNotNullOrUndefined, isNotUndefined, isFunction } from "./Test";
-import { IDebounceOptions, debounce, AssertError, IThrottleOptions, throttle, once as runOnlyOnce } from "./Util";
+import { isNotNullOrUndefined, isNotUndefined, isFunction } from "./Test.js";
+import { IDebounceOptions, debounce, AssertError, IThrottleOptions, throttle, once as runOnlyOnce } from "./Util.js";
 
 export function debounced<S>(duration?: number, options?: Partial<IDebounceOptions>) {
 	return function innerDecorator<S>(target: S, key: string, descriptor: PropertyDescriptor) {

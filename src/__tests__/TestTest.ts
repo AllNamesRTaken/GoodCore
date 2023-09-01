@@ -1,7 +1,7 @@
 import { JSDOM } from "jsdom";
-import { create } from "../lib/Dom";
-import { Global } from "../lib/Global";
-import * as Test from "../lib/Test";
+import { create } from "../lib/Dom.js";
+import { Global } from "../lib/Global.js";
+import * as Test from "../lib/Test.js";
 import { Dom } from "../lib";
 
 describe("Test",

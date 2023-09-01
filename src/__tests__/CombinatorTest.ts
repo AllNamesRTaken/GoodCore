@@ -1,4 +1,4 @@
-import { after, around, before, provided } from "../lib/Decorators";
+import { after, around, before, provided } from "../lib/Decorators.js";
 
 describe("Combinators",
 	() => {

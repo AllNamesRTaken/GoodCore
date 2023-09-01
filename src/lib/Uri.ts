@@ -1,4 +1,4 @@
-import { Global } from "./Global";
+import { Global } from "./Global.js";
 export class Uri {
 	private _attatched = true
 	private _a: HTMLAnchorElement | null = null;

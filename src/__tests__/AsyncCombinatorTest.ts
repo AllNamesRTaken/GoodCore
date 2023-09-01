@@ -1,4 +1,4 @@
-import { async } from "../lib/Decorators";
+import { async } from "../lib/Decorators.js";
 
 describe("AsyncCombinators",
 	() => {

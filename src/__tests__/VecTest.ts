@@ -1,4 +1,4 @@
-import { Vec2, Vec2Const, V2 } from "../lib/struct/Vec2";
+import { Vec2, Vec2Const, V2 } from "../lib/struct/Vec2.js";
 // tslint:disable-next-line:ordered-imports
 
 describe("Vec2",

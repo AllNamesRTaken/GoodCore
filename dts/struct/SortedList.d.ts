@@ -1,6 +1,6 @@
 /// <reference path="../base.d.ts" />
 
-import { List } from "./List";
+import { List } from "./List.js";
 export class Comparer {
     static StringAsc: (a: string, b: string) => 1 | 0 | -1;
     static StringDesc: (a: string, b: string) => 1 | 0 | -1;

@@ -1,8 +1,8 @@
-import { insertAt, until, append } from "../Arr";
-import { clone, isSameClass, setProperties, forEach } from "../Obj";
-import { isArray, isNullOrUndefined, isNotNullOrUndefined, isNumber, isNull } from "../Test";
-import { newUUID } from "../Util";
-import { Stack } from "./Stack";
+import { insertAt, until, append } from "../Arr.js";
+import { clone, isSameClass, setProperties, forEach } from "../Obj.js";
+import { isArray, isNullOrUndefined, isNotNullOrUndefined, isNumber, isNull } from "../Test.js";
+import { newUUID } from "../Util.js";
+import { Stack } from "./Stack.js";
 
 export class Tree<T> implements ISerializable<T[]>, ICloneable, IInitable {
 	public id: string | number = "";

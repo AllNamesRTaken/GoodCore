@@ -1,7 +1,7 @@
-import { Tree } from "./Tree";
-import { isArray } from "../Test";
-import { once } from "../Util";
-import { wipe } from "../Obj";
+import { Tree } from "./Tree.js";
+import { isArray } from "../Test.js";
+import { once } from "../Util.js";
+import { wipe } from "../Obj.js";
 
 export class IndexedTree<T> extends Tree<T> {
 	private _indexer: (node: this) => string | number;

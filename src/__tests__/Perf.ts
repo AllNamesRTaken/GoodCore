@@ -1,8 +1,8 @@
-import * as Moc from "../lib/MocData";
-import { List } from "../lib/struct/List";
-import { Comparer, SortedList } from "../lib/struct/SortedList";
-import { Timer } from "../lib/Timer";
-import { loop, newUUID } from "../lib/Util";
+import * as Moc from "../lib/MocData.js";
+import { List } from "../lib/struct/List.js";
+import { Comparer, SortedList } from "../lib/struct/SortedList.js";
+import { Timer } from "../lib/Timer.js";
+import { loop, newUUID } from "../lib/Util.js";
 
 let mocStrArray = Moc.stringArray(1000, 25);
 let newStrings = Moc.stringArray(100, 25);

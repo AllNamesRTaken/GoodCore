@@ -1,6 +1,6 @@
 
-import * as Obj from "../lib/Obj";
-import { proxyFn } from "../lib/Util";
+import * as Obj from "../lib/Obj.js";
+import { proxyFn } from "../lib/Util.js";
 
 describe("Obj",
 	() => {

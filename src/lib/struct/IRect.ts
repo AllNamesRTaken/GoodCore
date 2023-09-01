@@ -1,4 +1,4 @@
-import { IVec2 } from "./IVec2";
+import { IVec2 } from "./IVec2.js";
 
 export interface IRect {
 	start: IVec2;

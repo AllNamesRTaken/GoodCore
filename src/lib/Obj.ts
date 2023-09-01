@@ -1,4 +1,4 @@
-import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined } from "./Test";
+import { areNotNullOrUndefined, isArray, isFunction, isObject, isNullOrUndefined } from "./Test.js";
 
 interface IDestroyable {
 	destroy(): void;

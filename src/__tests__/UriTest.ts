@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { Uri } from "../lib/Uri";
+import { Uri } from "../lib/Uri.js";
 
 describe("Uri",
 	() => {

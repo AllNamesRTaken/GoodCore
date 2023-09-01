@@ -1,6 +1,6 @@
 
-import * as MocData from "../lib/MocData";
-import * as Test from "../lib/Test";
+import * as MocData from "../lib/MocData.js";
+import * as Test from "../lib/Test.js";
 
 describe("MocData",
 	() => {

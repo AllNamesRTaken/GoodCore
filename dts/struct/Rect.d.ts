@@ -1,5 +1,5 @@
 /// <reference path="../base.d.ts" />
-import { Vec2 } from "./Vec2";
+import { Vec2 } from "./Vec2.js";
 
 export class Rect implements IRect {
     start: Vec2;

@@ -1,4 +1,4 @@
-import { closestRadianRotation, rotationDeg, rotationRad, sign } from "../lib/Calc";
+import { closestRadianRotation, rotationDeg, rotationRad, sign } from "../lib/Calc.js";
 
 describe("Calc",
 	() => {

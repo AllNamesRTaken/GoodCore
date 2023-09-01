@@ -1,4 +1,4 @@
-import { Graph, GraphNode } from "../../lib/wip/Graph";
+import { Graph, GraphNode } from "../../lib/wip/Graph.js";
 
 describe("Graph",
 	() => {

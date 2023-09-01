@@ -1,5 +1,5 @@
-import { Stack } from "../lib/struct/Stack";
-import { Vec2 } from "../lib/struct/Vec2";
+import { Stack } from "../lib/struct/Stack.js";
+import { Vec2 } from "../lib/struct/Vec2.js";
 
 describe("Stack",
 	() => {
