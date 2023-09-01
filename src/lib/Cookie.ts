@@ -7,10 +7,10 @@ export function getCookie(key: string) {
 	return cookie ? cookie.trim().split("=")[1] : undefined;
 }
 export function setCookie(key: string, value: string, expires: Date, path?: string | null, sameSite: "Strict" | "Lax" | "None" = 'Lax', requireSSL: boolean = false) {
-	document.cookie = `${key}=${value}; expires=${expires.toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(this.CookieSameSite ?? 'Lax')};{${(this.RequireSSL || this.CookieSameSite === 'None' ? 'secure;' : '')}`;
+	document.cookie = `${key}=${value}; expires=${expires.toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(sameSite ?? 'Lax')};{${(this.RequireSSL || sameSite === 'None' ? 'secure;' : '')}`;
 }
 export function removeCookie(key: string, path?: string | null, sameSite: "Strict" | "Lax" | "None" = 'Lax', requireSSL: boolean = false) {
-	document.cookie = `${key}=${"null"}; expires=${(new Date(0)).toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(this.CookieSameSite ?? 'Lax')};{${(this.RequireSSL || this.CookieSameSite === 'None' ? 'secure;' : '')}`;
+	document.cookie = `${key}=${"null"}; expires=${(new Date(0)).toUTCString()}${(path ? "; path=" + path : "")};SameSite=${(sameSite ?? 'Lax')};{${(this.RequireSSL || sameSite === 'None' ? 'secure;' : '')}`;
 }
 export function parseAllCookies(): Indexable<string> {
 	return document.cookie.split(";")
