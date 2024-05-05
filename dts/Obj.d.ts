@@ -29,7 +29,7 @@ export function isDifferent(a: any, b: any): boolean;
 export function shallowCopy<T, K extends keyof T>(obj: T): {[P in K]: T[P]};
 export function clone<T>(obj: T): T;
 export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[];
-export function mixin(target: Indexable<any>, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): Indexable<any>;
+export function mixin<T = Indexable<any>>(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): T;
 export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting?: boolean): void;
 export function forEach<T>(
     target: Indexable<T> | T[],

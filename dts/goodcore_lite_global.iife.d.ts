@@ -331,7 +331,7 @@ declare namespace Obj {
     * @param sources List of objects to take properties from
     * @returns the total of target and sources
     */
-    export function mixin(target: Indexable<any>, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): Indexable<any>;
+    export function mixin<T = Indexable<any>>(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): T;
     /**
     * Sets the property values of a source object to the properties of a target object. Possibly limiting to non undefined properties in the target.
     * @param target Target to apply values to
