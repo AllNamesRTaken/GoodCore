@@ -191,7 +191,7 @@ export function cloneInto<T, S>(src: T | S[], target: T | S[]): T | S[] {
 	}
 	return target;
 }
-export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): Indexable<any> {
+export function mixin<T = Indexable<any>>(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): T {
 	const result = target;
 	const srcLength = sources?.length ?? 0;
 	for (let i=0; i < srcLength; i++) {
@@ -217,7 +217,7 @@ export function mixin(target: Indexable<any> = {}, exclude: Indexable<any> | nul
 			}
 		}
 	}
-	return result;
+	return result as T;
 }
 // tslint:disable-next-line: max-line-length
 export function setProperties(target: Indexable<any>, values: Indexable<any>, mapping?: Indexable<string>, limitToExisting: boolean = false): void {

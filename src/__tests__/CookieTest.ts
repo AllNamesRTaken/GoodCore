@@ -144,5 +144,27 @@ describe("Cookie",
 				expect(monster.getCookie("b")).toBe("foo");
 				monster.removeCookies();
 			});
+		test("localStorage: saving complex object to cookie works",
+			() => {
+				let monster = Cookie.getMonster({name: "test", defaults: {a: {c: 1}, b: "2"}, localStorage: true});
+				monster.setCookie("a", {c: 2});
+				expect(monster.getCookie("a")).toEqual({c: 2});
+				let monster2 = Cookie.getMonster({name: "test", defaults: {a: {c: 1}, b: "2"}, localStorage: true});
+				expect(monster2.getCookie("a")).toEqual({c: 2});
+				expect(localStorage.getItem("test")).toBe('{"0":{"c":2}}');
+				monster.removeCookies();
+				expect(localStorage.getItem("test")).toBeNull();
+			});
+		test("localStorage: saving complex object to cookie works",
+			() => {
+				let monster = Cookie.getMonster({name: "test", defaults: {a: {c: 1}, b: "2"}, localStorage: true});
+				let ex = null;
+				try	{
+					monster.setCookie("a", "2" as any);
+				} catch (e) {
+						ex = e;
+				}
+				expect(ex).toBeTruthy();
+			});
 	}
 );
