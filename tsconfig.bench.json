@@ -19,7 +19,8 @@
     "listEmittedFiles": false,
     "lib": ["dom", "ES2021", "ES2021.Promise", "ES2021.String", "scripthost"],
 		"typeRoots": ["./node_modules/@types", "./src/@types"],
-    "baseUrl": "."
+    "baseUrl": ".",
+    "allowSyntheticDefaultImports": true,
   },
   "include": ["./src/benchmark/**/*.ts", "./src/@types/*.ts"],
   "exclude": ["./src/__test__/**/*.ts", "./src/lib/wip/**/*.ts"]

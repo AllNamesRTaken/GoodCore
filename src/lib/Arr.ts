@@ -24,15 +24,9 @@ export function concat (...arrs: any[]): any[] {
 	return result;
 }
 export const slice = deprecate("Array.prototype.slice", function slice<T>(src: T[], pos: number = 0, count: number = Infinity): T[] {
-	let result: T[];
-	if (isNotNullOrUndefined(src)) {
-		result = src.slice(pos, pos + count);
-	} else {
-		result = [];
-	}
-	return result;
+	return src?.slice(pos, pos + count) ?? [];
 })
-export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, insert: T[] = []): T[] {
+export const splice = deprecate("Array.prototype.splice", function<T>(src: T[], pos: number = 0, remove: number = Infinity, insert: T[] = []): T[] {
 	if (isNullOrUndefined(src)) {
 		throw new Error("Unable to splice on null or undefined");
 	}
@@ -43,7 +37,7 @@ export function splice<T>(src: T[], pos: number = 0, remove: number = Infinity, 
 	remove = Math.min(remove, srcLen - pos);
 	
 	return src.splice(pos, remove, ...insert);
-}
+})
 export function append<T>(arr: T[], values: T[]): void {
 	let index = -1;
 	const offset = arr.length;
@@ -73,18 +67,9 @@ export function indexOf<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean
 	}
 	return -1;
 }
-export function find<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean): T | undefined {
-	let result: T | undefined;
-	if (typeof Array.prototype.find !== "undefined") {
-		result = src.find(fn);
-	} else {
-		let i = indexOf(src, fn);
-		if (i !== -1) {
-			result = src[i];
-		}
-	}
-	return result;
-} 
+export const find = deprecate("Array.prototype.find", function find<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean): T | undefined {
+	return src?.find(fn);
+})
 export function removeOneByFn<T>(arr: T[], fn: (el: T) => boolean): void {
 	const start = indexOf(arr, fn);
 	removeAt(arr, start);

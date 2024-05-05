@@ -1,5 +1,5 @@
-import * as Benchmark from "benchmark";
-import { MocData, Arr, Test } from "../lib";
+import Benchmark from "benchmark";
+import { MocData, Arr, Test } from "../lib/index.js";
 import { MocDataType } from "../lib/MocData.js";
 import chalk from "chalk";
 
