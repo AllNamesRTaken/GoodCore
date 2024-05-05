@@ -1,12 +1,10 @@
-import { find } from './Arr.js'
 import { getDate, assert } from './Util.js'
 import { clone, mixin, transform } from './Obj.js'
 
 function findCookie(key: string) {
-  return find(
-    document.cookie.split(';').map((cookie) => cookie.trim()),
-    (cookie) => cookie.indexOf(`${key}=`) === 0
-  )
+  return document.cookie.split(';')
+		.map((cookie) => cookie.trim())
+		.find((cookie) => cookie.indexOf(`${key}=`) === 0);
 }
 export function getCookie(key: string) {
   let cookie = findCookie(key)
