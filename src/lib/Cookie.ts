@@ -20,8 +20,8 @@ export function setCookie(
 ) {
   document.cookie = `${key}=${value}; expires=${expires.toUTCString()}${
     path ? '; path=' + path : ''
-  };SameSite=${sameSite ?? 'Lax'};{${
-    requireSSL || sameSite === 'None' ? 'Partitioned; Secure;' : ''
+  };SameSite=${sameSite ?? 'Lax'};${
+    requireSSL || sameSite === 'None' ? ' Partitioned; Secure;' : ''
   }`
 }
 export function removeCookie(
@@ -32,8 +32,8 @@ export function removeCookie(
 ) {
   document.cookie = `${key}=${'null'}; expires=${new Date(0).toUTCString()}${
     path ? '; path=' + path : ''
-  };SameSite=${sameSite ?? 'Lax'};{${
-    requireSSL || sameSite === 'None' ? 'Partitioned; Secure;' : ''
+  };SameSite=${sameSite ?? 'Lax'};${
+    requireSSL || sameSite === 'None' ? ' Partitioned; Secure;' : ''
   }`
 }
 export function parseAllCookies(): Indexable<string> {
