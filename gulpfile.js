@@ -1,7 +1,7 @@
 import gulp from 'gulp'
 import { writeFileSync, readFileSync } from 'fs'
 import rename from 'gulp-rename'
-import pkg from './package.json' assert { type: 'json' }
+import pkg from './package.json' with { type: 'json' }
 
 let { task, parallel, series, src, dest } = gulp
 
