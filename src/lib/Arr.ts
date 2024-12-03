@@ -500,7 +500,7 @@ export function distinct<T>(array: T[], hashFn?: (el: T) => string): T[] {
 						undefinedFound = true;
 					}
 				} else if (isObject(el)) {
-					if (!find<T>(objects, (obj) => equals(obj, el))) {
+					if (!objects.find((obj) => equals(obj, el))) {
 						result.push(el);
 						objects.push(el);
 					}

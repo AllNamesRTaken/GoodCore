@@ -197,7 +197,7 @@ export function loop(count: number, fn: (i: number, ...args: any[]) => any | voi
 	}
 }
 export function toArray<T>(arr: ArrayLike<T>): T[] {
-	return Array.prototype.slice.call(arr);
+	return Array.from(arr);
 }
 export const DEFAULT_DURATION = 100;
 export interface IDebounceOptions {

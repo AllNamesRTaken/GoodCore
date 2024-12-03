@@ -43,17 +43,17 @@ export function fromHTML<T extends HTMLElement>(html: string): T[] {
 			let template = DomState._template!;
 			template.innerHTML = html;
 			assert(!!template.content.firstChild, "Dom.create was unable to parse html");
-			result = toArray(template.content.children!) as T[];
+			result = Array.from(template.content.children!) as T[];
 			clear(template.content);
 		} else if (usesParser) {
 			let parser = DomState._parser!;
 			let doc = parser.parseFromString(html, "text/html");
 			assert(!!doc.body.firstChild, "Dom.create was unable to parse html");
-			result = toArray(doc.body.children!) as T[];
+			result = Array.from(doc.body.children!) as T[];
 		} else {
 			DomState._el!.innerHTML = html;
 			assert(!!DomState._el!.firstChild, "Dom.create was unable to parse html");			
-			result = toArray(DomState._el!.children!) as T[];
+			result = Array.from(DomState._el!.children!) as T[];
 			clear(DomState._el!);
 		}
 	}
@@ -176,14 +176,11 @@ export function byId<T extends HTMLElement>(id: string): T | null {
 export function find<T extends HTMLElement>(selector: string, root?: Element): T | null {
 	return (root || DomState._document)!.querySelector(selector);
 }
-function toArray<T>(arr: ArrayLike<T>): T[] {
-	return Array.prototype.slice.call(arr);
-}
 export function findAll<T extends HTMLElement>(selector: string, root?: HTMLElement): T[] {
-	return toArray((root || DomState._document!).querySelectorAll(selector));
+	return Array.from((root || DomState._document!).querySelectorAll(selector));
 }
 export function children(root: Element, selector?: string): Element[] {
-	const children = toArray((root || DomState._document).children);
+	const children = Array.from((root || DomState._document).children);
 	return selector === undefined ? children : children.filter((el) => is(selector, el));
 }
 export function findParent<T extends HTMLElement>(start: Element, parent: string | Element): T | null {

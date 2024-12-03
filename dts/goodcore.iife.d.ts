@@ -570,7 +570,6 @@ declare namespace goodcore {
             Right = 3,
         }
         export function init(win: Window): void;
-        export function toArray<T>(a: ArrayLike<T>): T[];
         export function create<T extends HTMLElement>(html: string, attr?: any): T;
         export function resolve(target: HTMLElement | string, root?: HTMLElement): HTMLElement | null;
         export function resolveAll(target: HTMLElement | HTMLElement[] | string, root?: HTMLElement): HTMLElement[];
@@ -914,7 +913,7 @@ declare namespace goodcore {
         * @param sources List of objects to take properties from
         * @returns the total of target and sources
         */
-        export function mixin<T = Indexable<any>>(target: Indexable<any> = {}, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): T;
+        export function mixin<T = Indexable<any>>(target: Indexable<any>, exclude: Indexable<any> | null, ...sources: Array<Indexable<any>>): T;
         /**
         * Sets the property values of a source object to the properties of a target object. Possibly limiting to non undefined properties in the target.
         * @param target Target to apply values to
