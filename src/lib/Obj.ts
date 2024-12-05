@@ -213,7 +213,7 @@ export function mixin<T = Indexable<any>>(target: Indexable<any> = {}, exclude: 
 			if(isObject(target[key]) && isObject(src[key])) {
 				mixin(target[key], exclude, src[key])
 			} else {
-				target[key] = src[key];
+				target[key] = src[key] ?? target[key];
 			}
 		}
 	}

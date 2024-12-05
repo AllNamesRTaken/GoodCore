@@ -448,7 +448,7 @@ export function bucket<T>(array: T[], ...desciminators: Array<Descriminator<T>>)
 	let i = -1;
 	const len = isNullOrUndefined(array) ? 0 : array.length;
 	const descLen = isNullOrUndefined(desciminators) ? 0 : desciminators.length;
-	let result: T[][] = create(descLen + 1, () => []);
+	let result: T[][] = create(descLen + 1, () => ([] as never[]));
 	while (++i < len) {
 		let j = -1;
 		let match = false;
