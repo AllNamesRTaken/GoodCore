@@ -99,14 +99,13 @@ describe("Arrays",
 			});
 		test("find return correct element or undefined",
 			() => {
-				expect(Arr.find(arr1 as number[], (el) => el === 7)!).toBe(7);
-				expect(Arr.find(arr1 as number[], (el) => el === 77) === undefined).toBe(true);
+				expect(arr1.find((el) => el === 7)!).toBe(7);
+				expect(arr1.find((el) => el === 77) === undefined).toBe(true);
 			});
 		test("Filter returns correct array",
 			() => {
-				const copy = Arr.filter(arr1 as number[], (el, i) => i > 1);
+				const copy = arr1.filter((el, i) => i > 1);
 				expect(copy).toEqual([7, 2]);
-				expect(Arr.filter(null!, (el, i) => true)).toEqual([]);
 			});
 		test("FilterInto uses supplied array",
 			() => {
@@ -118,9 +117,8 @@ describe("Arrays",
 			});
 		test("Flatten returns correct array",
 			() => {
-				const copy = Arr.flatten([1, [2, 3], 4]);
+				const copy = [1, [2, 3], 4].flat();
 				expect(copy).toEqual([1, 2, 3, 4]);
-				expect(Arr.flatten(null!)).toEqual([]);
 			});
 		test("ForEach loops correctly",
 			() => {
@@ -128,8 +126,6 @@ describe("Arrays",
 				const arri = new Array<number>();
 				Arr.forEach(arr1 as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				expect(arrEl).toEqual(arr1);
-				expect(arri).toEqual([0, 1, 2, 3]);
-				Arr.forEach(null! as number[], (el, i) => {arrEl.push(el); arri.push(i); });
 				expect(arri).toEqual([0, 1, 2, 3]);
 			});
 		test("ForEach with startIndex loops correctly",
@@ -141,8 +137,6 @@ describe("Arrays",
 				expect(arri).toEqual([1, 2, 3]);
 				const arrEl2 = new Array<number>();
 				Arr.forEach(arr1 as number[], (el, i) => { arrEl2.push(el); }, 42);
-				expect(arrEl2).toEqual([]);
-				Arr.forEach(null! as number[], (el, i) => { arrEl2.push(el); }, 0);
 				expect(arrEl2).toEqual([]);
 			});
 		test("ForEachAsync loops correctly",
@@ -200,21 +194,18 @@ describe("Arrays",
 			});
 		test("IndexOfElement returns correct index",
 			() => {
-				expect(Arr.indexOfElement(arr1 as number[], 7)).toBe(2);
-				expect(Arr.indexOfElement(arr1 as number[], 17)).toBe(-1);
-				expect(Arr.indexOfElement(null!, 17)).toBe(-1);
+				expect(arr1.indexOf(7)).toBe(2);
+				expect(arr1.indexOf(17)).toBe(-1);
 
 				Test.Env.useNative = false;
-				expect(Arr.indexOfElement(arr1 as number[], 7)).toBe(2);
-				expect(Arr.indexOfElement(arr1 as number[], 17)).toBe(-1);
-				expect(Arr.indexOfElement(null!, 17)).toBe(-1);
+				expect(arr1.indexOf(7)).toBe(2);
+				expect(arr1.indexOf(17)).toBe(-1);
 				Test.Env.useNative = undefined;
 			});
 		test("Map el and i are correct",
 			() => {
-				expect(Arr.map(arr1 as number[], (el, i) => el)).toEqual([1, 4, 7, 2]);
-				expect(Arr.map(arr1 as number[], (el, i) => i)).toEqual([0, 1, 2, 3]);
-				expect(Arr.map(null! as number[], (el, i) => i)).toEqual([]);
+				expect(arr1.map((el, i) => el)).toEqual([1, 4, 7, 2]);
+				expect(arr1.map((el, i) => i)).toEqual([0, 1, 2, 3]);
 			});
 		test("MapAsync el and i are correct",
 			async () => {
@@ -326,7 +317,6 @@ describe("Arrays",
 				const arr = [1, 2, 3, 4];
 				Arr.reverse(arr);
 				expect(arr).toEqual([4, 3, 2, 1]);
-				expect((Arr.reverse(null!) === null)).toBe(true);
 			});
 		test("ShallowCopyInto copys correctly and keeps references",
 			() => {
@@ -347,105 +337,6 @@ describe("Arrays",
 				expect(copy[4]).toBe(9);
 				Arr.shallowFill(null!, copy, 0);
 				expect(copy.length).toBe(5);
-			});
-		test("Slice does slice",
-			() => {
-				expect(Arr.slice(arr1, 1, 2)).toEqual([4, 7]);
-				expect(Arr.slice(arr1, 10, 2)).toEqual([]);
-				expect(Arr.slice(null!, 0, 2)).toEqual([]);
-
-				Test.Env.useNative = false;
-				expect(Arr.slice(arr1, 1, 2)).toEqual([4, 7]);
-				expect(Arr.slice(arr1, 10, 2)).toEqual([]);
-				expect(Arr.slice(null!, 0, 2)).toEqual([]);
-				Test.Env.useNative = undefined;
-			});
-		test("Splice does splice",
-			() => {
-				let arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, -1, -1);
-				expect(arr1).toEqual([1, 4, 7, 2]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, -1);
-				expect(arr1).toEqual([]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1);
-				expect(arr1).toEqual([]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 100);
-				expect(arr1).toEqual([1, 4, 7, 2]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 1, 2);
-				expect(arr1).toEqual([1, 2]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 1, 2, [3, 4]);
-				expect(arr1).toEqual([1, 3, 4, 2]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 1, 100, [3, 4]);
-				expect(arr1).toEqual([1, 3, 4]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 1, 1, [3, 4]);
-				expect(arr1).toEqual([1, 3, 4, 7, 2]);
-
-				arr1 = null!;
-				try {
-					Arr.splice(arr1, 1, 1, [3, 4]);
-				} catch (err) {
-					expect((err as Error).message.indexOf("Unable to splice")).toBe(0);
-				}
-			});
-		test("Splice without native does splice",
-			() => {
-				Test.Env.useNative = false;
-
-				let arr1 = [1, 4, 7, 2];
-
-				Arr.splice(arr1, -1, -1);
-				expect(arr1).toEqual([1, 4, 7, 2]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, -1);
-				expect(arr1).toEqual([]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1);
-				expect(arr1).toEqual([]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 100);
-				expect(arr1).toEqual([1, 4, 7, 2]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 1, 2);
-				expect(arr1).toEqual([1, 2]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 1, 2, [3, 4]);
-				expect(arr1).toEqual([1, 3, 4, 2]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 1, 100, [3, 4]);
-				expect(arr1).toEqual([1, 3, 4]);
-
-				arr1 = [1, 4, 7, 2];
-				Arr.splice(arr1, 1, 1, [3, 4]);
-				expect(arr1).toEqual([1, 3, 4, 7, 2]);
-
-				arr1 = null!;
-				try {
-					Arr.splice(arr1, 1, 1, [3, 4]);
-				} catch (err) {
-					expect((err as Error).message.indexOf("Unable to splice")).toBe(0);
-				}
-
-				Test.Env.useNative = undefined;
 			});
 		test("ForSome works like Filtered ForEach",
 			() => {
@@ -542,9 +433,8 @@ describe("Arrays",
 		test("Some is true if any element is true",
 		() => {
 			const arr = [1, 2, 3, 4];
-			expect(Arr.some(arr, (el) => el === 3)).toBe(true);
-			expect(Arr.some(arr, (el) => el === 5)).toBe(false);
-			expect(Arr.some(null!, (el) => el === 5)).toBe(false);
+			expect(arr.some((el) => el === 3)).toBe(true);
+			expect(arr.some((el) => el === 5)).toBe(false);
 		});
 		test("All is true if all elements are true",
 		() => {

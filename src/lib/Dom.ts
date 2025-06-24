@@ -1,7 +1,7 @@
 import { Global } from "./Global.js";
 import { isNullOrUndefined, isString, isElement } from "./Test.js";
 import { assert } from "./Util.js";
-import { reverse, reduce } from "./Arr.js";
+import { reduce } from "./Arr.js";
 
 export enum Sides {
 	Top,
@@ -255,7 +255,7 @@ export function findClosestCommonParent(elements: HTMLElement[], startAtIndex: n
 					--startAtIndex;
 				}
 			}
-			let result = reverse(parents);
+			let result = parents.reverse();
 			result.push(el);
 			return result;
 		});

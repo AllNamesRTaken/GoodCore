@@ -1,43 +1,16 @@
 import { clone, setProperties, equals, toLookup, defaultHashFunction, arrayDiff } from "./Obj.js";
-import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, Env, isFunction, isObject, isNull } from "./Test.js";
+import { isArray, isNullOrUndefined, isNumber, isUndefined, isNotUndefined, isNotNullOrUndefined, isFunction, isObject, isNull } from "./Test.js";
 import { assert, deprecate } from "./Util.js";
 export { toLookup } from "./Obj.js"
 export const difference = arrayDiff;
 
-export const flatten = deprecate("Array.prototype.flatten", function flatten<T>(src: any[]): T[] {
-	return src?.flat() ?? []
-})
-export function reverse<T>(array: T[]): T[] {
-	let left = null;
-	let right = null;
-	const length = isNullOrUndefined(array) ? 0 : array.length;
-	for (left = 0; left < length / 2; left += 1) {
-		right = length - 1 - left;
-		const temporary = array[left];
-		array[left] = array[right];
-		array[right] = temporary;
-	}
-	return array;
-}
+export const reverse = deprecate("Array.prototype.reverse", function reverse<T>(array: T[]): T[] {
+	return array.reverse()
+});
 export function concat (...arrs: any[]): any[] {
 	const result = Array.prototype.concat.apply([], arrs) as any[];
 	return result;
 }
-export const slice = deprecate("Array.prototype.slice", function slice<T>(src: T[], pos: number = 0, count: number = Infinity): T[] {
-	return src?.slice(pos, pos + count) ?? [];
-})
-export const splice = deprecate("Array.prototype.splice", function<T>(src: T[], pos: number = 0, remove: number = Infinity, insert: T[] = []): T[] {
-	if (isNullOrUndefined(src)) {
-		throw new Error("Unable to splice on null or undefined");
-	}
-	let srcLen = src.length;
-	pos = Math.max(0, pos);
-	pos = Math.min(pos, srcLen);
-	remove = Math.max(0, remove);
-	remove = Math.min(remove, srcLen - pos);
-	
-	return src.splice(pos, remove, ...insert);
-})
 export function append<T>(arr: T[], values: T[]): void {
 	let index = -1;
 	const offset = arr.length;
@@ -50,9 +23,6 @@ export function append<T>(arr: T[], values: T[]): void {
 export function removeAt<T>(arr: T[], index: number): T | undefined {
 	return index >= 0 ? arr?.splice(index, 1)[0] : undefined;
 }
-export const indexOfElement = deprecate("Array.prototype.indexOf", function indexOfElement(src: any[], el: any): number {
-	return src?.indexOf(el) ?? -1;
-})
 export function remove(arr: any[], el: any): void {
 	const start = arr?.indexOf(el) ?? -1
 	removeAt(arr, start);
@@ -67,9 +37,6 @@ export function indexOf<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean
 	}
 	return -1;
 }
-export const find = deprecate("Array.prototype.find", function find<T>(src: T[], fn: (el: T, i: number, arr: T[]) => boolean): T | undefined {
-	return src?.find(fn);
-})
 export function removeOneByFn<T>(arr: T[], fn: (el: T) => boolean): void {
 	const start = indexOf(arr, fn);
 	removeAt(arr, start);
@@ -122,9 +89,6 @@ export function deepFill<T>(src: T[], target: T[], at: number = 0): void {
 		target[at + i] = (clone(src[i]));
 	}
 }
-export const filter = deprecate("Array.prototype.filter", function filter<T>(src: T[], fn: (el: T, i: number) => boolean): T[] {
-	return src?.filter(fn) ?? [];
-})
 export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => boolean): void {
 	let i = -1;
 	let j = 0;
@@ -143,9 +107,6 @@ export function filterInto<T>(src: T[], target: T[], fn: (el: T, i: number) => b
 	}
 	target.length = j;
 }
-export const map = deprecate("Array.prototype.map", function map<S, T>(src: S[], fn: (el: S, i: number) => T, startIndex: number = 0): T[] {
-	return src?.map(fn) ?? []
-})
 export async function mapAsync<S, T>(src: S[], fn: (el: S, i: number) => PromiseLike<T>, inParallel: boolean = false): Promise<T[]> {
 	let result: T[];
 	if (!inParallel) {
@@ -216,6 +177,9 @@ export function reverseReduceUntil<T, U>(src: T[], fn: (acc: U, cur: T) => U, te
 	return acc;
 }
 export function forEach<T>(src: T[], fn: (el: T, i: number) => any, startIndex: number = 0): void {
+	if(startIndex === 0) {
+		return src.forEach(fn);
+	}
 	let i = startIndex - 1;
 	const len = isNullOrUndefined(src) ? 0 : src.length;
 	while (++i < len) {
@@ -268,15 +232,11 @@ export function reverseUntil<T>(src: T[], fnOrTest: (el: T, i: number) => boolea
 	while (--i >= 0 && (combined ? !fnOrTest(src[i], i) : !(fnOrTest(src[i], i) || (fn!(src[i], i), false)))) {
 	}
 }
-export const some = deprecate("Array.prototype.some", function some<T>(src: T[], fn: (el: T, i: number) => boolean): boolean {
-	return src?.some(fn) ?? false;
-})
 export function all<T>(src: T[], fn: (el: T, i: number) => boolean): boolean {
 	let result = true;
 	let i = -1;
 	const len = isNullOrUndefined(src) ? 0 : src.length;
-	while (++i < len && (result = fn(src[i], i))) {
-	}
+	while (++i < len && (result = fn(src[i], i))) { }
 	return result;
 }
 export function insertAt<T>(src: T[], pos: number, v: T): void {

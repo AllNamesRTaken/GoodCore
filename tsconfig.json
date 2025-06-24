@@ -29,5 +29,5 @@
     "./src/**/*.ts",
     "./src/test/**/*.ts",
   ],
-  "exclude": ["./src/lib/wip/**/*.ts"]
+  "exclude": ["./src/lib/wip/*"]
 }

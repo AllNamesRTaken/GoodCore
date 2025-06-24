@@ -1,6 +1,6 @@
 import { shallowCopy, create, insertAt, forEach, append, deepCopy, deepCopyInto, 
 	shallowCopyInto, remove, removeAt, forSome, until, reverseForEach,  
-	reverseUntil, all, reverse, indexOf, filterInto, splice, 
+	reverseUntil, all, indexOf, filterInto, 
 	mapInto, reduce, reduceUntil, reverseReduce, reverseReduceUntil, deserialize } from "../Arr.js";
 import { clone, equals, wipe } from "../Obj.js";
 import { isArray, isFunction, isNotNullOrUndefined, isNotUndefined, hasWindow, isNotNull } from "../Test.js";
@@ -278,7 +278,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		return result;
 	}
 	public reverse(): this {
-		reverse(this._array);
+		this._array.reverse()
 		return this;
 	}
 	public first(fn?: (el: T) => boolean): T | undefined {
@@ -318,7 +318,7 @@ export class List<T> implements IterableIterator<T>, IList<T>, ISerializable<T[]
 		return this.create(this._array.slice(Math.max(0, this._array.length - count))) as this;		
 	}
 	public splice(pos: number = 0, remove: number = Infinity, insert: T[] | this = []): this {
-		splice(this._array, pos, remove, isArray(insert) ? insert as T[] : (insert as this).values);
+		this._array.splice(pos, remove, ...(isArray(insert) ? insert as T[] : (insert as this).values));
 		this._reindex();
 		return this;
 	}

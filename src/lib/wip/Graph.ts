@@ -7,7 +7,7 @@ import { Util } from "..";
 import { assert, once } from "../Util.js";
 import { zip, create } from "../Arr.js";
 
-@Initable
+// @Initable
 export class GraphNode<T> implements ICloneable {
 	private _id: number = 0;
 	private _data: T | null = null;
@@ -72,7 +72,7 @@ export class GraphNode<T> implements ICloneable {
 		// result.costs = this.costs === null || this.costs === undefined ? this.costs : clone(this.costs);
 		// result.edgeTypes = this.edgeTypes === null || this.edgeTypes === undefined ? this.edgeTypes : clone(this.edgeTypes);
 		// result.neighbours = this.neighbours === null ? null : this.neighbours.clone();
-		return result;
+		return result as this;
 	}
 	public connect(node: GraphNode<T>, cost?: number | null, edgeType?: string | [string, string] | null) {
 		if (!this.neighbours.contains(node)) {

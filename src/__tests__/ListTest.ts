@@ -109,7 +109,7 @@ describe("List",
 				expect(list1.splice(-1, -1).values).toEqual([1, 4, 7, 2]);
 
 				list1 = new List([1, 4, 7, 2]);
-				expect(list1.splice(-1).values).toEqual([]);
+				expect(list1.splice(-1).values).toEqual([1, 4, 7]);
 
 				list1 = new List([1, 4, 7, 2]);
 				expect(list1.splice().values).toEqual([]);

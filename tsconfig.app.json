@@ -21,7 +21,8 @@
     "downlevelIteration": false,
     "esModuleInterop": true,
     "lib": ["dom", "ES2021", "ES2021.Promise", "ES2021.String", "scripthost"],
-    "typeRoots": ["./node_modules/@types", "./src/@types"],
+    // "typeRoots": ["./node_modules/@types", "./src/@types"],
+    "types": ["@types/node", "./src/@types/custom.d.ts"],
     "baseUrl": "."
   },
   "include": ["./src/**/*.ts"],

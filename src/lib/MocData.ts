@@ -15,7 +15,7 @@ export function randomString(length: number = 25): string {
 	return result;
 }
 export function randomInt(min: number = 0, max: number = LARGEST_INT): number {
-	return randomNumber(min, max) | 0;
+	return Math.ceil(randomNumber(min, max));
 }
 export function randomNumber(min: number = 0, max: number = LARGEST_INT): number {
 	return (Math.random() * (max + 1 - min)) + min;
