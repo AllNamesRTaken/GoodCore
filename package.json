@@ -10,6 +10,7 @@
   ],
   "type": "module",
   "scripts": {
+    "bench": "tsc -p tsconfig.bench.json && node ./dist/benchmark/index.js",
     "clean": "rimraf ./dist",
     "coverage": "vitest run --coverage",
     "deploy": "gulp package && npm publish dist\\lib",
