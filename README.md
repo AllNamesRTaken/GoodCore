@@ -5,6 +5,11 @@
 [![Build Status](https://travis-ci.com/AllNamesRTaken/GoodCore.svg?branch=master)](https://travis-ci.com/AllNamesRTaken/GoodCore)
 [![Coverage Status](https://coveralls.io/repos/github/AllNamesRTaken/GoodCore/badge.svg?branch=master)](https://coveralls.io/github/AllNamesRTaken/GoodCore?branch=master)
 
+# New in version 3:
+- bundle names have changed
+- Change entire build / test system to use vite and vitest.
+- Moved around types to make more sense.
+
 A Good Core typescript library with utility functions and effective data structures for use with both Node and browser.
 
 It brings:
