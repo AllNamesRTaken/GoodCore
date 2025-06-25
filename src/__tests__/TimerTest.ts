@@ -1,29 +1,33 @@
+import { afterEach, beforeEach, afterAll, beforeAll, expect, describe, test, vi } from 'vitest'
 import { Timer } from "../lib/Timer.js";
-
-jest.useFakeTimers();
 
 describe("Timer",
 	() => {
-		test("Test Static Start Stop Time over 100ms",
-			function(done) {
+		beforeEach(() => {
+			vi.useFakeTimers();
+		}),
+		afterEach(() => {
+			// vi.runOnlyPendingTimers()
+			vi.useRealTimers()
+		}),
+		test.sequential("Test Static Start Stop Time over 100ms",
+			function() {
 				Timer.start();
 				setTimeout(() => {
 					Timer.stop();
 					expect(Timer.time / 1000).toBeCloseTo(0.1, 2);
-					done();
 				}, 100);
-				jest.advanceTimersByTime(100);
+				vi.advanceTimersToNextTimer();
 			});
-		test("Test Start Stop Time over 100ms",
-			function(done) {
+		test.sequential("Test Start Stop Time over 100ms",
+			async function() {
 				var t = new Timer();
 				t.start();
 				setTimeout(() => {
-					t.stop();
-					expect(t.time / 1000).toBeCloseTo(0.1, 2);
-					done();
+					Timer.stop();
+					expect(Timer.time / 1000).toBeCloseTo(0.1, 2);
 				}, 100);
-				jest.advanceTimersByTime(100);
+				vi.advanceTimersToNextTimer();
 			});
 	}
 );

@@ -1,3 +1,4 @@
+import { expect, describe, test } from 'vitest'
 import { Range2 } from "../lib/struct/Range2.js";
 import { Rect } from "../lib/struct/Rect.js";
 import { Vec2 } from "../lib/struct/Vec2.js";

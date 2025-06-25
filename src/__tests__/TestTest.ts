@@ -1,3 +1,4 @@
+import { beforeAll, expect, describe, test } from 'vitest'
 import { JSDOM } from "jsdom";
 import { create } from "../lib/Dom.js";
 import { Global } from "../lib/Global.js";

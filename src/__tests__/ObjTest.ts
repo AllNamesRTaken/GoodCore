@@ -1,4 +1,5 @@
 
+import { beforeAll, expect, describe, test } from 'vitest'
 import * as Obj from "../lib/Obj.js";
 import { proxyFn } from "../lib/Util.js";
 

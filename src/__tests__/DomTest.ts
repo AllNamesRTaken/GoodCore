@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { beforeAll, expect, describe, test } from 'vitest'
 import * as Dom from "../lib/Dom.js";
 
 describe("Dom",

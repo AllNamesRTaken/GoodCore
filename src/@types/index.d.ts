@@ -1,45 +1,45 @@
-type Constructor<T> = new (...args: any[]) => T;
-type ICtor<T> = { new(...args: any[]): T; };
-type Diff<T extends string | number | symbol, U extends string | number | symbol> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T];
-type PickKeysOfType<T, KT> = ({ [P in keyof T]: T[P] extends KT ? P : never })[keyof T];
-type PickType<T, KT> = Pick<T, PickKeysOfType<T, KT>>;
-type PickFunctions<T> = PickType<T, Function>;
-type ExcludeType<T, KT> = Omit<T, PickKeysOfType<T, KT>>;
-type ExcludeFunctions<T> = ExcludeType<T, Function>;
+export type Constructor<T> = new (...args: any[]) => T;
+export type ICtor<T> = { new(...args: any[]): T; };
+export type Diff<T extends string | number | symbol, U extends string | number | symbol> = ({ [P in T]: P } & { [P in U]: never } & { [x: string]: never })[T];
+export type PickKeysOfType<T, KT> = ({ [P in keyof T]: T[P] extends KT ? P : never })[keyof T];
+export type PickType<T, KT> = Pick<T, PickKeysOfType<T, KT>>;
+export type PickFunctions<T> = PickType<T, Function>;
+export type ExcludeType<T, KT> = Omit<T, PickKeysOfType<T, KT>>;
+export type ExcludeFunctions<T> = ExcludeType<T, Function>;
 
-interface Indexable<T> {
+export interface Indexable<T> {
 	[key: string]: T;
 }
-interface IObject extends Indexable<any> {}
-interface IInstance<T> extends IObject {
+export interface IObject extends Indexable<any> {}
+export interface IInstance<T> extends IObject {
 	constructor?: ICtor<T>;
 }
-type ArgTypes<T> = T extends (...a:infer A) => unknown ? A : [];
-type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
-interface IPool<T extends IPoolable> {
+export type ArgTypes<T> = T extends (...a:infer A) => unknown ? A : [];
+export type ResultType<T> = T extends (...a: unknown[]) => infer S ? S : never;
+export interface IPool<T extends IPoolable> {
 	get(): T;
 	release(obj: T): void;
 }
-interface IPoolable {
+export interface IPoolable {
 	__pool__: IPool<IPoolable>;
 	release(): void;
 	initPool(pool: IPool<IPoolable>): void;
 }
-interface ICloneable {
+export interface ICloneable {
 	clone(): this;
 }
-interface IInitable {
+export interface IInitable {
 	init(obj: Partial<ExcludeFunctions<this>>, mapping?: any): this;
 }
-type TInitable<T> = T & IInitable;
-interface ISerializable<T> {
+export type TInitable<T> = T & IInitable;
+export interface ISerializable<T> {
 	toJSON(): any;
 	serialize(): T;
 }
-interface IDeserializable<T> {
+export interface IDeserializable<T> {
 	deserialize(data: any, ...types: Array<Constructor<any>>): T;
 }
-interface IBasicList<T> {
+export interface IBasicList<T> {
 	[Symbol.iterator](): IterableIterator<T>;
 	next(value?: any): IteratorResult<T>;
 	values: T[];
@@ -84,7 +84,7 @@ interface IBasicList<T> {
 	toJSON(): any;
 	serialize(): T[];
 }
-interface IList<T> extends IBasicList<T> {
+export interface IList<T> extends IBasicList<T> {
 	getByIndex(key: number | string): T | undefined;
 	write(pos: number, value: T): IList<T>;
 	push(v: T): number;
@@ -99,57 +99,47 @@ interface IList<T> extends IBasicList<T> {
 	unzip<U, V>(fn: (el: T) => [U, V]): [IList<U>, IList<V>];
 	flatten<U>(maxDepth?: number): IList<U>;
 }
-interface ITreeNode<T> {
+export interface ITreeNode<T> {
 	id: string;
 	parent: ITreeNode<T> | null;
 	children: Array<ITreeNode<T>> | null;
 	data: T | null;
 }
-type TreeEvent = "change";
-interface IVec2 {
-	x: number;
-	y: number;
-}
-interface IRange2 {
-	pos: IVec2;
-	size: IVec2;
-}
-interface IRect {
-	start: IVec2;
-	stop: IVec2;
-	endInclusive?: boolean;
-}
-interface IDebounceOptions {
+export type TreeEvent = "change";
+export type { IVec2 } from "./IVec2"
+export type { IRange2 } from "./IRange2"
+export type { IRect } from "./IRect"
+export interface IDebounceOptions {
 	leading: boolean;
 }
-type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ? 
+export type DebounceResultType<T, U> = T extends (...a: unknown[]) => PromiseLike<infer S> ? 
 	PromiseLike<S> : 
 	T extends (...a: unknown[]) => infer R ? 
 		U extends { leading: true } ?
 			R : 
 			PromiseLike<R>
 		: never;
-interface IDebouncedFunction<T, U> {
+export interface IDebouncedFunction<T, U> {
 	(...args: ArgTypes<T>): DebounceResultType<T, U>;
 	resetTimer?(): void;
 }
-interface IThrottleOptions {
+export interface IThrottleOptions {
 	leading: boolean;
 	trailing: boolean;
 }
-interface IThrottledFunction<T> {
+export interface IThrottledFunction<T> {
 	(...args: ArgTypes<T>): ResultType<T>;
 }
-type IValue = number | string | boolean | null | undefined;
-type IValueOf<T extends IDiffable> = T[keyof T] extends IDiffable ? T[keyof T] : IValue;
-type IDiffable = Indexable<IDiffable> | IDiffable[] | IValue;
-type IDeltaObj<T extends IDiffable, S extends IDiffable> = 
+export type IValue = number | string | boolean | null | undefined;
+export type IValueOf<T extends IDiffable> = T[keyof T] extends IDiffable ? T[keyof T] : IValue;
+export type IDiffable = Indexable<IDiffable> | IDiffable[] | IValue;
+export type IDeltaObj<T extends IDiffable, S extends IDiffable> = 
 	T extends Indexable<IDiffable> ?
 	S extends Indexable<IDiffable> ? 
 		{[P in keyof (S | T)]: IDelta<T[P], S[P]>} : 
 	never :
 	never;
-type IDelta<T extends IDiffable, S extends IDiffable> = 
+export type IDelta<T extends IDiffable, S extends IDiffable> = 
 	T extends Array<infer U> ? 
 	S extends Array<infer V> ?
 		[U[], null | [], V[]] : 
@@ -159,3 +149,20 @@ type IDelta<T extends IDiffable, S extends IDiffable> =
 		[Partial<T>, IDeltaObj<T, S>, Partial<S>] : 
 		[T, null, S] :
 	[T, null, S];
+
+	export interface IDebounceOptions {
+		leading: boolean;
+	}
+	export type InnerDebounceResultType<T> = T extends (...a: unknown[]) => PromiseLike<infer S> ? S : T extends (...a: unknown[]) => infer S ? S : never;
+	export interface IDebouncedFunction<T, U> {
+		(...args: ArgTypes<T>): DebounceResultType<T, U>;
+		resetTimer?(): void;
+	}
+
+	export interface IThrottleOptions {
+		leading: boolean;
+		trailing: boolean;
+	}
+	export interface IThrottledFunction<T> {
+		(...args: ArgTypes<T>): ResultType<T>;
+	}

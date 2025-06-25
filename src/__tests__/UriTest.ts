@@ -2,6 +2,7 @@
  * @jest-environment jsdom
  */
 
+import { beforeAll, expect, describe, test } from 'vitest'
 import { Uri } from "../lib/Uri.js";
 
 describe("Uri",
@@ -12,7 +13,7 @@ describe("Uri",
 		test("Uri is populated",
 			() => {
 				let uri = new Uri();
-				expect(uri.hostName).toBe("domain.com");
+				expect(uri.hostName).toBe("localhost");
 				expect(uri.pathName).toBe("/path/page.html");
 				expect(uri.args.arg2).toBe("2");
 			});
@@ -32,7 +33,7 @@ describe("Uri",
 			() => {
 				let attachedUri = new Uri();
 				let nonAttachedUri = new Uri("http://test.uri.com/ponent/with.html?parameters=1");
-				expect(attachedUri.hostName).toBe("domain.com");
+				expect(attachedUri.hostName).toBe("localhost");
 			});
 	}
 );

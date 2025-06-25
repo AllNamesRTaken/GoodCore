@@ -9,18 +9,21 @@ let { version, name, unpkg, main, module, description } = pkg
 
 let _version = version
 version = _version.split('.').map((v) => parseInt(v) || 0)
+console.log('version: ' + _version)
 
-task(
-  'bump',
-  parallel(function (cb) {
-    version[2]++
-    _version = version.join('.')
-    writeFileSync('./package.json', JSON.stringify(pkg, null, 2), {
-      encoding: 'utf8',
-    })
-    cb()
-  })
-)
+// task(
+//   'bump',
+//   parallel(function (cb) {
+//     version[2]++
+//     _version = version.join('.')
+//     pkg.version = _version
+//     writeFileSync('./package.json', JSON.stringify(pkg, null, 2), {
+//       encoding: 'utf8',
+//     })
+//     console.log('new version: ' + _version)
+//     cb()
+//   })
+// )
 task(
   'modifyBundle',
   parallel(function (cb) {
@@ -39,7 +42,7 @@ task(
 )
 task(
   'package',
-  series('bump', function () {
+  series(/*'bump', */function () {
     return src(['./package.json', './README.md']).pipe(dest('dist/lib'))
   })
 )

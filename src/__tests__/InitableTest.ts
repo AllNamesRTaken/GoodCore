@@ -1,3 +1,4 @@
+import { expect, describe, test } from 'vitest'
 import { Initable } from "../lib/mixins/Initable.js";
 
 describe("Initable",

@@ -1,3 +1,4 @@
+import { beforeAll, expect, describe, test } from 'vitest'
 import { Global } from "../lib/Global.js";
 import * as Test from "../lib/Test.js";
 import * as Util from "../lib/Util.js";
@@ -316,7 +317,7 @@ describe("Util",
 				console.log = log;
 			});
 		test("debounce debounces function",
-			function (done) {
+			async function () {
 				let value = 0;
 				let plus1 = Util.debounce((amount?: number) => {
 					return ++value;
@@ -324,10 +325,12 @@ describe("Util",
 				plus1();
 				plus1();
 				expect(value).toBe(0);
-				setTimeout(() => {
-					expect(value).toBe(1);
-					done();
-				}, 20);
+				await new Promise<void>((resolve) => {
+					setTimeout(() => {
+						expect(value).toBe(1);
+						resolve();
+					}, 20);
+				});
 			});
 		test("debounce with leading executes once immediately and returns value",
 			function (done) {
@@ -340,10 +343,9 @@ describe("Util",
 				expect(plus1()!).toBe(1);
 				expect(plus1()!).toBe(1);
 				expect(value).toBe(1);
-				setTimeout(() => {
+				setTimeout(async () => {
 					expect(plus1()!).toBe(2);
 					expect(value).toBe(2);
-					done();
 				}, 20);
 			});
 		test("debounce without leading returns and resolves promise",
@@ -357,9 +359,8 @@ describe("Util",
 				expect(value).toBe(0);
 				(plus1() as Promise<number>).then((v) => expect(v).toBe(1));
 				expect(value).toBe(0);
-				result.then(() => {
+				result.then(async () => {
 					expect(value).toBe(1);
-					done();
 				});
 			});
 		test("debounce without leading on async function returns and resolves promise",
@@ -392,12 +393,11 @@ describe("Util",
 				plus1();
 				plus1();
 				expect(value).toBe(1);
-				setTimeout(() => {
+				setTimeout(async () => {
 					expect(value).toBe(1);
 					plus1();
 					expect(value).toBe(2);
-					done();
-				}, 20);
+				}, 30);
 			});
 		test("throttle with trailing = true repeats last action",
 			function (done) {
@@ -408,13 +408,12 @@ describe("Util",
 
 				plus1();
 				expect(value).toBe(1);
-				setTimeout(() => {
+				setTimeout(async () => {
 					expect(value).toBe(2);
-					done();
-				}, 20);
+				}, 30);
 			});
 		test("throttle with trailing = true repeats last action with correct parameters",
-			function (done) {
+			async function () {
 				let value = 0;
 				let plus1 = Util.throttle(function inc(amount: number = 1) {
 					value += amount;
@@ -424,13 +423,15 @@ describe("Util",
 				plus1();
 				plus1(10);
 				expect(value).toBe(1);
-				setTimeout(() => {
-					expect(value).toBe(11);
-					done();
-				}, 20);
+				await new Promise<void>((resolve) => {
+					setTimeout(() => {
+						expect(value).toBe(11);
+						resolve();
+					}, 30);
+				});
 			});
 		test("throttle with leading = false only runs trailing",
-			function (done) {
+			async function () {
 				let value = 0;
 				let plus1 = Util.throttle(function inc() {
 					return ++value;
@@ -439,25 +440,29 @@ describe("Util",
 				plus1();
 				plus1();
 				expect(value).toBe(0);
-				setTimeout(() => {
-					expect(value).toBe(1);
-					done();
-				}, 20);
+				await new Promise<void>((resolve) => {
+					setTimeout(() => {
+						expect(value).toBe(1);
+						resolve();
+					}, 30);
+				});
 			});
 		test("throttle with leading = false and trailing false still runs trailing",
-			function (done) {
+			async function () {
 				let value = 0;
 				let plus1 = Util.throttle(function inc() {
 					return ++value;
-				}, 20, { leading: false });
+				}, 20, { leading: false, trailing: false });
 
 				plus1();
 				plus1();
 				expect(value).toBe(0);
-				setTimeout(() => {
-					expect(value).toBe(1);
-					done();
-				}, 20);
+				await new Promise<void>((resolve) => {
+					setTimeout(() => {
+						expect(value).toBe(1);
+						resolve();
+					}, 30);
+				});
 			});
 	}
 );

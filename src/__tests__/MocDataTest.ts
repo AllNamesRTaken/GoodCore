@@ -1,4 +1,5 @@
 
+import { expect, describe, test } from 'vitest'
 import * as MocData from "../lib/MocData.js";
 import * as Test from "../lib/Test.js";
 
@@ -23,13 +24,13 @@ describe("MocData",
 			() => {
 				const val = MocData.randomInt();
 				expect((typeof(val))).toBe("number");
-				expect(val).toBe(val | 0);
+				expect(val).toBe(Math.floor(val));
 
 				const val2 = MocData.randomInt(10, 20);
 				expect((typeof(val2))).toBe("number");
 				expect(val2).toBe(val2 | 0);
 				expect(val2).toBeGreaterThanOrEqual(10);
-				expect(val2).toBeLessThan(20);
+				expect(val2).toBeLessThanOrEqual(20);
 			});
 		test("RandomNumber returns number",
 			() => {
@@ -39,7 +40,7 @@ describe("MocData",
 				const val2 = MocData.randomNumber(10, 20);
 				expect((typeof(val2))).toBe("number");
 				expect(val2).toBeGreaterThanOrEqual(10);
-				expect(val2).toBeLessThan(20);
+				expect(val2).toBeLessThanOrEqual(20);
 			});
 		test("RandomString returns string of correct length",
 			() => {

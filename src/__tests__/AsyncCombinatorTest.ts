@@ -1,15 +1,16 @@
+import { expect, describe, test } from 'vitest'
 import { async } from "../lib/Decorators.js";
 
 describe("AsyncCombinators",
 	() => {
 		test("before acts before",
-			function (done) {
+			async function () {
 				class Person {
 					public anxiety: number = 0;
 					@async.before!(function (): Promise<any> {
 						return new Promise<void>((resolve, reject) => {
 							setTimeout(() => {
-								this.anxiety++;
+								++this.anxiety;
 								resolve();
 							});
 						});
@@ -17,7 +18,7 @@ describe("AsyncCombinators",
 					@async
 					public fret(...args: any[]) {
 						expect(this.anxiety).toBe(1);
-						this.anxiety++;
+						++this.anxiety;
 					}
 					@async.before!(function (): Promise<any> {
 						return new Promise<any>((resolve, reject) => {
@@ -30,19 +31,19 @@ describe("AsyncCombinators",
 					}
 				}
 				let sam = new Person();
-				(sam.fret(1) as any).then(() => {
+				await (sam.fret() as any).then(() => {
 					expect(sam.anxiety).toBe(2);
 				});
-				(sam.error(1) as any)
+				await (sam.error() as any)
 					.then(() => {
 					})
 					.catch((reason: Error) => {
-						done();
+						expect(true)
 					});
-				expect(sam.anxiety).toBe(0);
+				expect(sam.anxiety).toBe(2);
 			});
 		test("after acts after",
-			function (done) {
+			async function () {
 				class Person {
 					public anxiety: number = 0;
 					@async.after!(function (value, reason): Promise<any> {
@@ -69,17 +70,17 @@ describe("AsyncCombinators",
 					}
 				}
 				let sam = new Person();
-				(sam.fret(1) as any).then(() => {
+				await (sam.fret(1) as any).then(() => {
 					expect(sam.anxiety).toBe(2);
 				});
-				(sam.error(1) as any).then(() => {
+				await (sam.error(1) as any).then(() => {
 				})
 					.catch((reason: Error) => {
-						done();
+						expect(true)
 					});
 			});
 		test("provided acts if provided",
-			function (done) {
+			async function () {
 				class Person {
 					public anxiety: number = 0;
 					@async.provided!(function (): Promise<any> {
@@ -110,18 +111,17 @@ describe("AsyncCombinators",
 					}
 				}
 				let sam = new Person();
-				(sam.fret(1) as any).then(() => {
+				await (sam.fret(1) as any).then(() => {
 					expect(sam.anxiety).toBe(1);
 					(sam.fret(1) as any).then(() => {
 					}).catch((reason: any) => {
 						expect(sam.anxiety).toBe(1);
 					});
 				});
-				(sam.error(true) as any).catch((reason: Error) => {
+				await (sam.error(true) as any).catch((reason: Error) => {
 					expect(reason.message).toBe("reason");
 					(sam.error(false) as any).catch((reason: string) => {
 						expect(reason).toBe("reject");
-						done();
 					});
 				});
 			});

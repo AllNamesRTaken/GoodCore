@@ -1,3 +1,4 @@
+import { beforeAll, expect, describe, test } from 'vitest'
 import { IndexedTree } from "../lib/struct/IndexedTree.js";
 import { Tree } from "../lib/struct/Tree.js";
 import { isNotUndefined } from "../lib/Test.js";

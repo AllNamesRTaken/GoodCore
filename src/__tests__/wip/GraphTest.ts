@@ -1,3 +1,4 @@
+import { expect, describe, test } from 'vitest'
 import { Graph, GraphNode } from "../../lib/wip/Graph.js";
 
 describe("Graph",

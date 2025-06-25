@@ -1,3 +1,4 @@
+import { beforeAll, expect, describe, test } from 'vitest'
 import { Vec2, Vec2Const, V2 } from "../lib/struct/Vec2.js";
 // tslint:disable-next-line:ordered-imports
 

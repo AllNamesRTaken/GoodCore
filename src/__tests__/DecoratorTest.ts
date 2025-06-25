@@ -1,11 +1,19 @@
+import { expect, describe, test, afterEach, beforeEach, vi } from 'vitest'
 import { debounced, once, asserts, deprecated, throttled } from "../lib/Decorators.js";
 import { assert, AssertError, pipeOut } from "../lib/Util.js";
 import { isNumber } from "../lib/Test.js";
 
 describe("Decorators",
 	() => {
+		beforeEach(() => {
+			vi.useFakeTimers();
+		}),
+		afterEach(() => {
+			// vi.runOnlyPendingTimers()
+			vi.useRealTimers()
+		}),
 		test("debounced should debounce the instance function",
-			function (done) {
+			function () {
 				class Foo {
 					public value = 0;
 					@debounced(20)
@@ -21,8 +29,8 @@ describe("Decorators",
 				setTimeout(() => {
 					expect(foo1.value).toBe(1);
 					expect(foo2.value).toBe(1);
-					done();
 				}, 20);
+				vi.advanceTimersToNextTimer();
 			});
 		test("debounced on async with leading should return same promise",
 			async () => {
@@ -34,16 +42,12 @@ describe("Decorators",
 					}
 				}
 				let foo1 = new Foo();
-				let val: number = 0;
-				val = await foo1.setFoo();
-				expect(val).toBe(1);
-				val = await foo1.setFoo();
-				expect(val).toBe(1);
-				setTimeout(async () => {
-					val = await foo1.setFoo();
-					expect(val).toBe(2);
-				}, 20);
-				return true;
+				let p1 = foo1.setFoo();
+				expect(foo1.value).toBe(1);
+				let p2 = foo1.setFoo();
+				expect(p1 == p2);
+				vi.runAllTimers();
+				expect(foo1.value).toBe(1)
 			});
 		test("debounced on async without leading should return same promise",
 			async () => {
@@ -55,21 +59,15 @@ describe("Decorators",
 					}
 				}
 				let foo1 = new Foo();
-				let val: number = 0;
-				foo1.setFoo();
-				expect(val).toBe(0);
-				val = await foo1.setFoo();
-				expect(val).toBe(1);
-				let result = foo1.setFoo();
-				setTimeout(async () => {
-					val = await result;
-					expect(val).toBe(2);
-				}, 20);
-				await result;
-				return true;
+				let p1 = foo1.setFoo();
+				expect(foo1.value).toBe(0);
+				let p2 = foo1.setFoo();
+				expect(p1 == p2);
+				vi.runAllTimers();
+				expect(foo1.value).toBe(1)
 			});
 		test("throttle should throttle the instance function",
-			function (done) {
+			async function () {
 				class Foo {
 					public value1 = 0;
 					public value2 = 0;
@@ -99,8 +97,8 @@ describe("Decorators",
 					expect(foo2.value1).toBe(2);
 					expect(foo1.value2).toBe(1);
 					expect(foo2.value2).toBe(1);
-					done();
 				}, 20);
+				vi.runAllTimers();
 			});
 		test("once returns first value",
 			() => {

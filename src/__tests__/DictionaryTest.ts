@@ -1,3 +1,4 @@
+import { expect, describe, test } from 'vitest'
 import { Dictionary } from "../lib/struct/Dictionary.js";
 import { Vec2 } from "../lib/struct/Vec2.js";
 

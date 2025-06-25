@@ -5,8 +5,10 @@
     "sourceMap": true,
     "target": "ES2021",
     "module": "ES2020",
-    "moduleResolution": "node",
-    "declaration": false,
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": false,
+    "emitDeclarationOnly": false,
+    "declaration": true,
     "noImplicitAny": true,
     "noImplicitThis": false,
     "strictNullChecks": true,
@@ -19,16 +21,14 @@
     "allowJs": false,
     "listFiles": false,
     "downlevelIteration": false,
-    "esModuleInterop": true,
+		"esModuleInterop": true,
     "lib": ["dom", "ES2021", "ES2021.Promise", "ES2021.String", "scripthost"],
-    // "typeRoots": ["./node_modules/@types", "./src/@types"],
-    "types": ["@types/node", "./src/@types/custom.d.ts"],
+    "typeRoots": ["./node_modules/@types"],
     "baseUrl": "."
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": [
-    "**/__tests__/**/*.ts",
-    "./src/lib/wip/**/*.ts",
-    "./src/lib/GoodCoreLite.ts"
-  ]
+  "include": [
+    // "./test.ts",
+    "./src/**/*.ts",
+  ],
+  "exclude": ["./src/lib/wip", "./src/__tests__", "./src/benchmark"]
 }
