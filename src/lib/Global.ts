@@ -9,7 +9,7 @@ if (typeof (window) === "undefined") {
 	nativeWindow = window;
 }
 
-const root: Window = nativeWindow || typeof(global) !== "undefined" ? global : globalThis as unknown as any; 
+const root: Window = nativeWindow || (typeof(global) !== "undefined" ? global : globalThis as unknown as any); 
 
 		// tslint:disable-next-line:class-name
 class _Global {
