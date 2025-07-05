@@ -1,8 +1,8 @@
-import { IRange2 } from "../../@types/IRange2";
-import { IVec2 } from "../../@types/IVec2";
-import { Vec2 } from "./Vec2";
-import { once } from "../Util";
-import type { IRect } from "../../@types";
+import { IRange2 } from "../../@types/IRange2.js";
+import { IVec2 } from "../../@types/IVec2.js";
+import { Vec2 } from "./Vec2.js";
+import { once } from "../Util.js";
+import type { IRect } from "../../@types/index.js";
 
 export class Range2 implements IRange2 {
   public pos: Vec2;

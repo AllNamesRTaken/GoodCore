@@ -1,4 +1,4 @@
-import type { Constructor, Indexable } from "../@types";
+import type { Constructor, Indexable } from "../@types/index.js";
 import {
   clone,
   setProperties,
@@ -6,7 +6,7 @@ import {
   toLookup,
   defaultHashFunction,
   arrayDiff,
-} from "./Obj";
+} from "./Obj.js";
 import {
   isArray,
   isNullOrUndefined,
@@ -17,9 +17,9 @@ import {
   isFunction,
   isObject,
   isNull,
-} from "./Test";
-import { assert, deprecate } from "./Util";
-export { toLookup } from "./Obj";
+} from "./Test.js";
+import { assert, deprecate } from "./Util.js";
+export { toLookup } from "./Obj.js";
 export const difference = arrayDiff;
 
 export const reverse = deprecate("Array.prototype.reverse", function reverse<

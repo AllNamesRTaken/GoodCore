@@ -1,5 +1,5 @@
-import type { ICtor, IInitable, ExcludeFunctions } from "../../@types";
-import { setProperties } from "../Obj";
+import type { ICtor, IInitable, ExcludeFunctions } from "../../@types/index.js";
+import { setProperties } from "../Obj.js";
 
 export function Initable<S>(_constructor?: ICtor<S>): ICtor<S & IInitable> {
   const ctor = _constructor || (Object as any);

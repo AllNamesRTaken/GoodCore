@@ -1,15 +1,15 @@
-import { binarySearch } from "../Arr";
-import { equals } from "../Obj";
-import { isFunction, hasWindow } from "../Test";
-import { List } from "./List";
-import { once } from "../Util";
+import { binarySearch } from "../Arr.js";
+import { equals } from "../Obj.js";
+import { isFunction, hasWindow } from "../Test.js";
+import { List } from "./List.js";
+import { once } from "../Util.js";
 import type {
   IBasicList,
   ISerializable,
   IDeserializable,
   ICloneable,
   Constructor,
-} from "../../@types";
+} from "../../@types/index.js";
 
 if (hasWindow() && !(window as any).Symbol) {
   (window as any).Symbol = { iterator: "iterator" };

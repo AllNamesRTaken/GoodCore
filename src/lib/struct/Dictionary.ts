@@ -5,11 +5,11 @@ import type {
   ICloneable,
   Indexable,
   Constructor,
-} from "../../@types";
-import { forEach } from "../Arr";
-import { clone, setProperties, wipe } from "../Obj";
-import { isFunction, isNotUndefined, isNotNullOrUndefined } from "../Test";
-import { once } from "../Util";
+} from "../../@types/index.js";
+import { forEach } from "../Arr.js";
+import { clone, setProperties, wipe } from "../Obj.js";
+import { isFunction, isNotUndefined, isNotNullOrUndefined } from "../Test.js";
+import { once } from "../Util.js";
 
 export class Dictionary<T>
   implements ISerializable<IObject>, IDeserializable<Dictionary<T>>, ICloneable

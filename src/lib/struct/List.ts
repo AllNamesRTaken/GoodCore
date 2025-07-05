@@ -4,7 +4,7 @@ import type {
   IDeserializable,
   ICloneable,
   Constructor,
-} from "../../@types";
+} from "../../@types/index.js";
 import {
   shallowCopy,
   create,
@@ -29,8 +29,8 @@ import {
   reverseReduce,
   reverseReduceUntil,
   deserialize,
-} from "../Arr";
-import { clone, equals, wipe } from "../Obj";
+} from "../Arr.js";
+import { clone, equals, wipe } from "../Obj.js";
 import {
   isArray,
   isFunction,
@@ -38,8 +38,8 @@ import {
   isNotUndefined,
   hasWindow,
   isNotNull,
-} from "../Test";
-import { once } from "../Util";
+} from "../Test.js";
+import { once } from "../Util.js";
 
 if (hasWindow() && !(window as any).Symbol) {
   (window as any).Symbol = { iterator: "iterator" };

@@ -1,5 +1,5 @@
-import type { ICtor, IPoolable } from "../../@types";
-import { once } from "../Util";
+import type { ICtor, IPoolable } from "../../@types/index.js";
+import { once } from "../Util.js";
 
 export class Pool<T> {
   private _pool: T[] = [];

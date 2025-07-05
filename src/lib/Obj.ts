@@ -1,11 +1,11 @@
-import type { Indexable, ICloneable, Constructor } from "../@types";
+import type { Indexable, ICloneable, Constructor } from "../@types/index.js";
 import {
   areNotNullOrUndefined,
   isArray,
   isFunction,
   isObject,
   isNullOrUndefined,
-} from "./Test";
+} from "./Test.js";
 
 interface IDestroyable {
   destroy(): void;

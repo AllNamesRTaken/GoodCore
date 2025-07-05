@@ -1,8 +1,8 @@
-import { Global } from "./Global";
-import { isNullOrUndefined, isString, isElement } from "./Test";
-import { assert } from "./Util";
-import { reduce } from "./Arr";
-import type { Indexable } from "../@types";
+import { Global } from "./Global.js";
+import { isNullOrUndefined, isString, isElement } from "./Test.js";
+import { assert } from "./Util.js";
+import { reduce } from "./Arr.js";
+import type { Indexable } from "../@types/index.js";
 
 export enum Sides {
   Top,

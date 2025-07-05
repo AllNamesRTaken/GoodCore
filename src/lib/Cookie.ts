@@ -1,6 +1,6 @@
 import { getDate, assert } from "./Util.js";
 import { clone, mixin, transform } from "./Obj.js";
-import type { Indexable } from "../@types";
+import type { Indexable } from "../@types/index.js";
 
 function findCookie(key: string) {
   return document.cookie

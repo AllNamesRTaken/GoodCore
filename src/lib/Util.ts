@@ -8,14 +8,14 @@ import type {
   IDebouncedFunction,
   IDebounceOptions,
   IThrottledFunction,
-} from "../@types";
-import { Global } from "./Global";
+} from "../@types/index.js";
+import { Global } from "./Global.js";
 import {
   hasConsole,
   isNotUndefined,
   isNotNullOrUndefined,
   isUndefined,
-} from "./Test";
+} from "./Test.js";
 
 export interface IObjectWithFunctions<T extends Object | void> {
   [key: string]: (...args: any[]) => T;

@@ -1,6 +1,6 @@
-import { IDebounceOptions, IThrottleOptions } from "src/@types";
-import { isNotNullOrUndefined, isNotUndefined, isFunction } from "./Test";
-import { debounce, AssertError, throttle, once as runOnlyOnce } from "./Util";
+import { IDebounceOptions, IThrottleOptions } from "../@types/index.js";
+import { isNotNullOrUndefined, isNotUndefined, isFunction } from "./Test.js";
+import { debounce, AssertError, throttle, once as runOnlyOnce } from "./Util.js";
 
 export function debounced<S>(
   duration?: number,

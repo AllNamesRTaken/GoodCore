@@ -1,5 +1,5 @@
-import type { ICtor, IPoolable } from "../../@types";
-import { Pool } from "../standard/Pool";
+import type { ICtor, IPoolable } from "../../@types/index.js";
+import { Pool } from "../standard/Pool.js";
 
 export function Poolable<S>(_constructor?: ICtor<S>): ICtor<S & IPoolable> {
   const ctor = _constructor || (Object as any);

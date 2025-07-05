@@ -1,8 +1,8 @@
-import { IRect } from "../../@types/IRect";
-import { IVec2 } from "../../@types/IVec2";
-import { Vec2 } from "./Vec2";
-import { once } from "../Util";
-import { IRange2 } from "../../@types/IRange2";
+import { IRect } from "../../@types/IRect.js";
+import { IVec2 } from "../../@types/IVec2.js";
+import { Vec2 } from "./Vec2.js";
+import { once } from "../Util.js";
+import { IRange2 } from "../../@types/IRange2.js";
 
 export class Rect implements IRect {
   public start: Vec2;

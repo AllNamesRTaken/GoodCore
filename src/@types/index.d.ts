@@ -106,9 +106,9 @@ export interface ITreeNode<T> {
 	data: T | null;
 }
 export type TreeEvent = "change";
-export type { IVec2 } from "./IVec2"
-export type { IRange2 } from "./IRange2"
-export type { IRect } from "./IRect"
+export type { IVec2 } from "./IVec2.js"
+export type { IRange2 } from "./IRange2.js"
+export type { IRect } from "./IRect.js"
 export interface IDebounceOptions {
 	leading: boolean;
 }

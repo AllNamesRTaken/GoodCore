@@ -1,4 +1,4 @@
-import { Global } from "./Global";
+import { Global } from "./Global.js";
 
 export function hasWindow(): boolean {
   return Global.window !== null;

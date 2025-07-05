@@ -3,9 +3,9 @@ import type {
   IDeserializable,
   ICloneable,
   Constructor,
-} from "../../@types";
-import { deepCopy, deserialize } from "../Arr";
-import { isFunction } from "../Test";
+} from "../../@types/index.js";
+import { deepCopy, deserialize } from "../Arr.js";
+import { isFunction } from "../Test.js";
 
 export class Stack<T>
   implements ISerializable<T[]>, IDeserializable<Stack<T>>, ICloneable

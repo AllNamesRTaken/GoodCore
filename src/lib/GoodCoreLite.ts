@@ -21,7 +21,7 @@ import {
   until,
   unzip,
   zip,
-} from "./Arr";
+} from "./Arr.js";
 
 import {
   clone,
@@ -40,7 +40,7 @@ import {
   shallowCopy,
   transform,
   wipe,
-} from "./Obj";
+} from "./Obj.js";
 
 import {
   assert,
@@ -56,11 +56,11 @@ import {
   once,
   throttle,
   toArray,
-} from "./Util";
+} from "./Util.js";
 
-import * as Test from "./Test";
+import * as Test from "./Test.js";
 
-import { Timer as Timer } from "./Timer";
+import { Timer as Timer } from "./Timer.js";
 
 export { Timer as Timer };
 export { Test as Test };
