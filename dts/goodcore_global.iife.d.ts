@@ -10,7 +10,7 @@ type ExcludeFunctions<T> = ExcludeType<T, () => any>;
 
 // tslint:disable-next-line:interface-name
 interface Indexable<T> {
-    [key: string]: T;
+    [key: string | symbol]: T;
 }
 interface IObject extends Indexable<any> { }
 interface IInstance<T> extends IObject {
@@ -1222,41 +1222,37 @@ declare class Pool<T> {
     release(obj: T): void;
 }
 
-type EventKey = string | symbol
-type BusKey<E> = keyof E & EventKey
-type EventHandlerResult<S> = Promise<S> | S | void
-type EventHandler = (...args: unknown[]) => EventHandlerResult<unknown>
-type EventMap = { [key: EventKey]: EventHandler }
+type EventMap = Indexable<(...args: any[]) => unknown>;
 type InnerPromiseType<T> = T extends Promise<infer U> ? U : T
 
 interface IEventBus<T extends EventMap> {
-  on(key: BusKey<T>, handler: T[BusKey<T>], id?: string): () => void
-  off(key: BusKey<T>, handler: T[BusKey<T>], id?: string): void
-  emit(key: BusKey<T>, ...payload: Parameters<T[BusKey<T>]>): void
-  once(key: BusKey<T>, handler: T[BusKey<T>]): void
+  on(key: keyof T, handler: T[keyof T], id?: string): () => void
+  off(key: keyof T, handler: T[keyof T], id?: string): void
+  emit(key: keyof T, ...payload: Parameters<T[keyof T]>): void
+  once(key: keyof T, handler: T[keyof T]): void
   rpc(
-    key: BusKey<T>,
-    ...payload: Parameters<T[BusKey<T>]>
-  ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>>
+    key: keyof T,
+    ...payload: Parameters<T[keyof T]>
+  ): Promise<InnerPromiseType<ResultType<T[keyof T]>>>
   rpcMany(
-    key: BusKey<T>,
-    ...payload: Parameters<T[BusKey<T>]>
-  ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>[]>
+    key: keyof T,
+    ...payload: Parameters<T[keyof T]>
+  ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
 }
 
 declare class EventBus<T extends EventMap> implements IEventBus<T> {
-  on(key: BusKey<T>, handler: T[BusKey<T>], id?: string): () => void
-  off(key: BusKey<T>, handler: T[BusKey<T>], id?: string): void
-  emit(key: BusKey<T>, ...payload: Parameters<T[BusKey<T>]>): void
-  once(key: BusKey<T>, handler: T[BusKey<T>]): void
+  on(key: keyof T, handler: T[keyof T], id?: string): () => void
+  off(key: keyof T, handler: T[keyof T], id?: string): void
+  emit(key: keyof T, ...payload: Parameters<T[keyof T]>): void
+  once(key: keyof T, handler: T[keyof T]): void
   rpc(
-    key: BusKey<T>,
-    ...payload: Parameters<T[BusKey<T>]>
-  ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>>
+    key: keyof T,
+    ...payload: Parameters<T[keyof T]>
+  ): Promise<InnerPromiseType<ResultType<T[keyof T]>>>
   rpcMany(
-    key: BusKey<T>,
-    ...payload: Parameters<T[BusKey<T>]>
-  ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>[]>
+    key: keyof T,
+    ...payload: Parameters<T[keyof T]>
+  ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
 }
 
 declare namespace MocData {

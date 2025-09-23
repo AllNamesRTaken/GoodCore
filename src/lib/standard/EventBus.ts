@@ -1,29 +1,25 @@
 import type { ResultType, Indexable } from '../../@types/index.js'
 
-type Bus<E> = Record<BusKey<E>, E[BusKey<E>][]>
-type Offs<E> = Record<BusKey<E>, Array<() => void>>
+type Bus<E> = Record<keyof E, E[keyof E][]>
+type Offs<E> = Record<keyof E, Array<() => void>>
 
-export type EventKey = string | symbol
-export type BusKey<E> = keyof E & EventKey
-export type EventHandlerResult<S> = Promise<S> | S | void
-export type EventHandler = (...args: unknown[]) => EventHandlerResult<unknown>
-export type EventMap = { [key: EventKey]: EventHandler }
+type EventMap = Indexable<(...args: any) => unknown>;
 export type InnerPromiseType<T> = T extends Promise<infer U> ? U : T
 export type HandlerPayload<P> = P & Partial<{ args: unknown[] }>
 
 export interface IEventBus<T extends EventMap> {
-  on(key: BusKey<T>, handler: T[BusKey<T>], id?: string): () => void
-  off(key: BusKey<T>, handler: T[BusKey<T>], id?: string): void
-  emit(key: BusKey<T>, ...payload: Parameters<T[BusKey<T>]>): void
-  once(key: BusKey<T>, handler: T[BusKey<T>]): void
+  on(key: keyof T, handler: T[keyof T], id?: string): () => void
+  off(key: keyof T, handler: T[keyof T], id?: string): void
+  emit(key: keyof T, ...payload: Parameters<T[keyof T]>): void
+  once(key: keyof T, handler: T[keyof T]): void
   rpc(
-    key: BusKey<T>,
-    ...payload: Parameters<T[BusKey<T>]>
-  ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>>
+    key: keyof T,
+    ...payload: Parameters<T[keyof T]>
+  ): Promise<InnerPromiseType<ResultType<T[keyof T]>>>
   rpcMany(
-    key: BusKey<T>,
-    ...payload: Parameters<T[BusKey<T>]>
-  ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>[]>
+    key: keyof T,
+    ...payload: Parameters<T[keyof T]>
+  ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
 }
 
 interface IBusConfig {
@@ -42,7 +38,7 @@ export class EventBus<E extends EventMap> implements IEventBus<E> {
     this.config = { ...defaultConfig, ...config }
   }
 
-  public on(key: BusKey<E>, handler: E[BusKey<E>]) {
+  public on(key: keyof E, handler: E[keyof E]) {
     if (this.bus[key] === undefined) {
       this.bus[key] = []
       this.offs[key] = []
@@ -58,7 +54,7 @@ export class EventBus<E extends EventMap> implements IEventBus<E> {
     return off
   }
 
-  public off(key: BusKey<E>, handler: E[BusKey<E>]) {
+  public off(key: keyof E, handler: E[keyof E]) {
     const index = this.bus[key]?.indexOf(handler) ?? -1
     if (index === -1) {
       return
@@ -67,7 +63,7 @@ export class EventBus<E extends EventMap> implements IEventBus<E> {
     this.offs[key]?.splice(index >>> 0, 1)
   }
 
-  public emit(key: BusKey<E>, ...payload: Parameters<E[BusKey<E>]>): void {
+  public emit(key: keyof E, ...payload: Parameters<E[keyof E]>): void {
     this.bus[key]?.forEach((handler) => {
       try {
         const result = handler(payload[0])
@@ -80,7 +76,7 @@ export class EventBus<E extends EventMap> implements IEventBus<E> {
     })
   }
 
-  public once(key: BusKey<E>, handler: E[BusKey<E>]) {
+  public once(key: keyof E, handler: E[keyof E]) {
     const handleOnce = (
       payload: HandlerPayload<Parameters<typeof handler>>
     ) => {
@@ -95,22 +91,22 @@ export class EventBus<E extends EventMap> implements IEventBus<E> {
   }
 
   public async rpcMany(
-    key: BusKey<E> | [BusKey<E>, ...Parameters<E[BusKey<E>]>],
-    ...payload: Parameters<E[BusKey<E>]> | undefined[]
-  ): Promise<InnerPromiseType<ResultType<E[BusKey<E>]>>[]> {
+    key: keyof E | [keyof E, ...Parameters<E[keyof E]>],
+    ...payload: Parameters<E[keyof E]> | undefined[]
+  ): Promise<InnerPromiseType<ResultType<E[keyof E]>>[]> {
     if ('string' !== typeof key) {
-      ;[key, ...payload] = key as [BusKey<E>, ...Parameters<E[BusKey<E>]>]
+      ;[key, ...payload] = key as [keyof E, ...Parameters<E[keyof E]>]
     }
     const results = this.bus[key]
       ?.map((handler) => {
         try {
-          const result = handler(payload[0]) as ResultType<E[BusKey<E>]>
+          const result = handler(payload[0]) as ResultType<E[keyof E]>
           if (result instanceof Promise) {
             result.catch((e) => this.config.onError?.(e))
-            return result as Promise<InnerPromiseType<ResultType<E[BusKey<E>]>>>
+            return result as Promise<InnerPromiseType<ResultType<E[keyof E]>>>
           } else {
             return Promise.resolve(
-              result as InnerPromiseType<ResultType<E[BusKey<E>]>>
+              result as InnerPromiseType<ResultType<E[keyof E]>>
             )
           }
         } catch (e) {
@@ -128,9 +124,9 @@ export class EventBus<E extends EventMap> implements IEventBus<E> {
   }
 
   public async rpc(
-    key: BusKey<E> | [BusKey<E>, ...Parameters<E[BusKey<E>]>],
-    ...payload: Parameters<E[BusKey<E>]>
-  ): Promise<InnerPromiseType<ResultType<E[BusKey<E>]>>> {
+    key: keyof E | [keyof E, ...Parameters<E[keyof E]>],
+    ...payload: Parameters<E[keyof E]>
+  ): Promise<InnerPromiseType<ResultType<E[keyof E]>>> {
     return (await this.rpcMany(key, ...payload))[0]
   }
 }

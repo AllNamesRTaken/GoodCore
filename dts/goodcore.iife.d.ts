@@ -1222,18 +1222,18 @@ declare namespace goodcore {
     }
 
     export  class EventBus<T extends EventMap> implements IEventBus<T> {
-        on(key: BusKey<T>, handler: T[BusKey<T>], id?: string): () => void
-        off(key: BusKey<T>, handler: T[BusKey<T>], id?: string): void
-        emit(key: BusKey<T>, ...payload: Parameters<T[BusKey<T>]>): void
-        once(key: BusKey<T>, handler: T[BusKey<T>]): void
-        rpc(
-            key: BusKey<T>,
-            ...payload: Parameters<T[BusKey<T>]>
-        ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>>
-        rpcMany(
-            key: BusKey<T>,
-            ...payload: Parameters<T[BusKey<T>]>
-        ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>[]>
+      on(key: keyof T, handler: T[keyof T], id?: string): () => void
+      off(key: keyof T, handler: T[keyof T], id?: string): void
+      emit(key: keyof T, ...payload: Parameters<T[keyof T]>): void
+      once(key: keyof T, handler: T[keyof T]): void
+      rpc(
+        key: keyof T,
+        ...payload: Parameters<T[keyof T]>
+      ): Promise<InnerPromiseType<ResultType<T[keyof T]>>>
+      rpcMany(
+        key: keyof T,
+        ...payload: Parameters<T[keyof T]>
+      ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
     }
 
     export function integrate(alias?: string | object): void;
