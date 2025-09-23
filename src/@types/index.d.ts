@@ -166,3 +166,4 @@ export type IDelta<T extends IDiffable, S extends IDiffable> =
 	export interface IThrottledFunction<T> {
 		(...args: ArgTypes<T>): ResultType<T>;
 	}
+	

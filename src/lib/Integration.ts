@@ -8,6 +8,7 @@ import * as Obj from "./Obj.js";
 import { Initable } from "./mixins/Initable.js";
 import { Poolable } from "./mixins/Poolable.js";
 import { Pool } from "./standard/Pool.js";
+import { EventBus } from "./standard/EventBus.js";
 import { Dictionary } from "./struct/Dictionary.js";
 import { KeyValuePair } from "./struct/KeyValuePair.js";
 import { List } from "./struct/List.js";
@@ -37,6 +38,7 @@ export function integrate(alias?: string | object) {
     { name: "Initable", object: Initable },
     { name: "Poolable", object: Poolable },
     { name: "Pool", object: Pool },
+    { name: "EventBus", object: EventBus },
     { name: "Dictionary", object: Dictionary },
     { name: "KeyValuePair", object: KeyValuePair },
     { name: "List", object: List },

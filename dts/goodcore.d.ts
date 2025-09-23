@@ -35,4 +35,5 @@ export { KeyValuePair as KeyValuePair } from "./struct/KeyValuePair.js";
 export function integrate(alias?: string | object): void;
 import  * as Decorators from "./Decorators.js"; 
 export { Decorators as Decorators };
+export { EventBus as EventBus } from "./standard/EventBus.js";
 

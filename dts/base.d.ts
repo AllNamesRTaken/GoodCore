@@ -132,3 +132,25 @@ interface IThrottleOptions {
 interface IThrottledFunction<T> {
 	(...args: ArgTypes<T>): ResultType<T>;
 }
+
+type EventKey = string | symbol
+type BusKey<E> = keyof E & EventKey
+type EventHandlerResult<S> = Promise<S> | S | void
+type EventHandler = (...args: unknown[]) => EventHandlerResult<unknown>
+type EventMap = { [key: EventKey]: EventHandler }
+type InnerPromiseType<T> = T extends Promise<infer U> ? U : T
+
+interface IEventBus<T extends EventMap> {
+  on(key: BusKey<T>, handler: T[BusKey<T>], id?: string): () => void
+  off(key: BusKey<T>, handler: T[BusKey<T>], id?: string): void
+  emit(key: BusKey<T>, ...payload: Parameters<T[BusKey<T>]>): void
+  once(key: BusKey<T>, handler: T[BusKey<T>]): void
+  rpc(
+    key: BusKey<T>,
+    ...payload: Parameters<T[BusKey<T>]>
+  ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>>
+  rpcMany(
+    key: BusKey<T>,
+    ...payload: Parameters<T[BusKey<T>]>
+  ): Promise<InnerPromiseType<ResultType<T[BusKey<T>]>>[]>
+}
