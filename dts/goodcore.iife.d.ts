@@ -161,6 +161,57 @@ interface ICookieMonster<T extends Indexable<any>, K extends keyof T = keyof T> 
     eatCookie(key: K): void;
     removeCookies(): void;
 }
+
+type EventMap = Indexable<(...args: any[]) => unknown>;
+type InnerPromiseType<T> = T extends Promise<infer U> ? U : T
+
+interface IEventBus<T extends EventMap> {
+  on(key: keyof T, handler: T[keyof T], id?: string): () => void
+  off(key: keyof T, handler: T[keyof T], id?: string): void
+  emit(key: keyof T, ...payload: Parameters<T[keyof T]>): void
+  once(key: keyof T, handler: T[keyof T]): void
+  rpc(
+    key: keyof T,
+    ...payload: Parameters<T[keyof T]>
+  ): Promise<InnerPromiseType<ResultType<T[keyof T]>>>
+  rpcMany(
+    key: keyof T,
+    ...payload: Parameters<T[keyof T]>
+  ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
+}
+
+interface IPipelineStepConfig {
+    retries: number
+    retryStrategy: "immediate" | ((step: IPipelineStep) => number)
+}
+type PipelineFn<T, S> =(input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
+
+interface IResult<T> {
+  value:T | null;
+  success: boolean;
+  message: string;
+}
+interface ISuccess<T> extends IResult<T> {}
+interface IFailure extends IResult<string | null> {}
+
+interface IPipelineStep<T = any, S = any> {
+  fn: PipelineFn<T, S>;
+  config: any;
+  run: number;
+  input: T | null;
+  result: IResult<S> | null;
+  shouldRetry(): boolean;
+  reset(): void;
+}
+
+interface IPipeline<S = any> {
+  config: IPipelineStepConfig;
+  steps: IPipelineStep[];
+  pos: number;
+  add<R>(fn: PipelineFn<S, R>): IPipeline<R>;
+  run(): Promise<ISuccess<S> | IFailure>;
+}
+
 declare namespace goodcore {
     export const Global: {
         window: Window | null;
@@ -1221,7 +1272,7 @@ declare namespace goodcore {
         release(obj: T): void;
     }
 
-    export  class EventBus<T extends EventMap> implements IEventBus<T> {
+    export class EventBus<T extends EventMap> implements IEventBus<T> {
       on(key: keyof T, handler: T[keyof T], id?: string): () => void
       off(key: keyof T, handler: T[keyof T], id?: string): void
       emit(key: keyof T, ...payload: Parameters<T[keyof T]>): void
@@ -1234,6 +1285,17 @@ declare namespace goodcore {
         key: keyof T,
         ...payload: Parameters<T[keyof T]>
       ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
+    }
+
+    export class IPipeline<S = any> {
+      static defaultConfig: IPipelineStepConfig
+      config: IPipelineStepConfig
+      steps: IPipelineStep[]
+      pos: number
+      static add<R>(fn: PipelineFn<unknown, R>): IPipeline<R>
+      static configure(config: IPipelineStepConfig): IPipeline<unknown>
+      add<R>(fn: PipelineFn<S, R>): IPipeline<R>
+      run(): Promise<ISuccess<S> | IFailure>
     }
 
     export function integrate(alias?: string | object): void;

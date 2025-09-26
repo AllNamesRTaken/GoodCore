@@ -1255,6 +1255,48 @@ declare class EventBus<T extends EventMap> implements IEventBus<T> {
   ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
 }
 
+interface IPipelineStepConfig {
+    retries: number
+    retryStrategy: "immediate" | ((step: IPipelineStep) => number)
+}
+type PipelineFn<T, S> =(input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
+
+interface IResult<T> {
+  value:T | null;
+  success: boolean;
+  message: string;
+}
+interface ISuccess<T> extends IResult<T> {}
+interface IFailure extends IResult<string | null> {}
+
+interface IPipelineStep<T = any, S = any> {
+  fn: PipelineFn<T, S>;
+  config: any;
+  run: number;
+  input: T | null;
+  result: IResult<S> | null;
+  shouldRetry(): boolean;
+  reset(): void;
+}
+
+interface IPipeline<S = any> {
+  config: IPipelineStepConfig;
+  steps: IPipelineStep[];
+  pos: number;
+  add<R>(fn: PipelineFn<S, R>): IPipeline<R>;
+  run(): Promise<ISuccess<S> | IFailure>;
+}
+declare class IPipeline<S = any> {
+  static defaultConfig: IPipelineStepConfig;
+  config: IPipelineStepConfig;
+  steps: IPipelineStep[];
+  pos: number;
+  static add<R>(fn: PipelineFn<unknown, R>): IPipeline<R>;
+  static configure(config: IPipelineStepConfig): IPipeline<unknown>;
+  add<R>(fn: PipelineFn<S, R>): IPipeline<R>;
+  run(): Promise<ISuccess<S> | IFailure>;
+}
+
 declare namespace MocData {
     export enum MocDataType {
         LinearInt = 0,

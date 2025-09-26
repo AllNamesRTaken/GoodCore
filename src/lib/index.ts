@@ -23,6 +23,8 @@ export { Initable as Initable } from "./mixins/Initable.js";
 export { before, after, around, provided } from "./Decorators.js";
 export { async } from "./Decorators.js";
 export { Pool as Pool } from "./standard/Pool.js";
+export { EventBus as EventBus } from "./standard/EventBus.js";
+export { Pipeline as Pipeline } from "./standard/Pipeline.js";
 export { integrate as integrate } from "./Integration.js";
 export * as MocData from "./MocData.js";
 export { KeyValuePair as KeyValuePair } from "./struct/KeyValuePair.js";

@@ -9,6 +9,7 @@ import { Initable } from "./mixins/Initable.js";
 import { Poolable } from "./mixins/Poolable.js";
 import { Pool } from "./standard/Pool.js";
 import { EventBus } from "./standard/EventBus.js";
+import { Pipeline } from "./standard/Pipeline.js";
 import { Dictionary } from "./struct/Dictionary.js";
 import { KeyValuePair } from "./struct/KeyValuePair.js";
 import { List } from "./struct/List.js";
@@ -42,6 +43,7 @@ export function integrate(alias?: string | object) {
     { name: "Dictionary", object: Dictionary },
     { name: "KeyValuePair", object: KeyValuePair },
     { name: "List", object: List },
+    { name: "Pipeline", object: Pipeline },
     { name: "Range2", object: Range2 },
     { name: "Rect", object: Rect },
     { name: "Stack", object: Stack },

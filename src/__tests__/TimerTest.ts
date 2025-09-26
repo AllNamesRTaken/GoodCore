@@ -5,11 +5,11 @@ describe("Timer",
 	() => {
 		beforeEach(() => {
 			vi.useFakeTimers();
-		}),
+		})
 		afterEach(() => {
 			// vi.runOnlyPendingTimers()
 			vi.useRealTimers()
-		}),
+		})
 		test.sequential("Test Static Start Stop Time over 100ms",
 			function() {
 				Timer.start();
