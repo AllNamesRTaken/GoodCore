@@ -1286,7 +1286,7 @@ interface IPipeline<S = any> {
   add<R>(fn: PipelineFn<S, R>): IPipeline<R>;
   run(): Promise<ISuccess<S> | IFailure>;
 }
-declare class IPipeline<S = any> {
+declare class Pipeline<S = any> {
   static defaultConfig: IPipelineStepConfig;
   config: IPipelineStepConfig;
   steps: IPipelineStep[];

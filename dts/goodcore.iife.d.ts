@@ -1287,7 +1287,7 @@ declare namespace goodcore {
       ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
     }
 
-    export class IPipeline<S = any> {
+    export class Pipeline<S = any> {
       static defaultConfig: IPipelineStepConfig
       config: IPipelineStepConfig
       steps: IPipelineStep[]
