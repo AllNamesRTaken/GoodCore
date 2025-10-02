@@ -1,5 +1,4 @@
 import type { Indexable } from "../../@types/index.js";
-import { clone } from "../Obj.js";
 
 interface IPipelineStepConfig {
     retries: number
@@ -157,7 +156,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     while (this.pos < this.steps.length) {
       const result = await this.step(value)
       if (result.message == 'success') {
-        value = clone(result.value)
+        value = result.value
         continue
       }
       if (await this.waitForRetry(this.steps[this.pos])) continue
