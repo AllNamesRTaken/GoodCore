@@ -1,5 +1,5 @@
 import type { Indexable } from "../../@types/index.js";
-import { clone } from "../Obj.ts";
+import { clone } from "../Obj.js";
 
 interface IPipelineStepConfig {
     retries: number
