@@ -34,11 +34,19 @@ describe('Pipeline', () => {
       .add((input, step) => input + 5)
       .add((input, step) => input.toString())
 
+    const pipeWithInput = Pipeline
+			.add((input: number, step) => {console.log(typeof input); return input;})
+      .add((input, step) => input + 5)
+      .add((input, step) => input.toString())
+
 		const success = pipe.run()
+		const successWithInput = pipeWithInput.run(20)
 		vi.runAllTimers()
     const result = await success
+    const resultWithInput = await successWithInput
 
     expect(result.value).toBe('15')
+    expect(resultWithInput.value).toBe('25')
   })
   test.sequential('Async pipeline works', async function() {
     const pipe = Pipeline.add(async (_, step) => delay(() => 10))

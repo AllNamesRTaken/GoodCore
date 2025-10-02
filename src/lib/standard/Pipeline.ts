@@ -4,6 +4,7 @@ interface IPipelineStepConfig {
 }
 type PipelineFn<T, S> =(input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
 
+type PipelineInput<T> = undefined extends T ? [input?: undefined] : [input: T]
 interface IResult<T> {
   value:T | null;
   success: boolean;
@@ -16,18 +17,18 @@ interface IPipelineStep<T = any, S = any> {
   fn: PipelineFn<T, S>;
   config: IPipelineStepConfig;
   run: number;
-  input: T | null;
+  input: unknown | null;
   result: IResult<S> | null;
   shouldRetry(): boolean;
   reset(): void;
 }
 
-interface IPipeline<S = any> {
+interface IPipeline<T = unknown, S = unknown> {
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
-  add<R>(fn: PipelineFn<S, R>): IPipeline<R>;
-  run(): Promise<ISuccess<S> | IFailure>;
+  add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
+  run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
 }
 
 class Result<T> implements IResult<T> {
@@ -64,7 +65,7 @@ class PipelineStep<T = any, S = any> implements IPipelineStep<T, S> {
     fn: PipelineFn<T, S>
     config = {...PipelineStep.defaultConfig}
     run = 0
-    input: T | null = null
+    input: unknown | null = null
     result: Result<S> | null = null
 
     constructor(fn: PipelineFn<T, S>, config: Partial<IPipelineStepConfig> | null = null) {
@@ -81,7 +82,7 @@ class PipelineStep<T = any, S = any> implements IPipelineStep<T, S> {
     }
 }
 
-export class Pipeline<S = any> implements IPipeline<S> {
+export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
   static defaultConfig: IPipelineStepConfig = {
     retries: 2,
     retryStrategy: 'immediate',
@@ -89,33 +90,33 @@ export class Pipeline<S = any> implements IPipeline<S> {
   config = { ...Pipeline.defaultConfig }
   steps: PipelineStep[] = []
   pos = 0
-  public static add<R>(
-    fn: PipelineFn<unknown, R>,
+  public static add<U,R>(
+    fn: PipelineFn<U, R>,
     config: Partial<IPipelineStepConfig> | null = null
-  ): Pipeline<R> {
-    const p = new Pipeline<R>()
+  ): Pipeline<U, R> {
+    const p = new Pipeline<U, R>()
     p.steps.push(new PipelineStep(fn, config))
-    return p as unknown as Pipeline<R>
+    return p as unknown as Pipeline<U, R>
   }
-  public static configure(config: IPipelineStepConfig): Pipeline<unknown> {
+  public static configure(config: IPipelineStepConfig): Pipeline<unknown, unknown> {
     const p = new Pipeline()
     p.config = config
-    return p as unknown as Pipeline<unknown>
+    return p as unknown as Pipeline<unknown, unknown>
   }
   public add<R>(
     fn: PipelineFn<S, R>,
     config: Partial<IPipelineStepConfig> | null = null
-  ): Pipeline<R> {
+  ): Pipeline<T, R> {
     this.steps.push(new PipelineStep(fn, config ?? this.config))
-    return this as unknown as Pipeline<R>
+    return this as unknown as Pipeline<T, R>
   }
   private reset() {
     this.pos = 0
     this.steps.forEach((step) => step.reset())
   }
-  public async run(): Promise<Success<S> | Failure> {
+  public async run(...input: PipelineInput<T>): Promise<Success<S> | Failure> {
     this.reset()
-    let value: unknown = null
+    let value: unknown = input[0] as unknown
     while (this.pos < this.steps.length) {
       const result = await this.step(value)
       if (result.message == 'success') {
