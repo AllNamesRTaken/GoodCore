@@ -1261,6 +1261,7 @@ interface IPipelineStepConfig {
 }
 type PipelineFn<T, S> =(input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
 
+type PipelineInput<T> = undefined extends T ? [input?: undefined] : [input: T]
 interface IResult<T> {
   value:T | null;
   success: boolean;
@@ -1279,22 +1280,22 @@ interface IPipelineStep<T = any, S = any> {
   reset(): void;
 }
 
-interface IPipeline<S = any> {
+interface IPipeline<T = unknown, S = unknown> {
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
-  add<R>(fn: PipelineFn<S, R>): IPipeline<R>;
-  run(): Promise<ISuccess<S> | IFailure>;
+  add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
+  run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
 }
-declare class Pipeline<S = any> {
+declare class Pipeline<T = unknown, S = unknown> {
   static defaultConfig: IPipelineStepConfig;
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
-  static add<R>(fn: PipelineFn<unknown, R>): IPipeline<R>;
-  static configure(config: IPipelineStepConfig): IPipeline<unknown>;
-  add<R>(fn: PipelineFn<S, R>): IPipeline<R>;
-  run(): Promise<ISuccess<S> | IFailure>;
+  static add<U, R>(fn: PipelineFn<U, R>): IPipeline<U, R>;
+  static configure(config: IPipelineStepConfig): IPipeline<unknown, unknown>;
+  add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
+  run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
 }
 
 declare namespace MocData {

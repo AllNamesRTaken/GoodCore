@@ -90,7 +90,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
   config = { ...Pipeline.defaultConfig }
   steps: PipelineStep[] = []
   pos = 0
-  public static add<U,R>(
+  public static add<U, R>(
     fn: PipelineFn<U, R>,
     config: Partial<IPipelineStepConfig> | null = null
   ): Pipeline<U, R> {

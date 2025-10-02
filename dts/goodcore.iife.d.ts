@@ -185,6 +185,7 @@ interface IPipelineStepConfig {
     retryStrategy: "immediate" | ((step: IPipelineStep) => number)
 }
 type PipelineFn<T, S> =(input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
+type PipelineInput<T> = undefined extends T ? [input?: undefined] : [input: T]
 
 interface IResult<T> {
   value:T | null;
@@ -204,12 +205,12 @@ interface IPipelineStep<T = any, S = any> {
   reset(): void;
 }
 
-interface IPipeline<S = any> {
+interface IPipeline<T = unknown, S = unknown> {
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
-  add<R>(fn: PipelineFn<S, R>): IPipeline<R>;
-  run(): Promise<ISuccess<S> | IFailure>;
+  add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
+  run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
 }
 
 declare namespace goodcore {
