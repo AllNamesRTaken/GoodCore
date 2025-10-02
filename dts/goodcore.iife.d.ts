@@ -183,6 +183,7 @@ interface IEventBus<T extends EventMap> {
 interface IPipelineStepConfig {
     retries: number
     retryStrategy: "immediate" | ((step: IPipelineStep) => number)
+    dependencies?: string[]
 }
 type PipelineFn<T, S> =(input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
 type PipelineInput<T> = undefined extends T ? [input?: undefined] : [input: T]
@@ -210,7 +211,13 @@ interface IPipeline<T = unknown, S = unknown> {
   steps: IPipelineStep[];
   pos: number;
   add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
+  addDependant<R>(fn: PipelineFn<unknown[], R>): IPipeline<T, R>;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
+  at(name: string | number): ISuccess<unknown> | IFailure | undefined;
+}
+interface IPipelineView {
+  config: IPipelineStepConfig;
+  at(name: string | number): ISuccess<unknown> | IFailure | undefined;
 }
 
 declare namespace goodcore {
@@ -1288,15 +1295,17 @@ declare namespace goodcore {
       ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
     }
 
-    export class Pipeline<S = any> {
-      static defaultConfig: IPipelineStepConfig
-      config: IPipelineStepConfig
-      steps: IPipelineStep[]
-      pos: number
-      static add<R>(fn: PipelineFn<unknown, R>): IPipeline<R>
-      static configure(config: IPipelineStepConfig): IPipeline<unknown>
-      add<R>(fn: PipelineFn<S, R>): IPipeline<R>
-      run(): Promise<ISuccess<S> | IFailure>
+    export class Pipeline<T = unknown, S = unknown> {
+        static defaultConfig: IPipelineStepConfig;
+        config: IPipelineStepConfig;
+        steps: IPipelineStep[];
+        pos: number;
+        static add<U, R>(fn: PipelineFn<U, R>): IPipeline<U, R>;
+        addDependant<R>(fn: PipelineFn<unknown[], R>): IPipeline<T, R>;
+        static configure(config: IPipelineStepConfig): IPipeline<unknown, unknown>;
+        add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
+        run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
+        at(name: string | number): ISuccess<unknown> | IFailure | undefined;
     }
 
     export function integrate(alias?: string | object): void;

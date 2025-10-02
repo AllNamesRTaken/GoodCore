@@ -35,13 +35,13 @@ describe('Pipeline', () => {
       .add((input, step) => input.toString())
 
     const pipeWithInput = Pipeline
-			.add((input: number, step) => {console.log(typeof input); return input;})
+			.add((input: number, step) => input)
       .add((input, step) => input + 5)
       .add((input, step) => input.toString())
 
 		const success = pipe.run()
 		const successWithInput = pipeWithInput.run(20)
-		vi.runAllTimers()
+		await vi.runAllTimersAsync()
     const result = await success
     const resultWithInput = await successWithInput
 
@@ -58,6 +58,50 @@ describe('Pipeline', () => {
     const result = await success
 
     expect(result.value).toBe('15')
+  })
+  test.sequential('at() returns result for named and indexed step', async function() {
+
+    const pipe = Pipeline
+			.add(function step1(input: number, step) { return input; })
+      .add(function step2(input, step) { return input + 5; })
+      .add(function step3(input, step) { return input.toString(); })
+
+		const success = pipe.run(20)
+
+    await vi.runAllTimersAsync()
+
+    expect(pipe.at("step1")?.value).toBe(20)
+    expect(pipe.at("nonexisting")).toBe(undefined)
+    expect(pipe.at(1)?.value).toBe(25)
+  })
+  test.sequential('at() returns result for indexed step when not named', async function() {
+
+    const pipe = Pipeline
+			.add((input: number, step) => input)
+      .add((input, step) => input + 5)
+      .add((input, step) => input.toString())
+
+		const success = pipe.run(20)
+
+    await vi.runAllTimersAsync()
+
+    expect(pipe.at("step1")?.value).toBe(undefined)
+    expect(pipe.at("nonexisting")).toBe(undefined)
+    expect(pipe.at(1)?.value).toBe(25)
+  })
+  test.sequential('at() inside step returns result for named step', async function() {
+
+    const pipe = Pipeline
+			.add(function step1(input: number, step) { return input; })
+      .add(function step2(input, step) { return input + 5; })
+      .addDependant(function step3(input: number[], step) { return input.reduce((acc, curr) => acc + curr, 0); }, { dependencies: ['step1', 'step2'] })
+
+		const success = pipe.run(20)
+
+    await vi.runAllTimersAsync()
+    const result = await success
+
+    expect(result?.value).toBe(45)
   })
   test.sequential('Sync pipeline retries works', async function() {
     const pipe = Pipeline.add((_, step) => 10)

@@ -1258,6 +1258,7 @@ declare class EventBus<T extends EventMap> implements IEventBus<T> {
 interface IPipelineStepConfig {
     retries: number
     retryStrategy: "immediate" | ((step: IPipelineStep) => number)
+    dependencies?: string[]
 }
 type PipelineFn<T, S> =(input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
 
@@ -1285,17 +1286,22 @@ interface IPipeline<T = unknown, S = unknown> {
   steps: IPipelineStep[];
   pos: number;
   add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
+  addDependant<R>(fn: PipelineFn<unknown[], R>): IPipeline<T, R>;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
+  at(name: string | number): ISuccess<unknown> | IFailure | undefined;
 }
+
 declare class Pipeline<T = unknown, S = unknown> {
   static defaultConfig: IPipelineStepConfig;
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
   static add<U, R>(fn: PipelineFn<U, R>): IPipeline<U, R>;
+  addDependant<R>(fn: PipelineFn<unknown[], R>): IPipeline<T, R>;
   static configure(config: IPipelineStepConfig): IPipeline<unknown, unknown>;
   add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
+  at(name: string | number): ISuccess<unknown> | IFailure | undefined;
 }
 
 declare namespace MocData {
