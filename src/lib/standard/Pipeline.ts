@@ -5,9 +5,9 @@ interface IPipelineStepConfig {
     retryStrategy: "immediate" | ((step: IPipelineStep) => number)
     dependencies?: string[]
 }
-type PipelineFn<T, S> =(input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
+type PipelineFn<T, S> = (input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
 
-type PipelineInput<T> = undefined extends T ? [input?: undefined] : [input: T]
+type PipelineInput<T> = undefined extends T ? [input?: any] : [input: T]
 interface IResult<T> {
   value:T | null;
   success: boolean;
@@ -30,8 +30,8 @@ interface IPipeline<T = unknown, S = unknown> {
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
-  add<R>(fn: PipelineFn<S, R>): IPipeline<T, R>;
-  addDependant<R>(fn: PipelineFn<unknown[], R>): IPipeline<T, R>;
+  add<R>(fn: PipelineFn<S, R>, config?: Partial<IPipelineStepConfig> | null): IPipeline<T, R>;
+  addDependant<R>(fn: PipelineFn<unknown[], R>, config: {dependencies: string[]} & Partial<IPipelineStepConfig> | null): IPipeline<T, R>;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
   at(name: string | number): ISuccess<unknown> | IFailure | null | undefined;
 }
