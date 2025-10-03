@@ -1,6 +1,6 @@
 {
   "name": "goodcore",
-  "version": "3.3.1",
+  "version": "3.4.0",
   "description": "Some core functions and helper classes. List, Dictionary, Stack, Vec2, Rect, Range2, Tree. Optimized for speed and memory efficiency. Also an object pool a few mixins and Helpers for Dom, Array and Object manipulation + general",
   "main": "index.js",
   "typings": "index.d.ts",

@@ -29,15 +29,26 @@ describe('Pipeline', () => {
     vi.useRealTimers()
   })
   test.sequential('Sync pipeline works', async function() {
+    function toString(input: number) {
+      return input.toString()
+    }
+    function shout(input: string) {
+      return input.toUpperCase() + '!'
+    }
+    function add5(input: number) {
+      return input + 5
+    }
     const pipe = Pipeline
 			.add((_, step) => 10)
-      .add((input, step) => input + 5)
-      .add((input, step) => input.toString())
+      .add(add5)
+      .add(toString)
+      .add(shout, {inputs: [toString]})
 
     const pipeWithInput = Pipeline
 			.add((input: number, step) => input)
-      .add((input, step) => input + 5)
-      .add((input, step) => input.toString())
+      .add(add5)
+      .add(toString)
+      .add(shout, {inputs: [toString]})
 
 		const success = pipe.run()
 		const successWithInput = pipeWithInput.run(20)
@@ -45,8 +56,41 @@ describe('Pipeline', () => {
     const result = await success
     const resultWithInput = await successWithInput
 
-    expect(result.value).toBe('15')
-    expect(resultWithInput.value).toBe('25')
+    expect(result.value).toBe('15!')
+    expect(resultWithInput.value).toBe('25!')
+
+  })
+  test.sequential('Sync pipeline with multiple inputs works', async function() {
+    function toString(input: number) {
+      return input.toString()
+    }
+    function shout(input: [number, string]) {
+      return (input[0] + input[1]).toUpperCase() + '!'
+    }
+    function add5(input: number) {
+      return input + 5
+    }
+    const pipe = Pipeline
+			.add((_, step) => 10)
+      .add(add5)
+      .add(toString)
+      .add(shout, {inputs: [add5, toString]})
+
+    const pipeWithInput = Pipeline
+			.add((input: number, step) => input)
+      .add(add5)
+      .add(toString)
+      .add(shout, {inputs: ["add5", "toString"]})
+
+		const success = pipe.run()
+		const successWithInput = pipeWithInput.run(20)
+		await vi.runAllTimersAsync()
+    const result = await success
+    const resultWithInput = await successWithInput
+
+    expect(result.value).toBe('1515!')
+    expect(resultWithInput.value).toBe('2525!')
+
   })
   test.sequential('Async pipeline works', async function() {
     const pipe = Pipeline.add(async (_, step) => delay(() => 10))
@@ -94,7 +138,7 @@ describe('Pipeline', () => {
     const pipe = Pipeline
 			.add(function step1(input: number, step) { return input; })
       .add(function step2(input, step) { return input + 5; })
-      .addDependant(function step3(input: number[], step) { return input.reduce((acc, curr) => acc + curr, 0); }, { dependencies: ['step1', 'step2'] })
+      .add(function step3(input: number[], step) { return input.reduce((acc, curr) => acc + curr, 0); }, { inputs: ['step1', 'step2'] })
 
 		const success = pipe.run(20)
 

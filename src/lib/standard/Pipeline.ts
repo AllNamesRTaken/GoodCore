@@ -3,11 +3,13 @@ import type { Indexable } from "../../@types/index.js";
 interface IPipelineStepConfig {
     retries: number
     retryStrategy: "immediate" | ((step: IPipelineStep) => number)
-    dependencies?: string[]
+    inputs?: [PipelineFn<unknown, unknown>] | PipelineFn<unknown, unknown>[] | string[]
 }
 type PipelineFn<T, S> = (input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
 
 type PipelineInput<T> = undefined extends T ? [input?: any] : [input: T]
+type PipelineFnDependencyOutput<C> = C extends {inputs: [PipelineFn<unknown, infer R>]} ? R : unknown[]
+type PipelineFnInput<S, C> = C extends {inputs: PipelineFn<unknown, unknown>[]} ? PipelineFnDependencyOutput<C> : C extends {inputs: string[]} ? unknown[] : S
 interface IResult<T> {
   value:T | null;
   success: boolean;
@@ -30,10 +32,9 @@ interface IPipeline<T = unknown, S = unknown> {
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
-  add<R>(fn: PipelineFn<S, R>, config?: Partial<IPipelineStepConfig> | null): IPipeline<T, R>;
-  addDependant<R>(fn: PipelineFn<unknown[], R>, config: {dependencies: string[]} & Partial<IPipelineStepConfig> | null): IPipeline<T, R>;
+  add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
-  at(name: string | number): ISuccess<unknown> | IFailure | null | undefined;
+  at(name: PipelineFn<unknown, unknown> | string | number): ISuccess<unknown> | IFailure | null | undefined;
 }
 interface IPipelineView {
   config: IPipelineStepConfig;
@@ -116,29 +117,20 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     p.config = config
     return p as unknown as Pipeline<unknown, unknown>
   }
-  public add<R>(
-    fn: PipelineFn<S, R>,
-    config: Partial<IPipelineStepConfig> | null = null
-  ): Pipeline<T, R> {
+  public add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>
+  {
     this.steps.push(new PipelineStep(fn, config ?? this.config))
     if (fn.name) {
       this.stepsLookup[fn.name] = this.steps.length - 1
     }
     return this as unknown as Pipeline<T, R>
   }
-  public addDependant<R>(
-    fn: PipelineFn<unknown[], R>,
-    config: {dependencies: string[]} & Partial<IPipelineStepConfig> | null = null
-  ): Pipeline<T, R> {
-    this.steps.push(new PipelineStep(fn, config ?? this.config))
-    if (fn.name) {
-      this.stepsLookup[fn.name] = this.steps.length - 1
-    }
-    return this as unknown as Pipeline<T, R>
-  }
-  public at(name: string | number): Success<S> | Failure | null | undefined {
+  public at(name: PipelineFn<unknown, unknown> | string | number): Success<S> | Failure | null | undefined {
     if (typeof name === 'number') {
       return this.steps[name]?.result
+    }
+    if (name instanceof Function) {
+      name = name.name
     }
     const index = this.stepsLookup[name]
     if (index !== undefined) {
@@ -181,8 +173,11 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     const step = this.steps[this.pos]
     try {
       step.run++
-      if (step.config.dependencies) {
-        input = step.config.dependencies.map(dep => this.at(dep)?.value)
+      if (step.config.inputs) {
+        const depOutputs = step.config.inputs.map(dep => this.at(dep)?.value)
+        input = depOutputs.length === 1 ?
+          depOutputs[0] :
+          depOutputs
       }
       step.input = input
       const value = new Success(await step.fn(input, step))

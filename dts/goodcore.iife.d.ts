@@ -183,11 +183,13 @@ interface IEventBus<T extends EventMap> {
 interface IPipelineStepConfig {
     retries: number
     retryStrategy: "immediate" | ((step: IPipelineStep) => number)
-    dependencies?: string[]
+    inputs?: [PipelineFn<unknown, unknown>] | PipelineFn<unknown, unknown>[] | string[]
 }
 type PipelineFn<T, S> = (input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
-type PipelineInput<T> = undefined extends T ? [input?: any] : [input: T]
 
+type PipelineInput<T> = undefined extends T ? [input?: any] : [input: T]
+type PipelineFnDependencyOutput<C> = C extends {inputs: [PipelineFn<unknown, infer R>]} ? R : unknown[]
+type PipelineFnInput<S, C> = C extends {inputs: PipelineFn<unknown, unknown>[]} ? PipelineFnDependencyOutput<C> : C extends {inputs: string[]} ? unknown[] : S
 interface IResult<T> {
   value:T | null;
   success: boolean;
@@ -198,9 +200,9 @@ interface IFailure extends IResult<string | null> {}
 
 interface IPipelineStep<T = any, S = any> {
   fn: PipelineFn<T, S>;
-  config: any;
+  config: IPipelineStepConfig;
   run: number;
-  input: T | null;
+  input: unknown | null;
   result: IResult<S> | null;
   shouldRetry(): boolean;
   reset(): void;
@@ -210,14 +212,9 @@ interface IPipeline<T = unknown, S = unknown> {
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
-  add<R>(fn: PipelineFn<S, R>, config?: Partial<IPipelineStepConfig> | null): IPipeline<T, R>;
-  addDependant<R>(fn: PipelineFn<unknown[], R>, config: {dependencies: string[]} & Partial<IPipelineStepConfig> | null): IPipeline<T, R>;
+  add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
-  at(name: string | number): ISuccess<unknown> | IFailure | undefined;
-}
-interface IPipelineView {
-  config: IPipelineStepConfig;
-  at(name: string | number): ISuccess<unknown> | IFailure | undefined;
+  at(name: PipelineFn<unknown, unknown> | string | number): ISuccess<unknown> | IFailure | null | undefined;
 }
 
 declare namespace goodcore {
@@ -1302,8 +1299,7 @@ declare namespace goodcore {
         pos: number;
         static add<U, R>(fn: PipelineFn<U, R>, config: Partial<IPipelineStepConfig> | null = null): IPipeline<U, R>;
         static configure(config: IPipelineStepConfig): IPipeline<unknown, unknown>;
-        add<R>(fn: PipelineFn<S, R>, config?: Partial<IPipelineStepConfig> | null): IPipeline<T, R>;
-        addDependant<R>(fn: PipelineFn<unknown[], R>, config: {dependencies: string[]} & Partial<IPipelineStepConfig> | null): IPipeline<T, R>;
+        add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
         run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
         at(name: string | number): ISuccess<unknown> | IFailure | undefined;
     }
