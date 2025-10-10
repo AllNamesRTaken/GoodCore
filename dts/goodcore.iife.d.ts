@@ -1328,18 +1328,6 @@ declare namespace goodcore {
         run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
     }
 
-    export class Pipeline<T = unknown, S = unknown> {
-        static defaultConfig: IPipelineStepConfig;
-        config: IPipelineStepConfig;
-        steps: IPipelineStep[];
-        pos: number;
-        static add<U, R>(fn: PipelineFn<U, R>, config: Partial<IPipelineStepConfig> | null = null): IPipeline<U, R>;
-        static configure(config: IPipelineStepConfig): IPipeline<unknown, unknown>;
-        add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
-        run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
-        at(name: string | number): ISuccess<unknown> | IFailure | undefined;
-    }
-
     export function integrate(alias?: string | object): void;
 
     export namespace MocData {
