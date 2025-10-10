@@ -210,12 +210,73 @@ describe('Pipeline', () => {
 
     const start = Date.now()
 		const success = pipe.run()
-		await vi.runAllTimersAsync()
+    while(vi.getTimerCount()) {
+      await vi.runOnlyPendingTimersAsync()
+    }
+    await vi.runAllTimersAsync()
     const result = await success
     const time = Date.now() - start
 
 		expect(result.value).toBe('15')
     expect(pipe.steps[2].run).toBe(4)
     expect(time).toBe(10 + 20 + 30) // Sum of delays
+  })
+  test.sequential('Pipeline with long lasting steps work', async function() {
+    const pipe = Pipeline.configure({
+      retries: 3,
+      retryStrategy: (step) => step.run * 10,
+    })
+      .add((_, step) => 10)
+      .add((input, step) => input + 5)
+      .add(async (input, step) => await delay(() => {
+        if (step.shouldRetry()) throw new Error('Retry')
+        return input.toString()
+      }, step.run * 100))
+
+    const start = Date.now()
+		const success = pipe.run()
+    while(vi.getTimerCount()) {
+      await vi.runOnlyPendingTimersAsync()
+    }
+    await vi.runAllTimersAsync()
+    const result = await success
+    const time = Date.now() - start
+
+		expect(result.value).toBe('15')
+    expect(pipe.steps[2].run).toBe(4)
+    expect(time).toBe(10+100 + 20+200 + 30+300 + 400) // Sum of delays
+    expect(pipe.steps[0].duration).toBe(0)
+    expect(pipe.steps[2].duration).toBeGreaterThanOrEqual(400)
+    expect(pipe.steps[2].durations).toEqual([100, 200, 300, 400])
+  })
+  test.sequential('Async pipeline with timeout times out', async function() {
+    const pipe = Pipeline.add(async (_, step) => delay(() => 10))
+      .add(async (input, step) => delay(() => input + 5))
+      .add(async (input, step) =>
+        delay(() => {
+          return input.toString()
+        }, 1000)
+      , { timeout: 50, retries: 0 })
+
+		const success = pipe.run()
+		await vi.runAllTimersAsync()
+    const result = await success
+
+    expect(result.success).toBe(false)
+  })
+  test.sequential('Async pipeline with timeout times out and retries', async function() {
+    const pipe = Pipeline.add(async (_, step) => delay(() => 10))
+      .add(async (input, step) => delay(() => input + 5))
+      .add(async (input, step) =>
+        delay(() => {
+          return input.toString()
+        }, 1000 - step.run*500)
+      , { timeout: 50, retries: 2 })
+
+		const success = pipe.run()
+		await vi.runAllTimersAsync()
+    const result = await success
+
+    expect(result.success).toBe(true)
   })
 })

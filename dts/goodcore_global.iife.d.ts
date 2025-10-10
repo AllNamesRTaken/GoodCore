@@ -1259,6 +1259,7 @@ interface IPipelineStepConfig {
     retries: number
     retryStrategy: "immediate" | ((step: IPipelineStep) => number)
     inputs?: [PipelineFn<unknown, unknown>] | PipelineFn<unknown, unknown>[] | string[]
+    timeout: number
 }
 type PipelineFn<T, S> = (input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
 
@@ -1279,6 +1280,8 @@ interface IPipelineStep<T = any, S = any> {
   run: number;
   input: unknown | null;
   result: IResult<S> | null;
+  durations: number[];
+  duration: number;
   shouldRetry(): boolean;
   reset(): void;
 }

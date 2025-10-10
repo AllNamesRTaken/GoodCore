@@ -4,6 +4,7 @@ interface IPipelineStepConfig {
     retries: number
     retryStrategy: "immediate" | ((step: IPipelineStep) => number)
     inputs?: [PipelineFn<unknown, unknown>] | PipelineFn<unknown, unknown>[] | string[]
+    timeout: number
 }
 type PipelineFn<T, S> = (input: T, step: IPipelineStep<unknown, unknown>) => Promise<S> | S
 
@@ -24,6 +25,8 @@ interface IPipelineStep<T = any, S = any> {
   run: number;
   input: unknown | null;
   result: IResult<S> | null;
+  durations: number[];
+  duration: number;
   shouldRetry(): boolean;
   reset(): void;
 }
@@ -35,10 +38,6 @@ interface IPipeline<T = unknown, S = unknown> {
   add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
   at(name: PipelineFn<unknown, unknown> | string | number): ISuccess<unknown> | IFailure | null | undefined;
-}
-interface IPipelineView {
-  config: IPipelineStepConfig;
-  at(name: string | number): ISuccess<unknown> | IFailure | null | undefined;
 }
 
 class Result<T> implements IResult<T> {
@@ -70,13 +69,16 @@ class Failure extends Result<string | null> implements IFailure {
 class PipelineStep<T = any, S = any> implements IPipelineStep<T, S> {
     static defaultConfig: IPipelineStepConfig = {
         retries: 2,
-        retryStrategy: "immediate"
+        retryStrategy: "immediate",
+        timeout: 0,
     }
     fn: PipelineFn<T, S>
     config = {...PipelineStep.defaultConfig}
     run = 0
     input: unknown | null = null
     result: Result<S> | null = null
+    durations: number[] = []
+    duration: number = 0
 
     constructor(fn: PipelineFn<T, S>, config: Partial<IPipelineStepConfig> | null = null) {
         this.fn = fn
@@ -96,6 +98,8 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
   static defaultConfig: IPipelineStepConfig = {
     retries: 2,
     retryStrategy: 'immediate',
+    timeout: 0,
+    inputs: [],
   }
   config = { ...Pipeline.defaultConfig }
   steps: PipelineStep[] = []
@@ -112,9 +116,9 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     }
     return p as unknown as Pipeline<U, R>
   }
-  public static configure(config: IPipelineStepConfig): Pipeline<unknown, unknown> {
+  public static configure(config: Partial<IPipelineStepConfig>): Pipeline<unknown, unknown> {
     const p = new Pipeline()
-    p.config = config
+    p.config = {...p.config, ...config}
     return p as unknown as Pipeline<unknown, unknown>
   }
   public add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>
@@ -146,7 +150,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     this.reset()
     let value: unknown = input[0] as unknown
     while (this.pos < this.steps.length) {
-      const result = await this.step(value)
+      const result = await this.executeStep(value)
       if (result.message == 'success') {
         value = result.value
         continue
@@ -169,26 +173,52 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     }
     return false
   }
-  private async step(input: unknown): Promise<Success<unknown> | Failure> {
+  private async executeStep(input: unknown): Promise<Success<unknown> | Failure> {
     const step = this.steps[this.pos]
+    const start = Date.now()
     try {
       step.run++
-      if (step.config.inputs) {
+      if (step.config.inputs?.length) {
         const depOutputs = step.config.inputs.map(dep => this.at(dep)?.value)
         input = depOutputs.length === 1 ?
           depOutputs[0] :
           depOutputs
       }
       step.input = input
-      const value = new Success(await step.fn(input, step))
+      var fnResult = await this.executeWithDelay(step, input)
+      const value = new Success(fnResult)
       step.result = value
       this.pos++
+      step.duration = Date.now() - start
+      step.durations.push(step.duration)
       return value
     } catch (e) {
       const value = new Failure(null, e.toString())
       step.result = value
+      step.duration = Date.now() - start
+      step.durations.push(step.duration)
       return value
     }
+  }
+
+  private executeWithDelay(step: PipelineStep<any, any>, input: unknown) {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let timer = null;
+        if (step.config.timeout) {
+          timer = setTimeout(() => {
+            reject("Timeout");
+          }, step.config.timeout);
+        }
+        const result = await step.fn(input, step);
+        if (timer) {
+          clearTimeout(timer);
+        }
+        resolve(result);
+      } catch (e) {
+        reject(e);
+      }
+    });
   }
 }
 
