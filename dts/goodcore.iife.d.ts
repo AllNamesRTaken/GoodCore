@@ -1319,6 +1319,8 @@ declare namespace goodcore {
     }
 
     export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
+        static add<U, R>(fn: PipelineFn<U, R>, config?: Partial<IPipelineStepConfig> | null): IPipeline<U, R>;
+        static configure(config: Partial<IPipelineStepConfig>): IPipeline<unknown, unknown>;
         add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
         if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>, config?: C): IPipeline<T, R>;
         if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>[], config?: C): IPipeline<T, R>;
