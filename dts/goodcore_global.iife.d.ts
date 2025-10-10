@@ -1286,25 +1286,45 @@ interface IPipelineStep<T = any, S = any> {
   reset(): void;
 }
 
+interface IConditionalStep<T> extends IPipelineStep<T, T> {
+  condition: (input: T, step: IPipelineStep) => number | boolean | Promise<number | boolean>;
+  pipelines: IPipeline<T, T>[];
+}
+interface IEffectStep<T, S = any> extends IPipelineStep<T, S> {
+  effect: ((input: T, step: IPipelineStep) => S | Promise<S>) | IPipeline<T, S>;
+}
+
 interface IPipeline<T = unknown, S = unknown> {
+  add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
+  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>, config?: C): IPipeline<T, R>;
+  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>[], config?: C): IPipeline<T, R>;
+  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: (input: R, step: IPipelineStep) => any | Promise<any>, config?: C): IPipeline<T, R>;
+  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: IPipeline<R, any>, config?: C): IPipeline<T, R>
+  instantiate(): IInstantiatedPipeline;
+  run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
+}
+interface IInstantiatedPipeline<T = unknown, S = unknown> extends IPipeline<T, S> {
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
   add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
+  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>, config?: C): IPipeline<T, R>;
+  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>[], config?: C): IPipeline<T, R>;
+  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: (input: R, step: IPipelineStep) => any | Promise<any>, config?: C): IPipeline<T, R>;
+  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: IPipeline<R, any>, config?: C): IPipeline<T, R>
+  instantiate(): this;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
   at(name: PipelineFn<unknown, unknown> | string | number): ISuccess<unknown> | IFailure | null | undefined;
 }
 
-declare class Pipeline<T = unknown, S = unknown> {
-  static defaultConfig: IPipelineStepConfig;
-  config: IPipelineStepConfig;
-  steps: IPipelineStep[];
-  pos: number;
-  static add<U, R>(fn: PipelineFn<U, R>, config: Partial<IPipelineStepConfig> | null = null): IPipeline<U, R>;
-  static configure(config: IPipelineStepConfig): IPipeline<unknown, unknown>;
+declare class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
   add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
+  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>, config?: C): IPipeline<T, R>;
+  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>[], config?: C): IPipeline<T, R>;
+  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: (input: R, step: IPipelineStep) => any | Promise<any>, config?: C): IPipeline<T, R>;
+  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: IPipeline<R, any>, config?: C): IPipeline<T, R>
+  instantiate(): IInstantiatedPipeline;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
-  at(name: string | number): ISuccess<unknown> | IFailure | undefined;
 }
 
 declare namespace MocData {
