@@ -118,9 +118,9 @@ describe('Pipeline', () => {
 
       await vi.runAllTimersAsync()
 
-      expect(pipe.at('step1')?.value).toBe(20)
-      expect(pipe.at('nonexisting')).toBe(undefined)
-      expect(pipe.at(1)?.value).toBe(25)
+      expect(pipe.stateAt('step1')?.value).toBe(20)
+      expect(pipe.stateAt('nonexisting')).toBe(undefined)
+      expect(pipe.stateAt(1)?.value).toBe(25)
     }
   )
   test.sequential(
@@ -135,9 +135,9 @@ describe('Pipeline', () => {
 
       await vi.runAllTimersAsync()
 
-      expect(pipe.at('step1')?.value).toBe(undefined)
-      expect(pipe.at('nonexisting')).toBe(undefined)
-      expect(pipe.at(1)?.value).toBe(25)
+      expect(pipe.stateAt('step1')?.value).toBe(undefined)
+      expect(pipe.stateAt('nonexisting')).toBe(undefined)
+      expect(pipe.stateAt(1)?.value).toBe(25)
     }
   )
   test.sequential(
