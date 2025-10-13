@@ -40,11 +40,11 @@ interface IEffectStep<T, S = any> extends IPipelineStep<T, S> {
 }
 
 interface IPipeline<T = unknown, S = unknown> {
-  add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
-  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>, config?: C): IPipeline<T, R>;
-  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>[], config?: C): IPipeline<T, R>;
-  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: (input: R, step: IPipelineStep) => any | Promise<any>, config?: C): IPipeline<T, R>;
-  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: IPipeline<R, any>, config?: C): IPipeline<T, R>
+  step<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
+  conditional<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>, config?: C): IPipeline<T, R>;
+  conditional<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>[], config?: C): IPipeline<T, R>;
+  effect<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: (input: R, step: IPipelineStep) => any | Promise<any>, config?: C): IPipeline<T, R>;
+  effect<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: IPipeline<R, any>, config?: C): IPipeline<T, R>
   instantiate(): IInstantiatedPipeline;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
 }
@@ -52,14 +52,14 @@ interface IInstantiatedPipeline<T = unknown, S = unknown> extends IPipeline<T, S
   config: IPipelineStepConfig;
   steps: IPipelineStep[];
   pos: number;
-  add<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
-  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>, config?: C): IPipeline<T, R>;
-  if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>[], config?: C): IPipeline<T, R>;
-  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: (input: R, step: IPipelineStep) => any | Promise<any>, config?: C): IPipeline<T, R>;
-  call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: IPipeline<R, any>, config?: C): IPipeline<T, R>
+  step<R, C extends Partial<IPipelineStepConfig> | null>(fn: PipelineFn<PipelineFnInput<S, C>, R>, config?: C): IPipeline<T, R>;
+  conditional<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>, config?: C): IPipeline<T, R>;
+  conditional<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(fn: PipelineFn<T, boolean | number>, conditionals: IPipeline<R, R>[], config?: C): IPipeline<T, R>;
+  effect<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: (input: R, step: IPipelineStep) => any | Promise<any>, config?: C): IPipeline<T, R>;
+  effect<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(effect: IPipeline<R, any>, config?: C): IPipeline<T, R>
   instantiate(): this;
   run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
-  at(name: PipelineFn<unknown, unknown> | string | number): ISuccess<unknown> | IFailure | null | undefined;
+  stateAt(name: PipelineFn<unknown, unknown> | string | number): ISuccess<unknown> | IFailure | null | undefined;
 }
 
 class Result<T> implements IResult<T> {
@@ -148,7 +148,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
   private steps: PipelineStep[] = []
   stepsLookup: Indexable<number> = {}
   pos = 0
-  public static add<U, R>(
+  public static step<U, R>(
     fn: PipelineFn<U, R>,
     config: Partial<IPipelineStepConfig> | null = null
   ): IPipeline<U, R> {
@@ -168,7 +168,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     return { ...configA, ...configB, inputs: configB.inputs ? [...configB.inputs] : configA.inputs ? [...configA.inputs] : undefined };
   }
 
-  public add<R, C extends Partial<IPipelineStepConfig> | null>(
+  public step<R, C extends Partial<IPipelineStepConfig> | null>(
     fn: PipelineFn<PipelineFnInput<S, C>, R>,
     config?: C
   ): IPipeline<T, R> {
@@ -179,7 +179,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     return this as unknown as Pipeline<T, R>;
   }
 
-  public if<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(
+  public conditional<C extends Partial<IPipelineStepConfig> | null, R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>>(
     fn: PipelineFn<R, boolean | number>,
     conditionals: IPipeline<R, R> | IPipeline<R, R>[],
     config?: C
@@ -190,7 +190,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     return this as unknown as Pipeline<T, R>;
   }
 
-  public call<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(
+  public effect<R extends PipelineFnInput<S, C>, C extends Partial<IPipelineStepConfig> | null>(
     effect: ((input: R, step: IPipelineStep) => any | Promise<any>) | IPipeline<R, any>,
     config?: C
   ): IPipeline<T, R> {
@@ -200,7 +200,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     return this as unknown as Pipeline<T, R>;
   }
 
-  public at(name: PipelineFn<unknown, unknown> | string | number): Success<S> | Failure | null | undefined {
+  public stateAt(name: PipelineFn<unknown, unknown> | string | number): Success<S> | Failure | null | undefined {
     if (!this.isClone) {
       throw new Error("Can only call at() on a instantiated pipeline");
     }
@@ -301,7 +301,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
 
   private selectInput(step: PipelineStep<any, any>, input: unknown) {
     if (step.config.inputs?.length) {
-      const depOutputs = step.config.inputs.map(dep => this.at(dep)?.value);
+      const depOutputs = step.config.inputs.map(dep => this.stateAt(dep)?.value);
       input = depOutputs.length === 1 ?
         depOutputs[0] :
         depOutputs;

@@ -38,15 +38,15 @@ describe('Pipeline', () => {
     function add5(input: number) {
       return input + 5
     }
-    const pipe = Pipeline.add((_, step) => 10)
-      .add(add5)
-      .add(toString)
-      .add(shout, { inputs: [toString] })
+    const pipe = Pipeline.step((_, step) => 10)
+      .step(add5)
+      .step(toString)
+      .step(shout, { inputs: [toString] })
 
-    const pipeWithInput = Pipeline.add((input: number, step) => input)
-      .add(add5)
-      .add(toString)
-      .add(shout, { inputs: [toString] })
+    const pipeWithInput = Pipeline.step((input: number, step) => input)
+      .step(add5)
+      .step(toString)
+      .step(shout, { inputs: [toString] })
 
     const success = pipe.run()
     const successWithInput = pipeWithInput.run(20)
@@ -69,15 +69,15 @@ describe('Pipeline', () => {
       function add5(input: number) {
         return input + 5
       }
-      const pipe = Pipeline.add((_, step) => 10)
-        .add(add5)
-        .add(toString)
-        .add(shout, { inputs: [add5, toString] })
+      const pipe = Pipeline.step((_, step) => 10)
+        .step(add5)
+        .step(toString)
+        .step(shout, { inputs: [add5, toString] })
 
-      const pipeWithInput = Pipeline.add((input: number, step) => input)
-        .add(add5)
-        .add(toString)
-        .add(shout, { inputs: ['add5', 'toString'] })
+      const pipeWithInput = Pipeline.step((input: number, step) => input)
+        .step(add5)
+        .step(toString)
+        .step(shout, { inputs: ['add5', 'toString'] })
 
       const success = pipe.run()
       const successWithInput = pipeWithInput.run(20)
@@ -90,9 +90,9 @@ describe('Pipeline', () => {
     }
   )
   test.sequential('Async pipeline works', async function () {
-    const pipe = Pipeline.add(async (_, step) => delay(() => 10))
-      .add(async (input, step) => delay(() => input + 5))
-      .add(async (input, step) => delay(() => input.toString()))
+    const pipe = Pipeline.step(async (_, step) => delay(() => 10))
+      .step(async (input, step) => delay(() => input + 5))
+      .step(async (input, step) => delay(() => input.toString()))
 
     const success = pipe.run()
     await vi.runAllTimersAsync()
@@ -103,13 +103,13 @@ describe('Pipeline', () => {
   test.sequential(
     'at() returns result for named and indexed step',
     async function () {
-      const pipe = Pipeline.add(function step1(input: number, step) {
+      const pipe = Pipeline.step(function step1(input: number, step) {
         return input
       })
-        .add(function step2(input, step) {
+        .step(function step2(input, step) {
           return input + 5
         })
-        .add(function step3(input, step) {
+        .step(function step3(input, step) {
           return input.toString()
         })
         .instantiate();
@@ -126,9 +126,9 @@ describe('Pipeline', () => {
   test.sequential(
     'at() returns result for indexed step when not named',
     async function () {
-      const pipe = Pipeline.add((input: number, step) => input)
-        .add((input, step) => input + 5)
-        .add((input, step) => input.toString())
+      const pipe = Pipeline.step((input: number, step) => input)
+        .step((input, step) => input + 5)
+        .step((input, step) => input.toString())
         .instantiate();
 
       const success = pipe.run(20)
@@ -143,13 +143,13 @@ describe('Pipeline', () => {
   test.sequential(
     'at() inside step returns result for named step',
     async function () {
-      const pipe = Pipeline.add(function step1(input: number, step) {
+      const pipe = Pipeline.step(function step1(input: number, step) {
         return input
       })
-        .add(function step2(input, step) {
+        .step(function step2(input, step) {
           return input + 5
         })
-        .add(
+        .step(
           function step3(input: number[], step) {
             return input.reduce((acc, curr) => acc + curr, 0)
           },
@@ -165,9 +165,9 @@ describe('Pipeline', () => {
     }
   )
   test.sequential('Sync pipeline retries works', async function () {
-    const pipe = Pipeline.add((_, step) => 10)
-      .add((input, step) => input + 5)
-      .add((input, step) => {
+    const pipe = Pipeline.step((_, step) => 10)
+      .step((input, step) => input + 5)
+      .step((input, step) => {
         if (step.shouldRetry()) throw new Error('Retry')
         return input.toString()
       })
@@ -181,9 +181,9 @@ describe('Pipeline', () => {
     expect(pipe.steps[2].run).toBe(3)
   })
   test.sequential('Async pipeline retries works', async function () {
-    const pipe = Pipeline.add(async (_, step) => delay(() => 10))
-      .add(async (input, step) => delay(() => input + 5))
-      .add(async (input, step) =>
+    const pipe = Pipeline.step(async (_, step) => delay(() => 10))
+      .step(async (input, step) => delay(() => input + 5))
+      .step(async (input, step) =>
         delay(() => {
           if (step.shouldRetry()) throw new Error('Retry')
           return input.toString()
@@ -199,9 +199,9 @@ describe('Pipeline', () => {
     expect(pipe.steps[2].run).toBe(3)
   })
   test.sequential('Async pipeline too many retries fail', async function () {
-    const pipe = Pipeline.add(async (_, step) => delay(() => 10))
-      .add(async (input, step) => delay(() => input + 5))
-      .add(async (input, step) =>
+    const pipe = Pipeline.step(async (_, step) => delay(() => 10))
+      .step(async (input, step) => delay(() => input + 5))
+      .step(async (input, step) =>
         delay(() => {
           throw new Error('Retry')
         })
@@ -220,9 +220,9 @@ describe('Pipeline', () => {
       retries: 3,
       retryStrategy: (step) => step.run * 10,
     })
-      .add((_, step) => 10)
-      .add((input, step) => input + 5)
-      .add((input, step) => {
+      .step((_, step) => 10)
+      .step((input, step) => input + 5)
+      .step((input, step) => {
         if (step.shouldRetry()) throw new Error('Retry')
         return input.toString()
       })
@@ -246,9 +246,9 @@ describe('Pipeline', () => {
       retries: 3,
       retryStrategy: (step) => step.run * 10,
     })
-      .add((_, step) => 10)
-      .add((input, step) => input + 5)
-      .add(
+      .step((_, step) => 10)
+      .step((input, step) => input + 5)
+      .step(
         async (input, step) =>
           await delay(() => {
             if (step.shouldRetry()) throw new Error('Retry')
@@ -274,9 +274,9 @@ describe('Pipeline', () => {
     expect(pipe.steps[2].durations).toEqual([100, 200, 300, 400])
   })
   test.sequential('Async pipeline with timeout times out', async function () {
-    const pipe = Pipeline.add(async (_, step) => delay(() => 10))
-      .add(async (input, step) => delay(() => input + 5))
-      .add(
+    const pipe = Pipeline.step(async (_, step) => delay(() => 10))
+      .step(async (input, step) => delay(() => input + 5))
+      .step(
         async (input, step) =>
           delay(() => {
             return input.toString()
@@ -293,9 +293,9 @@ describe('Pipeline', () => {
   test.sequential(
     'Async pipeline with timeout times out and retries',
     async function () {
-      const pipe = Pipeline.add(async (_, step) => delay(() => 10))
-        .add(async (input, step) => delay(() => input + 5))
-        .add(
+      const pipe = Pipeline.step(async (_, step) => delay(() => 10))
+        .step(async (input, step) => delay(() => input + 5))
+        .step(
           async (input, step) =>
             delay(
               () => {
@@ -316,13 +316,13 @@ describe('Pipeline', () => {
   test.sequential(
     'Conditional pipeline with boolean test works',
     async function () {
-      const secondaryPipe = Pipeline.add((input: number) => input * 2).add(
+      const secondaryPipe = Pipeline.step((input: number) => input * 2).step(
         (input: number) => input + 10
       )
 
-      const pipe = Pipeline.add((input: number) => input)
-        .if((input: number) => input > 15, secondaryPipe)
-        .add((input: number) => input + 100)
+      const pipe = Pipeline.step((input: number) => input)
+        .conditional((input: number) => input > 15, secondaryPipe)
+        .step((input: number) => input + 100)
 
       const resultFalse = pipe.run(10) // 10 > 15 = false, skip secondary
       await vi.runAllTimersAsync()
@@ -340,11 +340,11 @@ describe('Pipeline', () => {
   test.sequential(
     'Conditional pipeline with integer test works',
     async function () {
-      const secondaryPipe = Pipeline.add((input: number) => input * 3)
+      const secondaryPipe = Pipeline.step((input: number) => input * 3)
 
-      const pipe = Pipeline.add((input: number) => input)
-        .if((input: number) => (input === 0 ? 0 : 1), secondaryPipe)
-        .add((input: number) => input + 5)
+      const pipe = Pipeline.step((input: number) => input)
+        .conditional((input: number) => (input === 0 ? 0 : 1), secondaryPipe)
+        .step((input: number) => input + 5)
 
       const resultZero = pipe.run(0) // 10 > 15 = false, skip secondary
       await vi.runAllTimersAsync()
@@ -361,18 +361,18 @@ describe('Pipeline', () => {
 
   test.sequential('Async conditional pipeline works', async function () {
     const secondaryPipe = Pipeline
-      .add(async (input: number) =>
+      .step(async (input: number) =>
         delay(() => input * 2)
       )
-      .add(async (input: number) => delay(() => input - 3))
+      .step(async (input: number) => delay(() => input - 3))
 
     const pipe = Pipeline
-      .add(async (input: number) => delay(() => input))
-      .if(
+      .step(async (input: number) => delay(() => input))
+      .conditional(
         async (input: number) => delay(() => input > 10),
         secondaryPipe
       )
-      .add(async (input: number) => delay(() => input.toString()))
+      .step(async (input: number) => delay(() => input.toString()))
 
     const resultFalse = pipe.run(5) // 5 > 10 = false
     await vi.runAllTimersAsync()
@@ -390,16 +390,16 @@ describe('Pipeline', () => {
     'Conditional pipeline with 2 conditional pipelines works',
     async function () {
       const firstConditionalPipe = Pipeline
-        .add((input: number) => input * 2)
-        .add((input: number) => input + 5)
+        .step((input: number) => input * 2)
+        .step((input: number) => input + 5)
   
       const secondConditionalPipe = Pipeline
-        .add((input: number) => input - 3)
-        .add((input: number) => input * 4)
+        .step((input: number) => input - 3)
+        .step((input: number) => input * 4)
   
-      const pipe = Pipeline.add((input: number) => input)
-        .if((input: number) => input < 10 ? 1 : input < 30 ? 2 : 0, [firstConditionalPipe, secondConditionalPipe])
-        .add((input: number) => input + 100)
+      const pipe = Pipeline.step((input: number) => input)
+        .conditional((input: number) => input < 10 ? 1 : input < 30 ? 2 : 0, [firstConditionalPipe, secondConditionalPipe])
+        .step((input: number) => input + 100)
   
       // Test case 1: input < 10, runs first conditional
       const resultFirst = pipe.run(5) // 5 < 10 = true, run first conditional
@@ -426,11 +426,11 @@ describe('Pipeline', () => {
     let effectValue: number | undefined
   
     const pipe = Pipeline
-      .add((input: number) => input * 2)
-      .call((value: number) => {
+      .step((input: number) => input * 2)
+      .effect((value: number) => {
         effectValue = value
       })
-      .add((input: number) => input + 10)
+      .step((input: number) => input + 10)
   
     const result = pipe.run(5)
     await vi.runAllTimersAsync()
@@ -444,19 +444,19 @@ describe('Pipeline', () => {
     let sideEffectResults: number[] = []
   
     const effectPipeline = Pipeline
-      .add((input: number) => {
+      .step((input: number) => {
         sideEffectResults.push(input)
         return input
       })
-      .add((input: number) => {
+      .step((input: number) => {
         sideEffectResults.push(input * 100)
         return input
       })
   
     const pipe = Pipeline
-      .add((input: number) => input * 3)
-      .call(effectPipeline)
-      .add((input: number) => input + 50)
+      .step((input: number) => input * 3)
+      .effect(effectPipeline)
+      .step((input: number) => input + 50)
   
     const result = pipe.run(4)
     await vi.runAllTimersAsync()
@@ -469,13 +469,13 @@ describe('Pipeline', () => {
   test.sequential(
     'at() on non-instantiated pipeline should throw',
     async function () {
-      const pipe = Pipeline.add(function step1(input: number, step) {
+      const pipe = Pipeline.step(function step1(input: number, step) {
         return input
       })
-        .add(function step2(input, step) {
+        .step(function step2(input, step) {
           return input + 5
         })
-        .add(function step3(input, step) {
+        .step(function step3(input, step) {
           return input.toString()
         })
 
@@ -488,12 +488,12 @@ describe('Pipeline', () => {
   test.sequential(
     'if-step returning number higher than conditional pipelines count should throw',
     async function () {
-      const conditionalPipe1 = Pipeline.add((input: number) => input * 2)
-      const conditionalPipe2 = Pipeline.add((input: number) => input + 10)
+      const conditionalPipe1 = Pipeline.step((input: number) => input * 2)
+      const conditionalPipe2 = Pipeline.step((input: number) => input + 10)
 
-      const pipe = Pipeline.add((input: number) => input)
-        .if((input: number) => 5, [conditionalPipe1, conditionalPipe2]) // Returns 5, but only 2 pipelines (indices 0,1)
-        .add((input: number) => input + 100)
+      const pipe = Pipeline.step((input: number) => input)
+        .conditional((input: number) => 5, [conditionalPipe1, conditionalPipe2]) // Returns 5, but only 2 pipelines (indices 0,1)
+        .step((input: number) => input + 100)
 
       const result = pipe.run(10)
       await vi.runAllTimersAsync()
@@ -507,15 +507,15 @@ describe('Pipeline', () => {
   )
 
   test.sequential('conditional pipeline fails throws', async function () {
-    const failingConditionalPipe = Pipeline.add(
+    const failingConditionalPipe = Pipeline.step(
       (input: number) => input * 2
-    ).add((input: number) => {
+    ).step((input: number) => {
       throw new Error('Conditional pipeline error')
     })
 
-    const pipe = Pipeline.add((input: number) => input)
-      .if((input: number) => input > 10, failingConditionalPipe)
-      .add((input: number) => input + 100)
+    const pipe = Pipeline.step((input: number) => input)
+      .conditional((input: number) => input > 10, failingConditionalPipe)
+      .step((input: number) => input + 100)
 
     const result = pipe.run(15) // 15 > 10 = true, runs failing conditional
     await vi.runAllTimersAsync()
@@ -529,15 +529,15 @@ describe('Pipeline', () => {
 
   test.sequential('effect step with effect pipeline that fails throws', async function () {
     const failingEffectPipeline = Pipeline
-      .add((input: number) => input * 2)
-      .add((input: number) => {
+      .step((input: number) => input * 2)
+      .step((input: number) => {
         throw new Error("Effect pipeline error");
       })
   
     const pipe = Pipeline
-      .add((input: number) => input + 5)
-      .call(failingEffectPipeline)
-      .add((input: number) => input * 10)
+      .step((input: number) => input + 5)
+      .effect(failingEffectPipeline)
+      .step((input: number) => input * 10)
   
     const result = pipe.run(10)
     await vi.runAllTimersAsync()
