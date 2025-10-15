@@ -614,23 +614,18 @@ describe("Pipeline", () => {
     test.sequential(
         "pipeline with inner conditional pipeline that throws in a step",
         async function () {
-            const innerConditionalPipe = Pipeline.step(
-                (input: number) => {
-                    return input * 3
-                }
-            )
-                .conditional(
-                    (input: number) => input > 50,
-                    Pipeline.step((input: number) => {
-                        throw new Error("Inner conditional step error");
-                    }),
-                )
+            const innerConditionalPipe = Pipeline.step((input: number) => {
+                return input * 3;
+            }).conditional(
+                (input: number) => input > 50,
+                Pipeline.step((input: number) => {
+                    throw new Error("Inner conditional step error");
+                }),
+            );
 
-            const mainPipe = Pipeline.step((input: number) => input + 5)
-                .conditional(
-                    (input: number) => input > 15,
-                    innerConditionalPipe,
-                )
+            const mainPipe = Pipeline.step(
+                (input: number) => input + 5,
+            ).conditional((input: number) => input > 15, innerConditionalPipe);
 
             const result = mainPipe.run(20); // 25 > 15 = true, runs inner conditional
             // 25 * 3 = 75 > 50 = true, throws error
@@ -638,12 +633,46 @@ describe("Pipeline", () => {
             const final = await result;
 
             expect(final.success).toBe(false);
-            expect(final.message).toContain(
-                "Failed at step 2",
-            );
-            expect(final.value).toContain(
-                "Inner conditional step error",
-            );
+            expect(final.message).toContain("Failed at step 2");
+            expect(final.value).toContain("Inner conditional step error");
+        },
+    );
+    test.sequential(
+        "pipeline with inner conditional pipeline using parent pipeline step input",
+        async function () {
+            function step1(input: number) {
+                return input + 10;
+            };
+
+            function step2(input: number) {
+                return input * 2;
+            };
+
+            function step3(input: number) {
+                // This step just uses the incoming input value
+                return input + 100;
+            };
+
+            console.log("run pipeline with inner conditional")
+            const result = await Pipeline.step(step1)
+                .step(step2)
+                .conditional(
+                    (x) => true,
+                    Pipeline.step(step3, { inputs: [step1] }),
+                )
+                .run(5);
+
+            console.log("run pipeline with inner conditional")
+            await vi.runAllTimersAsync();
+
+            // Expected flow:
+            // step1: 5 + 10 = 15
+            // step2: 15 * 2 = 30
+            // conditional: true, runs inner pipeline
+            // step3: gets input from step1 (15) due to { inputs: ["step1"] }, so 15 + 100 = 115
+
+            expect(result.success).toBe(true);
+            expect(result.value).toBe(115);
         },
     );
 });

@@ -96,7 +96,7 @@ interface IPipeline<T = unknown, S = unknown> {
         effect: IPipeline<R, any>,
         config?: C,
     ): IPipeline<T, R>;
-    instantiate(): IInstantiatedPipeline;
+    instantiate(parent?: IInstantiatedPipeline<T, S> | null): IInstantiatedPipeline<T, S>;
     run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
 }
 interface IInstantiatedPipeline<T = unknown, S = unknown>
@@ -249,6 +249,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         timeout: 0,
         inputs: undefined,
     };
+    private parent: IInstantiatedPipeline | null = null;
     private isClone = false;
     config = { ...Pipeline.defaultConfig };
     private steps: PipelineStep[] = [];
@@ -330,8 +331,8 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     }
 
     public stateAt(
-        name: PipelineFn<unknown, unknown> | string | number,
-    ): Success<S> | Failure | null | undefined {
+        name: PipelineFn<unknown, unknown> | string | number
+    ): Success<unknown> | Failure | null | undefined {
         if (!this.isClone) {
             throw new Error("Can only call stateAt() on a instantiated pipeline");
         }
@@ -345,13 +346,13 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         if (index !== undefined) {
             return this.steps[index]?.result;
         }
-        return undefined;
+        return this.parent ? this.parent.stateAt(name) : undefined;
     }
     private reset() {
         this.pos = 0;
         this.steps.forEach((step) => step.reset());
     }
-    public instantiate(): IInstantiatedPipeline<T, S> {
+    public instantiate(parent: IInstantiatedPipeline<T, S> | null = null): IInstantiatedPipeline<T, S> {
         const clone = new Pipeline<T, S>() as this;
         clone.config = Pipeline.mergeConfig(this.config, {});
         clone.steps = this.steps.map((step) => {
@@ -363,7 +364,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
                     );
                     newStep.pipelines = (
                         step as ConditionalStep<unknown>
-                    ).pipelines.map((p) => p.instantiate());
+                    ).pipelines.map((p) => p.instantiate(clone as unknown as IInstantiatedPipeline<T, S>));
                     return newStep;
                 }
                 case EffectStep: {
@@ -389,6 +390,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         });
         clone.stepsLookup = { ...this.stepsLookup };
         clone.isClone = true;
+        clone.parent = parent;
         return clone as unknown as IInstantiatedPipeline<T, S>;
     }
     public async run(
