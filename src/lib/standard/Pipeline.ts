@@ -32,6 +32,7 @@ interface IResult<T> {
     value: T | null;
     success: boolean;
     message: string;
+    step: string | number | null;
 }
 interface ISuccess<T> extends IResult<T> {}
 interface IFailure extends IResult<string | null> {}
@@ -149,6 +150,7 @@ class Result<T> implements IResult<T> {
     public value: T | null = null;
     public success = true;
     public message: string = "";
+    public step: string | number | null = null;
 
     constructor(value: T | null = null, message = "") {
         this.value = value;
@@ -165,9 +167,10 @@ class Success<T> extends Result<T> implements ISuccess<T> {
 }
 
 class Failure extends Result<string | null> implements IFailure {
-    constructor(value: string | null = null, message = "failed") {
+    constructor(value: string | null = null, message = "failed", step: string | number | null = null) {
         super(value, message);
         this.success = false;
+        this.step = step;
     }
 }
 
@@ -206,6 +209,9 @@ class PipelineStep<T = any, S = any> implements IPipelineStep<T, S> {
         this.durations.length = 0;
         this.duration = 0;
     }
+    public getName(): string {
+        return this.fn.name || "";
+    }
 }
 
 class ConditionalStep<T>
@@ -224,6 +230,9 @@ class ConditionalStep<T>
         // dummy super call, we won't use fn or config here
         super((...args: any[]) => this.result?.value!, config);
         this.condition = fn;
+    }
+    public getName(): string {
+        return this.condition.name || "";
     }
 }
 
@@ -308,10 +317,13 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         config?: C,
     ): IPipeline<T, R> {
         const step = new ConditionalStep(fn, (config as C) ?? this.config);
+        this.steps.push(step);
+        if (fn.name) {
+            this.stepsLookup[fn.name] = this.steps.length -1;
+        }
         step.pipelines = Array.isArray(conditionals)
             ? conditionals
             : [conditionals];
-        this.steps.push(step);
         return this as unknown as Pipeline<T, R>;
     }
 
@@ -346,7 +358,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         if (index !== undefined) {
             return this.steps[index]?.result;
         }
-        return this.parent ? this.parent.stateAt(name) : undefined;
+        return this.parent ? this.parent.stateAt(name) as Success<unknown> | Failure | null | undefined : undefined;
     }
     private reset() {
         this.pos = 0;
@@ -410,14 +422,16 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         let value: unknown = input[0] as unknown;
         while (this.pos < this.steps.length) {
             const result = await this.runStep(value);
-            if (result.message == "success") {
+            if (result.success) {
                 value = result.value;
                 continue;
             }
-            if (await this.waitForRetry(this.steps[this.pos])) continue;
+            const step = this.steps[this.pos];
+            if (await this.waitForRetry(step)) continue;
             return new Failure(
                 result.message,
-                "Failed at step " + (this.pos + 1),
+                "Failed at " + (step.getName() || ("step " + (this.pos + 1))),
+                step.getName() || (this.pos + 1)
             );
         }
         return this.steps[this.pos - 1].result!;
@@ -450,7 +464,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             step.durations.push(step.duration);
             return value;
         } catch (e) {
-            const value = new Failure(null, e.toString());
+            const value = new Failure(null, e.toString(), step.fn.name || this.pos + 1);
             step.result = value;
             step.duration = Date.now() - start;
             step.durations.push(step.duration);

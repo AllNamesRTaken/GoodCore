@@ -101,7 +101,7 @@ describe("Pipeline", () => {
         expect(result.value).toBe("15");
     });
     test.sequential(
-        "at() returns result for named and indexed step",
+        "stateAt() returns result for named and indexed step",
         async function () {
             const pipe = Pipeline.step(function step1(input: number, step) {
                 return input;
@@ -124,7 +124,7 @@ describe("Pipeline", () => {
         },
     );
     test.sequential(
-        "at() returns result for indexed step when not named",
+        "stateAt() returns result for indexed step when not named",
         async function () {
             const pipe = Pipeline.step((input: number, step) => input)
                 .step((input, step) => input + 5)
@@ -141,7 +141,7 @@ describe("Pipeline", () => {
         },
     );
     test.sequential(
-        "at() inside step returns result for named step",
+        "stateAt() inside step returns result for named step",
         async function () {
             const pipe = Pipeline.step(function step1(input: number, step) {
                 return input;
@@ -214,6 +214,7 @@ describe("Pipeline", () => {
         expect(result.success).toBe(false);
         expect(result.value).toBe("Error: Retry");
         expect(result.message).toBe("Failed at step 3");
+        expect(result.step).toBe(3);
     });
     test.sequential("Pipeline with retry strategy works", async function () {
         const pipe = Pipeline.configure({
@@ -489,7 +490,7 @@ describe("Pipeline", () => {
     });
 
     test.sequential(
-        "at() on non-instantiated pipeline should throw",
+        "stateAt() on non-instantiated pipeline should throw",
         async function () {
             const pipe = Pipeline.step(function step1(input: number, step) {
                 return input;
@@ -558,7 +559,7 @@ describe("Pipeline", () => {
         });
 
         const pipe = Pipeline.step((input: number) => input)
-            .conditional((input: number) => input > 10, failingConditionalPipe)
+            .conditional(function condition(input: number) {return input > 10 }, failingConditionalPipe)
             .step((input: number) => input + 100);
 
         const result = pipe.run(15); // 15 > 10 = true, runs failing conditional
@@ -567,6 +568,8 @@ describe("Pipeline", () => {
 
         expect(final.success).toBe(false);
         expect(final.value).toContain("Conditional pipeline failed:");
+        expect(final.message).toBe("Failed at condition");
+        expect(final.step).toBe("condition");
     });
 
     test.sequential(
@@ -653,7 +656,6 @@ describe("Pipeline", () => {
                 return input + 100;
             };
 
-            console.log("run pipeline with inner conditional")
             const result = await Pipeline.step(step1)
                 .step(step2)
                 .conditional(
@@ -662,7 +664,6 @@ describe("Pipeline", () => {
                 )
                 .run(5);
 
-            console.log("run pipeline with inner conditional")
             await vi.runAllTimersAsync();
 
             // Expected flow:
