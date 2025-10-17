@@ -196,6 +196,7 @@ interface IResult<T> {
   value:T | null;
   success: boolean;
   message: string;
+  name: string | number | null;
 }
 interface ISuccess<T> extends IResult<T> {}
 interface IFailure extends IResult<string | null> {}
