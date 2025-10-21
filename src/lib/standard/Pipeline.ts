@@ -33,6 +33,7 @@ interface IResult<T> {
     success: boolean;
     message: string;
     step: string | number | null;
+    error: Error | null;
 }
 interface ISuccess<T> extends IResult<T> {}
 interface IFailure extends IResult<string | null> {}
@@ -60,6 +61,11 @@ interface IEffectStep<T, S = any> extends IPipelineStep<T, S> {
     effect:
         | ((input: T, step: IPipelineStep) => S | Promise<S>)
         | IPipeline<T, S>;
+}
+interface IOnErrorStep<T> extends IPipelineStep<T, T> {
+    handler: 
+        | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<T, T>) => any | Promise<any>)
+        | IPipeline<T, any>;
 }
 
 interface IPipeline<T = unknown, S = unknown> {
@@ -97,50 +103,24 @@ interface IPipeline<T = unknown, S = unknown> {
         effect: IPipeline<R, any>,
         config?: C,
     ): IPipeline<T, R>;
+    onError<R extends PipelineFnInput<S, unknown>>(
+        handler:
+            | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<unknown, unknown>) => any | Promise<any>)
+            | IPipeline<PipelineFnInput<unknown, unknown>, any>,
+    ): IPipeline<T, R>;
     instantiate(parent?: IInstantiatedPipeline<T, S> | null): IInstantiatedPipeline<T, S>;
     run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
 }
-interface IInstantiatedPipeline<T = unknown, S = unknown>
-    extends IPipeline<T, S> {
+interface IInstantiatedPipeline<T = unknown, S = unknown> extends IPipeline<T, S> {
     config: IPipelineStepConfig;
     steps: IPipelineStep[];
     pos: number;
-    step<R, C extends Partial<IPipelineStepConfig> | null>(
-        fn: PipelineFn<PipelineFnInput<S, C>, R>,
-        config?: C,
-    ): IPipeline<T, R>;
-    conditional<
-        C extends Partial<IPipelineStepConfig> | null,
-        R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>,
-    >(
-        fn: PipelineFn<T, boolean | number>,
-        conditionals: IPipeline<R, R>,
-        config?: C,
-    ): IPipeline<T, R>;
-    conditional<
-        C extends Partial<IPipelineStepConfig> | null,
-        R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>,
-    >(
-        fn: PipelineFn<T, boolean | number>,
-        conditionals: IPipeline<R, R>[],
-        config?: C,
-    ): IPipeline<T, R>;
-    effect<
-        R extends PipelineFnInput<S, C>,
-        C extends Partial<IPipelineStepConfig> | null,
-    >(
-        effect: (input: R, step: IPipelineStep) => any | Promise<any>,
-        config?: C,
-    ): IPipeline<T, R>;
-    effect<
-        R extends PipelineFnInput<S, C>,
-        C extends Partial<IPipelineStepConfig> | null,
-    >(
-        effect: IPipeline<R, any>,
-        config?: C,
-    ): IPipeline<T, R>;
+    errorHandler: 
+        | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<T, T>) => any | Promise<any>)
+        | IPipeline<T, any>
+        | null;
+    
     instantiate(): this;
-    run(...input: PipelineInput<T>): Promise<ISuccess<S> | IFailure>;
     stateAt(
         name: PipelineFn<unknown, unknown> | string | number,
     ): ISuccess<unknown> | IFailure | null | undefined;
@@ -151,6 +131,7 @@ class Result<T> implements IResult<T> {
     public success = true;
     public message: string = "";
     public step: string | number | null = null;
+    public error: Error | null = null;
 
     constructor(value: T | null = null, message = "") {
         this.value = value;
@@ -249,6 +230,26 @@ class EffectStep<T> extends PipelineStep<T, T> implements IEffectStep<T> {
         super((...args: any[]) => this.result?.value!, config);
         this.effect = effect;
     }
+    public getName(): string {
+        return (this.effect as Function).name || "";
+    }
+}
+
+class OnErrorStep<T> extends PipelineStep<T, T> implements IOnErrorStep<T> {
+    handler:
+        | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<unknown, unknown>) => any | Promise<any>)
+        | IPipeline<T, any>;
+    constructor(
+        handler:
+            | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<unknown, unknown>) => any | Promise<any>)
+            | IPipeline<T, any>,
+    ) {
+        super((...args: any[]) => this.result?.value!, {});
+        this.handler = handler;
+    }
+    public getName(): string {
+        return (this.handler as Function).name || "";
+    }
 }
 
 export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
@@ -264,6 +265,11 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     private steps: PipelineStep[] = [];
     stepsLookup: Indexable<number> = {};
     pos = 0;
+    errorHandler: 
+        | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<T, T>) => any | Promise<any>)
+        | IPipeline<T, any>
+        | null = null;
+
     public static step<U, R>(
         fn: PipelineFn<U, R>,
         config: Partial<IPipelineStepConfig> | null = null,
@@ -280,6 +286,17 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     ): IPipeline<unknown, unknown> {
         const p = new Pipeline();
         p.config = Pipeline.mergeConfig(p.config, config);
+        return p as unknown as IPipeline<unknown, unknown>;
+    }
+    public static onError(
+        handler:
+            | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<unknown, unknown>) => any | Promise<any>)
+            | IPipeline<unknown, any>,
+    ): IPipeline<unknown, unknown> {
+        const p = new Pipeline();
+        const step = new OnErrorStep(handler);
+        step.handler = handler;
+        p.PushStep(step, handler);
         return p as unknown as IPipeline<unknown, unknown>;
     }
     public static mergeConfig<T extends IPipelineStepConfig | Partial<IPipelineStepConfig>>(
@@ -301,11 +318,16 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         fn: PipelineFn<PipelineFnInput<S, C>, R>,
         config?: C,
     ): IPipeline<T, R> {
-        this.steps.push(new PipelineStep(fn, (config as C) ?? this.config));
-        if (fn.name) {
+        const step = new PipelineStep(fn, (config as C) ?? this.config);
+        this.PushStep(step, fn);
+        return this as unknown as IPipeline<T, R>;
+    }
+
+    private PushStep(step: PipelineStep<any, any>, fn: Function | IPipeline<any, any>) {
+        this.steps.push(step);
+        if (fn instanceof Function && fn.name) {
             this.stepsLookup[fn.name] = this.steps.length - 1;
         }
-        return this as unknown as Pipeline<T, R>;
     }
 
     public conditional<
@@ -317,14 +339,11 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         config?: C,
     ): IPipeline<T, R> {
         const step = new ConditionalStep(fn, (config as C) ?? this.config);
-        this.steps.push(step);
-        if (fn.name) {
-            this.stepsLookup[fn.name] = this.steps.length -1;
-        }
+        this.PushStep(step, fn);
         step.pipelines = Array.isArray(conditionals)
             ? conditionals
             : [conditionals];
-        return this as unknown as Pipeline<T, R>;
+        return this as unknown as IPipeline<T, R>;
     }
 
     public effect<
@@ -338,8 +357,19 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     ): IPipeline<T, R> {
         const step = new EffectStep(() => {}, (config as C) ?? this.config);
         step.effect = effect;
-        this.steps.push(step);
-        return this as unknown as Pipeline<T, R>;
+        this.PushStep(step, effect);
+        return this as unknown as IPipeline<T, R>;
+    }
+
+    public onError<R extends PipelineFnInput<S, unknown>>(
+        handler:
+            | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<unknown, unknown>) => any | Promise<any>)
+            | IPipeline<PipelineFnInput<unknown, unknown>, any>,
+    ): IPipeline<T, R> {
+        const step = new OnErrorStep(handler);
+        step.handler = handler;
+        this.PushStep(step, handler);
+        return this as unknown as IPipeline<T, R>;
     }
 
     public stateAt(
@@ -385,12 +415,19 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
                         orgStep.effect,
                         Pipeline.mergeConfig(step.config, {}),
                     );
-                    newStep.effect =
-                        orgStep.effect instanceof Pipeline
-                            ? (
-                                  orgStep.effect as Pipeline<unknown, unknown>
-                              ).instantiate()
-                            : orgStep.effect;
+                    if (orgStep.effect instanceof Pipeline) {
+                        newStep.effect = orgStep.effect.instantiate();
+                    }
+                    return newStep;
+                }
+                case OnErrorStep: {
+                    const orgStep = step as OnErrorStep<unknown>;
+                    const newStep = new OnErrorStep(
+                        orgStep.handler,
+                    );
+                    if(orgStep.handler instanceof Pipeline) {
+                        newStep.handler = orgStep.handler.instantiate();
+                    }
                     return newStep;
                 }
                 default:
@@ -401,6 +438,13 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             }
         });
         clone.stepsLookup = { ...this.stepsLookup };
+        if (this.errorHandler instanceof Pipeline) {
+            clone.errorHandler = this.errorHandler.instantiate(
+                clone as unknown as IInstantiatedPipeline<T, S>,
+            )
+        } else {
+            clone.errorHandler = this.errorHandler;
+        }
         clone.isClone = true;
         clone.parent = parent;
         return clone as unknown as IInstantiatedPipeline<T, S>;
@@ -423,16 +467,30 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         while (this.pos < this.steps.length) {
             const result = await this.runStep(value);
             if (result.success) {
+                this.pos++;
                 value = result.value;
                 continue;
             }
             const step = this.steps[this.pos];
             if (await this.waitForRetry(step)) continue;
-            return new Failure(
-                result.message,
-                "Failed at " + (step.getName() || ("step " + (this.pos + 1))),
-                step.getName() || (this.pos + 1)
-            );
+            
+            if (this.errorHandler) {
+                const handler = (this as unknown as IInstantiatedPipeline<unknown, unknown>).errorHandler;
+                if (handler instanceof Function) {
+                    try {
+                        await handler(result as IFailure, step, this as unknown as IInstantiatedPipeline<unknown, unknown>);
+                    } catch (e) {
+                        console.error("Error in onError handler:", e);
+                    }
+                }
+                else if (handler instanceof Pipeline) {
+                    const handlerResult = await handler.run(result as IFailure);
+                    if (!handlerResult.success) {
+                        console.error("Error in onError pipeline handler:", handlerResult.error);
+                    }
+                }
+            }
+            return result as Failure;
         }
         return this.steps[this.pos - 1].result!;
     }
@@ -459,16 +517,18 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             var fnResult = await this.execStepWithDelay(step, step.input);
             const value = new Success(fnResult);
             step.result = value;
-            this.pos++;
             step.duration = Date.now() - start;
             step.durations.push(step.duration);
             return value;
         } catch (e) {
-            const value = new Failure(null, e.toString(), step.fn.name || this.pos + 1);
-            step.result = value;
+            const message = "Failed at " + (step.getName() || ("step " + (this.pos + 1)))
+            const result = new Failure(e.toString(), message, step.fn.name || this.pos + 1)
+            result.step = step.getName() || this.pos + 1;
+            result.error = e;
+            step.result = result;
             step.duration = Date.now() - start;
             step.durations.push(step.duration);
-            return value;
+            return result;
         }
     }
 
@@ -504,10 +564,15 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
 
     private async execStep(step: PipelineStep<any, any>, input: unknown) {
         let result: unknown;
+        console.log("Executing step:", step.getName() || ("step " + (this.pos + 1)), "type:", step.constructor.name);
         if (step instanceof ConditionalStep) {
             result = await this.execConditionalStep(step, input, result);
         } else if (step instanceof EffectStep) {
             result = await this.execEffectStep(step, input, result);
+        } else if (step instanceof OnErrorStep) {
+            result = input;
+            console.log("Setting error handler");
+            this.errorHandler = step.handler;
         } else {
             result = await step.fn(input, step);
         }

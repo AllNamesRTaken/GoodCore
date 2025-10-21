@@ -676,4 +676,130 @@ describe("Pipeline", () => {
             expect(result.value).toBe(115);
         },
     );
+
+    test.sequential('onError with handler function works', async function () {
+        let errorHandled = false;
+        let capturedFailure: any = null;
+        let capturedStep: any = null;
+
+        const errorHandler = (failure: any, step: any, pipeline: any) => {
+            errorHandled = true;
+            capturedFailure = failure;
+            capturedStep = step;
+        };
+
+        const pipe = Pipeline
+            .step((input: number) => input + 5)
+            .onError(errorHandler)
+            .step((input: number) => {
+                throw new Error("Step error");
+            })
+            .step((input: number) => input * 2);
+
+        console.log("Running pipeline with error handler function");
+        const result = pipe.run(10);
+        await vi.runAllTimersAsync();
+        const final = await result;
+        console.log("Pipeline finished");
+
+        expect(final.success).toBe(false);
+        expect(final.message).toContain("Failed at step 3");
+        expect(errorHandled).toBe(true);
+        
+        expect(capturedFailure).toBeTruthy();
+        expect(capturedFailure?.message).toContain("Failed at step 3");
+        expect(capturedStep).toBeTruthy();
+    });
+
+    test.sequential('onError with handler pipeline works', async function () {
+        let pipelineExecuted = false;
+
+        const errorPipeline = Pipeline
+            .step((failure: any) => {
+                pipelineExecuted = true;
+                return failure;
+            });
+
+        const pipe = Pipeline
+            .step((input: number) => input * 2)
+            .onError(errorPipeline)
+            .step((input: number) => {
+                throw new Error("Pipeline step error");
+            })
+            .step((input: number) => input + 10);
+
+        const result = pipe.run(5);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(false);
+        expect(final.message).toContain("Failed at step 3");
+        expect(pipelineExecuted).toBe(true);
+    });
+
+    test.sequential('error in error handler function outputs console.error', async function () {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        const errorHandler = (failure: any, step: any, pipeline: any) => {
+            throw new Error("Error handler failed");
+        };
+
+        const pipe = Pipeline
+            .step((input: number) => input + 1)
+            .onError(errorHandler)
+            .step((input: number) => {
+                throw new Error("Original error");
+            });
+
+        const result = pipe.run(10);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(false);
+        expect(final.message).toContain("Failed at step 3");
+        expect(consoleSpy).toHaveBeenCalledWith("Error in onError handler:", expect.any(Error));
+
+        const pipe2 = Pipeline
+            .onError(errorHandler)
+            .step((input: number) => input + 1)
+            .step((input: number) => {
+                throw new Error("Original error");
+            });
+
+        const result2 = pipe2.run(10);
+        await vi.runAllTimersAsync();
+        const final2 = await result2;
+        
+        expect(final2.success).toBe(false);
+        expect(final2.message).toContain("Failed at step 3");
+        expect(consoleSpy).toHaveBeenCalledWith("Error in onError handler:", expect.any(Error));
+
+        consoleSpy.mockRestore();
+    });
+
+    test.sequential('error in error handler pipeline outputs console.error', async function () {
+        const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
+
+        const errorPipeline = Pipeline
+            .step((failure: any) => {
+                throw new Error("Error pipeline failed");
+            });
+
+        const pipe = Pipeline
+            .step((input: number) => input * 3)
+            .onError(errorPipeline)
+            .step((input: number) => {
+                throw new Error("Original pipeline error");
+            });
+
+        const result = pipe.run(7);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(false);
+        expect(final.message).toContain("Failed at step 3");
+        expect(consoleSpy).toHaveBeenCalledWith("Error in onError pipeline handler:", expect.any(Error));
+        
+        consoleSpy.mockRestore();
+    });
 });
