@@ -696,11 +696,9 @@ describe("Pipeline", () => {
             })
             .step((input: number) => input * 2);
 
-        console.log("Running pipeline with error handler function");
         const result = pipe.run(10);
         await vi.runAllTimersAsync();
         const final = await result;
-        console.log("Pipeline finished");
 
         expect(final.success).toBe(false);
         expect(final.message).toContain("Failed at step 3");
@@ -801,5 +799,146 @@ describe("Pipeline", () => {
         expect(consoleSpy).toHaveBeenCalledWith("Error in onError pipeline handler:", expect.any(Error));
         
         consoleSpy.mockRestore();
+    });
+
+    test.sequential('validation with valid input continues pipeline', async function () {
+        const step1Fn = (input: number) => input * 2;
+        const isStep1ValidFn = (input: number) => input < 50;
+        const step2Fn = (input: number) => input + 10;
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isStep1ValidFn, step1Fn)
+            .step(step2Fn);
+
+        const result = pipe.run(10);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // 10 * 2 = 20, 20 < 50 is true (valid), so continues to step2
+        // 20 + 10 = 30
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(30);
+    });
+
+    test.sequential('validation with invalid input re-runs step', async function () {
+        let executionCount = 0;
+        const step1Fn = (input: number) => {
+            executionCount++;
+            console.log(input, executionCount)
+            return input * 3 * executionCount;
+        };
+        const isStep1ValidFn = (input: number) => {
+            // First execution: 15 * 3 = 45, fails validation (>= 40)
+            // Second execution: should pass if re-run logic works
+            return input > 50;
+        };
+        const step2Fn = (input: number) => input + 5;
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isStep1ValidFn, step1Fn)
+            .step(step2Fn);
+
+        const result = pipe.run(15);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // First execution: 15 * 3 = 45, fails validation
+        // Re-runs step1Fn: depends on implementation
+        expect(final.success).toBe(true); // In this case, it will fail after max retries
+        expect(final.value).toBe(95); // Value should be from a successful step1Fn execution
+        expect(executionCount).toBeGreaterThan(1);
+    });
+
+    test.sequential('validation with boolean validator works', async function () {
+        const step1Fn = (input: number) => input + 10;
+        const isValidFn = (input: number) => input > 5;
+        const step2Fn = (input: number) => input * 2;
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isValidFn, step1Fn)
+            .step(step2Fn);
+
+        const result = pipe.run(3);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // 3 + 10 = 13, 13 > 5 is true (valid)
+        // 13 * 2 = 26
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(26);
+    });
+
+    test.sequential('validation with async validator works', async function () {
+        const step1Fn = async (input: number) => delay(() => input * 2);
+        const isValidFn = async (input: number) => {
+            await delay(() => input);
+            return input < 100;
+        };
+        const step2Fn = async (input: number) => delay(() => input + 15);
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isValidFn, step1Fn)
+            .step(step2Fn);
+
+        const result = pipe.run(20);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // 20 * 2 = 40, 40 < 100 is true (valid)
+        // 40 + 15 = 55
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(55);
+    });
+
+    test.sequential('validation that always fails stops pipeline', async function () {
+        let step2Executed = false;
+        const step1Fn = (input: number) => input + 5;
+        const isValidFn = (input: number) => false; // Always fails
+        const step2Fn = (input: number) => {
+            step2Executed = true;
+            return input * 2;
+        };
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isValidFn, step1Fn)
+            .step(step2Fn);
+
+        const result = pipe.run(10);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // Validation always fails, pipeline should handle this
+        expect(final.success).toBe(false);
+        expect(step2Executed).toBe(false);
+    });
+
+    test.sequential('multiple validations in pipeline work', async function () {
+        const step1Fn = (input: number) => input * 2;
+        const isStep1ValidFn = (input: number) => input < 50;
+        const step2Fn = (input: number) => input + 10;
+        const isStep2ValidFn = (input: number) => input < 100;
+        const step3Fn = (input: number) => input * 3;
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isStep1ValidFn, step1Fn)
+            .step(step2Fn)
+            .validation(isStep2ValidFn, step2Fn)
+            .step(step3Fn);
+
+        const result = pipe.run(8);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // 8 * 2 = 16, 16 < 50 (valid)
+        // 16 + 10 = 26, 26 < 100 (valid)
+        // 26 * 3 = 78
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(78);
     });
 });

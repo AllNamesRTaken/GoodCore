@@ -57,6 +57,13 @@ interface IConditionalStep<T> extends IPipelineStep<T, T> {
     ) => number | boolean | Promise<number | boolean>;
     pipelines: IPipeline<T, T>[];
 }
+interface IValidationStep<T> extends IPipelineStep<T, T> {
+    validation: (
+        input: T,
+        step: IPipelineStep,
+    ) => boolean | Promise<boolean>;
+    retryStep: PipelineFn<unknown, unknown>;
+}
 interface IEffectStep<T, S = any> extends IPipelineStep<T, S> {
     effect:
         | ((input: T, step: IPipelineStep) => S | Promise<S>)
@@ -87,6 +94,14 @@ interface IPipeline<T = unknown, S = unknown> {
     >(
         fn: PipelineFn<T, boolean | number>,
         conditionals: IPipeline<R, R>[],
+        config?: C,
+    ): IPipeline<T, R>;
+    validation<
+        C extends Partial<IPipelineStepConfig> | null,
+        R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>,
+    >(
+        fn: PipelineFn<R, boolean>,
+        retryStep: PipelineFn<unknown, unknown>,
         config?: C,
     ): IPipeline<T, R>;
     effect<
@@ -214,6 +229,28 @@ class ConditionalStep<T>
     }
     public getName(): string {
         return this.condition.name || "";
+    }
+}
+
+class ValidationStep<T>
+    extends PipelineStep<T, T>
+    implements IValidationStep<T>
+{
+    validation: (
+        input: T,
+        step: IPipelineStep,
+    ) => boolean | Promise<boolean>;
+    retryStep: PipelineFn<unknown, unknown>;
+    constructor(
+        validation: PipelineFn<T, boolean>,
+        config: Partial<IPipelineStepConfig> | null = null,
+    ) {
+        // dummy super call, we won't use fn or config here
+        super((...args: any[]) => this.result?.value!, config);
+        this.validation = validation;
+    }
+    public getName(): string {
+        return this.validation.name || "";
     }
 }
 
@@ -346,6 +383,21 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         return this as unknown as IPipeline<T, R>;
     }
 
+
+    public validation<
+        C extends Partial<IPipelineStepConfig> | null,
+        R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>,
+    >(
+        fn: PipelineFn<R, boolean>,
+        retryStep: PipelineFn<unknown, unknown>,
+        config?: C,
+    ): IPipeline<T, R> {
+        const step = new ValidationStep(fn, (config as C) ?? this.config);
+        this.PushStep(step, fn);
+        step.retryStep = retryStep;
+        return this as unknown as IPipeline<T, R>;
+    }
+
     public effect<
         R extends PipelineFnInput<S, C>,
         C extends Partial<IPipelineStepConfig> | null,
@@ -409,6 +461,16 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
                     ).pipelines.map((p) => p.instantiate(clone as unknown as IInstantiatedPipeline<T, S>));
                     return newStep;
                 }
+                case ValidationStep: {
+                    const newStep = new ValidationStep(
+                        (step as ValidationStep<unknown>).validation,
+                        Pipeline.mergeConfig(step.config, {}),
+                    );
+                    newStep.retryStep = (
+                        step as ValidationStep<unknown>
+                    ).retryStep;
+                    return newStep;
+                }
                 case EffectStep: {
                     const orgStep = step as EffectStep<unknown>;
                     const newStep = new EffectStep(
@@ -463,15 +525,16 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         ...input: PipelineInput<T>
     ): Promise<Success<S> | Failure> {
         this.reset();
-        let value: unknown = input[0] as unknown;
         while (this.pos < this.steps.length) {
-            const result = await this.runStep(value);
+            const step = this.steps[this.pos];
+            const inputValue = this.pos 
+                ? this.steps[this.pos - 1].result?.value 
+                : input[0];
+            const result = await this.runStep(step, inputValue);
             if (result.success) {
                 this.pos++;
-                value = result.value;
                 continue;
             }
-            const step = this.steps[this.pos];
             if (await this.waitForRetry(step)) continue;
             
             if (this.errorHandler) {
@@ -507,8 +570,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         }
         return false;
     }
-    private async runStep(input: unknown): Promise<Success<unknown> | Failure> {
-        const step = this.steps[this.pos];
+    private async runStep(step: PipelineStep<any, any>, input: unknown): Promise<Success<unknown> | Failure> {
         const start = Date.now();
         try {
             step.run++;
@@ -528,6 +590,10 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             step.result = result;
             step.duration = Date.now() - start;
             step.durations.push(step.duration);
+            if (e instanceof ValidationError) {
+                console.log("Validation failed, retrying at step:", e.retryStep);
+                this.pos = this.stepsLookup[e.retryStep] ?? this.pos;
+            }
             return result;
         }
     }
@@ -557,6 +623,9 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
                 }
                 resolve(result);
             } catch (e) {
+                if(e.message.includes("Validation")) {
+                    console.log("Validation error:", e.message);
+                }
                 reject(e);
             }
         });
@@ -564,14 +633,14 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
 
     private async execStep(step: PipelineStep<any, any>, input: unknown) {
         let result: unknown;
-        console.log("Executing step:", step.getName() || ("step " + (this.pos + 1)), "type:", step.constructor.name);
-        if (step instanceof ConditionalStep) {
-            result = await this.execConditionalStep(step, input, result);
+        if (step instanceof ValidationStep) {
+            result = await this.execValidationStep(step, input);
+        } else if (step instanceof ConditionalStep) {
+            result = await this.execConditionalStep(step, input);
         } else if (step instanceof EffectStep) {
-            result = await this.execEffectStep(step, input, result);
+            result = await this.execEffectStep(step, input);
         } else if (step instanceof OnErrorStep) {
             result = input;
-            console.log("Setting error handler");
             this.errorHandler = step.handler;
         } else {
             result = await step.fn(input, step);
@@ -582,7 +651,6 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     private async execEffectStep(
         step: EffectStep<any>,
         input: unknown,
-        result: unknown,
     ) {
         if (step.effect instanceof Pipeline) {
             const pipelineResult = await step.effect.run(input as any);
@@ -594,20 +662,18 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         } else if (step.effect instanceof Function) {
             await step.effect(input as any, step);
         }
-        result = input;
-        return result;
+        return input;
     }
 
     private async execConditionalStep(
         step: ConditionalStep<any>,
         input: unknown,
-        result: unknown,
     ) {
         const conditionResult = await step.condition(input as any, step);
         if (conditionResult === true || (conditionResult === false && step.pipelines.length > 1)) {
             const index = conditionResult ? 0 : 1;
             const pipelineResult = await this.RunConditionalPipeline(step, index, input);
-            result = pipelineResult.value;
+            return pipelineResult.value;
         } else if ("number" === typeof conditionResult) {
             const index = Math.floor(conditionResult);
             if (index >= step.pipelines.length || index < 0) {
@@ -616,16 +682,26 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
                 );
             }
             const pipelineResult = await this.RunConditionalPipeline(step, index, input);
-            result = pipelineResult.value;
+            return pipelineResult.value;
         } else if ("boolean" !== typeof conditionResult) {
             throw new Error(
                 "Conditional step function returned invalid type: " +
                     typeof conditionResult,
             );
         } else {
-            result = input;
+            return input;
         }
-        return result;
+    }
+
+    private async execValidationStep(
+        step: ValidationStep<any>,
+        input: unknown,
+    ) {
+        const validationResult = await step.validation(input as any, step);
+        if (!validationResult) {
+            throw new ValidationError("Validation failed", step.retryStep.name);
+        }
+        return input;
     }
 
     private async RunConditionalPipeline(step: ConditionalStep<any>, index: number, input: unknown) {
@@ -636,5 +712,14 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             );
         }
         return pipelineResult;
+    }
+}
+
+class ValidationError extends Error {
+    public retryStep: string
+    constructor(message: string, retryStep: string) {
+        super(message);
+        this.name = "ValidationError";
+        this.retryStep = retryStep;
     }
 }
