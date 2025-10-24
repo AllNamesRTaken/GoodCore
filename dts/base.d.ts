@@ -152,6 +152,8 @@ interface IEventBus<T extends EventMap> {
   ): Promise<InnerPromiseType<ResultType<T[keyof T]>>[]>
 }
 
+type ConsoleKind = "error" | "info" | "debug";
+type VerbosityKind = "silent" | ConsoleKind;
 interface IPipelineStepConfig {
     retries: number;
     retryStrategy: "immediate" | ((step: IPipelineStep) => number);
@@ -160,7 +162,8 @@ interface IPipelineStepConfig {
         | PipelineFn<unknown, unknown>[]
         | string[];
     timeout: number;
-    verbosity: "silent" | "error" | "info" | "debug";
+    verbosity: VerbosityKind;
+    logger: (v: ConsoleKind, ...args: any[]) => void;
 }
 type PipelineFn<T, S> = (
     input: T,
