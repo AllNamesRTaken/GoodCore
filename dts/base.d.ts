@@ -208,6 +208,13 @@ interface IConditionalStep<T> extends IPipelineStep<T, T> {
     ) => number | boolean | Promise<number | boolean>;
     pipelines: IPipeline<T, T>[];
 }
+interface IValidationStep<T> extends IPipelineStep<T, T> {
+    validation: (
+        input: T,
+        step: IPipelineStep,
+    ) => boolean | Promise<boolean>;
+    retryStep: PipelineFn<unknown, unknown>;
+}
 interface IEffectStep<T, S = any> extends IPipelineStep<T, S> {
     effect:
         | ((input: T, step: IPipelineStep) => S | Promise<S>)
@@ -238,6 +245,14 @@ interface IPipeline<T = unknown, S = unknown> {
     >(
         fn: PipelineFn<T, boolean | number>,
         conditionals: IPipeline<R, R>[],
+        config?: C,
+    ): IPipeline<T, R>;
+    validation<
+        C extends Partial<IPipelineStepConfig> | null,
+        R extends PipelineFnInput<S, C> = PipelineFnInput<S, C>,
+    >(
+        fn: PipelineFn<R, boolean>,
+        retryStep: PipelineFn<unknown, unknown>,
         config?: C,
     ): IPipeline<T, R>;
     effect<

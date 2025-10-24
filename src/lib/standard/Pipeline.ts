@@ -1,4 +1,3 @@
-import { I } from "vitest/dist/chunks/reporters.d.BFLkQcL6.js";
 import type { Indexable } from "../../@types/index.js";
 
 interface IPipelineStepConfig {
@@ -591,8 +590,15 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             step.duration = Date.now() - start;
             step.durations.push(step.duration);
             if (e instanceof ValidationError) {
-                console.log("Validation failed, retrying at step:", e.retryStep);
-                this.pos = this.stepsLookup[e.retryStep] ?? this.pos;
+                const retryPos = this.stepsLookup[e.retryStep];
+                if (retryPos !== undefined && retryPos < this.pos) {
+                    this.pos = retryPos;
+                }
+                if (retryPos === undefined) {
+                    result.message = `Retry step not found: ${e.retryStep}`;
+                } else if (retryPos >= this.pos) {
+                    result.message = `Retry step after validation: ${e.retryStep}`;
+                }
             }
             return result;
         }
@@ -623,9 +629,6 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
                 }
                 resolve(result);
             } catch (e) {
-                if(e.message.includes("Validation")) {
-                    console.log("Validation error:", e.message);
-                }
                 reject(e);
             }
         });

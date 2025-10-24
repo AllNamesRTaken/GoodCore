@@ -825,7 +825,6 @@ describe("Pipeline", () => {
         let executionCount = 0;
         const step1Fn = (input: number) => {
             executionCount++;
-            console.log(input, executionCount)
             return input * 3 * executionCount;
         };
         const isStep1ValidFn = (input: number) => {
@@ -940,5 +939,82 @@ describe("Pipeline", () => {
         // 26 * 3 = 78
         expect(final.success).toBe(true);
         expect(final.value).toBe(78);
+    });
+
+    test.sequential('validation with non-existing retry step throws error', async function () {
+        const step1Fn = function step1(input: number) {
+            return input + 5;
+        };
+        const nonExistingStep = function nonExisting(input: number) {
+            return input * 2;
+        };
+        const isValidFn = (input: number) => false; // Always fails
+        const step2Fn = (input: number) => input + 10;
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isValidFn, nonExistingStep) // nonExistingStep was never added to pipeline
+            .step(step2Fn);
+
+        const result = pipe.run(10);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // Should fail because retry step doesn't exist in the pipeline
+        expect(final.success).toBe(false);
+        expect(final.message).toContain('Retry step not found');
+    });
+
+    test.sequential('validation with later step as retry step throws error', async function () {
+        const step1Fn = function step1(input: number) {
+            return input * 2;
+        };
+        const step2Fn = function step2(input: number) {
+            return input + 5;
+        };
+        const isValidFn = (input: number) => false; // Always fails
+        const step3Fn = function step3(input: number) {
+            return input * 3;
+        };
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isValidFn, step2Fn) // step2Fn comes after validation
+            .step(step2Fn)
+            .step(step3Fn);
+
+        const result = pipe.run(10);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // Should fail because retry step comes after validation in pipeline
+        expect(final.success).toBe(false);
+        expect(final.message).toContain('Retry step after validation');
+    });
+
+    test.sequential('validation with retry step from different pipeline throws error', async function () {
+        const otherPipeline = Pipeline.step((input: number) => input * 10);
+        const otherStep = function otherStep(input: number) {
+            return input / 2;
+        };
+
+        const step1Fn = function step1(input: number) {
+            return input + 3;
+        };
+        const isValidFn = (input: number) => false;
+        const step2Fn = (input: number) => input + 7;
+
+        const pipe = Pipeline
+            .step(step1Fn)
+            .validation(isValidFn, otherStep) // otherStep belongs to a different pipeline
+            .step(step2Fn);
+
+        const result = pipe.run(15);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        // Should fail because retry step is from different pipeline
+        expect(final.success).toBe(false);
+        expect(final.message).toContain('Retry step not found');
     });
 });
