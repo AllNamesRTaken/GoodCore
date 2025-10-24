@@ -1,5 +1,7 @@
 import type { Indexable } from "../../@types/index.js";
 
+type ConsoleKind = "error" | "info" | "debug";
+type VerbosityKind = "silent" | ConsoleKind;
 interface IPipelineStepConfig {
     retries: number;
     retryStrategy: "immediate" | ((step: IPipelineStep) => number);
@@ -8,7 +10,8 @@ interface IPipelineStepConfig {
         | PipelineFn<unknown, unknown>[]
         | string[];
     timeout: number;
-    verbosity: "silent" | "error" | "info" | "debug";
+    verbosity: VerbosityKind;
+    logger: (v: ConsoleKind, ...args: any[]) => void;
 }
 type PipelineFn<T, S> = (
     input: T,
@@ -176,6 +179,7 @@ class PipelineStep<T = any, S = any> implements IPipelineStep<T, S> {
         retryStrategy: "immediate",
         timeout: 0,
         verbosity: "silent",
+        logger: (v: ConsoleKind, ...args: any[]) => console[v](...args),
     };
     fn: PipelineFn<T, S>;
     config = { ...PipelineStep.defaultConfig };
@@ -297,6 +301,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         timeout: 0,
         inputs: undefined,
         verbosity: "silent",
+        logger: (v: ConsoleKind, ...args: any[]) => console[v](...args),
     };
     private parent: IInstantiatedPipeline | null = null;
     private isClone = false;
@@ -308,7 +313,8 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<T, T>) => any | Promise<any>)
         | IPipeline<T, any>
         | null = null;
-    verbosity: "silent" | "error" | "info" | "debug" = "silent";
+    verbosity: VerbosityKind = "silent";
+    logger: (v: ConsoleKind, ...args: any[]) => void = (v: ConsoleKind, ...args: any[]) => console[v](...args);
 
     public static step<U, R>(
         fn: PipelineFn<U, R>,
@@ -327,6 +333,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         const p = new Pipeline();
         p.config = Pipeline.mergeConfig(p.config, config);
         p.verbosity = p.config.verbosity;
+        p.logger = p.config.logger;
         return p as unknown as IPipeline<unknown, unknown>;
     }
     public static onError(
@@ -532,6 +539,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         while (this.pos < this.steps.length) {
             const step = this.steps[this.pos];
             this.verbosity = step.config.verbosity;
+            this.logger = step.config.logger;
             const inputValue = this.pos 
                 ? this.steps[this.pos - 1].result?.value 
                 : input[0];
@@ -547,6 +555,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             return result as Failure;
         }
         this.verbosity = this.config.verbosity;
+        this.logger = this.config.logger;
         return this.steps[this.pos - 1].result!;
     }
     private async execErrorHandler(result: Failure | Success<unknown>, step: PipelineStep<any, any>) {
@@ -571,19 +580,19 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     private logError(...args: any[]) {
         const v = this.verbosity;
         if (v === "error" || v === "info" || v === "debug") {
-            console.error(...args);
+            this.logger("error", ...args);
         }
     }
     private logInfo(...args: any[]) {
         const v = this.verbosity;
         if (v === "info" || v === "debug") {
-            console.info(...args);
+            this.logger("info", ...args);
         }
     }
     private logDebug(...args: any[]) {
         const v = this.verbosity;
         if (v === "debug") {
-            console.debug(...args);
+            this.logger("debug", ...args);
         }
 
     }

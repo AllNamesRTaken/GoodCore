@@ -1119,4 +1119,161 @@ describe("Pipeline", () => {
         consoleDebugSpy.mockRestore();
         consoleLogSpy.mockRestore();
     });
+
+    test.sequential('pipeline with custom logger function works', async function () {
+        const logMessages: string[] = [];
+        const customLogger = (v: string, ...args: any[]) => {
+            logMessages.push(`${v.toUpperCase()}: ${args.join(' ')}`);
+        };
+
+        const step1 = function step1(input: number) {
+            return input * 2;
+        };
+        const step2 = function step2(input: number) {
+            return input + 10;
+        };
+
+        const pipe = Pipeline
+            .configure({ verbosity: 'info', logger: customLogger })
+            .step(step1)
+            .step(step2);
+
+        const result = pipe.run(5);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(20); // (5 * 2) + 10 = 20
+        
+        // Should have logged using custom logger
+        expect(logMessages.length).toBeGreaterThan(0);
+        expect(logMessages.some(msg => msg.startsWith('INFO:'))).toBe(true);
+    });
+
+    test.sequential('pipeline with custom logger for debug verbosity works', async function () {
+        const logMessages: string[] = [];
+        const customLogger = (v: string, ...args: any[]) => {
+            logMessages.push(`${v.toUpperCase()}: ${args.join(' ')}`);
+        };
+
+        const step1 = function step1(input: number) {
+            return input + 3;
+        };
+        const step2 = function step2(input: number) {
+            return input * 5;
+        };
+
+        const pipe = Pipeline
+            .configure({ verbosity: 'debug', logger: customLogger })
+            .step(step1)
+            .step(step2);
+
+        const result = pipe.run(7);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(50); // (7 + 3) * 5 = 50
+        
+        // Should have logged using custom logger with debug messages
+        expect(logMessages.length).toBeGreaterThan(0);
+        expect(logMessages.some(msg => msg.startsWith('DEBUG:'))).toBe(true);
+    });
+
+    test.sequential('pipeline with custom logger for errors works', async function () {
+        const logMessages: string[] = [];
+        const customLogger = (v: string, ...args: any[]) => {
+            logMessages.push(`${v.toUpperCase()}: ${args.join(' ')}`);
+        };
+
+        const step1 = function step1(input: number) {
+            return input + 1;
+        };
+        const step2 = function step2(input: number) {
+            throw new Error("Custom error test");
+        };
+
+        const pipe = Pipeline
+            .configure({ verbosity: 'error', logger: customLogger })
+            .step(step1)
+            .step(step2);
+
+        const result = pipe.run(10);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(false);
+        
+        // Should have logged error using custom logger
+        expect(logMessages.length).toBeGreaterThan(0);
+        expect(logMessages.some(msg => msg.startsWith('ERROR:'))).toBe(true);
+    });
+
+    test.sequential('pipeline with per-step custom logger works', async function () {
+        const step1Messages: string[] = [];
+        const step2Messages: string[] = [];
+        
+        const logger1 = (v: string, ...args: any[]) => {
+            step1Messages.push(`STEP1-${v.toUpperCase()}: ${args.join(' ')}`);
+        };
+
+        const logger2 = (v: string, ...args: any[]) => {
+            step2Messages.push(`STEP2-${v.toUpperCase()}: ${args.join(' ')}`);
+        };
+
+        const step1 = function step1(input: number) {
+            return input * 2;
+        };
+        const step2 = function step2(input: number) {
+            return input + 15;
+        };
+
+        const pipe = Pipeline
+            .step(step1, { verbosity: 'info', logger: logger1 })
+            .step(step2, { verbosity: 'debug', logger: logger2 });
+
+        const result = pipe.run(8);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(31); // (8 * 2) + 15 = 31
+        
+        // Should have logged to different custom loggers
+        expect(step1Messages.length).toBeGreaterThan(0);
+        expect(step2Messages.length).toBeGreaterThan(0);
+        expect(step1Messages.some(msg => msg.startsWith('STEP1-'))).toBe(true);
+        expect(step2Messages.some(msg => msg.startsWith('STEP2-'))).toBe(true);
+    });
+
+    test.sequential('pipeline with custom logger captures all arguments', async function () {
+        const logCalls: Array<{kind: string, args: any[]}> = [];
+        const customLogger = (v: string, ...args: any[]) => {
+            logCalls.push({ kind: v, args });
+        };
+
+        const step1 = function step1(input: number) {
+            return input + 10;
+        };
+
+        const pipe = Pipeline
+            .step(step1, { verbosity: 'debug', logger: customLogger });
+
+        const result = pipe.run(5);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(15);
+        
+        // Should have captured log calls with proper kinds and arguments
+        expect(logCalls.length).toBeGreaterThan(0);
+        expect(logCalls.some(call => call.kind === 'debug')).toBe(true);
+        
+        // Each log call should have arguments
+        logCalls.forEach(call => {
+            expect(call.args).toBeDefined();
+            expect(Array.isArray(call.args)).toBe(true);
+        });
+    });
 });
