@@ -8,6 +8,7 @@ interface IPipelineStepConfig {
         | PipelineFn<unknown, unknown>[]
         | string[];
     timeout: number;
+    verbosity: "silent" | "error" | "info" | "debug";
 }
 type PipelineFn<T, S> = (
     input: T,
@@ -174,6 +175,7 @@ class PipelineStep<T = any, S = any> implements IPipelineStep<T, S> {
         retries: 2,
         retryStrategy: "immediate",
         timeout: 0,
+        verbosity: "silent",
     };
     fn: PipelineFn<T, S>;
     config = { ...PipelineStep.defaultConfig };
@@ -294,6 +296,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         retryStrategy: "immediate",
         timeout: 0,
         inputs: undefined,
+        verbosity: "silent",
     };
     private parent: IInstantiatedPipeline | null = null;
     private isClone = false;
@@ -305,6 +308,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         | ((failure: IFailure, step: IPipelineStep, pipeline: IInstantiatedPipeline<T, T>) => any | Promise<any>)
         | IPipeline<T, any>
         | null = null;
+    verbosity: "silent" | "error" | "info" | "debug" = "silent";
 
     public static step<U, R>(
         fn: PipelineFn<U, R>,
@@ -322,6 +326,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     ): IPipeline<unknown, unknown> {
         const p = new Pipeline();
         p.config = Pipeline.mergeConfig(p.config, config);
+        p.verbosity = p.config.verbosity;
         return p as unknown as IPipeline<unknown, unknown>;
     }
     public static onError(
@@ -332,7 +337,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         const p = new Pipeline();
         const step = new OnErrorStep(handler);
         step.handler = handler;
-        p.PushStep(step, handler);
+        p.pushStep(step, handler);
         return p as unknown as IPipeline<unknown, unknown>;
     }
     public static mergeConfig<T extends IPipelineStepConfig | Partial<IPipelineStepConfig>>(
@@ -355,11 +360,11 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         config?: C,
     ): IPipeline<T, R> {
         const step = new PipelineStep(fn, (config as C) ?? this.config);
-        this.PushStep(step, fn);
+        this.pushStep(step, fn);
         return this as unknown as IPipeline<T, R>;
     }
 
-    private PushStep(step: PipelineStep<any, any>, fn: Function | IPipeline<any, any>) {
+    private pushStep(step: PipelineStep<any, any>, fn: Function | IPipeline<any, any>) {
         this.steps.push(step);
         if (fn instanceof Function && fn.name) {
             this.stepsLookup[fn.name] = this.steps.length - 1;
@@ -375,7 +380,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         config?: C,
     ): IPipeline<T, R> {
         const step = new ConditionalStep(fn, (config as C) ?? this.config);
-        this.PushStep(step, fn);
+        this.pushStep(step, fn);
         step.pipelines = Array.isArray(conditionals)
             ? conditionals
             : [conditionals];
@@ -392,7 +397,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         config?: C,
     ): IPipeline<T, R> {
         const step = new ValidationStep(fn, (config as C) ?? this.config);
-        this.PushStep(step, fn);
+        this.pushStep(step, fn);
         step.retryStep = retryStep;
         return this as unknown as IPipeline<T, R>;
     }
@@ -408,7 +413,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     ): IPipeline<T, R> {
         const step = new EffectStep(() => {}, (config as C) ?? this.config);
         step.effect = effect;
-        this.PushStep(step, effect);
+        this.pushStep(step, effect);
         return this as unknown as IPipeline<T, R>;
     }
 
@@ -419,7 +424,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     ): IPipeline<T, R> {
         const step = new OnErrorStep(handler);
         step.handler = handler;
-        this.PushStep(step, handler);
+        this.pushStep(step, handler);
         return this as unknown as IPipeline<T, R>;
     }
 
@@ -526,6 +531,7 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
         this.reset();
         while (this.pos < this.steps.length) {
             const step = this.steps[this.pos];
+            this.verbosity = step.config.verbosity;
             const inputValue = this.pos 
                 ? this.steps[this.pos - 1].result?.value 
                 : input[0];
@@ -536,40 +542,69 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             }
             if (await this.waitForRetry(step)) continue;
             
-            if (this.errorHandler) {
-                const handler = (this as unknown as IInstantiatedPipeline<unknown, unknown>).errorHandler;
-                if (handler instanceof Function) {
-                    try {
-                        await handler(result as IFailure, step, this as unknown as IInstantiatedPipeline<unknown, unknown>);
-                    } catch (e) {
-                        console.error("Error in onError handler:", e);
-                    }
-                }
-                else if (handler instanceof Pipeline) {
-                    const handlerResult = await handler.run(result as IFailure);
-                    if (!handlerResult.success) {
-                        console.error("Error in onError pipeline handler:", handlerResult.error);
-                    }
-                }
-            }
+            await this.execErrorHandler(result, step);
+            this.logError(result.message);
             return result as Failure;
         }
+        this.verbosity = this.config.verbosity;
         return this.steps[this.pos - 1].result!;
     }
-    private async waitForRetry(step: PipelineStep): Promise<boolean> {
-        if (step.shouldRetry()) {
-            const strategy = step.config.retryStrategy;
-            if (strategy instanceof Function) {
-                const wait = strategy(step);
-                if (wait > 0) {
-                    await new Promise((resolve) => setTimeout(resolve, wait));
+    private async execErrorHandler(result: Failure | Success<unknown>, step: PipelineStep<any, any>) {
+        if (this.errorHandler) {
+            const handler = (this as unknown as IInstantiatedPipeline<unknown, unknown>).errorHandler;
+            if (handler instanceof Function) {
+                try {
+                    await handler(result as IFailure, step, this as unknown as IInstantiatedPipeline<unknown, unknown>);
+                } catch (e) {
+                    this.logError("Error in onError handler:", e);
                 }
             }
-            return true;
+            else if (handler instanceof Pipeline) {
+                const handlerResult = await handler.run(result as IFailure);
+                if (!handlerResult.success) {
+                    this.logError("Error in onError pipeline handler:", handlerResult.error);
+                }
+            }
         }
-        return false;
+    }
+
+    private logError(...args: any[]) {
+        const v = this.verbosity;
+        if (v === "error" || v === "info" || v === "debug") {
+            console.error(...args);
+        }
+    }
+    private logInfo(...args: any[]) {
+        const v = this.verbosity;
+        if (v === "info" || v === "debug") {
+            console.info(...args);
+        }
+    }
+    private logDebug(...args: any[]) {
+        const v = this.verbosity;
+        if (v === "debug") {
+            console.debug(...args);
+        }
+
+    }
+
+    private async waitForRetry(step: PipelineStep): Promise<boolean> {
+        if (!step.shouldRetry()) {
+            return false;
+        }
+        const strategy = step.config.retryStrategy;
+        if (strategy instanceof Function) {
+            const wait = strategy(step);
+            if (wait > 0) {
+                this.logInfo(`Step ${step.getName()} waiting for retry: ${wait} ms`);
+                await new Promise((resolve) => setTimeout(resolve, wait));
+            }
+        }
+        return true;
     }
     private async runStep(step: PipelineStep<any, any>, input: unknown): Promise<Success<unknown> | Failure> {
+        this.logInfo("Running step:", step.getName());
+        this.logDebug("Input:", input);
         const start = Date.now();
         try {
             step.run++;
@@ -589,6 +624,9 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
             step.result = result;
             step.duration = Date.now() - start;
             step.durations.push(step.duration);
+            this.logInfo("Step failed:", step.getName());
+            this.logDebug("Error:", e);
+
             if (e instanceof ValidationError) {
                 const retryPos = this.stepsLookup[e.retryStep];
                 if (retryPos !== undefined && retryPos < this.pos) {
@@ -635,20 +673,17 @@ export class Pipeline<T = unknown, S = unknown> implements IPipeline<T, S> {
     }
 
     private async execStep(step: PipelineStep<any, any>, input: unknown) {
-        let result: unknown;
         if (step instanceof ValidationStep) {
-            result = await this.execValidationStep(step, input);
+            return await this.execValidationStep(step, input);
         } else if (step instanceof ConditionalStep) {
-            result = await this.execConditionalStep(step, input);
+            return await this.execConditionalStep(step, input);
         } else if (step instanceof EffectStep) {
-            result = await this.execEffectStep(step, input);
+            return await this.execEffectStep(step, input);
         } else if (step instanceof OnErrorStep) {
-            result = input;
             this.errorHandler = step.handler;
-        } else {
-            result = await step.fn(input, step);
+            return input;
         }
-        return result;
+        return await step.fn(input, step);
     }
 
     private async execEffectStep(

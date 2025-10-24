@@ -188,6 +188,7 @@ interface IPipelineStepConfig {
         | PipelineFn<unknown, unknown>[]
         | string[];
     timeout: number;
+    verbosity: "silent" | "error" | "info" | "debug";
 }
 type PipelineFn<T, S> = (
     input: T,

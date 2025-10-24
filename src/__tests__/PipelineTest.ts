@@ -743,6 +743,7 @@ describe("Pipeline", () => {
         };
 
         const pipe = Pipeline
+            .configure({verbosity: 'error'})
             .step((input: number) => input + 1)
             .onError(errorHandler)
             .step((input: number) => {
@@ -784,6 +785,7 @@ describe("Pipeline", () => {
             });
 
         const pipe = Pipeline
+            .configure({verbosity: 'error'})
             .step((input: number) => input * 3)
             .onError(errorPipeline)
             .step((input: number) => {
@@ -1016,5 +1018,105 @@ describe("Pipeline", () => {
         // Should fail because retry step is from different pipeline
         expect(final.success).toBe(false);
         expect(final.message).toContain('Retry step not found');
+    });
+
+    test.sequential('pipeline with verbosity: info logs info messages', async function () {
+        const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+        const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+        const step1 = function step1(input: number) {
+            return input * 2;
+        };
+        const step2 = function step2(input: number) {
+            return input + 10;
+        };
+
+        const pipe = Pipeline
+            .configure({ verbosity: 'info' })
+            .step(step1)
+            .step(step2);
+
+        const result = pipe.run(5);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(20); // (5 * 2) + 10 = 20
+        
+        // Should have logged info messages for both steps
+        expect(consoleInfoSpy.mock.calls.length).toBeGreaterThan(0);
+        
+        consoleInfoSpy.mockRestore();
+        consoleLogSpy.mockRestore();
+    });
+
+    test.sequential('pipeline with verbosity: debug logs debug messages', async function () {
+        const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+        const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+        const step1 = function step1(input: number) {
+            return input + 5;
+        };
+        const step2 = function step2(input: number) {
+            return input * 3;
+        };
+        const step3 = function step3(input: number) {
+            return input - 2;
+        };
+
+        const pipe = Pipeline
+            .configure({ verbosity: 'debug' })
+            .step(step1)
+            .step(step2)
+            .step(step3);
+
+        const result = pipe.run(10);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(43); // ((10 + 5) * 3) - 2 = 43
+        
+        // Should have logged debug messages for all three steps
+        expect(consoleDebugSpy.mock.calls.length).toBeGreaterThan(0);
+        
+        consoleDebugSpy.mockRestore();
+        consoleLogSpy.mockRestore();
+    });
+
+    test.sequential('pipeline with mixed verbosity levels works', async function () {
+        const consoleInfoSpy = vi.spyOn(console, 'info').mockImplementation(() => {});
+        const consoleDebugSpy = vi.spyOn(console, 'debug').mockImplementation(() => {});
+        const consoleLogSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
+
+        const step1 = function step1(input: number) {
+            return input * 2;
+        };
+        const step2 = function step2(input: number) {
+            return input + 7;
+        };
+        const step3 = function step3(input: number) {
+            return input / 2;
+        };
+
+        const pipe = Pipeline
+            .step(step1, { verbosity: 'info' })
+            .step(step2, { verbosity: 'debug' })
+            .step(step3); // No verbosity specified
+
+        const result = pipe.run(8);
+        await vi.runAllTimersAsync();
+        const final = await result;
+
+        expect(final.success).toBe(true);
+        expect(final.value).toBe(11.5); // ((8 * 2) + 7) / 2 = 11.5
+        
+        // Should have logged both info and debug messages
+        expect(consoleInfoSpy.mock.calls.length).toBeGreaterThan(0);
+        expect(consoleDebugSpy.mock.calls.length).toBeGreaterThan(0);
+        
+        consoleInfoSpy.mockRestore();
+        consoleDebugSpy.mockRestore();
+        consoleLogSpy.mockRestore();
     });
 });
